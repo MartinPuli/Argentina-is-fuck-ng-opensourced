@@ -1,5 +1,5 @@
 {% macro badge(decision) -%}
-<span class="badge b-{{ decision }}">{{ {'public':'Published', 'approved':'Reviewer approved', 'hold':'Needs review', 'withheld':'Kept internal'}.get(decision, decision) }}</span>
+<span class="badge b-{{ decision }}">{{ {'public':'Published', 'approved':'Reviewer approved', 'cleaned':'Published, cleaned', 'hold':'Needs review', 'withheld':'Kept internal'}.get(decision, decision) }}</span>
 {%- endmacro %}
 {% macro evidence(findings) -%}
 {% if findings %}<div class="table-wrap"><table class="evidence-table"><caption class="sr-only">Findings with masked evidence and policy references</caption><thead><tr><th scope="col">Finding</th><th scope="col">Masked evidence</th><th scope="col">Page</th><th scope="col">Policy reference</th></tr></thead><tbody>

@@ -21,6 +21,7 @@ PDFS = Path(__file__).parents[1] / "fixtures" / "pdfs"
 STAFF = ("test-reviewer", "fictional-test-password")
 EXPECTED_OFFLINE = {
     "especificacion_tecnica_silla.pdf": "hold",
+    "nota_pedido.pdf": "withheld",  # DNI and CUIL; a cleaned copy needs the verifier to go public
     "cotizacion_proveedor.pdf": "hold",
     "justificacion_medica.pdf": "withheld",
     "dni_escaneado.pdf": "hold",  # unread image; do not invent successful OCR

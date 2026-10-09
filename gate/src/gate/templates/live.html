@@ -32,8 +32,8 @@
   let stopped = false;
   let timer = null;
   let authBlocked = false;
-  const labels = {public: 'Published', approved: 'Reviewer approved', hold: 'Needs review', withheld: 'Kept internal', stale: 'Recheck needed', error: 'Check failed'};
-  const badgeClasses = {public: 'b-public', approved: 'b-approved', hold: 'b-hold', withheld: 'b-withheld', stale: 'b-hold', error: 'b-withheld'};
+  const labels = {public: 'Published', approved: 'Reviewer approved', cleaned: 'Published, cleaned', hold: 'Needs review', withheld: 'Kept internal', stale: 'Recheck needed', error: 'Check failed'};
+  const badgeClasses = {public: 'b-public', approved: 'b-approved', cleaned: 'b-public', hold: 'b-hold', withheld: 'b-withheld', stale: 'b-hold', error: 'b-withheld'};
   const stepStates = new Set(['running', 'done', 'error', 'pending', 'skipped']);
   const text = value => value == null ? '' : String(value);
   const numericId = value => /^\d+$/.test(text(value)) && Number(value) > 0 ? text(value) : null;

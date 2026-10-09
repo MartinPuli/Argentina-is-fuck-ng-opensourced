@@ -30,7 +30,14 @@ Reply with JSON only, no prose:
 {"personal_data": bool, "health_data": bool,
  "reidentification_risk": "none" | "low" | "medium" | "high",
  "safe_for_public": bool,
- "reasons": [short English strings; never copy names, numbers or addresses]}
+ "reasons": [short English strings; never copy names, numbers or addresses],
+ "identifying_phrases": [{"text": exact verbatim substring of the attachment, "category": \
+"name" | "age" | "town" | "hospital" | "date" | "address" | "id" | "other"}]}
+
+identifying_phrases lists the shortest exact substrings that must be removed so the \
+document no longer points to a person, copied character for character. Keep product, \
+price and supplier details. Use [] when nothing identifies a person. These phrases are \
+used only to redact and are never logged.
 
 Attachment text:
 """
