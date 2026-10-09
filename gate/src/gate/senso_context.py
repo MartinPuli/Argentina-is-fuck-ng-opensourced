@@ -219,3 +219,59 @@ def rule_context(rule_id: int) -> dict | None:
     with _db() as con:
         row = con.execute("select snapshot from learning_rule_context where rule_id=?", (rule_id,)).fetchone()
     return json.loads(row[0]) if row else None
+
+
+ATTACHMENT_SCHEMA = """
+create table if not exists attachment_senso (
+    attachment_id integer primary key, snapshot text not null
+);
+"""
+
+
+def cite(attachment_id: int, findings: list[dict]) -> dict:
+    """Look up the governing guideline passage for an already stored decision.
+
+    Writes only to its own table, so Senso can add a citation but can never
+    change a decision or release a file.
+    """
+    from .rules import RULES
+    started = time.perf_counter()
+    rule_ids = sorted({f.get("rule") for f in findings if isinstance(f, dict) and f.get("rule") in RULES})
+    result: dict = {"rule_ids": rule_ids}
+    try:
+        if not rule_ids:
+            raise LookupError("No cited rule to look up.")
+        if not configured():
+            raise LookupError("Senso is not configured.")
+        if not status()["content_id"]:
+            sync()  # reconciles the existing exact pack in this organization (409 path)
+        context = retrieve("; ".join(RULES[r].get("title", r) for r in rule_ids))
+        first = context["passages"][0]
+        result.update(status="cited", content_id=first["content_id"], version_id=first["version_id"],
+                      node_id=first["node_id"], passages=len(context["passages"]),
+                      excerpt=first["text"][:240], guideline_digest=context["guideline_digest"])
+    except LookupError as exc:
+        result.update(status="unavailable", reason=str(exc))
+    except Exception:
+        result.update(status="unavailable", reason="Senso lookup failed; the decision is unchanged.")
+    result["latency_ms"] = round((time.perf_counter() - started) * 1000)
+    result["authority"] = "Untrusted context; it cannot change the decision."
+    try:
+        with _db() as con:
+            con.executescript(ATTACHMENT_SCHEMA)
+            con.execute("insert or replace into attachment_senso values (?,?)",
+                        (attachment_id, json.dumps(result, sort_keys=True, ensure_ascii=False)))
+    except Exception:
+        pass
+    return result
+
+
+def citations(attachment_ids) -> dict[int, dict]:
+    ids = [int(i) for i in attachment_ids]
+    if not ids:
+        return {}
+    with _db() as con:
+        con.executescript(ATTACHMENT_SCHEMA)
+        rows = con.execute("select attachment_id, snapshot from attachment_senso where attachment_id in (%s)"
+                           % ",".join("?" * len(ids)), ids).fetchall()
+    return {row[0]: json.loads(row[1]) for row in rows}

@@ -345,6 +345,8 @@ def store_attachment(purchase: dict, filename: str, pdf: bytes, model, decision,
                sorted({f["kind"] for f in findings}), "gate", latency)
     if job is not None:
         activity.finish(job, attachment_id=att_id, decision=decision)
+    if decision != PUBLIC:
+        threading.Thread(target=senso_lookup, args=(att_id, findings, job), daemon=True).start()
     candidate = None
     phrases = phrases if isinstance(phrases, list) else []
     if decision != PUBLIC and agent.configured() and sanitize.text_only(pdf) and sanitize.cleanable(findings, decision):
@@ -381,6 +383,16 @@ def store_attachment(purchase: dict, filename: str, pdf: bytes, model, decision,
     if job is not None:
         activity.finish(job, done=True)
     return att_id
+
+
+def senso_lookup(att_id: int, findings: list[dict], job: dict | None = None) -> dict:
+    """Cite the governing guideline from Senso. Runs after the decision is stored."""
+    result = senso_context.cite(att_id, findings)
+    cited = result.get("status") == "cited"
+    activity.emit(job, "Senso", "rule lookup", "done" if cited else "skipped",
+                  ", ".join(result.get("rule_ids", [])) if cited else "unavailable; decision unchanged",
+                  result.get("latency_ms"), file=str(att_id))
+    return result
 
 
 def verifier_state(con, att_id: int) -> dict | None:
@@ -797,6 +809,7 @@ def purchase_view(request: Request, pid: int, user: str = Depends(staff)):
             raise HTTPException(404)
         atts = con.execute("select * from attachments where purchase_id=? order by id", (pid,)).fetchall()
     return page(request, "purchase.html", purchase=purchase, atts=atts,
+                senso=senso_context.citations(a["id"] for a in atts),
                 stale_ids={a["id"] for a in atts if not learning.current(a["id"])})
 
 

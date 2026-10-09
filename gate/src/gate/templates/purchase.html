@@ -62,6 +62,7 @@
 </div>
 {% else %}<div class="pv-links"><a class="pv-btn" href="/internal/file/{{ a.id }}" target="_blank" rel="noopener">🔒 Original (internal)</a>{% if visible %}<a class="pv-btn pub-btn" href="/public/file/{{ a.id }}" target="_blank" rel="noopener">Public PDF ↗</a>{% endif %}{% if tone == 'rev' %}{{ go }}{% endif %}</div>{% endif %}
 {% if tone == 'rev' and a.public_pdf %}<div class="pv-links">{{ go }}</div>{% endif %}
+{% set sc=senso.get(a.id) %}{% if sc and sc.status == 'cited' %}<p class="pv-fp">Policy source: <a href="/guidelines" title="Senso content {{ sc.content_id }} · version {{ sc.version_id }}">Senso ↗</a> · {{ sc.rule_ids|join(', ') }} · “{{ sc.excerpt|truncate(140) }}”</p>{% endif %}
 <details class="pv-more"><summary>Details</summary>
 {% for r in (reasons if a.decision == 'approved' and a.review_note else reasons[1:]) %}<p>{{ r }}</p>{% endfor %}
 {{ evidence(fs) }}
