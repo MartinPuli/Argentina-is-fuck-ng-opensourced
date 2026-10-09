@@ -1,5 +1,127 @@
 {% extends "base.html" %}{% block title %}Workspace{% endblock %}{% block body %}
 <link rel="stylesheet" href="{{ asset_url('workspace.css') }}">
+{% import "brand.html" as brand %}
+<style>
+.home-page{--hp-ink:var(--brand-primary,#0B2545);--hp-text:var(--c-ink,#0f1f33);--hp-muted:var(--c-muted,#4b5b70);--hp-accent:var(--brand-accent,#1F6FB2);--hp-accent-hover:#185a91;--hp-line:var(--c-line,#e2e8f0);--hp-wire:#a3b1c2;--hp-ok:var(--c-published,#15803d);--hp-no:var(--c-blocked,#b91c1c);color:var(--hp-text);padding:40px 0 48px;text-align:center}
+.home-page .hp-eyebrow{margin:0 0 14px;font-size:13px;font-weight:600;letter-spacing:.02em;color:var(--hp-accent)}
+.home-page h1{margin:0 auto;max-width:24ch;font-size:clamp(30px,3.8vw,46px);line-height:1.1;letter-spacing:-.025em;font-weight:700;color:var(--hp-ink)}
+.home-page .hp-action{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin-top:28px}
+.home-page .hp-cta{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 20px;border-radius:4px;border:1px solid var(--hp-accent);background:var(--hp-accent);color:#fff;font-size:15px;font-weight:600;text-decoration:none;transition:background .15s,border-color .15s}
+.home-page .hp-cta:hover{background:var(--hp-accent-hover);border-color:var(--hp-accent-hover);text-decoration:none}
+.home-page .hp-cta.hp-secondary{background:#fff;color:var(--hp-ink);border-color:var(--c-line-strong,#cbd5e1)}
+.home-page .hp-cta.hp-secondary:hover{background:var(--c-surface-alt,#f8fafc);border-color:var(--hp-wire)}
+.home-page .hp-cta:focus-visible{outline:2px solid var(--hp-accent);outline-offset:3px}
+.home-page .hp-cta svg{width:16px;height:16px}
+.home-page .hp-diagram{margin:44px auto 0;max-width:960px;padding:32px 24px 24px;border:1px solid var(--hp-line);border-radius:4px;background:var(--c-surface-alt,#f8fafc)}
+.home-page .hp-diagram svg{display:block;width:100%;height:auto;margin:0 auto}
+.home-page .hp-diagram .hp-tall{display:none;max-width:340px}
+.home-page .hx-paper{fill:#fff;stroke:var(--hp-ink);stroke-width:1.75;stroke-linejoin:round}
+.home-page .hx-stroke{fill:none;stroke:var(--hp-ink);stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.home-page .hx-text-line{fill:none;stroke:var(--hp-wire);stroke-width:2;stroke-linecap:round}
+.home-page .hx-wire{fill:none;stroke:var(--hp-wire);stroke-width:1.5;stroke-linecap:round}
+.home-page .hx-head{fill:var(--hp-wire)}
+.home-page .hx-tag{fill:var(--hp-accent)}
+.home-page .hx-tag-text{fill:#fff;font-size:9px;font-weight:700;letter-spacing:.04em}
+.home-page .hx-ok{fill:var(--hp-ok)}
+.home-page .hx-no{fill:var(--hp-no)}
+.home-page .hx-mark{fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.home-page .hx-label{fill:var(--hp-ink);font-size:15px;font-weight:600}
+.home-page .hx-meta{fill:var(--hp-muted);font-size:12px;letter-spacing:.01em}
+@media(max-width:700px){
+.home-page{padding:16px 0 32px;text-align:left}
+.home-page h1{margin:0}
+.home-page .hp-action{justify-content:stretch;margin-top:22px}
+.home-page .hp-cta{flex:1 1 100%}
+.home-page .hp-diagram{margin-top:28px;padding:24px 12px 16px}
+.home-page .hp-diagram .hp-wide{display:none}
+.home-page .hp-diagram .hp-tall{display:block}
+}
+</style>
+<section class="home-page" aria-labelledby="hp-title">
+<p class="hp-eyebrow">ArgenSec Publication Gate</p>
+<h1 id="hp-title">Patient data never reaches the public website.</h1>
+<div class="hp-action"><a class="hp-cta" href="#activity">Watch it live <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a><a class="hp-cta hp-secondary" href="/office"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5M5 20h14"/></svg>Upload a PDF</a></div>
+
+<figure class="hp-diagram">
+{# Wide version: left to right #}
+<svg class="hp-wide" viewBox="0 0 960 220" role="img" aria-labelledby="hpw-title hpw-desc">
+<title id="hpw-title">How the publication gate works</title>
+<desc id="hpw-desc">A PAMI office uploads a PDF. AI agents from AkashML and Guild.ai check every page at the ArgenSec gate, and each decision is logged in ClickHouse. Safe purchase files are published on the public website. Patient data is kept private.</desc>
+<defs><marker id="hpw-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="hx-head" d="M0 0L10 5L0 10z"/></marker></defs>
+{# document #}
+<path class="hx-paper" d="M76 46H112L128 62V134H76Z"/>
+<path class="hx-stroke" d="M112 46V62H128"/>
+<path class="hx-text-line" d="M86 76H118M86 88H118M86 100H110M86 112H116"/>
+<rect class="hx-tag" x="66" y="118" width="30" height="16" rx="2"/>
+<text class="hx-tag-text" x="81" y="129.5" text-anchor="middle">PDF</text>
+<text class="hx-label" x="102" y="176" text-anchor="middle">PAMI office uploads a PDF</text>
+{# wire to gate #}
+<path class="hx-wire" d="M156 90H352" marker-end="url(#hpw-arrow)"/>
+{# gate #}
+<g transform="translate(364 50)">{{ brand.logo(80) }}</g>
+<text class="hx-label" x="404" y="176" text-anchor="middle">AI checks every page</text>
+<text class="hx-meta" x="404" y="200" text-anchor="middle">AkashML · Guild.ai · ClickHouse</text>
+{# split #}
+<path class="hx-wire" d="M456 90H520C556 90 556 46 592 46H632" marker-end="url(#hpw-arrow)"/>
+<path class="hx-wire" d="M520 90C556 90 556 134 592 134H632"/>
+<path class="hx-wire" d="M592 134H632" marker-end="url(#hpw-arrow)"/>
+{# public page #}
+<rect class="hx-paper" x="646" y="22" width="68" height="50" rx="3"/>
+<path class="hx-stroke" d="M646 33H714"/>
+<path class="hx-text-line" d="M656 45H698M656 55H690"/>
+<circle class="hx-ok" cx="714" cy="22" r="10"/>
+<path class="hx-mark" d="M709.5 22.2l3 3 5.5-6"/>
+<text class="hx-label" x="740" y="52">Purchase published</text>
+{# lock #}
+<path class="hx-stroke" d="M668 124v-8a12 12 0 0 1 24 0v8"/>
+<rect class="hx-paper" x="660" y="124" width="40" height="32" rx="3"/>
+<circle class="hx-stroke" cx="680" cy="138" r="3.5"/>
+<path class="hx-stroke" d="M680 141.5V147"/>
+<circle class="hx-no" cx="702" cy="106" r="10"/>
+<path class="hx-mark" d="M698 106h8"/>
+<text class="hx-label" x="740" y="140">Patient data kept private</text>
+</svg>
+
+{# Tall version: top to bottom, for phones #}
+<svg class="hp-tall" viewBox="0 0 340 500" role="img" aria-labelledby="hpt-title hpt-desc">
+<title id="hpt-title">How the publication gate works</title>
+<desc id="hpt-desc">A PAMI office uploads a PDF. AI agents from AkashML and Guild.ai check every page at the ArgenSec gate, and each decision is logged in ClickHouse. Safe purchase files are published on the public website. Patient data is kept private.</desc>
+<defs><marker id="hpt-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="hx-head" d="M0 0L10 5L0 10z"/></marker></defs>
+{# document #}
+<path class="hx-paper" d="M144 8H180L196 24V96H144Z"/>
+<path class="hx-stroke" d="M180 8V24H196"/>
+<path class="hx-text-line" d="M154 38H186M154 50H186M154 62H178M154 74H184"/>
+<rect class="hx-tag" x="134" y="80" width="30" height="16" rx="2"/>
+<text class="hx-tag-text" x="149" y="91.5" text-anchor="middle">PDF</text>
+<text class="hx-label" x="170" y="124" text-anchor="middle">PAMI office uploads a PDF</text>
+<path class="hx-wire" d="M170 138V170" marker-end="url(#hpt-arrow)"/>
+{# gate #}
+<g transform="translate(134 178)">{{ brand.logo(72) }}</g>
+<text class="hx-label" x="170" y="276" text-anchor="middle">AI checks every page</text>
+<text class="hx-meta" x="170" y="298" text-anchor="middle">AkashML · Guild.ai · ClickHouse</text>
+{# split #}
+<path class="hx-wire" d="M170 312V322C170 340 86 334 86 352V364" marker-end="url(#hpt-arrow)"/>
+<path class="hx-wire" d="M170 322C170 340 254 334 254 352V364" marker-end="url(#hpt-arrow)"/>
+{# public page #}
+<rect class="hx-paper" x="52" y="380" width="68" height="50" rx="3"/>
+<path class="hx-stroke" d="M52 391H120"/>
+<path class="hx-text-line" d="M62 403H104M62 413H96"/>
+<circle class="hx-ok" cx="120" cy="380" r="10"/>
+<path class="hx-mark" d="M115.5 380.2l3 3 5.5-6"/>
+<text class="hx-label" x="86" y="462" text-anchor="middle">Purchase</text>
+<text class="hx-label" x="86" y="482" text-anchor="middle">published</text>
+{# lock #}
+<path class="hx-stroke" d="M242 398v-8a12 12 0 0 1 24 0v8"/>
+<rect class="hx-paper" x="234" y="398" width="40" height="32" rx="3"/>
+<circle class="hx-stroke" cx="254" cy="412" r="3.5"/>
+<path class="hx-stroke" d="M254 415.5V421"/>
+<circle class="hx-no" cx="276" cy="380" r="10"/>
+<path class="hx-mark" d="M272 380h8"/>
+<text class="hx-label" x="254" y="462" text-anchor="middle">Patient data</text>
+<text class="hx-label" x="254" y="482" text-anchor="middle">kept private</text>
+</svg>
+</figure>
+</section>
 <style>
 .ws{--ink:#0B2545;--text:#1e2a3a;--muted:#5b6b7f;--line:#e3e8ef;--soft:#f6f8fb;--acc:#1F6FB2;--ok:#15803d;--teal:#0f766e;--amber:#b45309;--red:#b91c1c;color:var(--text);padding:24px 0 32px}
 .ws [hidden]{display:none!important}
@@ -67,7 +189,6 @@
 <div><h1>Workspace</h1><p>Every PAMI attachment is checked by AI agents before it can go public.</p></div>
 <div class="ws-actions">
 <form method="post" action="/live/demo/seed" data-live-form><button type="submit" class="ws-btn">Load demo files</button><div class="form-message ws-msg" role="status" aria-live="polite" hidden></div></form>
-<a class="ws-btn sec" href="/office">Upload PDF</a>
 <form class="rs" method="post" action="/live/reset" onsubmit="return confirm('Clear all files and purchases? Rules and audit history stay.')"><button type="submit" class="ws-btn ghost">Reset</button></form>
 </div>
 </div>
@@ -79,7 +200,7 @@
 {% if autonomous %}<div class="ws-stat auto"><dt>Finished without a person</dt><dd id="live-autonomy">— of —</dd></div>{% endif %}
 </dl>
 <div class="ws-meta"><span id="live-connection" role="status" aria-live="polite">Connecting…</span>{% if history_total %}<span>{{ "{:,}".format(history_total.value) }} history events · {{ history_total.ms }} ms · <a href="/dashboard">History →</a></span>{% endif %}</div>
-<section class="ws-sec" aria-labelledby="ws-activity"><h2 id="ws-activity">Agent activity <small id="live-stale-count"></small></h2>
+<section class="ws-sec" id="activity" aria-labelledby="ws-activity"><h2 id="ws-activity">Agent activity <small id="live-stale-count"></small></h2>
 <div id="ws-empty" class="ws-empty" hidden>No files yet. Load demo files to watch the agents work.</div>
 <div class="ws-grid" id="ws-activity-grid">
 <section class="agent-log" aria-labelledby="agent-log-heading"><div class="agent-log-head"><h3 id="agent-log-heading">Agent log</h3><span id="agent-log-count">newest first</span></div><div class="agent-log-body" id="agent-log" role="log" aria-live="off"><div class="log-empty">Waiting for agent activity…</div></div></section>
