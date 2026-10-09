@@ -702,7 +702,9 @@ def live_reset(user: str = Depends(staff)):
     with db() as con:
         con.execute("create table if not exists learning_checks (attachment_id integer primary key, "
                     "revision text not null, checked_at real not null)")
+        con.execute(senso_context.ATTACHMENT_SCHEMA.strip())
         con.execute("delete from learning_checks")
+        con.execute("delete from attachment_senso")  # ids are reused after reset
         con.execute("delete from attachments")
         con.execute("delete from purchases")
     activity.clear()

@@ -7,6 +7,7 @@ untrusted evidence; neither retrieval nor ingestion can activate a rule.
 import hashlib
 import json
 import os
+import re
 import time
 import unicodedata
 from uuid import UUID
@@ -249,7 +250,7 @@ def cite(attachment_id: int, findings: list[dict]) -> dict:
         first = context["passages"][0]
         result.update(status="cited", content_id=first["content_id"], version_id=first["version_id"],
                       node_id=first["node_id"], passages=len(context["passages"]),
-                      excerpt=first["text"][:240], guideline_digest=context["guideline_digest"])
+                      excerpt=readable_excerpt(first["text"]), guideline_digest=context["guideline_digest"])
     except LookupError as exc:
         result.update(status="unavailable", reason=str(exc))
     except Exception:
@@ -259,6 +260,9 @@ def cite(attachment_id: int, findings: list[dict]) -> dict:
     try:
         with _db() as con:
             con.executescript(ATTACHMENT_SCHEMA)
+            row = con.execute("select sha256, created_at from attachments where id=?", (attachment_id,)).fetchone()
+            if row:
+                result["attachment_sha256"], result["attachment_created_at"] = row[0], row[1]
             con.execute("insert or replace into attachment_senso values (?,?)",
                         (attachment_id, json.dumps(result, sort_keys=True, ensure_ascii=False)))
     except Exception:
@@ -272,6 +276,38 @@ def citations(attachment_ids) -> dict[int, dict]:
         return {}
     with _db() as con:
         con.executescript(ATTACHMENT_SCHEMA)
-        rows = con.execute("select attachment_id, snapshot from attachment_senso where attachment_id in (%s)"
+        rows = con.execute("select s.attachment_id, s.snapshot, a.sha256, a.created_at from attachment_senso s "
+                           "join attachments a on a.id=s.attachment_id where s.attachment_id in (%s)"
                            % ",".join("?" * len(ids)), ids).fetchall()
-    return {row[0]: json.loads(row[1]) for row in rows}
+    out = {}
+    for attachment_id, snapshot, sha256, created_at in rows:
+        data = json.loads(snapshot)
+        # A citation belongs to one stored file; a reused id must not inherit it.
+        if data.get("attachment_sha256") != sha256 or data.get("attachment_created_at") != created_at:
+            continue
+        if data.get("excerpt"):
+            data["excerpt"] = readable_excerpt(data["excerpt"])
+        out[attachment_id] = data
+    return out
+
+
+_JSON_TEXT = re.compile(r'"(?:title|text|summary|rationale|body|content|description)"\s*:\s*"((?:[^"\\]|\\.)*)"?')
+
+
+def readable_excerpt(text: str, limit: int = 200) -> str:
+    """Turn a chunk of the JSON guideline pack into plain words for display."""
+    text = str(text or "")
+    if re.search(r'["{}\[\]]\s*[:,]|\\"', text):
+        fields = [m.group(1) for m in _JSON_TEXT.finditer(text)]
+        if fields:
+            try:
+                fields = [json.loads(f'"{f}"') for f in fields]
+            except ValueError:
+                pass
+            text = " - ".join(f.strip() for f in fields if f.strip())
+        else:
+            text = re.sub(r'\\[nrt]', " ", text)
+            text = re.sub(r'"?\b[a-z_]+"\s*:\s*', " ", text)
+            text = re.sub(r'[{}\[\]"\\]|(?<=\s),|^\s*,', " ", text)
+    text = re.sub(r"\s+,", ",", re.sub(r"\s+", " ", text)).strip(" ,:")
+    return text if len(text) <= limit else text[:limit - 1].rsplit(" ", 1)[0] + "…"

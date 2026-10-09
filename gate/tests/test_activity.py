@@ -308,6 +308,45 @@ def test_reset_clears_demo_files_but_keeps_rules_and_audit(live):
     assert learning.get_rule(rule["id"])["status"] == "active"
 
 
+def test_reset_clears_senso_citations_so_reused_ids_start_clean(live):
+    from uuid import uuid4
+    from gate import senso_context
+    assert upload(live).status_code == 303
+    finished(live)
+    with store.db() as con:
+        old_id = con.execute("select id from attachments").fetchone()[0]
+    live.monkeypatch.setenv("SENSO_API_KEY", "synthetic-senso-key")
+    live.monkeypatch.setattr(senso_context, "status", lambda: {"content_id": "x", "ready": True})
+    live.monkeypatch.setattr(senso_context, "retrieve", lambda _topic: {"guideline_digest": "d", "passages": [
+        {"text": "OLD CITATION TEXT", "content_id": str(uuid4()), "version_id": str(uuid4()), "node_id": str(uuid4())}]})
+    assert senso_context.cite(old_id, [{"rule": "personal_id"}])["status"] == "cited"
+    assert senso_context.citations([old_id])[old_id]["status"] == "cited"
+    live.monkeypatch.delenv("SENSO_API_KEY")
+    assert live.client.post("/live/reset", follow_redirects=False).status_code == 303
+    with store.db() as con:
+        assert con.execute("select count(*) from attachment_senso").fetchone()[0] == 0
+    assert upload(live).status_code == 303
+    finished(live)
+    with store.db() as con:
+        new_id, pid = con.execute("select id, purchase_id from attachments").fetchone()
+    assert new_id == old_id  # SQLite reuses the id after the reset
+    assert senso_context.citations([new_id]).get(new_id, {}).get("status") != "cited"
+    page = live.client.get(f"/purchase/{pid}").text
+    assert "OLD CITATION TEXT" not in page and "Policy source" not in page
+
+
+def test_senso_citation_is_ignored_when_the_row_behind_the_id_changed(live):
+    from gate import senso_context
+    assert upload(live).status_code == 303
+    finished(live)
+    with store.db() as con:
+        att = con.execute("select id from attachments").fetchone()[0]
+        con.execute(senso_context.ATTACHMENT_SCHEMA.strip())
+        con.execute("insert or replace into attachment_senso values (?,?)", (att, json.dumps(
+            {"status": "cited", "excerpt": "stale", "attachment_sha256": "other", "attachment_created_at": 0})))
+    assert senso_context.citations([att]) == {}
+
+
 def test_reset_refuses_while_a_job_is_running(live):
     entered, release = threading.Event(), threading.Event()
     live.blockers.append(release)

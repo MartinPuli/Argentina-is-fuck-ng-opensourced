@@ -62,3 +62,16 @@ def test_citation_stored_when_senso_returns(stored, monkeypatch):
     assert cited["content_id"] == CONTENT and cited["version_id"] == VERSION
     assert "Personal identifiers" in topics[0]
     assert "synthetic-senso-key" not in str(cited)
+
+
+def test_json_guideline_chunk_reads_as_plain_words():
+    chunk = ('", "title": "Personal ID numbers", "text": "Mask DNI numbers before publishing.\\nKeep them hidden."}, '
+             '{"rule": "x')
+    text = senso_context.readable_excerpt(chunk)
+    assert text == "Personal ID numbers - Mask DNI numbers before publishing. Keep them hidden."
+    assert not any(mark in text for mark in ('"', "{", "}", "\\"))
+    bare = senso_context.readable_excerpt('ers before", "evidence": ["a", "b"], "rule_id": "personal_id"')
+    assert not any(mark in bare for mark in ('"', "{", "}", "[", "]", ": "))
+    assert senso_context.readable_excerpt("Plain guideline text.") == "Plain guideline text."
+    long = senso_context.readable_excerpt('"text": "' + "word " * 100 + '"')
+    assert len(long) <= 200 and long.endswith("…")
