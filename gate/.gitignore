@@ -1,0 +1,4 @@
+.venv/
+gate.db
+.env
+__pycache__/

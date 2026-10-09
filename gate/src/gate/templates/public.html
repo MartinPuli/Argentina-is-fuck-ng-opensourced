@@ -1,0 +1,11 @@
+{% extends "base.html" %}{% block title %}PAMI · Compras{% endblock %}
+{% block header %}<header class="public"><a class="brand" href="/public">PAMI · Buscador de compras <span class="tag">PÚBLICO</span></a><a href="/">Staff side</a></header>{% endblock %}
+{% block body %}<p class="fict">Portal ficticio para la demo. Fictional portal for the demo.</p>
+<h1>Compras de Unidades de Gestión Local</h1>
+<table><tr><th>Procedimiento</th><th>UGL</th><th>Ítem</th><th>Monto</th><th>Documentos</th></tr>
+{% for p in purchases %}{% set s = by_purchase.get(p.id, {'files': [], 'kept': 0, 'pending': 0}) %}
+<tr><td>{{ p.procedure }}</td><td>{{ p.office }}</td><td>{{ p.item }}</td><td>{{ p.amount|money }}</td>
+<td>{% for f in s.files %}<div><a href="/public/file/{{ f.id }}" target="_blank">{{ f.filename }}</a></div>{% endfor %}
+{% if s.kept %}<div class="muted" style="font-size:13px">{{ s.kept }} documento(s) con datos personales o de salud: no se publican (Ley 25.326)</div>{% endif %}
+{% if s.pending %}<div class="muted" style="font-size:13px">{{ s.pending }} en revisión</div>{% endif %}</td></tr>
+{% else %}<tr><td colspan="5" class="muted">Sin compras publicadas.</td></tr>{% endfor %}</table>{% endblock %}

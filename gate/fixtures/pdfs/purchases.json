@@ -1,0 +1,34 @@
+[
+  {
+    "office": "UGL XXIII Jujuy",
+    "procedure": "Compulsa abreviada 1042/2026",
+    "item": "Silla de ruedas motorizada",
+    "amount": 4850000,
+    "files": [
+      "especificacion_tecnica_silla.pdf",
+      "justificacion_medica.pdf",
+      "dni_escaneado.pdf",
+      "certificado_discapacidad.pdf",
+      "cotizacion_proveedor.pdf"
+    ]
+  },
+  {
+    "office": "UGL XXX Chivilcoy",
+    "procedure": "Compulsa abreviada 1057/2026",
+    "item": "Prótesis transfemoral",
+    "amount": 9200000,
+    "files": [
+      "especificacion_protesis.pdf",
+      "radiografia_muñon.pdf"
+    ]
+  },
+  {
+    "office": "UGL XIX Misiones",
+    "procedure": "Compulsa abreviada 1063/2026",
+    "item": "Cama ortopédica articulada",
+    "amount": 2100000,
+    "files": [
+      "especificacion_cama.pdf"
+    ]
+  }
+]
