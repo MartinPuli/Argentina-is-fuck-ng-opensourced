@@ -829,6 +829,28 @@ def demo_seed(user: str = Depends(staff)):
     return RedirectResponse(f"/purchase/{first}", status_code=303)
 
 
+def purchase_status(pid: int) -> dict:
+    """Staff-only change token; never return document text or provider responses."""
+    jobs = [job for job in activity.snapshot() if job["purchase_id"] == pid and not job["done"]]
+    with db() as con:
+        if not con.execute("select 1 from purchases where id=?", (pid,)).fetchone():
+            raise HTTPException(404)
+        rows = con.execute("select id,decision,manifest,verifier,clearance,reviewed_at,reasons "
+                           "from attachments where purchase_id=? order by id", (pid,)).fetchall()
+    ids = {job["attachment_id"] for job in jobs if job["attachment_id"] is not None}
+    with _PENDING_LOCK:
+        ids.update(row["id"] for row in rows if _PENDING.get(row["id"]))
+    state = {"processing": bool(jobs or ids), "processing_ids": sorted(ids)}
+    token = json.dumps({"files": [dict(row) for row in rows], "state": state,
+                        "rules": learning.revision()}, sort_keys=True)
+    return {**state, "revision": hashlib.sha256(token.encode()).hexdigest()}
+
+
+@app.get("/api/purchase/{pid}/status")
+def api_purchase_status(pid: int, user: str = Depends(staff)):
+    return JSONResponse(purchase_status(pid), headers={"Cache-Control": "no-store"})
+
+
 @app.get("/purchase/{pid}")
 def purchase_view(request: Request, pid: int, user: str = Depends(staff)):
     with db() as con:
@@ -837,7 +859,7 @@ def purchase_view(request: Request, pid: int, user: str = Depends(staff)):
             raise HTTPException(404)
         atts = con.execute("select * from attachments where purchase_id=? order by id", (pid,)).fetchall()
     return page(request, "purchase.html", purchase=purchase, atts=atts,
-                senso=senso_context.citations(a["id"] for a in atts),
+                senso=senso_context.citations(a["id"] for a in atts), progress=purchase_status(pid),
                 stale_ids={a["id"] for a in atts if not learning.current(a["id"])})
 
 

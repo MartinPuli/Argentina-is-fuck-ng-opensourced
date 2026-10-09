@@ -49,3 +49,6 @@ No animation added; static drag and loading feedback.
 
 ## 7. Open questions
 None blocking; metadata approval and scanned metadata extraction deferred explicitly.
+
+## Phase 2 follow-up: asynchronous result feedback
+The user's successful upload appeared blocked while clearance agents were running. Show Processing until the live job ends, automatically refresh the authenticated purchase result on a bounded change token, and refresh the document list when the activity outcome changes. No schema or publication-authority changes. The status endpoint returns only processing IDs and an opaque revision hash, never raw model or PDF content. Handle authentication/network failures without claiming completion. Restore page-wide drop on the unified workspace, revealing the shared intake only after a drop so errors and retry remain visible without a duplicate initial upload entry point.

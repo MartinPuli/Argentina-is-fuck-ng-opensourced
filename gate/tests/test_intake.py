@@ -77,5 +77,42 @@ def test_no_javascript_upload_and_sample_access(web):
     response = web.client.post('/documents/upload', files={"files": ('test.pdf', sample.content)}, follow_redirects=False)
     assert response.status_code == 303 and response.headers['location'] == '/live'
     assert 'data-pdf-intake' in web.client.get('/office').text
-    for path in ['/', '/live']:  # Upload lives behind the main page's button only.
-        assert 'class="pdf-intake"' not in web.client.get(path).text
+    for path in ['/', '/live']:  # Home drop is enabled without a second visible upload entry point.
+        assert 'data-workspace-intake hidden' in web.client.get(path).text
+
+
+def test_purchase_progress_is_authenticated_and_tracks_completion(web):
+    synchronous_queue(web)
+    response = web.client.post('/documents/upload', files={"files": ('test.pdf', SAMPLE.read_bytes())},
+                               headers={"Accept": "application/json"})
+    pid = response.json()['purchase_id']
+    with web.store.db() as con:
+        ident = con.execute('select id from attachments where purchase_id=?', (pid,)).fetchone()[0]
+    job = {'purchase_id': pid, 'attachment_id': ident, 'done': False}
+    web.monkeypatch.setattr(web.app.activity, 'snapshot', lambda: [job])
+    url = f'/api/purchase/{pid}/status'
+    assert web.anonymous.get(url).status_code == 401
+    pending = web.client.get(url)
+    assert pending.headers['cache-control'] == 'no-store'
+    assert set(pending.json()) == {'processing', 'processing_ids', 'revision'}
+    assert pending.json()['processing_ids'] == [ident]
+    page = web.client.get(f'/purchase/{pid}')
+    assert 'Processing' in page.text and 'not the final result' in page.text
+    assert '<title>Purchase decisions</title>' in page.text
+    assert pending.json()['revision'] == web.client.get(url).json()['revision']
+    job['done'] = True
+    finished = web.client.get(url).json()
+    assert not finished['processing'] and finished['processing_ids'] == []
+    assert pending.json()['revision'] != finished['revision']
+    assert web.client.get('/api/purchase/999999/status').status_code == 404
+
+
+def test_queued_purchase_progress_changes_when_worker_finishes(web):
+    purchase = web.app.create_purchase('Test office', 'QA-STATUS', 'Office chairs', None)
+    job = {'purchase_id': purchase['id'], 'attachment_id': None, 'done': False}
+    web.monkeypatch.setattr(web.app.activity, 'snapshot', lambda: [job])
+    pending = web.app.purchase_status(purchase['id'])
+    assert pending['processing'] and pending['processing_ids'] == []
+    assert web.client.get(f'/purchase/{purchase["id"]}').status_code == 200
+    job['done'] = True
+    assert web.app.purchase_status(purchase['id'])['revision'] != pending['revision']

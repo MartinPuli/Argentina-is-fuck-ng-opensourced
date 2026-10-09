@@ -43,6 +43,11 @@ function WorkspaceApp() {
     void load(controller.signal);
     return () => { window.clearTimeout(timeout); controller.abort(); };
   }, [load]);
+  useEffect(() => {
+    const refresh = () => { void load(); };
+    window.addEventListener('gate:workspace-changed', refresh);
+    return () => window.removeEventListener('gate:workspace-changed', refresh);
+  }, [load]);
   const documents = useMemo(() => {
     const term = query.trim().toLocaleLowerCase();
     const rows = (data?.files ?? []).filter(file =>

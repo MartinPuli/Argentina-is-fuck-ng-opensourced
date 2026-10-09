@@ -16,6 +16,7 @@
   };
   async function submit(selected) {
     if (busy || !selected.length) return;
+    form.closest('[data-workspace-intake]')?.removeAttribute('hidden');
     files = Array.from(selected);
     selection.textContent = files.map(file => file.name).join(' · ');
     retry.hidden = true;

@@ -192,6 +192,7 @@
 <form class="rs" method="post" action="/live/reset" onsubmit="return confirm('Clear all files and purchases? Rules and audit history stay.')"><button type="submit" class="ws-btn ghost">Reset</button></form>
 </div>
 </div>
+<div data-workspace-intake hidden>{% include "intake.html" %}</div>
 <dl class="ws-stats" id="live-gate-node">
 <div class="ws-stat"><dt><span class="ws-dot" id="live-state-mark"></span>Checking</dt><dd id="live-count-processing">0</dd></div>
 <div class="ws-stat"><dt><span class="ws-dot ok"></span>Published</dt><dd id="live-count-published">—</dd></div>
@@ -369,7 +370,7 @@
       const heading = element('div', 'jh');
       const name = element('div');
       name.append(element('h3', '', job.file || 'PDF attachment'), element('span', 'jo', job.office));
-      const decision = Object.hasOwn(labels, job.decision) ? job.decision : null;
+      const decision = job.done && Object.hasOwn(labels, job.decision) ? job.decision : null;
       heading.append(name, element('span', 'st st-' + (decision || (job.done ? 'hold' : 'run')), decision ? labels[decision] : job.done ? 'Check finished' : 'Checking'));
       const steps = element('ul', 'live-steps');
       for (const step of Array.isArray(job.steps) ? job.steps : []) {
@@ -386,7 +387,7 @@
         detail.append(element('summary', '', 'Trace'), timeline);
         card.append(detail);
       }
-      if (job.why) card.append(element('p', '', job.why));
+      if (job.done && job.why) card.append(element('p', '', job.why));
       if (job.stale) card.append(element('p', 'live-error', 'An earlier decision is no longer current. Recheck this file before public access.'));
       const links = element('div', 'live-job-links');
       const purchaseId = numericId(job.purchase_id);
@@ -460,6 +461,7 @@
     if (!seen.size) waitingElement.replaceChildren();
     document.getElementById('ws-waiting').hidden = !seen.size;
   }
+  let workspaceState = null;
   function render(data) {
     if (!data || !Array.isArray(data.jobs) || !Array.isArray(data.waiting) || !data.counts) throw new Error('The activity feed returned an unexpected response.');
     const counts = data.counts;
@@ -475,6 +477,11 @@
     document.getElementById('ws-empty').textContent = count(counts.published) + count(counts.blocked) + count(counts.waiting) ? 'Agents are idle. Load demo files to watch them work.' : 'No files yet. Load demo files to watch the agents work.';
     document.getElementById('ws-activity-grid').hidden = idle;
     document.getElementById('document-workspace').classList.toggle('ws-none', idle);
+    const nextWorkspaceState = JSON.stringify([data.counts, data.jobs.map(job => [job.attachment_id, job.decision, job.done])]);
+    if (nextWorkspaceState !== workspaceState) {
+      workspaceState = nextWorkspaceState;
+      window.dispatchEvent(new Event('gate:workspace-changed'));
+    }
     renderJobs(data.jobs); renderWaiting(data.waiting);
     if (Array.isArray(data.feed)) renderFeed(data.feed);
     jobsElement.setAttribute('aria-busy', 'false'); waitingElement.setAttribute('aria-busy', 'false');

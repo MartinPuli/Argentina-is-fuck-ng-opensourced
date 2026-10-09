@@ -57,7 +57,7 @@ test(`an inspected benign PDF publishes with exact bytes via ${reviewPage}`, asy
   await panel.getByRole('heading', filename).tap();
   await panel.getByLabel('Decision reason').fill('Inspected fictional equipment specification; no patient data.');
   const unsubscribe = await browser.onDialog('accept');
-  await panel.getByRole('button', reviewPage === '/review' ? 'Publish original' : 'Approve publication ↗').tap();
+  await panel.getByRole('button', reviewPage === '/review' ? 'Publish original' : 'Approve publication').tap();
   if (reviewPage === '/review') {
     await expect(screen.getByRole('cell', 'Inspected fictional equipment specification; no patient data.')).toBeVisible();
   } else {
