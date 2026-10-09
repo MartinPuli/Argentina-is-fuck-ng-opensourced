@@ -24,6 +24,7 @@ Read the **[complete report](REPORT.md)** for the connected explanation, or choo
 | [Consequences](docs/CONSEQUENCES.md) | Documented harm and plausible risks to citizens, the economy and government. |
 | [Patterns and priorities](docs/PATTERNS-AND-PRIORITIES.md) | What happens after disclosure and practical ways to reduce harm. |
 | [Source index](docs/SOURCES.md) | Deduplicated links to the report's source material. |
+| [PAMI contribution review](docs/research/PAMI-CONTRIBUTION-REVIEW.md) | Review of the newly contributed PAMI analysis, citation corrections and implications for the defense. |
 
 ## From research to a defense
 
@@ -31,13 +32,19 @@ Read the **[complete report](REPORT.md)** for the connected explanation, or choo
 |---|---|
 | [What to build](docs/research/WHAT-TO-BUILD.md) | Plain-English architecture, how past incidents become reusable tests, development order and remaining work. |
 | [Measured effects](docs/research/MEASURED-EFFECTS.md) | Actual local HTTP results, the records exposed before containment, and the cost to legitimate use. |
-| [Search coverage](docs/research/SEARCH-PROTOCOL.md) | 1,378 parsed venue entries, 177 keyword matches and 27 selected paper records; substantial reading remains unfinished. |
+| [Search coverage](docs/research/SEARCH-PROTOCOL.md) | 32 selected paper records; separate discovery ledgers contain 1,378 initial and 986 additional title entries, not globally deduplicated. |
 | [Autonomous defense and repair](docs/research/AUTONOMOUS-DEFENSE-PAPERS.md) | Eight selected papers, with versions, evaluation definitions and limitations. |
 | [Agent safety](docs/research/AGENT-SAFETY-PAPERS.md) | Nine selected papers on untrusted evidence, permissions and trustworthy evaluation. |
 | [Learning from incidents](docs/research/LEAK-LEARNING-PAPERS.md) | Five studies on incident context, feedback, shared learning and the gap between scores and enforcement. |
 | [Threat intelligence and evidence integrity](docs/research/THREAT-INTELLIGENCE-PAPERS.md) | Five studies on behavior, log integrity, stolen-data circulation and credential remediation. |
+| [Access control and exposure](docs/research/ACCESS-AND-EXPOSURE-PAPERS.md) | Five further studies on permission chains, effective access and confidentiality limits. |
+| [Other countries](docs/research/COUNTRY-PRECEDENTS.md) | Government-confirmed programs, historical deployments and lessons for Argentina. |
+| [Competitive comparison](competitor-profiles/_summary.md) | Existing commercial capabilities, open-source response building blocks and honest positioning. |
+| [Sandbox architecture](docs/research/SANDBOX-ARCHITECTURE.md) | Firecracker, gVisor, Kata and E2B; separate repair, rehearsal and verification jobs. |
+| [Additional paper discovery](docs/research/ADDITIONAL-DISCOVERY.md) | Broader metadata coverage and 18 unread or abstract-screened candidates. |
 | [Hackathon fit](docs/HACKATHON-FIT.md) and [event brief](docs/EVENT-BRIEF.md) | Planned challenge fit, required integrations and evidence still needed. |
 | [Runnable reference experiment](experiments/reference-defense/README.md) | Standard-library Python, four control modes, response transcripts and additional independently specified cases. |
+| [Publication regression experiment](experiments/publication-regression/README.md) | Real local HTTP checks of stale artifacts, approved releases and a deliberate misclassification failure. |
 
 The paper reviews read relevant full-text methods, results and limitations; they are neither an exhaustive literature review nor independent reproductions of those studies. The experiment contains no AI agent or sponsor calls, and does not test government infrastructure.
 

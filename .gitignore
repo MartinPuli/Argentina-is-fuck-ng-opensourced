@@ -9,3 +9,5 @@
 node_modules/
 .venv/
 __pycache__/
+# Local research cache: third-party source text is not redistributed.
+competitor-profiles/raw/

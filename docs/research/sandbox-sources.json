@@ -1,0 +1,152 @@
+{
+  "schema_version": 1,
+  "review_date": "2026-10-09",
+  "narrative_file": "SANDBOX-ARCHITECTURE.md",
+  "scope": "Official sandbox documentation; architecture research only",
+  "records": [
+    {
+      "id": "S1",
+      "title": "Firecracker \u2014 Production Host Setup Recommendations",
+      "url": "https://github.com/firecracker-microvm/firecracker/blob/main/docs/prod-host-setup.md",
+      "version": "main; commit not pinned",
+      "publication_date": null,
+      "locators": [
+        "Opening paragraphs",
+        "Firecracker Configuration / Seccomp",
+        "Jailer",
+        "Filtering Guest Egress Network Traffic",
+        "Mitigating hardware vulnerabilities"
+      ],
+      "reading_depth": "Relevant full documentation sections",
+      "type": "official project documentation",
+      "accessed_date": "2026-10-09",
+      "count_as_reviewed_paper": false,
+      "runtime_test_performed": false
+    },
+    {
+      "id": "S2",
+      "title": "gVisor \u2014 Security Model",
+      "url": "https://gvisor.dev/docs/architecture_guide/security/",
+      "version": "current unversioned documentation",
+      "publication_date": null,
+      "locators": [
+        "Other Vectors",
+        "Goals: Limiting Exposure",
+        "What can a sandbox do?",
+        "System ABI, Side Channels and Other Vectors",
+        "Principles: Defense-in-Depth"
+      ],
+      "reading_depth": "Relevant full documentation sections",
+      "type": "official project documentation",
+      "accessed_date": "2026-10-09",
+      "count_as_reviewed_paper": false,
+      "runtime_test_performed": false
+    },
+    {
+      "id": "S3",
+      "title": "gVisor \u2014 Docker Quick Start",
+      "url": "https://gvisor.dev/docs/user_guide/quick_start/docker/",
+      "version": "current unversioned documentation",
+      "publication_date": null,
+      "locators": [
+        "Configuring Docker",
+        "Verify the runtime"
+      ],
+      "reading_depth": "Full guide",
+      "type": "official project documentation",
+      "accessed_date": "2026-10-09",
+      "count_as_reviewed_paper": false,
+      "runtime_test_performed": false
+    },
+    {
+      "id": "S4",
+      "title": "Kata Containers \u2014 Architecture",
+      "url": "https://github.com/kata-containers/kata-containers/blob/main/docs/design/architecture/README.md",
+      "version": "main; commit not pinned",
+      "publication_date": null,
+      "locators": [
+        "Compatibility",
+        "Shim v2 architecture",
+        "Container creation",
+        "Hypervisor",
+        "Agent",
+        "Runtime",
+        "Process overview",
+        "Kubernetes support / OCI annotations"
+      ],
+      "reading_depth": "Relevant full documentation sections",
+      "type": "official project documentation",
+      "accessed_date": "2026-10-09",
+      "count_as_reviewed_paper": false,
+      "runtime_test_performed": false
+    },
+    {
+      "id": "S5",
+      "title": "E2B \u2014 Enterprise",
+      "url": "https://e2b.dev/enterprise",
+      "version": "current unversioned page",
+      "publication_date": null,
+      "locators": [
+        "Untrusted code. Its own kernel.",
+        "Compare deployment options",
+        "Shared security controls"
+      ],
+      "reading_depth": "Deployment and control tables",
+      "type": "official vendor claims; no independent test",
+      "accessed_date": "2026-10-09",
+      "count_as_reviewed_paper": false,
+      "runtime_test_performed": false
+    },
+    {
+      "id": "S6",
+      "title": "E2B \u2014 Python SDK Sandbox Sync",
+      "url": "https://docs.e2b.dev/sdk-reference/python-sdk/v2.5.0/sandbox_sync",
+      "version": "Python SDK 2.5.0",
+      "publication_date": null,
+      "locators": [
+        "Sandbox.create signature and arguments"
+      ],
+      "reading_depth": "Relevant API entry",
+      "type": "official versioned SDK documentation",
+      "accessed_date": "2026-10-09",
+      "count_as_reviewed_paper": false,
+      "runtime_test_performed": false
+    },
+    {
+      "id": "S7",
+      "title": "Introducing E2B Secrets",
+      "url": "https://e2b.dev/resources/introducing-e2b-secrets",
+      "version": "announcement dated 2026-10-07",
+      "publication_date": "2026-10-07",
+      "locators": [
+        "Opening environment-variable warning",
+        "How it works",
+        "Keep control of your secrets",
+        "Try it, and help shape what comes next"
+      ],
+      "reading_depth": "Full announcement",
+      "type": "official vendor announcement; no independent test",
+      "accessed_date": "2026-10-09",
+      "count_as_reviewed_paper": false,
+      "runtime_test_performed": false
+    },
+    {
+      "id": "S8",
+      "title": "Docker Engine security",
+      "url": "https://docs.docker.com/engine/security/",
+      "version": "current unversioned documentation",
+      "publication_date": null,
+      "locators": [
+        "Kernel namespaces",
+        "Control groups",
+        "Docker daemon attack surface",
+        "Linux kernel capabilities"
+      ],
+      "reading_depth": "Relevant full documentation sections",
+      "type": "official project documentation",
+      "accessed_date": "2026-10-09",
+      "count_as_reviewed_paper": false,
+      "runtime_test_performed": false
+    }
+  ]
+}

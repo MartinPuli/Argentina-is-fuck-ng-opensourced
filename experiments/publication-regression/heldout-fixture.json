@@ -1,0 +1,11 @@
+{
+  "case_id": "changed-application-predeclared-variation",
+  "fictional_data": true,
+  "sources": [
+    {"id":"catalog-summary-new","source_path":"catalog/summary.source","classification":"public","content":"PUBLIC FICTIONAL PROCUREMENT SUMMARY for changed application Z; safe to publish.\n","artifact_paths":["summaries/2027/update.txt"]},
+    {"id":"catalog-result-new","source_path":"catalog/result.source","classification":"public","content":"{\"result\":\"FICTIONAL PUBLIC CATALOG RESULT Z\"}\n","artifact_paths":["api/assets/summary.json"]},
+    {"id":"catalog-notice-new","source_path":"catalog/notice.source","classification":"public","content":"PUBLIC FICTIONAL NOTICE Z: publication workflow remains available.\n","artifact_paths":["public/new-notice.md"]},
+    {"id":"audit-annex-new","source_path":"audit/appendix.source","classification":"private","content":"PRIVATE_SYNTHETIC_OMEGA_42\nUNSEEN-FIXTURE-PAYLOAD-Z: entirely fictional confidential attachment.\n","private_marker":"PRIVATE_SYNTHETIC_OMEGA_42","artifact_paths":["render-cache/q4/auxiliary.woff2","resources/annex/final.txt"]},
+    {"id":"audit-supplement-new","source_path":"audit/supplement.source","classification":"private","content":"PRIVATE_SYNTHETIC_DELTA_86\nFICTIONAL newly shaped supplementary attachment.\n","private_marker":"PRIVATE_SYNTHETIC_DELTA_86","artifact_paths":["icons/supply.svg","attachments/x.unknown"]}
+  ]
+}

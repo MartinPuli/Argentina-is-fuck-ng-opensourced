@@ -1,0 +1,275 @@
+{
+  "schema_version": 1,
+  "reviewed_on": "2026-10-09",
+  "window": {
+    "from": "2025-10-09",
+    "through": "2026-10-09"
+  },
+  "exhaustive": false,
+  "independently_reproduced": false,
+  "narrative_file": "ACCESS-AND-EXPOSURE-PAPERS.md",
+  "reading_depth": "Targeted full-text methods/results/threat-model/limitations.",
+  "scope": "Five additional authorization papers; no duplicate prior reviews.",
+  "access_boundary": "Scholarly sources only; no leaked records, victim files, or credential validation.",
+  "records": [
+    {
+      "id": "AE01",
+      "title": "Plaintext Recovery Against Post-Filtering Access Control",
+      "authors": [
+        "Zachary Espiritu",
+        "David Cash"
+      ],
+      "venue": "USENIX Security 2026",
+      "status": "proceedings",
+      "publication_date": "2026-08",
+      "first_preprint_date": "2026-08-12",
+      "version_reviewed": "Official proceedings PDF; expanded arXiv v1 not substituted",
+      "url": "https://www.usenix.org/conference/usenixsecurity26/presentation/espiritu",
+      "full_text_url": "https://www.usenix.org/system/files/usenixsecurity26-espiritu.pdf",
+      "history_url": "https://arxiv.org/abs/2608.11730",
+      "reading_depth": "full_text_targeted",
+      "method": "Post-filtering leakage; conditional index/policy mitigation",
+      "metrics": [
+        {
+          "name": "tuple_reconstruction",
+          "reported_recall_percent": 100,
+          "reported_precision_percent": 100,
+          "target_rows": 100000,
+          "repetitions": 3,
+          "queries_mean": 14300000,
+          "hours_mean": 1.3,
+          "hours_95ci_half_width": 0.3,
+          "ordering": "ssn → zip → age",
+          "locator": "§3.3/Table4, PDF p10",
+          "environment": "PostgreSQL18.1; synthetic hospital schema; GCE"
+        }
+      ],
+      "limitations": [
+        "Expressive SELECT access",
+        "Cache-resident experiment",
+        "Policy-specific mitigation"
+      ],
+      "implication": "Check query-plan isolation alongside denied-result tests.",
+      "locators": [
+        "§2 PDF pp3–4",
+        "§3.3 PDF pp7–10",
+        "§3.4/Table5 PDF pp10–11",
+        "§3.5 PDF p11"
+      ],
+      "prevention_evidence": "Conditional mitigation microbenchmark; no production outcome study."
+    },
+    {
+      "id": "AE02",
+      "title": "eMicro: Real-Time Multi-Hop Access Control for Microservices with eBPF",
+      "authors": [
+        "Rizky Ramadhana Putra",
+        "Osama Bajaber",
+        "Saimon Amanuel Tsegai",
+        "Teryl Taylor",
+        "Frederico Araujo",
+        "Yuede Ji",
+        "Peng Gao"
+      ],
+      "venue": "ACM CCS 2026",
+      "status": "accepted; conference forthcoming at cutoff",
+      "publication_date": "2026-08-05",
+      "first_preprint_date": "2026-08-05",
+      "version_reviewed": "arXiv:2608.05300v1",
+      "version_date": "2026-08-05",
+      "conference_dates": "2026-11-15–2026-11-19",
+      "url": "https://arxiv.org/abs/2608.05300",
+      "full_text_url": "https://arxiv.org/html/2608.05300v1",
+      "venue_url": "https://www.sigsac.org/ccs/CCS2026/program/accepted-papers.html",
+      "reading_depth": "full_text_targeted",
+      "method": "History policies; DFA; kernel enforcement",
+      "metrics": [
+        {
+          "name": "selected_attack_classes_blocked",
+          "numerator": 3,
+          "denominator": 3,
+          "network_settings": 8,
+          "network_settings_composition": "4 network configurations × 2 WAN conditions",
+          "raw_malicious_request_denominator": null,
+          "locator": "§6.1/Fig6"
+        }
+      ],
+      "limitations": [
+        "Trusted kernel/runtime",
+        "Queue/storage context propagation",
+        "Multiplexed request identity"
+      ],
+      "implication": "Test end-to-end workflow authorization and policy-update failures.",
+      "locators": [
+        "§2.4",
+        "§4.1–4.3",
+        "§6.1/Fig6",
+        "§6.5",
+        "§7"
+      ],
+      "prevention_evidence": "Controlled prevention experiment; traces assess scalability."
+    },
+    {
+      "id": "AE03",
+      "title": "The Dark Side of Flexibility: Detecting Risky Permission Chaining Attacks in Serverless Applications",
+      "authors": [
+        "Xunqi Liu",
+        "Nanzi Yang",
+        "Chang Li",
+        "Jinku Li",
+        "Jianfeng Ma",
+        "Kangjie Lu"
+      ],
+      "venue": "NDSS 2026",
+      "status": "proceedings",
+      "publication_date": "2026-02",
+      "first_preprint_date": null,
+      "first_preprint_note": "Not established",
+      "version_reviewed": "Official NDSS proceedings PDF",
+      "doi": "10.14722/ndss.2026.230819",
+      "url": "https://www.ndss-symposium.org/ndss-paper/the-dark-side-of-flexibility-detecting-risky-permission-chaining-attacks-in-serverless-applications/",
+      "full_text_url": "https://www.ndss-symposium.org/wp-content/uploads/2026-s819-paper.pdf",
+      "reading_depth": "full_text_targeted",
+      "method": "Permission-chain reasoning over deployed roles/resources",
+      "metrics": [
+        {
+          "name": "applications_flagged",
+          "numerator": 28,
+          "denominator": 363,
+          "derived_total": true,
+          "aws": {
+            "flagged": 26,
+            "selected": 308,
+            "confirmed": 10
+          },
+          "alibaba": {
+            "flagged": 2,
+            "selected": 55,
+            "confirmed": 2
+          },
+          "locator": "§V-A–B/TableII, PDF p10"
+        },
+        {
+          "name": "vendor_confirmed_flagged_apps",
+          "numerator": 12,
+          "denominator": 28,
+          "derived_total": true,
+          "locator": "TableII"
+        }
+      ],
+      "limitations": [
+        "Selection bias",
+        "No complete ground truth",
+        "Initial function compromise"
+      ],
+      "implication": "Evaluate indirect privilege paths before accepting containment.",
+      "locators": [
+        "§III-A PDF pp4–5",
+        "§IV PDF pp6–10",
+        "§V-A–B/TableII PDF p10",
+        "§VI PDF pp12–13"
+      ],
+      "prevention_evidence": "Discovery/disclosure; mitigation suggestions."
+    },
+    {
+      "id": "AE04",
+      "title": "Raising the Flag: Detecting Missing Permission Controls in Mini-Program APIs",
+      "authors": [
+        "Zhiao Wei",
+        "Chao Wang",
+        "Haseeb-Ur-Rehman Faheem",
+        "Luyi Xing",
+        "Yousra Aafer",
+        "Zhiqiang Lin"
+      ],
+      "venue": "USENIX Security 2026",
+      "status": "proceedings",
+      "publication_date": "2026-08",
+      "first_preprint_date": null,
+      "first_preprint_note": "Not established",
+      "version_reviewed": "Official USENIX proceedings PDF",
+      "url": "https://www.usenix.org/conference/usenixsecurity26/presentation/wei-zhiao",
+      "full_text_url": "https://www.usenix.org/system/files/usenixsecurity26-wei-zhiao.pdf",
+      "reading_depth": "full_text_targeted",
+      "method": "Static mapping; generated tests; runtime tracing",
+      "metrics": [
+        {
+          "name": "protected_resource_apis_with_scope_gaps",
+          "numerator": 183,
+          "denominator": 258,
+          "total_tested_apis": 2067,
+          "platforms": 4,
+          "locator": "§6.1/Table4 PDF p10; §6.2/Table5 PDF p11"
+        }
+      ],
+      "limitations": [
+        "Four Android super-apps",
+        "Semantic scope categories",
+        "Trusted host runtime"
+      ],
+      "implication": "Compare inherited runtime capabilities with approved child scopes.",
+      "locators": [
+        "§3.2–3.5 PDF pp5–6",
+        "§4–5 PDF pp6–9",
+        "§6/Tables4–5 PDF pp10–11",
+        "§7 PDF pp14–15"
+      ],
+      "prevention_evidence": "Detection; permission synthesizer left unimplemented."
+    },
+    {
+      "id": "AE05",
+      "title": "Prezta: Provable Remote Execution of Zero-Trust Authorization using SNARKs",
+      "authors": [
+        "Zhongjing Wei",
+        "Osaid Muhammad Ameer",
+        "Yupeng Zhang",
+        "Nikita Borisov"
+      ],
+      "venue": "USENIX Security 2026",
+      "status": "proceedings",
+      "publication_date": "2026-08",
+      "first_preprint_date": "2026-07-13",
+      "latest_preprint_date": "2026-07-27",
+      "latest_preprint_version": "arXiv:2607.11466v2",
+      "version_reviewed": "Official USENIX proceedings PDF",
+      "url": "https://www.usenix.org/conference/usenixsecurity26/presentation/wei-zhongjing",
+      "full_text_url": "https://www.usenix.org/system/files/usenixsecurity26-wei-zhongjing.pdf",
+      "history_url": "https://arxiv.org/abs/2607.11466",
+      "reading_depth": "full_text_targeted",
+      "method": "Signed policy; zkVM proof; trusted input binding",
+      "metrics": [
+        {
+          "name": "supported_conformance_tests_passed",
+          "numerator": 323,
+          "denominator": 323,
+          "testable_suite_cases": 389,
+          "original_suite_cases": 397,
+          "locator": "§4.1.5 PDF pp9–10"
+        },
+        {
+          "name": "proof_generation_seconds_approximate",
+          "clusters": [
+            14,
+            28
+          ],
+          "evaluated_policies": 323,
+          "repetitions": null,
+          "locator": "§5.1/Fig4 PDF pp12–13",
+          "environment": "RISC Zero3.0.3; AWS c7i.4xlarge"
+        }
+      ],
+      "limitations": [
+        "Unsupported policy features",
+        "Input authenticity",
+        "Revocation extension unmeasured"
+      ],
+      "implication": "Bind verdicts to actual inputs and fresh policy.",
+      "locators": [
+        "§3 PDF pp4–7",
+        "§4.1.5–4.2/Table1 PDF pp9–10",
+        "§5.1/Fig4 PDF pp12–13",
+        "§6.1 PDF p14"
+      ],
+      "prevention_evidence": "Authorization prototype; policy correctness remains external."
+    }
+  ]
+}

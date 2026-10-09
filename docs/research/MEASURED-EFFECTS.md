@@ -61,3 +61,10 @@ For Argentina, these results demonstrate a mechanism that could limit **addition
 4. Compare the agent against the deterministic baseline, including incorrect interventions, preserved legitimate work, cost and repair quality.
 5. Turn a reviewed incident into a new test, evaluate unseen variations with and without that lesson, then show narrowly scoped transfer to another service.
 6. Add separate acceptance scenarios for employee misuse, public attachments and recipient exports before claiming broader coverage of the Argentina report.
+# Additional publication-boundary experiment
+
+The [publication regression experiment](../../experiments/publication-regression/README.md) addresses a separate leak mechanism: private attachments accidentally becoming public files. Its main run passed 45 assertions. Both tested layouts exposed four private-content responses before the gate, including after a source-only fix; fresh approved releases exposed none while preserving the expected public content.
+
+An independently specified fixture then checked 36 actual HTTP responses and passed 52 byte-level assertions. Its approved release preserved four public responses and exposed no private marker. A deliberate false “public” classification still leaked private bytes. Thus exact artifact checking works only within its classification assumptions; it does not establish automatic understanding of medical documents.
+
+All traffic was loopback, records were fictional, and no sandbox escape, government host, AI repair, sponsor integration or public deployment was tested. See the linked protocol and persisted observations for denominators and limitations.

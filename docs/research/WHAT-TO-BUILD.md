@@ -10,6 +10,45 @@ Small connectors observe each enrolled service. A coordinator combines those obs
 
 The useful memory is a library of tested failure patterns. After a confirmed incident, the system gains a new check that can be applied to other relevant services. It does not gain unrestricted permission to modify those services or treat every similar incident as already proven.
 
+## Refined proposal after the country and competitor research
+
+**BREACHSTOP turns a documented leak mechanism into a repeatable defense test, rehearses a repair in an isolated copy, and checks the actual deployed outcome.** Keep application compromise and credential misuse as the main demonstration. Publication mistakes remain a separate module.
+
+The [competitive review](../../competitor-profiles/_summary.md) found established products for simulation, coordinated AI workflows and remediation revalidation. Our proposed contribution is a small open-source implementation with inspectable evidence and tests. We have not demonstrated a unique market gap or superiority over those products.
+
+The [country precedents](COUNTRY-PRECEDENTS.md) suggest adopting explicit institutional identities, independently enforced data access and a clear path from discovery to repair. They do not establish that any government eliminated leaks.
+
+### What the sandbox adds
+
+A **sandbox** is a disposable execution environment whose files, network access and resources are restricted. Build a small replica of the enrolled service from its source, dependencies and relevant configuration, replacing private data and secrets with fictional equivalents. It is a partial test environment, not a perfect digital copy of an institution.
+
+Use three separately controlled jobs: patch preparation, baseline/candidate rehearsal, and independent outcome verification. The repair agent must not change the checker or its dependencies. A fourth trusted controller owns live containment and any later release; its credentials stay outside those jobs. See the [runtime comparison and concrete boundaries](SANDBOX-ARCHITECTURE.md).
+
+| Stage | Concrete operation | Evidence required |
+|---|---|---|
+| Reproduce | Run the supported failure mechanism against the isolated baseline. | Actual unauthorized response bytes or records, plus source and configuration versions. |
+| Prepare | Agent proposes the smallest repair allowed by the service contract. | Diff and scanner output; no changes to approved permissions or trusted tests. |
+| Rehearse | Build a fresh candidate and repeat the failure and valid workflows. | Failure blocked, valid operations preserved, and any service interruption measured. |
+| Contain | Separate controller disables confirmed compromised access under preapproved policy. | Requests using that old identity fail at the real enforcement point. |
+| Release | Trusted executor promotes only the exact verified artifact to the owned demo service. | Artifact hash, deployed revision and an independent external check. |
+| Remember | Save the approved mechanism and regression test for applicable services. | Source confidence, applicability, owner, policy version and held-out test results. |
+
+Containment may happen before repair rehearsal finishes. These stages express responsibilities, not a requirement to wait while data continues escaping.
+
+### What it must stop, and where
+
+The demo must prevent a compromised application from bypassing the data gateway. Give it no direct database route, administrative credential or permission to broaden its own role. Revoke the identity at a separately protected enforcement point. A compromised process can still misuse records it was legitimately allowed to read before containment; the design reduces scope and duration, rather than promising zero initial exposure.
+
+The newest [access-control research](ACCESS-AND-EXPOSURE-PAPERS.md) adds four checks: indirect permission chains, overly powerful child components, stale permissions after revocation, and information visible through query behavior despite empty results. Use those as explicit regression cases. A single denied HTTP response is not proof that every path is closed.
+
+For a real host takeover, recover from a trusted image and replace affected credentials. Restoring one source file does not establish that the operating system is clean. This host-recovery extension is not implemented by the current application experiments.
+
+### A stronger demo moment
+
+Show the same fictional service before and after containment, while an independent legitimate service continues. Then offer a repair that looks correct in source but leaves a stale deployed artifact: the checker should reject it. Only the fresh, verified artifact can pass. Finally, rename the relevant resource and rerun a held-out case to demonstrate a general rule rather than a memorized path. These are measurable acceptance targets; a narration or green badge cannot substitute for the responses.
+
+The future AI contribution is investigation and repair selection under those constraints. The current deterministic controls and synthetic experiments must remain labeled as such.
+
 ```mermaid
 flowchart LR
     P[Past incident evidence] --> L[Reviewed lesson and test]

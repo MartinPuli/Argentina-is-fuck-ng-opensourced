@@ -1,0 +1,113 @@
+{
+  "cases": [
+    {
+      "case_id": "initial-public-attachment-case",
+      "conditions": {
+        "approved_release_gate": {
+          "private_exact_content_responses": 0,
+          "private_exposing_responses": 0,
+          "private_source_ids_exposed": [],
+          "public_exact_successes": 2,
+          "public_requests": 2,
+          "unauthenticated_requests": 6
+        },
+        "baseline": {
+          "private_exact_content_responses": 4,
+          "private_exposing_responses": 4,
+          "private_source_ids_exposed": [
+            "private-attachment",
+            "private-review"
+          ],
+          "public_exact_successes": 2,
+          "public_requests": 2,
+          "unauthenticated_requests": 6
+        },
+        "source_only_fix": {
+          "private_exact_content_responses": 4,
+          "private_exposing_responses": 4,
+          "private_source_ids_exposed": [
+            "private-attachment",
+            "private-review"
+          ],
+          "public_exact_successes": 2,
+          "public_requests": 2,
+          "unauthenticated_requests": 6
+        }
+      },
+      "fixture_sha256": "c374b35ff651bea3ac634587c5264be78d3744b4e98706c6414ed7b93014f81c",
+      "gate_rejections": {
+        "changed_content_gate": "artifact_hash_mismatch",
+        "dirty_build_gate": "build_manifest_set_mismatch",
+        "missing_classification_gate": "unclassified_source"
+      },
+      "misclassification_counterexample": {
+        "private_exact_content_responses": 0,
+        "private_exposing_responses": 1,
+        "private_source_ids_exposed": [
+          "private-attachment"
+        ],
+        "public_exact_successes": 2,
+        "public_requests": 2,
+        "unauthenticated_requests": 6
+      },
+      "policy_sha256": "96ba9e17b34fb6df04401337a0a742f5ede802c3f42c72a26b56ed8705b4d18b"
+    },
+    {
+      "case_id": "changed-application-predeclared-variation",
+      "conditions": {
+        "approved_release_gate": {
+          "private_exact_content_responses": 0,
+          "private_exposing_responses": 0,
+          "private_source_ids_exposed": [],
+          "public_exact_successes": 3,
+          "public_requests": 3,
+          "unauthenticated_requests": 7
+        },
+        "baseline": {
+          "private_exact_content_responses": 4,
+          "private_exposing_responses": 4,
+          "private_source_ids_exposed": [
+            "audit-annex-new",
+            "audit-supplement-new"
+          ],
+          "public_exact_successes": 3,
+          "public_requests": 3,
+          "unauthenticated_requests": 7
+        },
+        "source_only_fix": {
+          "private_exact_content_responses": 4,
+          "private_exposing_responses": 4,
+          "private_source_ids_exposed": [
+            "audit-annex-new",
+            "audit-supplement-new"
+          ],
+          "public_exact_successes": 3,
+          "public_requests": 3,
+          "unauthenticated_requests": 7
+        }
+      },
+      "fixture_sha256": "eb0fd64c3c4cc55d7f94f97064d45bdc3f0aa9a9bb9a43d96ca6894ea53db2e3",
+      "gate_rejections": {
+        "changed_content_gate": "artifact_hash_mismatch",
+        "dirty_build_gate": "build_manifest_set_mismatch",
+        "missing_classification_gate": "unclassified_source"
+      },
+      "misclassification_counterexample": {
+        "private_exact_content_responses": 0,
+        "private_exposing_responses": 1,
+        "private_source_ids_exposed": [
+          "audit-annex-new"
+        ],
+        "public_exact_successes": 3,
+        "public_requests": 3,
+        "unauthenticated_requests": 7
+      },
+      "policy_sha256": "96ba9e17b34fb6df04401337a0a742f5ede802c3f42c72a26b56ed8705b4d18b"
+    }
+  ],
+  "checks_passed": 45,
+  "experiment": "local-synthetic-publication-regression",
+  "license": "CC-BY-4.0",
+  "results_sha256": "75ca5ed9034b6b331f40b33c56ba8e18c0bf1628f8139e6f1cc250c147736286",
+  "same_policy_across_cases": true
+}

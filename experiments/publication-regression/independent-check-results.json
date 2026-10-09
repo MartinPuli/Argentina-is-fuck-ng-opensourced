@@ -1,0 +1,618 @@
+{
+  "schema_version": 1,
+  "experiment": "independent-publication-byte-check",
+  "license": "CC-BY-4.0",
+  "network_scope": "127.0.0.1 only; real HTTP GETs",
+  "independence": "New fixture and byte-level oracle; reuses run_case and its HTTP transport. Does not call check_case or use reported metrics/private_matches/public_exact_success.",
+  "limitations": "One synthetic fixture; no production deployment, security proof, automatic learning, or prevention of false owner classifications.",
+  "fixture": {
+    "case_id": "independent-unicode-aliases-oct09",
+    "fictional_data": true,
+    "sources": [
+      {
+        "id": "ind-public-ñ-731",
+        "source_path": "original/aviso público.source",
+        "classification": "public",
+        "content": "Aviso público ficticio: acción habilitada.\n",
+        "artifact_paths": [
+          "avisos/edición única.txt",
+          "aliases/public copy.txt",
+          "mirror/aviso.json"
+        ]
+      },
+      {
+        "id": "ind-public-742",
+        "source_path": "original/small.source",
+        "classification": "public",
+        "content": "{}\n",
+        "artifact_paths": [
+          "datos/resumen público.json"
+        ]
+      },
+      {
+        "id": "ind-private-753",
+        "source_path": "reservado/pequeño.source",
+        "classification": "private",
+        "content": "SYNTHETIC_PRIVATE_SHORT_753\nñ\n",
+        "private_marker": "SYNTHETIC_PRIVATE_SHORT_753",
+        "artifact_paths": [
+          "cache/nombre público.css",
+          "media/última copia.bin"
+        ]
+      },
+      {
+        "id": "ind-private-764",
+        "source_path": "reservado/grande.source",
+        "classification": "private",
+        "content": "SYNTHETIC_PRIVATE_LONG_764\ndato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; dato ficticio de tamaño variable; \n",
+        "private_marker": "SYNTHETIC_PRIVATE_LONG_764",
+        "artifact_paths": [
+          "adjuntos/archivo número 764.dat"
+        ]
+      }
+    ],
+    "probe_paths": [
+      "ausente/no existe.txt",
+      "other/未知.txt"
+    ]
+  },
+  "fixture_utf8_payload_bytes": {
+    "ind-public-ñ-731": 45,
+    "ind-public-742": 3,
+    "ind-private-753": 31,
+    "ind-private-764": 2583
+  },
+  "source_file_sha256": {
+    "independent_check.py": "47cc45c70fb2b8d439283b4fd8acf5969d72279da285953d3541c799576a2fe4",
+    "publisher.py": "fc12d311b2bf9e67cf0c6b53b3f17cae4911397a9ae9ea62ebe14ac706690a22",
+    "serve_local.py": "dcd6d06fb19c2bc9742bc5af317572a797f310146daeb30074d4ad9723d74932",
+    "verify_http.py": "b2cb6035fcff0217bb9742c9708c9f9de67fc1717f063967a20c7aa430480c45",
+    "run_experiment.py": "7915fa51ec35e7a7e4f9aa32f7f9ce9bd0bf27cdbf92c353829fb8ab9a6c83b2",
+    "lesson-policy.json": "00a5726fe8aab8c2d66572ad7c639109b933e68f0a5d8220d75300d30398ae45"
+  },
+  "conditions": {
+    "baseline": {
+      "requests": 9,
+      "private_exposing_responses": 3,
+      "observations": [
+        {
+          "path": "adjuntos/archivo número 764.dat",
+          "status": 200,
+          "body_bytes": 2583,
+          "body_sha256": "76134baaa8f5075c4a84252ed739072d4733a4e2934a5113c117ac951d665e21",
+          "body_base64": "U1lOVEhFVElDX1BSSVZBVEVfTE9OR183NjQKZGF0byBmaWN0aWNpbyBkZSB0YW1hw7FvIHZhcmlhYmxlOyBkYXRvIGZpY3RpY2lvIGRlIHRhbWHDsW8gdmFyaWFibGU7IGRhdG8gZmljdGljaW8gZGUgdGFtYcOxbyB2YXJpYWJsZTsgZGF0byBmaWN0aWNpbyBkZSB0YW1hw7FvIHZhcmlhYmxlOyBkYXRvIGZpY3RpY2lvIGRlIHRhbWHDsW8gdmFyaWFibGU7IGRhdG8gZmljdGljaW8gZGUgdGFtYcOxbyB2YXJpYWJsZTsgZGF0byBmaWN0aWNpbyBkZSB0YW1hw7FvIHZhcmlhYmxlOyBkYXRvIGZpY3RpY2lvIGRlIHRhbWHDsW8gdmFyaWFibGU7IGRhdG8gZmljdGljaW8gZGUgdGFtYcOxbyB2YXJpYWJsZTsgZGF0byBmaWN0aWNpbyBkZSB0YW1hw7FvIHZhcmlhYmxlOyBkYXRvIGZpY3RpY2lvIGRlIHRhbWHDsW8gdmFyaWFibGU7IGRhdG8gZmljdGljaW8gZGUgdGFtYcOxbyB2YXJpYWJsZTsgZGF0byBmaWN0aWNpbyBkZSB0YW1hw7FvIHZhcmlhYmxlOyBkYXRvIGZpY3RpY2lvIGRlIHRhbWHDsW8gdmFyaWFibGU7IGRhdG8gZmljdGljaW8gZGUgdGFtYcOxbyB2YXJpYWJsZTsgZGF0byBmaWN0aWNpbyBkZSB0YW1hw7FvIHZhcmlhYmxlOyBkYXRvIGZpY3RpY2lvIGRlIHRhbWHDsW8gdmFyaWFibGU7IGRhdG8gZmljdGljaW8gZGUgdGFtYcOxbyB2YXJpYWJsZTsgZGF0byBmaWN0aWNpbyBkZSB0YW1hw7FvIHZhcmlhYmxlOyBkYXRvIGZpY3RpY2lvIGRlIHRhbWHDsW8gdmFyaWFibGU7IGRhdG8gZmljdGljaW8gZGUgdGFtYcOxbyB2YXJpYWJsZTsgZGF0byBmaWN0aWNpbyBkZSB0YW1hw7FvIHZhcmlhYmxlOyBkYXRvIGZpY3RpY2lvIGRlIHRhbWHDsW8gdmFyaWFibGU7IGRhdG8gZmljdGljaW8gZGUgdGFtYcOxbyB2YXJpYWJsZTsgZGF0byBmaWN0aWNpbyBkZSB0YW1hw7FvIHZhcmlhYmxlOyBkYXRvIGZpY3RpY2lvIGRlIHRhbWHDsW8gdmFyaWFibGU7IGRhdG8gZmljdGljaW8gZGUgdGFtYcOxbyB2YXJpYWJsZTsgZGF0byBmaWN0aWNpbyBkZSB0YW1hw7FvIHZhcmlhYmxlOyBkYXRvIGZpY3RpY2lvIGRlIHRhbWHDsW8gdmFyaWFibGU7IGRhdG8gZmljdGljaW8gZGUgdGFtYcOxbyB2YXJpYWJsZTsgZGF0byBmaWN0aWNpbyBkZSB0YW1hw7FvIHZhcmlhYmxlOyBkYXRvIGZpY3RpY2lvIGRlIHRhbWHDsW8gdmFyaWFibGU7IGRhdG8gZmljdGljaW8gZGUgdGFtYcOxbyB2YXJpYWJsZTsgZGF0byBmaWN0aWNpbyBkZSB0YW1hw7FvIHZhcmlhYmxlOyBkYXRvIGZpY3RpY2lvIGRlIHRhbWHDsW8gdmFyaWFibGU7IGRhdG8gZmljdGljaW8gZGUgdGFtYcOxbyB2YXJpYWJsZTsgZGF0byBmaWN0aWNpbyBkZSB0YW1hw7FvIHZhcmlhYmxlOyBkYXRvIGZpY3RpY2lvIGRlIHRhbWHDsW8gdmFyaWFibGU7IGRhdG8gZmljdGljaW8gZGUgdGFtYcOxbyB2YXJpYWJsZTsgZGF0byBmaWN0aWNpbyBkZSB0YW1hw7FvIHZhcmlhYmxlOyBkYXRvIGZpY3RpY2lvIGRlIHRhbWHDsW8gdmFyaWFibGU7IGRhdG8gZmljdGljaW8gZGUgdGFtYcOxbyB2YXJpYWJsZTsgZGF0byBmaWN0aWNpbyBkZSB0YW1hw7FvIHZhcmlhYmxlOyBkYXRvIGZpY3RpY2lvIGRlIHRhbWHDsW8gdmFyaWFibGU7IGRhdG8gZmljdGljaW8gZGUgdGFtYcOxbyB2YXJpYWJsZTsgZGF0byBmaWN0aWNpbyBkZSB0YW1hw7FvIHZhcmlhYmxlOyBkYXRvIGZpY3RpY2lvIGRlIHRhbWHDsW8gdmFyaWFibGU7IGRhdG8gZmljdGljaW8gZGUgdGFtYcOxbyB2YXJpYWJsZTsgZGF0byBmaWN0aWNpbyBkZSB0YW1hw7FvIHZhcmlhYmxlOyBkYXRvIGZpY3RpY2lvIGRlIHRhbWHDsW8gdmFyaWFibGU7IGRhdG8gZmljdGljaW8gZGUgdGFtYcOxbyB2YXJpYWJsZTsgZGF0byBmaWN0aWNpbyBkZSB0YW1hw7FvIHZhcmlhYmxlOyBkYXRvIGZpY3RpY2lvIGRlIHRhbWHDsW8gdmFyaWFibGU7IGRhdG8gZmljdGljaW8gZGUgdGFtYcOxbyB2YXJpYWJsZTsgZGF0byBmaWN0aWNpbyBkZSB0YW1hw7FvIHZhcmlhYmxlOyBkYXRvIGZpY3RpY2lvIGRlIHRhbWHDsW8gdmFyaWFibGU7IGRhdG8gZmljdGljaW8gZGUgdGFtYcOxbyB2YXJpYWJsZTsgZGF0byBmaWN0aWNpbyBkZSB0YW1hw7FvIHZhcmlhYmxlOyBkYXRvIGZpY3RpY2lvIGRlIHRhbWHDsW8gdmFyaWFibGU7IGRhdG8gZmljdGljaW8gZGUgdGFtYcOxbyB2YXJpYWJsZTsgZGF0byBmaWN0aWNpbyBkZSB0YW1hw7FvIHZhcmlhYmxlOyBkYXRvIGZpY3RpY2lvIGRlIHRhbWHDsW8gdmFyaWFibGU7IGRhdG8gZmljdGljaW8gZGUgdGFtYcOxbyB2YXJpYWJsZTsgZGF0byBmaWN0aWNpbyBkZSB0YW1hw7FvIHZhcmlhYmxlOyBkYXRvIGZpY3RpY2lvIGRlIHRhbWHDsW8gdmFyaWFibGU7IGRhdG8gZmljdGljaW8gZGUgdGFtYcOxbyB2YXJpYWJsZTsgZGF0byBmaWN0aWNpbyBkZSB0YW1hw7FvIHZhcmlhYmxlOyBkYXRvIGZpY3RpY2lvIGRlIHRhbWHDsW8gdmFyaWFibGU7IGRhdG8gZmljdGljaW8gZGUgdGFtYcOxbyB2YXJpYWJsZTsgZGF0byBmaWN0aWNpbyBkZSB0YW1hw7FvIHZhcmlhYmxlOyBkYXRvIGZpY3RpY2lvIGRlIHRhbWHDsW8gdmFyaWFibGU7IGRhdG8gZmljdGljaW8gZGUgdGFtYcOxbyB2YXJpYWJsZTsgZGF0byBmaWN0aWNpbyBkZSB0YW1hw7FvIHZhcmlhYmxlOyAK",
+          "independently_detected_private_ids": [
+            "ind-private-764"
+          ]
+        },
+        {
+          "path": "aliases/public copy.txt",
+          "status": 200,
+          "body_bytes": 45,
+          "body_sha256": "9a55a4fe8a58b24b7c91e5f052b5a8c82698ea379b920b5ac93fc1fed8534fca",
+          "body_base64": "QXZpc28gcMO6YmxpY28gZmljdGljaW86IGFjY2nDs24gaGFiaWxpdGFkYS4K",
+          "independently_detected_private_ids": []
+        },
+        {
+          "path": "ausente/no existe.txt",
+          "status": 404,
+          "body_bytes": 10,
+          "body_sha256": "709009e02c8e364113b28205aadde30cce270d709073f28153c85fdc5036c96d",
+          "body_base64": "bm90IGZvdW5kCg==",
+          "independently_detected_private_ids": []
+        },
+        {
+          "path": "avisos/edición única.txt",
+          "status": 200,
+          "body_bytes": 45,
+          "body_sha256": "9a55a4fe8a58b24b7c91e5f052b5a8c82698ea379b920b5ac93fc1fed8534fca",
+          "body_base64": "QXZpc28gcMO6YmxpY28gZmljdGljaW86IGFjY2nDs24gaGFiaWxpdGFkYS4K",
+          "independently_detected_private_ids": []
+        },
+        {
+          "path": "cache/nombre público.css",
+          "status": 200,
+          "body_bytes": 31,
+          "body_sha256": "7f1f26ff50cca5f690d291e8ac77eb862d2e60bd493776104d01a7061a55e18a",
+          "body_base64": "U1lOVEhFVElDX1BSSVZBVEVfU0hPUlRfNzUzCsOxCg==",
+          "independently_detected_private_ids": [
+            "ind-private-753"
+          ]
+        },
+        {
+          "path": "datos/resumen público.json",
+          "status": 200,
+          "body_bytes": 3,
+          "body_sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+          "body_base64": "e30K",
+          "independently_detected_private_ids": []
+        },
+        {
+          "path": "media/última copia.bin",
+          "status": 200,
+          "body_bytes": 31,
+          "body_sha256": "7f1f26ff50cca5f690d291e8ac77eb862d2e60bd493776104d01a7061a55e18a",
+          "body_base64": "U1lOVEhFVElDX1BSSVZBVEVfU0hPUlRfNzUzCsOxCg==",
+          "independently_detected_private_ids": [
+            "ind-private-753"
+          ]
+        },
+        {
+          "path": "mirror/aviso.json",
+          "status": 200,
+          "body_bytes": 45,
+          "body_sha256": "9a55a4fe8a58b24b7c91e5f052b5a8c82698ea379b920b5ac93fc1fed8534fca",
+          "body_base64": "QXZpc28gcMO6YmxpY28gZmljdGljaW86IGFjY2nDs24gaGFiaWxpdGFkYS4K",
+          "independently_detected_private_ids": []
+        },
+        {
+          "path": "other/未知.txt",
+          "status": 404,
+          "body_bytes": 10,
+          "body_sha256": "709009e02c8e364113b28205aadde30cce270d709073f28153c85fdc5036c96d",
+          "body_base64": "bm90IGZvdW5kCg==",
+          "independently_detected_private_ids": []
+        }
+      ]
+    },
+    "source_only_fix": {
+      "requests": 9,
+      "private_exposing_responses": 3,
+      "observations": [
+        {
+          "path": "adjuntos/archivo número 764.dat",
+          "status": 200,
+          "body_bytes": 2583,
+          "body_sha256": "76134baaa8f5075c4a84252ed739072d4733a4e2934a5113c117ac951d665e21",
+          "body_base64": "U1lOVEhFVElDX1BSSVZBVEVfTE9OR183NjQKZGF0byBmaWN0aWNpbyBkZSB0YW1hw7FvIHZhcmlhYmxlOyBkYXRvIGZpY3RpY2lvIGRlIHRhbWHDsW8gdmFyaWFibGU7IGRhdG8gZmljdGljaW8gZGUgdGFtYcOxbyB2YXJpYWJsZTsgZGF0byBmaWN0aWNpbyBkZSB0YW1hw7FvIHZhcmlhYmxlOyBkYXRvIGZpY3RpY2lvIGRlIHRhbWHDsW8gdmFyaWFibGU7IGRhdG8gZmljdGljaW8gZGUgdGFtYcOxbyB2YXJpYWJsZTsgZGF0byBmaWN0aWNpbyBkZSB0YW1hw7FvIHZhcmlhYmxlOyBkYXRvIGZpY3RpY2lvIGRlIHRhbWHDsW8gdmFyaWFibGU7IGRhdG8gZmljdGljaW8gZGUgdGFtYcOxbyB2YXJpYWJsZTsgZGF0byBmaWN0aWNpbyBkZSB0YW1hw7FvIHZhcmlhYmxlOyBkYXRvIGZpY3RpY2lvIGRlIHRhbWHDsW8gdmFyaWFibGU7IGRhdG8gZmljdGljaW8gZGUgdGFtYcOxbyB2YXJpYWJsZTsgZGF0byBmaWN0aWNpbyBkZSB0YW1hw7FvIHZhcmlhYmxlOyBkYXRvIGZpY3RpY2lvIGRlIHRhbWHDsW8gdmFyaWFibGU7IGRhdG8gZmljdGljaW8gZGUgdGFtYcOxbyB2YXJpYWJsZTsgZGF0byBmaWN0aWNpbyBkZSB0YW1hw7FvIHZhcmlhYmxlOyBkYXRvIGZpY3RpY2lvIGRlIHRhbWHDsW8gdmFyaWFibGU7IGRhdG8gZmljdGljaW8gZGUgdGFtYcOxbyB2YXJpYWJsZTsgZGF0byBmaWN0aWNpbyBkZSB0YW1hw7FvIHZhcmlhYmxlOyBkYXRvIGZpY3RpY2lvIGRlIHRhbWHDsW8gdmFyaWFibGU7IGRhdG8gZmljdGljaW8gZGUgdGFtYcOxbyB2YXJpYWJsZTsgZGF0byBmaWN0aWNpbyBkZSB0YW1hw7FvIHZhcmlhYmxlOyBkYXRvIGZpY3RpY2lvIGRlIHRhbWHDsW8gdmFyaWFibGU7IGRhdG8gZmljdGljaW8gZGUgdGFtYcOxbyB2YXJpYWJsZTsgZGF0byBmaWN0aWNpbyBkZSB0YW1hw7FvIHZhcmlhYmxlOyBkYXRvIGZpY3RpY2lvIGRlIHRhbWHDsW8gdmFyaWFibGU7IGRhdG8gZmljdGljaW8gZGUgdGFtYcOxbyB2YXJpYWJsZTsgZGF0byBmaWN0aWNpbyBkZSB0YW1hw7FvIHZhcmlhYmxlOyBkYXRvIGZpY3RpY2lvIGRlIHRhbWHDsW8gdmFyaWFibGU7IGRhdG8gZmljdGljaW8gZGUgdGFtYcOxbyB2YXJpYWJsZTsgZGF0byBmaWN0aWNpbyBkZSB0YW1hw7FvIHZhcmlhYmxlOyBkYXRvIGZpY3RpY2lvIGRlIHRhbWHDsW8gdmFyaWFibGU7IGRhdG8gZmljdGljaW8gZGUgdGFtYcOxbyB2YXJpYWJsZTsgZGF0byBmaWN0aWNpbyBkZSB0YW1hw7FvIHZhcmlhYmxlOyBkYXRvIGZpY3RpY2lvIGRlIHRhbWHDsW8gdmFyaWFibGU7IGRhdG8gZmljdGljaW8gZGUgdGFtYcOxbyB2YXJpYWJsZTsgZGF0byBmaWN0aWNpbyBkZSB0YW1hw7FvIHZhcmlhYmxlOyBkYXRvIGZpY3RpY2lvIGRlIHRhbWHDsW8gdmFyaWFibGU7IGRhdG8gZmljdGljaW8gZGUgdGFtYcOxbyB2YXJpYWJsZTsgZGF0byBmaWN0aWNpbyBkZSB0YW1hw7FvIHZhcmlhYmxlOyBkYXRvIGZpY3RpY2lvIGRlIHRhbWHDsW8gdmFyaWFibGU7IGRhdG8gZmljdGljaW8gZGUgdGFtYcOxbyB2YXJpYWJsZTsgZGF0byBmaWN0aWNpbyBkZSB0YW1hw7FvIHZhcmlhYmxlOyBkYXRvIGZpY3RpY2lvIGRlIHRhbWHDsW8gdmFyaWFibGU7IGRhdG8gZmljdGljaW8gZGUgdGFtYcOxbyB2YXJpYWJsZTsgZGF0byBmaWN0aWNpbyBkZSB0YW1hw7FvIHZhcmlhYmxlOyBkYXRvIGZpY3RpY2lvIGRlIHRhbWHDsW8gdmFyaWFibGU7IGRhdG8gZmljdGljaW8gZGUgdGFtYcOxbyB2YXJpYWJsZTsgZGF0byBmaWN0aWNpbyBkZSB0YW1hw7FvIHZhcmlhYmxlOyBkYXRvIGZpY3RpY2lvIGRlIHRhbWHDsW8gdmFyaWFibGU7IGRhdG8gZmljdGljaW8gZGUgdGFtYcOxbyB2YXJpYWJsZTsgZGF0byBmaWN0aWNpbyBkZSB0YW1hw7FvIHZhcmlhYmxlOyBkYXRvIGZpY3RpY2lvIGRlIHRhbWHDsW8gdmFyaWFibGU7IGRhdG8gZmljdGljaW8gZGUgdGFtYcOxbyB2YXJpYWJsZTsgZGF0byBmaWN0aWNpbyBkZSB0YW1hw7FvIHZhcmlhYmxlOyBkYXRvIGZpY3RpY2lvIGRlIHRhbWHDsW8gdmFyaWFibGU7IGRhdG8gZmljdGljaW8gZGUgdGFtYcOxbyB2YXJpYWJsZTsgZGF0byBmaWN0aWNpbyBkZSB0YW1hw7FvIHZhcmlhYmxlOyBkYXRvIGZpY3RpY2lvIGRlIHRhbWHDsW8gdmFyaWFibGU7IGRhdG8gZmljdGljaW8gZGUgdGFtYcOxbyB2YXJpYWJsZTsgZGF0byBmaWN0aWNpbyBkZSB0YW1hw7FvIHZhcmlhYmxlOyBkYXRvIGZpY3RpY2lvIGRlIHRhbWHDsW8gdmFyaWFibGU7IGRhdG8gZmljdGljaW8gZGUgdGFtYcOxbyB2YXJpYWJsZTsgZGF0byBmaWN0aWNpbyBkZSB0YW1hw7FvIHZhcmlhYmxlOyBkYXRvIGZpY3RpY2lvIGRlIHRhbWHDsW8gdmFyaWFibGU7IGRhdG8gZmljdGljaW8gZGUgdGFtYcOxbyB2YXJpYWJsZTsgZGF0byBmaWN0aWNpbyBkZSB0YW1hw7FvIHZhcmlhYmxlOyBkYXRvIGZpY3RpY2lvIGRlIHRhbWHDsW8gdmFyaWFibGU7IGRhdG8gZmljdGljaW8gZGUgdGFtYcOxbyB2YXJpYWJsZTsgZGF0byBmaWN0aWNpbyBkZSB0YW1hw7FvIHZhcmlhYmxlOyBkYXRvIGZpY3RpY2lvIGRlIHRhbWHDsW8gdmFyaWFibGU7IGRhdG8gZmljdGljaW8gZGUgdGFtYcOxbyB2YXJpYWJsZTsgZGF0byBmaWN0aWNpbyBkZSB0YW1hw7FvIHZhcmlhYmxlOyAK",
+          "independently_detected_private_ids": [
+            "ind-private-764"
+          ]
+        },
+        {
+          "path": "aliases/public copy.txt",
+          "status": 200,
+          "body_bytes": 45,
+          "body_sha256": "9a55a4fe8a58b24b7c91e5f052b5a8c82698ea379b920b5ac93fc1fed8534fca",
+          "body_base64": "QXZpc28gcMO6YmxpY28gZmljdGljaW86IGFjY2nDs24gaGFiaWxpdGFkYS4K",
+          "independently_detected_private_ids": []
+        },
+        {
+          "path": "ausente/no existe.txt",
+          "status": 404,
+          "body_bytes": 10,
+          "body_sha256": "709009e02c8e364113b28205aadde30cce270d709073f28153c85fdc5036c96d",
+          "body_base64": "bm90IGZvdW5kCg==",
+          "independently_detected_private_ids": []
+        },
+        {
+          "path": "avisos/edición única.txt",
+          "status": 200,
+          "body_bytes": 45,
+          "body_sha256": "9a55a4fe8a58b24b7c91e5f052b5a8c82698ea379b920b5ac93fc1fed8534fca",
+          "body_base64": "QXZpc28gcMO6YmxpY28gZmljdGljaW86IGFjY2nDs24gaGFiaWxpdGFkYS4K",
+          "independently_detected_private_ids": []
+        },
+        {
+          "path": "cache/nombre público.css",
+          "status": 200,
+          "body_bytes": 31,
+          "body_sha256": "7f1f26ff50cca5f690d291e8ac77eb862d2e60bd493776104d01a7061a55e18a",
+          "body_base64": "U1lOVEhFVElDX1BSSVZBVEVfU0hPUlRfNzUzCsOxCg==",
+          "independently_detected_private_ids": [
+            "ind-private-753"
+          ]
+        },
+        {
+          "path": "datos/resumen público.json",
+          "status": 200,
+          "body_bytes": 3,
+          "body_sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+          "body_base64": "e30K",
+          "independently_detected_private_ids": []
+        },
+        {
+          "path": "media/última copia.bin",
+          "status": 200,
+          "body_bytes": 31,
+          "body_sha256": "7f1f26ff50cca5f690d291e8ac77eb862d2e60bd493776104d01a7061a55e18a",
+          "body_base64": "U1lOVEhFVElDX1BSSVZBVEVfU0hPUlRfNzUzCsOxCg==",
+          "independently_detected_private_ids": [
+            "ind-private-753"
+          ]
+        },
+        {
+          "path": "mirror/aviso.json",
+          "status": 200,
+          "body_bytes": 45,
+          "body_sha256": "9a55a4fe8a58b24b7c91e5f052b5a8c82698ea379b920b5ac93fc1fed8534fca",
+          "body_base64": "QXZpc28gcMO6YmxpY28gZmljdGljaW86IGFjY2nDs24gaGFiaWxpdGFkYS4K",
+          "independently_detected_private_ids": []
+        },
+        {
+          "path": "other/未知.txt",
+          "status": 404,
+          "body_bytes": 10,
+          "body_sha256": "709009e02c8e364113b28205aadde30cce270d709073f28153c85fdc5036c96d",
+          "body_base64": "bm90IGZvdW5kCg==",
+          "independently_detected_private_ids": []
+        }
+      ]
+    },
+    "approved_release_gate": {
+      "requests": 9,
+      "private_exposing_responses": 0,
+      "observations": [
+        {
+          "path": "adjuntos/archivo número 764.dat",
+          "status": 404,
+          "body_bytes": 10,
+          "body_sha256": "709009e02c8e364113b28205aadde30cce270d709073f28153c85fdc5036c96d",
+          "body_base64": "bm90IGZvdW5kCg==",
+          "independently_detected_private_ids": []
+        },
+        {
+          "path": "aliases/public copy.txt",
+          "status": 200,
+          "body_bytes": 45,
+          "body_sha256": "9a55a4fe8a58b24b7c91e5f052b5a8c82698ea379b920b5ac93fc1fed8534fca",
+          "body_base64": "QXZpc28gcMO6YmxpY28gZmljdGljaW86IGFjY2nDs24gaGFiaWxpdGFkYS4K",
+          "independently_detected_private_ids": []
+        },
+        {
+          "path": "ausente/no existe.txt",
+          "status": 404,
+          "body_bytes": 10,
+          "body_sha256": "709009e02c8e364113b28205aadde30cce270d709073f28153c85fdc5036c96d",
+          "body_base64": "bm90IGZvdW5kCg==",
+          "independently_detected_private_ids": []
+        },
+        {
+          "path": "avisos/edición única.txt",
+          "status": 200,
+          "body_bytes": 45,
+          "body_sha256": "9a55a4fe8a58b24b7c91e5f052b5a8c82698ea379b920b5ac93fc1fed8534fca",
+          "body_base64": "QXZpc28gcMO6YmxpY28gZmljdGljaW86IGFjY2nDs24gaGFiaWxpdGFkYS4K",
+          "independently_detected_private_ids": []
+        },
+        {
+          "path": "cache/nombre público.css",
+          "status": 404,
+          "body_bytes": 10,
+          "body_sha256": "709009e02c8e364113b28205aadde30cce270d709073f28153c85fdc5036c96d",
+          "body_base64": "bm90IGZvdW5kCg==",
+          "independently_detected_private_ids": []
+        },
+        {
+          "path": "datos/resumen público.json",
+          "status": 200,
+          "body_bytes": 3,
+          "body_sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+          "body_base64": "e30K",
+          "independently_detected_private_ids": []
+        },
+        {
+          "path": "media/última copia.bin",
+          "status": 404,
+          "body_bytes": 10,
+          "body_sha256": "709009e02c8e364113b28205aadde30cce270d709073f28153c85fdc5036c96d",
+          "body_base64": "bm90IGZvdW5kCg==",
+          "independently_detected_private_ids": []
+        },
+        {
+          "path": "mirror/aviso.json",
+          "status": 200,
+          "body_bytes": 45,
+          "body_sha256": "9a55a4fe8a58b24b7c91e5f052b5a8c82698ea379b920b5ac93fc1fed8534fca",
+          "body_base64": "QXZpc28gcMO6YmxpY28gZmljdGljaW86IGFjY2nDs24gaGFiaWxpdGFkYS4K",
+          "independently_detected_private_ids": []
+        },
+        {
+          "path": "other/未知.txt",
+          "status": 404,
+          "body_bytes": 10,
+          "body_sha256": "709009e02c8e364113b28205aadde30cce270d709073f28153c85fdc5036c96d",
+          "body_base64": "bm90IGZvdW5kCg==",
+          "independently_detected_private_ids": []
+        }
+      ]
+    },
+    "misclassification_counterexample": {
+      "requests": 9,
+      "private_exposing_responses": 3,
+      "observations": [
+        {
+          "path": "adjuntos/archivo número 764.dat",
+          "status": 404,
+          "body_bytes": 10,
+          "body_sha256": "709009e02c8e364113b28205aadde30cce270d709073f28153c85fdc5036c96d",
+          "body_base64": "bm90IGZvdW5kCg==",
+          "independently_detected_private_ids": []
+        },
+        {
+          "path": "aliases/public copy.txt",
+          "status": 200,
+          "body_bytes": 76,
+          "body_sha256": "4a4e7f0d968b32ee7cd5846f084ad753a9cab7e6ede5b0722ab11e2885ed0c76",
+          "body_base64": "QXZpc28gcMO6YmxpY28gZmljdGljaW86IGFjY2nDs24gaGFiaWxpdGFkYS4KU1lOVEhFVElDX1BSSVZBVEVfU0hPUlRfNzUzCsOxCg==",
+          "independently_detected_private_ids": [
+            "ind-private-753"
+          ]
+        },
+        {
+          "path": "ausente/no existe.txt",
+          "status": 404,
+          "body_bytes": 10,
+          "body_sha256": "709009e02c8e364113b28205aadde30cce270d709073f28153c85fdc5036c96d",
+          "body_base64": "bm90IGZvdW5kCg==",
+          "independently_detected_private_ids": []
+        },
+        {
+          "path": "avisos/edición única.txt",
+          "status": 200,
+          "body_bytes": 76,
+          "body_sha256": "4a4e7f0d968b32ee7cd5846f084ad753a9cab7e6ede5b0722ab11e2885ed0c76",
+          "body_base64": "QXZpc28gcMO6YmxpY28gZmljdGljaW86IGFjY2nDs24gaGFiaWxpdGFkYS4KU1lOVEhFVElDX1BSSVZBVEVfU0hPUlRfNzUzCsOxCg==",
+          "independently_detected_private_ids": [
+            "ind-private-753"
+          ]
+        },
+        {
+          "path": "cache/nombre público.css",
+          "status": 404,
+          "body_bytes": 10,
+          "body_sha256": "709009e02c8e364113b28205aadde30cce270d709073f28153c85fdc5036c96d",
+          "body_base64": "bm90IGZvdW5kCg==",
+          "independently_detected_private_ids": []
+        },
+        {
+          "path": "datos/resumen público.json",
+          "status": 200,
+          "body_bytes": 3,
+          "body_sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+          "body_base64": "e30K",
+          "independently_detected_private_ids": []
+        },
+        {
+          "path": "media/última copia.bin",
+          "status": 404,
+          "body_bytes": 10,
+          "body_sha256": "709009e02c8e364113b28205aadde30cce270d709073f28153c85fdc5036c96d",
+          "body_base64": "bm90IGZvdW5kCg==",
+          "independently_detected_private_ids": []
+        },
+        {
+          "path": "mirror/aviso.json",
+          "status": 200,
+          "body_bytes": 76,
+          "body_sha256": "4a4e7f0d968b32ee7cd5846f084ad753a9cab7e6ede5b0722ab11e2885ed0c76",
+          "body_base64": "QXZpc28gcMO6YmxpY28gZmljdGljaW86IGFjY2nDs24gaGFiaWxpdGFkYS4KU1lOVEhFVElDX1BSSVZBVEVfU0hPUlRfNzUzCsOxCg==",
+          "independently_detected_private_ids": [
+            "ind-private-753"
+          ]
+        },
+        {
+          "path": "other/未知.txt",
+          "status": 404,
+          "body_bytes": 10,
+          "body_sha256": "709009e02c8e364113b28205aadde30cce270d709073f28153c85fdc5036c96d",
+          "body_base64": "bm90IGZvdW5kCg==",
+          "independently_detected_private_ids": []
+        }
+      ]
+    }
+  },
+  "checks": [
+    {
+      "name": "baseline: exact request path set",
+      "passed": true
+    },
+    {
+      "name": "baseline: private exact bytes: adjuntos/archivo número 764.dat",
+      "passed": true
+    },
+    {
+      "name": "baseline: public exact bytes: aliases/public copy.txt",
+      "passed": true
+    },
+    {
+      "name": "baseline: missing path: ausente/no existe.txt",
+      "passed": true
+    },
+    {
+      "name": "baseline: public exact bytes: avisos/edición única.txt",
+      "passed": true
+    },
+    {
+      "name": "baseline: private exact bytes: cache/nombre público.css",
+      "passed": true
+    },
+    {
+      "name": "baseline: public exact bytes: datos/resumen público.json",
+      "passed": true
+    },
+    {
+      "name": "baseline: private exact bytes: media/última copia.bin",
+      "passed": true
+    },
+    {
+      "name": "baseline: public exact bytes: mirror/aviso.json",
+      "passed": true
+    },
+    {
+      "name": "baseline: missing path: other/未知.txt",
+      "passed": true
+    },
+    {
+      "name": "baseline: exact exposed set",
+      "passed": true
+    },
+    {
+      "name": "source_only_fix: exact request path set",
+      "passed": true
+    },
+    {
+      "name": "source_only_fix: private exact bytes: adjuntos/archivo número 764.dat",
+      "passed": true
+    },
+    {
+      "name": "source_only_fix: public exact bytes: aliases/public copy.txt",
+      "passed": true
+    },
+    {
+      "name": "source_only_fix: missing path: ausente/no existe.txt",
+      "passed": true
+    },
+    {
+      "name": "source_only_fix: public exact bytes: avisos/edición única.txt",
+      "passed": true
+    },
+    {
+      "name": "source_only_fix: private exact bytes: cache/nombre público.css",
+      "passed": true
+    },
+    {
+      "name": "source_only_fix: public exact bytes: datos/resumen público.json",
+      "passed": true
+    },
+    {
+      "name": "source_only_fix: private exact bytes: media/última copia.bin",
+      "passed": true
+    },
+    {
+      "name": "source_only_fix: public exact bytes: mirror/aviso.json",
+      "passed": true
+    },
+    {
+      "name": "source_only_fix: missing path: other/未知.txt",
+      "passed": true
+    },
+    {
+      "name": "source_only_fix: exact exposed set",
+      "passed": true
+    },
+    {
+      "name": "approved_release_gate: exact request path set",
+      "passed": true
+    },
+    {
+      "name": "approved_release_gate: private path denied: adjuntos/archivo número 764.dat",
+      "passed": true
+    },
+    {
+      "name": "approved_release_gate: no known private bytes: adjuntos/archivo número 764.dat",
+      "passed": true
+    },
+    {
+      "name": "approved_release_gate: public exact bytes: aliases/public copy.txt",
+      "passed": true
+    },
+    {
+      "name": "approved_release_gate: no known private bytes: aliases/public copy.txt",
+      "passed": true
+    },
+    {
+      "name": "approved_release_gate: missing path: ausente/no existe.txt",
+      "passed": true
+    },
+    {
+      "name": "approved_release_gate: no known private bytes: ausente/no existe.txt",
+      "passed": true
+    },
+    {
+      "name": "approved_release_gate: public exact bytes: avisos/edición única.txt",
+      "passed": true
+    },
+    {
+      "name": "approved_release_gate: no known private bytes: avisos/edición única.txt",
+      "passed": true
+    },
+    {
+      "name": "approved_release_gate: private path denied: cache/nombre público.css",
+      "passed": true
+    },
+    {
+      "name": "approved_release_gate: no known private bytes: cache/nombre público.css",
+      "passed": true
+    },
+    {
+      "name": "approved_release_gate: public exact bytes: datos/resumen público.json",
+      "passed": true
+    },
+    {
+      "name": "approved_release_gate: no known private bytes: datos/resumen público.json",
+      "passed": true
+    },
+    {
+      "name": "approved_release_gate: private path denied: media/última copia.bin",
+      "passed": true
+    },
+    {
+      "name": "approved_release_gate: no known private bytes: media/última copia.bin",
+      "passed": true
+    },
+    {
+      "name": "approved_release_gate: public exact bytes: mirror/aviso.json",
+      "passed": true
+    },
+    {
+      "name": "approved_release_gate: no known private bytes: mirror/aviso.json",
+      "passed": true
+    },
+    {
+      "name": "approved_release_gate: missing path: other/未知.txt",
+      "passed": true
+    },
+    {
+      "name": "approved_release_gate: no known private bytes: other/未知.txt",
+      "passed": true
+    },
+    {
+      "name": "misclassification_counterexample: exact request path set",
+      "passed": true
+    },
+    {
+      "name": "misclassification_counterexample: private path denied: adjuntos/archivo número 764.dat",
+      "passed": true
+    },
+    {
+      "name": "misclassification_counterexample: public exact bytes: aliases/public copy.txt",
+      "passed": true
+    },
+    {
+      "name": "misclassification_counterexample: missing path: ausente/no existe.txt",
+      "passed": true
+    },
+    {
+      "name": "misclassification_counterexample: public exact bytes: avisos/edición única.txt",
+      "passed": true
+    },
+    {
+      "name": "misclassification_counterexample: private path denied: cache/nombre público.css",
+      "passed": true
+    },
+    {
+      "name": "misclassification_counterexample: public exact bytes: datos/resumen público.json",
+      "passed": true
+    },
+    {
+      "name": "misclassification_counterexample: private path denied: media/última copia.bin",
+      "passed": true
+    },
+    {
+      "name": "misclassification_counterexample: public exact bytes: mirror/aviso.json",
+      "passed": true
+    },
+    {
+      "name": "misclassification_counterexample: missing path: other/未知.txt",
+      "passed": true
+    },
+    {
+      "name": "misclassification_counterexample: known private bytes exposed through public aliases",
+      "passed": true
+    }
+  ],
+  "checks_passed": 52,
+  "checks_total": 52,
+  "all_passed": true
+}

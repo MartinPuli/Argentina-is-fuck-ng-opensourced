@@ -1,0 +1,10 @@
+{
+  "case_id": "initial-public-attachment-case",
+  "fictional_data": true,
+  "sources": [
+    {"id":"public-notice","source_path":"notices/tender.txt","classification":"public","content":"PUBLIC FICTIONAL PROCUREMENT NOTICE: reference EXAMPLE-001, synthetic office supplies.\n","artifact_paths":["notices/notice-001.html"]},
+    {"id":"public-award","source_path":"notices/award.txt","classification":"public","content":"{\"notice\":\"FICTIONAL public award summary\",\"reference\":\"EXAMPLE-002\"}\n","artifact_paths":["notices/award-001.json"]},
+    {"id":"private-attachment","source_path":"attachments/benefit-list.csv","classification":"private","content":"PRIVATE_SYNTHETIC_ALPHA_73\nfictional_row,fictional_value\nROW-ALPHA,example-only\n","private_marker":"PRIVATE_SYNTHETIC_ALPHA_73","artifact_paths":["attachments/list.csv","assets/archive/a7.report","assets/nested/exports/list.svg"]},
+    {"id":"private-review","source_path":"attachments/internal-check.txt","classification":"private","content":"PRIVATE_SYNTHETIC_BETA_91\nFICTIONAL internal attachment; no real person or institution.\n","private_marker":"PRIVATE_SYNTHETIC_BETA_91","artifact_paths":["files/review-note.txt"]}
+  ]
+}

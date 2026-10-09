@@ -38,13 +38,20 @@ The current reviews use **targeted full-text reading**: relevant methods, evalua
 - [Agent safety](AGENT-SAFETY-PAPERS.md) / [records](agent-safety-papers.json).
 - [Learning from incidents](LEAK-LEARNING-PAPERS.md) / [records](leak-learning-papers.json).
 - [Threat intelligence and evidence integrity](THREAT-INTELLIGENCE-PAPERS.md) / [records](threat-intelligence-papers.json).
+- [Access control and exposure](ACCESS-AND-EXPOSURE-PAPERS.md) / [records](access-exposure-papers.json).
 
-This checkpoint contains **27 selected paper records** across those four files: eight defense/repair, nine agent-safety, five incident-learning and five threat-intelligence records. They include explicitly labeled earlier foundations and later publication milestones, so 27 does not mean 27 newly submitted papers inside the window.
+This checkpoint contains **32 selected paper records** across those five files: eight defense/repair, nine agent-safety, five incident-learning, five threat-intelligence and five access/exposure records. They include explicitly labeled earlier foundations and later publication milestones, so 32 does not mean 32 newly submitted papers inside the window.
+
+## Additional discovery and implementation research
+
+The [additional discovery pass](ADDITIONAL-DISCOVERY.md) records 986 further title entries and 175 keyword matches across CCS 2025, RAID 2026, ACSAC 2025, AsiaCCS 2026 and an October arXiv snapshot. It prioritizes 18 candidates but adds zero full-text reviews. These counts are not globally deduplicated and must not be added to paper-reading counts. RAID's event occurs after the cutoff; public acceptance metadata is distinguished from a paper's first publication.
+
+The [country precedents](COUNTRY-PRECEDENTS.md), [competitor profiles](../../competitor-profiles/_summary.md) and [sandbox documentation review](SANDBOX-ARCHITECTURE.md) are implementation research. Government statements and vendor documentation are not additional academic papers or independent product benchmarks.
 
 ## What remains incomplete
 
 - Full-text review of the remaining venue entries, including the unselected keyword matches and entries missed by the filter.
-- Comprehensive discovery of late-2025 publications, journals, workshops, other security venues and preprints. arXiv has been searched selectively; no complete monthly/category export has been reconciled.
+- Comprehensive discovery of late-2025 publications, journals, workshops, other security venues and preprints. Some additional indexes and an October arXiv snapshot are now recorded, but a complete monthly/category corpus has not been reconciled.
 - Global deduplication across preprints and proceedings, retraction/correction checks, and an exact date decision for every candidate.
 - Full appendices, artifact reproduction, and studies outside the current priority lanes. Cryptography, hardware security, mobile security and other areas remain part of the broad request and have not been exhaustively reviewed.
 - Complete backward/forward citation search and independent reproduction of the papers' numerical claims.

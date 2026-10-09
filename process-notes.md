@@ -1,5 +1,24 @@
 # Process notes
 
+## 2026-10-09 — Pulled and reviewed teammate contribution
+
+- At the user's request, fetched and fast-forwarded main from 6040e89 to fa859d5. The incoming commit added only the 408-line PAMI analysis; local research changes did not overlap and were preserved.
+- Read the full contribution and independently checked the main exposure timeline and recovery citations. Logged three actionable source/attribution findings in docs/research/PAMI-CONTRIBUTION-REVIEW.md.
+- Left the contributed file unchanged. Its publication-boundary analysis is useful, but does not establish server-compromise prevention or implement a working agent.
+- The new publication research experiment reports 45 assertions with real loopback HTTP. It explicitly includes a misclassification failure and does not establish OCR, hostile-code isolation or institutional approval.
+
+## 2026-10-09 — International comparison and sandbox refinement
+
+- User asked whether companies have built comparable defenses for other countries, requested sandbox research and asked to improve the proposal.
+- Applied competitor-profiling to a targeted technical scan; existing product context and the user's question supplied scope. Firecrawl/DataForSEO were unavailable; primary pages were read with the browsing tool. SEO, pricing and commercial terms were not invented.
+- Found government-confirmed UK and Singapore programs, Estonian/Finnish exchange architecture, Australian protective DNS guidance, and a clearly labeled historical vendor-reported Israeli institutional customer.
+- Independent review corrected “X-Road operator” to the official case-study site; national instances have distinct operators. Preserved historical event/publication dates.
+- SafeBreach Helm and Pentera Resolve establish material overlap with coordinated agents and repair revalidation. Revised the differentiation claim to an open, reproducible workflow hypothesis.
+- Added five targeted full-text reviews and eight sandbox documentation sources. These are 32 selected paper records in total; documentation and the additional 986 title entries do not increase the paper-reading count.
+- The proposed sandbox has separate repair, rehearsal and verification boundaries, externally enforced network policy and a controller that retains authority. No sandbox runtime or production isolation was tested.
+- Application compromise remains the main hackathon story. Public-attachment release testing is a secondary research module, not a replacement of the user's server-defense focus.
+- Formal skill curriculum stages, sponsor integrations, autonomous deployment and contest submission remain uncompleted. Broad literature coverage is still unfinished.
+
 ## 2026-10-09 — Hackathon fit assessment, before formal onboarding
 
 - The user wants a defensive, open-source project grounded in the Argentina government data-leak research, with a working demonstration for the Cyberdefense Hackathon.
