@@ -476,3 +476,61 @@ The final architecture specification can be completed after the nine open decisi
 - MVP success criteria.
 - Hackathon demonstration boundaries.
 
+## 13. Autonomous pipeline addendum
+
+**Added:** October 9, 2026  
+**Status:** Implemented and tested behind `GATE_AUTONOMOUS=1`. Deployed, and the flag was on in production when checked on October 9, 2026 at 22:21 UTC.
+
+This section records a later decision. Earlier sections stay as written for history. Where they conflict with this section, this section applies when autonomous mode is on.
+
+### 13.1 What it supersedes
+
+- §3: the step where a government employee reviews the report and approves or rejects before publication. In autonomous mode no person sits in the publication path.
+- §5.4: the government employee as "the final accountable decision-maker" for each file. People now audit outcomes afterward.
+- §7: the line "No agent may publish a document autonomously."
+
+### 13.2 New rule
+
+- Agents may publish only content that passed every required check.
+- Uncertainty resolves to automatic restriction, never publication. The file is stored as `withheld` with an `autopilot_restricted` finding.
+- People audit afterward and can override. The Review page stays.
+- Not yet built: the override. The Review page acts only on `hold` files, and an automatic restriction is stored as `withheld`, so no person can release it from the app today. See 13.4.
+
+### 13.3 Invariants
+
+- Nothing that failed or was skipped is published.
+- Deterministic blocks are final.
+- Models can only add caution. A model result never clears a deterministic finding.
+- A public review agent FAIL never publishes.
+- A missing model, OCR or Guild result means the file is restricted.
+- The public file route checks the decision and the rule revision on every request.
+- Staff authentication, the same-origin check and neutral public filenames are unchanged.
+- Demo and test data stay fictional.
+- With the flag off, the gate behaves as before: uncertain files wait for a person.
+
+### 13.4 Implemented
+
+In commit `dce982b`, mainly [app.py](gate/src/gate/app.py):
+
+- `GATE_AUTONOMOUS=1` turns the mode on. Any other value leaves the previous behavior.
+- When the last background step for a file ends (clearance loop, public review agent or reviewer note), a file still in `hold` with no reviewer becomes `withheld`. It gets the reason "Restricted automatically: ...", an `autopilot_restricted` finding and an `autopilot` audit event. This step never sets a public decision.
+- At startup, every unreviewed `hold` is settled the same way, because background jobs do not survive a restart.
+- Activating or retiring a learned rule runs the recheck of stored files automatically. The recheck only restricts. Retiring a rule does not release what it restricted.
+- `/live` shows "Finished without a person: X of Y". X counts `public`, `cleaned` and `withheld` files with no reviewer. Y counts all files.
+- `/public` shows "N adjunto(s) retenido(s) automáticamente para proteger datos de pacientes." in place of the private-document count.
+- `/api/activity` returns an `autonomy` object with `enabled`, `finished` and `total`.
+
+Not implemented: a way for a person to release an automatically restricted file, or to unpublish a published one, from the app.
+
+### 13.5 Tested
+
+- [test_autonomy.py](gate/tests/test_autonomy.py) has six tests. They cover: every seeded fixture reaching a final outcome with no `hold` left; Guild unavailable leading to restriction; a public review agent FAIL with a clean-looking candidate leading to restriction; a deterministic block that the Review page cannot release; rule activation restricting files without a manual recheck, and retirement not releasing them; the startup sweep settling an orphaned hold. They also check the `/public` and `/live` text and that restricted files return 404 on `/public/file`.
+- On commit `63c137a` the six tests passed and the full gate suite passed (276 tests), run locally on October 9, 2026.
+- A Semgrep scan of the three changed source files reported 0 findings ([autonomy.json](gate/semgrep/autonomy.json)).
+- Not tested: a live run with real AkashML, Guild and OCR outages in production.
+
+### 13.6 Deployed
+
+- The code is live on [argensec.pujia.ar](https://argensec.pujia.ar): `/api/activity` returns the new `autonomy` object.
+- The flag is on in production. At 22:19 UTC on October 9, 2026 `/api/activity` still returned `"enabled": false`. At 22:21 UTC it returned `"enabled": true`, `/live` showed the "Finished without a person" line, and `/public` showed "adjunto(s) retenido(s) automáticamente" for three purchases.
+- This records what was observed at that time. The flag is a server setting and can change without a commit.

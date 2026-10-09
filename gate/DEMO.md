@@ -11,13 +11,15 @@ Site: [argensec.pujia.ar](https://argensec.pujia.ar). All files are fictional.
 | 0:00-0:15 | Chequeado article | "In May 2026, Chequeado found medical histories, disability certificates and ID cards on PAMI's public purchase site. Nothing checked the files before they went up. We built that check." |
 | 0:15-0:25 | Activity | Choose **Test data > Load synthetic files**. "Three local offices upload eight purchase files. Some are clean. Some carry patient data." |
 | 0:25-0:50 | Activity **Files** cards | Point at the steps as they run. "Rule-based detectors look for IDs. AkashML's open text model reads for re-identification risk. Its vision model reads scanned pages. For files that can be cleaned, Guild agents take over. The orchestrator sorts the information into clinical, procurement and public. The public agent lists what to remove. A public reviewer checks the cleaned copy. If it fails, the feedback goes back for another round, up to three." Name the round and verdict you see on screen. |
-| 0:50-1:05 | A card under **Review** | "If the agents can't agree, or the file is uncertain, it waits for a person. A Guild agent writes a one-line note. The reviewer opens the original and decides." |
+| 0:50-1:05 | **Finished without a person** line on **Activity** | "If the agents can't agree, or the file is uncertain, it stays private automatically. Nothing waits for a person. A Guild agent writes a one-line note, and people audit the outcome afterward." |
 | 1:05-1:20 | **Purchase details** of a cleaned file | Show the **Removed** list. Open **Original (internal)**, then **Public copy**. "The text is deleted from the PDF, not covered. Each removal is listed by type and page. The public copy no longer points to anyone." |
 | 1:20-1:35 | Public | "This is what the public sees. Neutral file names, because an upload name can carry a patient's name. No patient data. Blocked files have no link at all." |
 | 1:35-1:50 | Audit | "Every decision goes to ClickHouse. To show PAMI scale we loaded one million simulated events, clearly labeled. Unsafe uploads by office, by data type, by month, and files affected by a rule update. Each query shows its time in milliseconds." |
 | 1:50-2:00 | Issue #2 | "Most of this code was written by AI, so we ran Semgrep on it. Its first scan found a CSRF hole that could publish a held medical file. We fixed it. Patient files stay private. Public purchases stay public." |
 
 Do not claim a FAIL round or a specific count unless it shows on screen in that take.
+
+The 0:50-1:05 line assumes `GATE_AUTONOMOUS=1`, which was on for the live site on October 9, 2026. Check that **Activity** shows "Finished without a person" before you say it. If a take runs with the flag off, show a card under **Review** and say the earlier line: "If the agents can't agree, or the file is uncertain, it waits for a person. A Guild agent writes a one-line note. The reviewer opens the original and decides."
 
 ## Extend the same gate with a lesson
 

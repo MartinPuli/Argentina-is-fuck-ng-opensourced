@@ -12,7 +12,7 @@ All documents are fictional. No real government system is connected. Detection c
 2. Scanned pages are read with Spanish OCR and an AkashML vision model.
 3. An AkashML text model reads the text. It flags re-identification risk, such as age plus town plus hospital, and lists the exact phrases that point to a person.
 4. Rules learned from documented incidents run too (see below).
-5. The gate decides. Clean files are published. Wholly clinical or identity files are kept private. Files with removable patient details go to the Guild clearance loop. Anything uncertain waits for a person.
+5. The gate decides. Clean files are published. Wholly clinical or identity files are kept private. Files with removable patient details go to the Guild clearance loop. Anything uncertain waits for a person. With `GATE_AUTONOMOUS=1`, it is restricted automatically instead (see [Autonomous mode](#autonomous-mode)).
 6. The public download route checks the decision and the rule version on every request. Public files get neutral names like `compra-12-adjunto-34.pdf`, because an upload name can contain a patient's name.
 
 Models can only add caution. A rule-based block is final. A missing or failed check keeps the file private.
@@ -31,7 +31,7 @@ The loop, one Guild session per step:
 2. The **public agent** ([prompt](guild-public/PROMPT.md)) lists the exact text to remove for the public level.
 3. The app removes that text from the PDF for real (deleted, not covered), then reruns the detectors on the cleaned bytes.
 4. The **public review agent** ([prompt](guild-verifier/PROMPT.md)) reads only the cleaned copy and answers PASS or FAIL. On FAIL its feedback goes back to the public agent. At most 3 rounds.
-5. The cleaned copy is published only if the reviewer says PASS and the detectors find nothing. Otherwise a person decides.
+5. The cleaned copy is published only if the reviewer says PASS and the detectors find nothing. Otherwise a person decides, or with `GATE_AUTONOMOUS=1` the file is restricted automatically.
 
 A **reviewer-note agent** ([prompt](guild-agent/PROMPT.md)) writes a one-line note for each held file from masked findings only.
 
@@ -101,11 +101,23 @@ Commit source and rebuilt `gate/src/gate/static` files together. Dependency noti
 |---|---|
 | `public` | Required automated analyses completed without a blocking or review finding. Classification can still be wrong. |
 | `cleaned` | A checked sanitized copy was cleared for publication; the original stays internal. Public access still requires a current rule check. |
-| `hold` | Analysis is missing, failed, incomplete, or uncertain. An authenticated reviewer must inspect the original. |
-| `withheld` | A deterministic block or reviewer rejection keeps the file internal. The approval endpoint cannot release this state. |
+| `hold` | Analysis is missing, failed, incomplete, or uncertain. An authenticated reviewer must inspect the original. With `GATE_AUTONOMOUS=1` this state is temporary and becomes `withheld`. |
+| `withheld` | A deterministic block, a reviewer rejection or, with `GATE_AUTONOMOUS=1`, an automatic restriction (`autopilot_restricted` finding) keeps the file internal. The approval endpoint cannot release this state. |
 | `approved` | A reviewer approved a held file and recorded a reason. This is a human decision, not an automated safety certificate. |
 
 Without a text model, files that have no deterministic block are **held**, including the harmless technical specification. Missing vision analysis, OCR failure, extraction failure, malformed model output and oversized model text also produce review findings. There is no silent public fallback when a required check is unavailable.
+
+### Autonomous mode
+
+`GATE_AUTONOMOUS=1` makes every upload reach a final outcome without a person. It is off by default. It was on for the live demo when checked on October 9, 2026.
+
+- When a file's background checks end and it is still `hold`, it becomes `withheld` with an `autopilot_restricted` finding and an `autopilot` audit event. Uncertainty never leads to publication.
+- At startup, unreviewed holds are settled the same way.
+- Activating or retiring a learned rule rechecks stored files automatically. The recheck only restricts.
+- `/live` shows "Finished without a person: X of Y". `/public` shows how many attachments were held back automatically.
+- People audit afterward through the audit log (`autopilot` events) and the purchase pages. The Review page lists and acts on `hold` files only. In this mode it stays mostly empty, and an automatic restriction cannot be released from the app yet.
+
+The rationale is in [§13 of the architecture decisions](<../PAMI Privacy Gate MVP Architecture Decisions.md>). Tests are in [test_autonomy.py](tests/test_autonomy.py).
 
 The pipeline combines identifier rules, text extraction, OCR and optional text/image model analysis. Pages containing images receive rendered-page analysis even when they also contain a substantial text layer. Deterministic blocks take precedence over model output. [Policy references](src/gate/rules.py) explain the rationale; they are not a compliance certification.
 

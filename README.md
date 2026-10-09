@@ -2,7 +2,7 @@
 
 ## Hackathon build: ArgenSec Gate
 
-ArgenSec Gate checks every PDF before PAMI publishes it on its public purchase site. Clean files are published. When patient details can be removed, a cleaned copy is published instead. Everything else stays private until a person decides. All documents are fictional.
+ArgenSec Gate checks every PDF before PAMI publishes it on its public purchase site. Clean files are published. When patient details can be removed, a cleaned copy is published instead. Everything else stays private automatically, and people audit the outcome afterward. All documents are fictional.
 
 **Try it:** open [Activity](https://argensec.pujia.ar/live) and choose **Test data > Load synthetic files**. Watch each check run, then open the **Review** cards, the [Public](https://argensec.pujia.ar/public) page and the [Audit](https://argensec.pujia.ar/dashboard) page.
 

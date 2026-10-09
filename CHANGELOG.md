@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-09 - Autonomous pipeline documented
+
+- Documented the autonomous mode added in `dce982b`. With `GATE_AUTONOMOUS=1`, every upload reaches a final outcome without a person. Uncertain files become `withheld` with an `autopilot_restricted` finding; they are never published.
+- Added §13 to the architecture decisions. It supersedes the operator approval step in §3, the operator as final decision-maker in §5.4 and the "no autonomous publication" line in §7. Earlier sections stay as written.
+- Six autonomy tests and the full gate suite (276 tests) pass locally. A Semgrep scan of the change reported 0 findings.
+- The code is deployed. The flag was on at argensec.pujia.ar when checked at 22:21 UTC on October 9, 2026. Updated the README, DEMO and SUBMISSION lines that said uncertain files wait for a person.
+- Not built yet: a way for a person to release an automatic restriction from the app. The Review page acts only on held files.
+
 ## 2026-10-09 — Team publication gate, incident learning and evidence comparison
 
 - Kept the team's PDF publication gate as the primary build, with a live activity workspace alongside detailed upload/review screens. The broader server-defense proposal remains future work.
