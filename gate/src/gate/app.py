@@ -10,6 +10,7 @@ import os
 import secrets
 import threading
 import time
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -57,13 +58,25 @@ def page(request: Request, name: str, **ctx) -> Response:
     return templates.TemplateResponse(request, name, ctx)
 
 
-def gate_attachment(purchase: dict, filename: str, pdf: bytes) -> int:
-    """Run one file through the gate, store it, log the decision."""
+def evaluate(pdf: bytes) -> tuple:
     started = time.perf_counter()
     result = scan(pdf)
     model = llm.review("\n\n".join(p.text for p in result.pages))
     decision, reasons, findings = decide(result, model)
-    latency = (time.perf_counter() - started) * 1000
+    return model, decision, reasons, findings, (time.perf_counter() - started) * 1000
+
+
+def gate_files(purchase: dict, files: list[tuple[str, bytes]]) -> None:
+    """Check all attachments of a purchase in parallel, then store them in order."""
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        results = list(pool.map(lambda f: evaluate(f[1]), files))
+    for (filename, pdf), evaluated in zip(files, results):
+        store_attachment(purchase, filename, pdf, *evaluated)
+
+
+def store_attachment(purchase: dict, filename: str, pdf: bytes, model, decision, reasons,
+                     findings, latency) -> int:
+    """Store one checked file and log the decision."""
     with db() as con:
         cur = con.execute(
             "insert into attachments (purchase_id, filename, sha256, pdf, decision, reasons,"
@@ -113,22 +126,19 @@ async def office_submit(office: str = Form(...), procedure: str = Form(...), ite
                         amount: float = Form(...), files: list[UploadFile] = File(...),
                         user: str = Depends(staff)):
     purchase = create_purchase(office, procedure, item, amount)
-    for f in files:
-        data = await f.read()
-        if data:
-            gate_attachment(purchase, f.filename or "adjunto.pdf", data)
+    uploads = [(f.filename or "adjunto.pdf", await f.read()) for f in files]
+    gate_files(purchase, [u for u in uploads if u[1]])
     return RedirectResponse(f"/purchase/{purchase['id']}", status_code=303)
 
 
 @app.post("/demo/seed")
 def demo_seed(user: str = Depends(staff)):
-    last = None
+    first = None
     for p in json.loads((FIXTURES / "purchases.json").read_text()):
         purchase = create_purchase(p["office"], p["procedure"], p["item"], p["amount"])
-        for name in p["files"]:
-            gate_attachment(purchase, name, (FIXTURES / name).read_bytes())
-        last = purchase["id"]
-    return RedirectResponse(f"/purchase/{last - 1 if last and last > 1 else last}", status_code=303)
+        first = first or purchase["id"]
+        gate_files(purchase, [(name, (FIXTURES / name).read_bytes()) for name in p["files"]])
+    return RedirectResponse(f"/purchase/{first}", status_code=303)
 
 
 @app.get("/purchase/{pid}")

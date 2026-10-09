@@ -134,6 +134,16 @@ def main() -> None:
         "Entrega con 3 sesiones de adaptación en la sede de la UGL.",
     ])
 
+    text_pdf(OUT / "especificacion_cama.pdf", "Especificación técnica - Cama ortopédica articulada", [
+        "Compulsa abreviada 1063/2026 - UGL XIX Misiones",
+        "",
+        "Ítem: cama ortopédica articulada de tres tramos con barandas, 1 unidad.",
+        "Colchón antiescaras de celdas de aire con compresor.",
+        "Destinada al afiliado de 81 años de Campo Viera que volvió a su casa",
+        "el 2 de septiembre tras la operación de cadera en el Hospital SAMIC de Oberá.",
+        "Entrega e instalación en domicilio dentro de las 72 horas.",
+    ])
+
     purchases = [
         {
             "office": "UGL XXIII Jujuy",
@@ -154,6 +164,13 @@ def main() -> None:
             "item": "Prótesis transfemoral",
             "amount": 9200000,
             "files": ["especificacion_protesis.pdf"],
+        },
+        {
+            "office": "UGL XIX Misiones",
+            "procedure": "Compulsa abreviada 1063/2026",
+            "item": "Cama ortopédica articulada",
+            "amount": 2100000,
+            "files": ["especificacion_cama.pdf"],
         },
     ]
     (OUT / "purchases.json").write_text(json.dumps(purchases, ensure_ascii=False, indent=2))

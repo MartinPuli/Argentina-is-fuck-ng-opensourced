@@ -1,6 +1,6 @@
 {% extends "base.html" %}{% block body %}
 <h1>Audit dashboard</h1><p class="muted">Every upload, decision and approval is an event in {{ s.backend }}. {{ s.total }} events so far.</p>
-<div class="grid"><div class="card"><div class="muted">Median gate time</div><div class="stat">{{ s.latency[0] }} ms</div><div class="muted">max {{ s.latency[1] }} ms · {{ s.latency[2] }} files</div></div>
+<div class="grid"><div class="card"><div class="muted">Median gate time</div><div class="stat">{{ s.latency[0]|int }} ms</div><div class="muted">max {{ s.latency[1]|int }} ms · {{ s.latency[2] }} files</div></div>
 {% set ns = namespace(p=0,h=0,w=0) %}{% for o in s.by_office %}{% set ns.p = ns.p + o[1] %}{% set ns.h = ns.h + o[2] %}{% set ns.w = ns.w + o[3] %}{% endfor %}
 <div class="card"><div class="muted">Published</div><div class="stat" style="color:var(--pub)">{{ ns.p }}</div></div>
 <div class="card"><div class="muted">Held for a person</div><div class="stat" style="color:var(--hold)">{{ ns.h }}</div></div>

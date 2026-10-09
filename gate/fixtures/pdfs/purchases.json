@@ -20,5 +20,14 @@
     "files": [
       "especificacion_protesis.pdf"
     ]
+  },
+  {
+    "office": "UGL XIX Misiones",
+    "procedure": "Compulsa abreviada 1063/2026",
+    "item": "Cama ortopédica articulada",
+    "amount": 2100000,
+    "files": [
+      "especificacion_cama.pdf"
+    ]
   }
 ]

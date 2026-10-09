@@ -8,10 +8,9 @@ import sys
 from pathlib import Path
 
 os.environ["GATE_DB"] = str(Path(__file__).parent / "test.db")
-os.environ.pop("AKASHML_API_KEY", None)
-os.environ.pop("GUILD_KEY_ID", None)
-os.environ.pop("CLICKHOUSE_HOST", None)
-os.environ.pop("GATE_STAFF_PASSWORD", None)
+# Empty values win over .env (load_dotenv never overrides), so tests stay offline.
+for var in ("AKASHML_API_KEY", "GUILD_WORKSPACE", "GUILD_AGENT", "CLICKHOUSE_HOST", "GATE_STAFF_PASSWORD"):
+    os.environ[var] = ""
 
 from fastapi.testclient import TestClient  # noqa: E402
 
@@ -26,6 +25,8 @@ EXPECTED = {
     "dni_escaneado.pdf": "withheld",
     "certificado_discapacidad.pdf": "withheld",
     "especificacion_protesis.pdf": "hold",
+    # No identifier and no clinical keyword: only the model can see the risk.
+    "especificacion_cama.pdf": "public",
 }
 
 

@@ -8,6 +8,7 @@ otherwise to a local SQLite table with the same columns, so the demo runs offlin
 import json
 import os
 import sqlite3
+import threading
 import time
 from datetime import datetime, timezone
 from pathlib import Path
@@ -41,6 +42,7 @@ def db() -> sqlite3.Connection:
 class Events:
     def __init__(self) -> None:
         self.ch = None
+        self.lock = threading.Lock()  # one ClickHouse client is shared by request and agent threads
         if os.getenv("CLICKHOUSE_HOST"):
             import clickhouse_connect
 
@@ -50,6 +52,7 @@ class Events:
                 username=os.getenv("CLICKHOUSE_USER", "default"),
                 password=os.getenv("CLICKHOUSE_PASSWORD", ""),
                 secure=os.getenv("CLICKHOUSE_SECURE", "1") == "1",
+                autogenerate_session_id=False,
             )
             self.ch.command(
                 """create table if not exists gate_events (
@@ -70,12 +73,13 @@ class Events:
         now = datetime.now(timezone.utc)
         kinds = kinds or []
         if self.ch:
-            self.ch.insert(
-                "gate_events",
-                [[now, event, office, purchase_id, attachment_id, filename, decision, kinds, actor, latency_ms]],
-                column_names=["ts", "event", "office", "purchase_id", "attachment_id",
-                              "filename", "decision", "kinds", "actor", "latency_ms"],
-            )
+            with self.lock:
+                self.ch.insert(
+                    "gate_events",
+                    [[now, event, office, purchase_id, attachment_id, filename, decision, kinds, actor, latency_ms]],
+                    column_names=["ts", "event", "office", "purchase_id", "attachment_id",
+                                  "filename", "decision", "kinds", "actor", "latency_ms"],
+                )
             return
         with db() as con:
             con.execute(
@@ -87,43 +91,51 @@ class Events:
     def stats(self) -> dict:
         """Numbers for the dashboard. Same questions on both backends."""
         if self.ch:
-            q = self.ch.query
-            by_office = q(
-                "select office, countIf(decision='public'), countIf(decision='hold'), "
-                "countIf(decision='withheld') from gate_events where event='decision' "
-                "group by office order by office"
-            ).result_rows
-            kinds = q(
-                "select k, count() c from gate_events array join kinds as k "
-                "where event='decision' group by k order by c desc limit 10"
-            ).result_rows
-            latency = q(
-                "select round(quantile(0.5)(latency_ms)), round(max(latency_ms)), count() "
-                "from gate_events where event='decision'"
-            ).result_rows[0]
-            reviews = q(
-                "select actor, decision, filename, ts from gate_events "
-                "where event in ('approved','rejected') order by ts desc limit 10"
-            ).result_rows
-            total = q("select count() from gate_events").result_rows[0][0]
-        else:
-            with db() as con:
-                by_office = [tuple(r) for r in con.execute(
-                    "select office, sum(decision='public'), sum(decision='hold'), "
-                    "sum(decision='withheld') from events where event='decision' "
-                    "group by office order by office")]
-                counts: dict[str, int] = {}
-                for (k,) in con.execute("select kinds from events where event='decision'"):
-                    for kind in json.loads(k):
-                        counts[kind] = counts.get(kind, 0) + 1
-                kinds = sorted(counts.items(), key=lambda kv: -kv[1])[:10]
-                lat = sorted(r[0] for r in con.execute(
-                    "select latency_ms from events where event='decision'"))
-                latency = (round(lat[len(lat) // 2]) if lat else 0, round(lat[-1]) if lat else 0, len(lat))
-                reviews = [tuple(r) for r in con.execute(
-                    "select actor, decision, filename, ts from events "
-                    "where event in ('approved','rejected') order by ts desc limit 10")]
-                total = con.execute("select count(*) from events").fetchone()[0]
+            with self.lock:
+                return self._ch_stats()
+        return self._sqlite_stats()
+
+    def _ch_stats(self) -> dict:
+        q = self.ch.query
+        by_office = q(
+            "select office, countIf(decision='public'), countIf(decision='hold'), "
+            "countIf(decision='withheld') from gate_events where event='decision' "
+            "group by office order by office"
+        ).result_rows
+        kinds = q(
+            "select k, count() c from gate_events array join kinds as k "
+            "where event='decision' group by k order by c desc limit 10"
+        ).result_rows
+        latency = q(
+            "select round(quantile(0.5)(latency_ms)), round(max(latency_ms)), count() "
+            "from gate_events where event='decision'"
+        ).result_rows[0]
+        reviews = q(
+            "select actor, decision, filename, ts from gate_events "
+            "where event in ('approved','rejected') order by ts desc limit 10"
+        ).result_rows
+        total = q("select count() from gate_events").result_rows[0][0]
+        return {"by_office": by_office, "kinds": kinds, "latency": latency,
+                "reviews": reviews, "total": total, "backend": self.backend}
+
+    def _sqlite_stats(self) -> dict:
+        with db() as con:
+            by_office = [tuple(r) for r in con.execute(
+                "select office, sum(decision='public'), sum(decision='hold'), "
+                "sum(decision='withheld') from events where event='decision' "
+                "group by office order by office")]
+            counts: dict[str, int] = {}
+            for (k,) in con.execute("select kinds from events where event='decision'"):
+                for kind in json.loads(k):
+                    counts[kind] = counts.get(kind, 0) + 1
+            kinds = sorted(counts.items(), key=lambda kv: -kv[1])[:10]
+            lat = sorted(r[0] for r in con.execute(
+                "select latency_ms from events where event='decision'"))
+            latency = (round(lat[len(lat) // 2]) if lat else 0, round(lat[-1]) if lat else 0, len(lat))
+            reviews = [tuple(r) for r in con.execute(
+                "select actor, decision, filename, ts from events "
+                "where event in ('approved','rejected') order by ts desc limit 10")]
+            total = con.execute("select count(*) from events").fetchone()[0]
         return {"by_office": by_office, "kinds": kinds, "latency": latency,
                 "reviews": reviews, "total": total, "backend": self.backend}
 

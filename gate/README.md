@@ -42,6 +42,8 @@ Every decision cites the rule behind it (Ley 25.326, Ley 27.275, Ley 26.529, AAI
 
 Each one is optional at runtime. Without keys, the gate runs on deterministic checks and logs to SQLite.
 
+The Guild connector uses the `guild` CLI, logged in on the host, to open a session per case and poll for the brief.
+
 ## Run it
 
 ```bash
