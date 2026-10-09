@@ -4,7 +4,7 @@
 .hero h1{font-size:24px;max-width:640px}
 .flow{display:grid;grid-template-columns:1fr auto 1.3fr auto 1fr;gap:10px;align-items:stretch;margin-bottom:22px}
 @media(max-width:860px){.flow{grid-template-columns:1fr}.arrow{transform:rotate(90deg)}}
-.node{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px;text-align:center}
+.node{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:10px;text-align:center;display:flex;flex-direction:column;justify-content:center}
 .node .t{font-weight:700}.node .s{font-size:13px;color:var(--muted)}
 .node.agent{border:2px solid var(--accent)}.node.agent.busy{box-shadow:0 0 0 4px #dbeafe}
 .arrow{align-self:center;font-size:22px;color:var(--muted);text-align:center}
@@ -12,7 +12,7 @@
 .cols{display:grid;grid-template-columns:3fr 2fr;gap:18px}@media(max-width:860px){.cols{grid-template-columns:1fr}}
 .row{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:8px;display:grid;grid-template-columns:96px 1fr;gap:4px 12px;align-items:center}
 .row.live{border-color:#93c5fd;box-shadow:0 0 0 3px #dbeafe}
-.row .file{font-weight:600}.row .why{grid-column:2;font-size:13px;color:var(--muted)}
+.row .file{font-weight:600}.row .why{font-size:14px;color:var(--muted)}
 .chips{grid-column:2;display:flex;gap:5px;flex-wrap:wrap}
 .chip{font-size:12px;padding:2px 8px;border-radius:99px;background:#f3f4f6;color:#9ca3af;white-space:nowrap}
 .chip.done{background:#eef2ff;color:#3730a3}.chip.running{background:#dbeafe;color:var(--accent)}.chip.error{background:var(--blk-bg);color:var(--blk)}
@@ -26,25 +26,24 @@ details{font-size:14px}details summary{cursor:pointer;color:var(--muted)}details
 </style>
 
 <div class="hero">
-  <h1>Every file a PAMI office uploads passes through this agent before it can reach the public website.</h1>
+  <h1>Private files never reach the public site.</h1>
   <form method="post" action="/demo/seed"><button style="font-size:16px;padding:12px 20px">▶ Send 8 office files</button></form>
 </div>
 
 <div class="flow">
-  <div class="node"><div class="t">Office uploads</div><div class="s">purchase files</div></div>
+  <div class="node"><div class="t">Office uploads</div></div>
   <div class="arrow">→</div>
-  <div class="node agent" id="agentnode"><div class="t">Agent checks each file</div>
-    <div class="s">ID numbers · AkashML AI · Guild agent note</div><div class="s" id="busy" style="margin-top:6px"></div></div>
+  <div class="node agent" id="agentnode"><div class="t">Agent checks</div><div class="s" id="busy"></div></div>
   <div class="arrow">→</div>
   <div class="outs" id="outs"></div>
 </div>
 
 <div class="cols">
-  <section><h2>Live: what the agent did with each file</h2><div id="jobs"><div class="empty">Loading…</div></div></section>
+  <section><h2>Files</h2><div id="jobs"><div class="empty">Loading…</div></div></section>
   <section><h2>Your call</h2><div id="waiting"><div class="empty">Loading…</div></div></section>
 </div>
 
-<details style="margin-top:16px"><summary>Upload your own PDF</summary>
+<details style="margin-top:16px"><summary>Upload a PDF</summary>
   <form method="post" action="/office" enctype="multipart/form-data">
     <select name="office">{% for o in offices %}<option>{{ o }}</option>{% endfor %}</select>
     <input name="item" placeholder="What is being bought" required>
@@ -60,31 +59,28 @@ const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;
 function render(d) {
   const c = d.counts, running = d.jobs.filter(j => !j.done).length;
   document.getElementById("outs").innerHTML =
-    `<div class="out b-public">Published to public site<span>${c.published}</span></div>` +
-    `<div class="out b-withheld">Blocked: private data<span>${c.blocked}</span></div>` +
-    `<div class="out b-hold">Sent to a person<span>${c.waiting}</span></div>`;
+    `<div class="out b-public">Published<span>${c.published}</span></div>` +
+    `<div class="out b-withheld">Blocked<span>${c.blocked}</span></div>` +
+    `<div class="out b-hold">Your call<span>${c.waiting}</span></div>`;
   document.getElementById("agentnode").classList.toggle("busy", running > 0);
-  document.getElementById("busy").innerHTML = running ? `<span class="spin"></span> working on ${running} file${running > 1 ? "s" : ""}` : "idle";
+  document.getElementById("busy").innerHTML = running ? `<span class="spin"></span> ${running} running` : (d.jobs.length ? "✓ done" : "waiting");
 
   document.getElementById("jobs").innerHTML = d.jobs.length ? d.jobs.map(j => `
     <div class="row ${j.done ? "" : "live"}">
       <div>${j.decision ? `<span class="badge b-${j.decision}">${LABEL[j.decision]}</span>` : '<span class="spin"></span>'}</div>
-      <div><span class="file mono">${esc(j.file)}</span> <span class="muted" style="font-size:13px">${esc(j.office)}</span>
-        ${j.attachment_id ? `<a class="muted" style="font-size:13px" href="/purchase/${j.purchase_id}">details</a>` : ""}
-        ${j.agent_url ? `<a class="muted" style="font-size:13px" href="${esc(j.agent_url)}" target="_blank">Guild run ↗</a>` : ""}</div>
-      <div class="chips">${j.steps.map(s => `<span class="chip ${s.status}" title="${esc(s.detail)}">${s.status === "running" ? '<span class="spin"></span> ' : s.status === "done" ? "✓ " : ""}${esc(s.name)}</span>`).join("")}</div>
-      ${j.why ? `<div class="why">${esc(j.why)}</div>` : ""}
-    </div>`).join("") : '<div class="empty">Nothing yet. Press “Send 8 office files”.</div>';
+      <div><a class="file mono" style="color:inherit;text-decoration:none" href="/purchase/${j.purchase_id}">${esc(j.file)}</a>
+        ${j.why ? `<span class="why">— ${esc(j.why)}</span>` : ""}</div>
+      ${j.done ? "" : `<div class="chips">${j.steps.map(s => `<span class="chip ${s.status}" title="${esc(s.detail)}">${s.status === "running" ? '<span class="spin"></span> ' : s.status === "done" ? "✓ " : ""}${esc(s.name)}</span>`).join("")}</div>`}
+    </div>`).join("") : '<div class="empty">Press “Send 8 office files”.</div>';
 
   document.getElementById("waiting").innerHTML = d.waiting.length ? d.waiting.map(w => `
-    <div class="wait"><span class="mono" style="font-weight:600">${esc(w.file)}</span> <a class="muted" href="/internal/file/${w.id}" target="_blank">open</a>
-      <div class="muted" style="font-size:13px">${esc(w.office)} · ${esc(w.item)}</div>
-      ${w.note ? `<div class="note"><b>Agent:</b> ${esc(w.note)}${w.agent_url ? ` <a class="muted" href="${esc(w.agent_url)}" target="_blank">Guild run ↗</a>` : ""}</div>`
-               : '<div class="note muted"><span class="spin"></span> Guild agent is writing a note…</div>'}
+    <div class="wait"><a class="mono" style="font-weight:600;color:inherit" href="/internal/file/${w.id}" target="_blank">${esc(w.file)}</a>
+      ${w.note ? `<div class="note">🤖 ${esc(w.note)}${w.agent_url ? ` <a class="muted" href="${esc(w.agent_url)}" target="_blank" title="See this run on Guild">↗</a>` : ""}</div>`
+               : '<div class="note muted"><span class="spin"></span> agent thinking…</div>'}
       <form method="post" action="/review/${w.id}"><input type="hidden" name="reviewer" value="{{ user }}">
         <button class="btn-green" name="action" value="approve">Publish</button>
         <button class="btn-red" name="action" value="reject">Keep private</button></form>
-    </div>`).join("") : '<div class="empty">Nothing needs you.</div>';
+    </div>`).join("") : '<div class="empty">Nothing.</div>';
 }
 
 async function poll() {

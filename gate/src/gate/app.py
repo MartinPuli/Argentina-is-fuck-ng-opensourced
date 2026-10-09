@@ -116,15 +116,15 @@ def evaluate(pdf: bytes, job: dict) -> tuple:
     activity.step(job, STEP_DECIDE, "done", LABEL[decision])
     kinds = {f["kind"] for f in findings}
     if decision == WITHHELD:
-        why = "Found " + ", ".join(SHORT.get(h, h) for h in hits[:4])
+        why = ", ".join(SHORT.get(h, h) for h in hits[:3])
     elif "model_context" in kinds:
-        why = "No name, but details point to one patient"
+        why = "identifies a patient without a name"
     elif "unreadable_scan" in kinds or "model_image" in kinds:
-        why = "Image it can't verify"
+        why = "unreadable image"
     elif decision == HOLD:
-        why = "Medical wording, no ID"
+        why = "medical wording"
     else:
-        why = "Nothing private found"
+        why = "clean"
     activity.finish(job, why=why)
     return model, decision, reasons, findings, (time.perf_counter() - started) * 1000
 
