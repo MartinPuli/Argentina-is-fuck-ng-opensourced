@@ -9,7 +9,6 @@ body.public-view main{max-width:none;margin:0;padding:0;min-height:100dvh}
 .pp-top .pp-wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:64px}
 .pp-brand{display:flex;align-items:center;gap:12px;color:var(--pp-navy);font-weight:600;font-size:17px;letter-spacing:-.2px}
 .pp-brand:hover{text-decoration:none}
-.pp-mark{width:30px;height:30px;border-radius:50%;background:#74acdf}
 .pp-brand small{display:block;font-size:12px;font-weight:400;color:var(--pp-navy);letter-spacing:0}
 .pp-demo{font-size:12px;color:var(--pp-navy);background:#fff;font-weight:600;border-radius:3px;padding:3px 10px;white-space:nowrap}
 .pp-band{height:3px;background:#1d9fd8}
@@ -46,10 +45,12 @@ body.public-view main{max-width:none;margin:0;padding:0;min-height:100dvh}
 .pp-item,.pp-amount{font-size:18px}
 .pp-dl{display:none}
 }
-.pp-top{background:var(--sidebar)}.pp-brand,.pp-head h1,.pp-amount{font-weight:300}.pp-brand{font-size:14px}.pp-band{display:none}.pp-hero{background:#fff}.pp-card{border:1px solid var(--line)}.pp-proc{font-weight:400;letter-spacing:0;text-transform:none}.pp-tag{border-radius:3px;background:var(--accent-soft);color:var(--public);font-weight:400}.pp-top .pp-wrap>.text-link{font-size:12px}.pp-head h1{font-size:30px}
+.pp-head h1,.pp-amount{font-weight:300}.pp-band{display:none}.pp-hero{background:#fff}.pp-card{border:1px solid var(--line)}.pp-proc{font-weight:400;letter-spacing:0;text-transform:none}.pp-tag{border-radius:3px;background:var(--accent-soft);color:var(--public);font-weight:400}.pp-head h1{font-size:30px}
+/* Public header: own colors, not the shared --sidebar token. Text #0b3a5c on #e6f3fb is 10.5:1. */
+.pp-top{background:#e6f3fb;border-bottom:1px solid #c5dfef;color:#0b3a5c}.pp-brand{font-size:16px;font-weight:600;color:#0b3a5c}.pp-brand:focus-visible{outline-offset:4px}.pp-flag{flex:none;display:block}
 </style>
 <div class="pp">
-<header class="pp-top"><div class="pp-wrap"><a class="pp-brand" href="/public"><span>Public procurement<small></small></span></a><a class="text-link" href="/">Documents</a></div></header>
+<header class="pp-top"><div class="pp-wrap"><a class="pp-brand" href="/public"><svg class="pp-flag" width="36" height="24" viewBox="0 0 90 60" aria-hidden="true" focusable="false"><rect width="90" height="60" fill="#74ACDF"/><rect y="20" width="90" height="20" fill="#fff"/><circle cx="45" cy="30" r="7" fill="#F6B40E" stroke="#85340A" stroke-width="1.5"/><rect x="1" y="1" width="88" height="58" fill="none" stroke="#5b7a92" stroke-width="2"/></svg><span>Public procurement</span></a></div></header>
 <div class="pp-band" aria-hidden="true"></div>
 <div class="pp-hero"><div class="pp-wrap"><div class="pp-head"><h1>Published purchases</h1></div></div></div>
 <div class="pp-wrap">
