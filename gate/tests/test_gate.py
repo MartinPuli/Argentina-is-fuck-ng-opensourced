@@ -204,7 +204,7 @@ def test_public_page_says_the_data_is_fictional(web):
 
 
 @pytest.mark.parametrize("route,label", [
-    ("/", "Documents"),
+    ("/", "All documents"),
     ("/office", "Upload"),
     ("/review", "No files waiting for review."),
     ("/public", "No purchases published yet."),
@@ -233,7 +233,7 @@ def test_all_populated_screens_render_current_decisions(web):
         "action": "approve", "note": "Verified fictional equipment requirements only.",
     }, follow_redirects=False).status_code == 303
     expected_labels = {
-        "/": ["Documents"],
+        "/": ["All documents", "Agent log"],
         "/office": ["Supporting attachments", "Load sample files"],
         purchase_url: ["Attachment decisions", "Reviewer approved", "Kept internal", "Needs review"],
         "/review": ["Decision reason", "Keep private", "Publish original", STAFF[0]],

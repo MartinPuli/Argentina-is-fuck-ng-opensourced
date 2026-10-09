@@ -1,137 +1,385 @@
-{% extends "base.html" %}{% block title %}Documents{% endblock %}{% block body %}
+{% extends "base.html" %}{% block title %}Workspace{% endblock %}{% block body %}
 <link rel="stylesheet" href="{{ asset_url('workspace.css') }}">
-{% import "brand.html" as brand %}
 <style>
-.home-page{--hp-ink:var(--brand-primary,#0B2545);--hp-text:var(--c-ink,#0f1f33);--hp-muted:var(--c-muted,#4b5b70);--hp-accent:var(--brand-accent,#1F6FB2);--hp-accent-hover:#185a91;--hp-line:var(--c-line,#e2e8f0);--hp-wire:#a3b1c2;--hp-ok:var(--c-published,#15803d);--hp-no:var(--c-blocked,#b91c1c);color:var(--hp-text);padding:40px 0 48px;text-align:center}
-.home-page .hp-eyebrow{margin:0 0 14px;font-size:13px;font-weight:600;letter-spacing:.02em;color:var(--hp-accent)}
-.home-page h1{margin:0 auto;max-width:24ch;font-size:clamp(30px,3.8vw,46px);line-height:1.1;letter-spacing:-.025em;font-weight:700;color:var(--hp-ink)}
-.home-page .hp-action{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin-top:28px}
-.home-page .hp-cta{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 20px;border-radius:4px;border:1px solid var(--hp-accent);background:var(--hp-accent);color:#fff;font-size:15px;font-weight:600;text-decoration:none;transition:background .15s,border-color .15s}
-.home-page .hp-cta:hover{background:var(--hp-accent-hover);border-color:var(--hp-accent-hover);text-decoration:none}
-.home-page .hp-cta.hp-secondary{background:#fff;color:var(--hp-ink);border-color:var(--c-line-strong,#cbd5e1)}
-.home-page .hp-cta.hp-secondary:hover{background:var(--c-surface-alt,#f8fafc);border-color:var(--hp-wire)}
-.home-page .hp-cta:focus-visible{outline:2px solid var(--hp-accent);outline-offset:3px}
-.home-page .hp-cta svg{width:16px;height:16px}
-.home-page .hp-diagram{margin:44px auto 0;max-width:960px;padding:32px 24px 24px;border:1px solid var(--hp-line);border-radius:4px;background:var(--c-surface-alt,#f8fafc)}
-.home-page .hp-diagram svg{display:block;width:100%;height:auto;margin:0 auto}
-.home-page .hp-diagram .hp-tall{display:none;max-width:340px}
-.home-page .hx-paper{fill:#fff;stroke:var(--hp-ink);stroke-width:1.75;stroke-linejoin:round}
-.home-page .hx-stroke{fill:none;stroke:var(--hp-ink);stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
-.home-page .hx-text-line{fill:none;stroke:var(--hp-wire);stroke-width:2;stroke-linecap:round}
-.home-page .hx-wire{fill:none;stroke:var(--hp-wire);stroke-width:1.5;stroke-linecap:round}
-.home-page .hx-head{fill:var(--hp-wire)}
-.home-page .hx-tag{fill:var(--hp-accent)}
-.home-page .hx-tag-text{fill:#fff;font-size:9px;font-weight:700;letter-spacing:.04em}
-.home-page .hx-ok{fill:var(--hp-ok)}
-.home-page .hx-no{fill:var(--hp-no)}
-.home-page .hx-mark{fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.home-page .hx-label{fill:var(--hp-ink);font-size:15px;font-weight:600}
-.home-page .hx-meta{fill:var(--hp-muted);font-size:12px;letter-spacing:.01em}
-.home-page~#document-workspace{margin-top:8px;padding-top:28px;border-top:1px solid var(--hp-line,#e2e8f0)}
-@media(max-width:700px){
-.home-page{padding:16px 0 32px;text-align:left}
-.home-page h1{margin:0}
-.home-page .hp-action{justify-content:stretch;margin-top:22px}
-.home-page .hp-cta{flex:1 1 100%}
-.home-page .hp-diagram{margin-top:28px;padding:24px 12px 16px}
-.home-page .hp-diagram .hp-wide{display:none}
-.home-page .hp-diagram .hp-tall{display:block}
-}
+.ws{--ink:#0B2545;--text:#1e2a3a;--muted:#5b6b7f;--line:#e3e8ef;--soft:#f6f8fb;--acc:#1F6FB2;--ok:#15803d;--teal:#0f766e;--amber:#b45309;--red:#b91c1c;color:var(--text);padding:24px 0 32px}
+.ws [hidden]{display:none!important}
+.ws-head{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:24px}
+.ws-head h1{margin:0;font-size:20px;font-weight:600;color:var(--ink);letter-spacing:-.01em}
+.ws-head p{margin:4px 0 0;font-size:14px;color:var(--muted)}
+.ws-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.ws-actions form{margin:0}
+.ws .ws-btn{display:inline-flex;align-items:center;justify-content:center;height:36px;min-height:36px;padding:0 16px;border-radius:4px;border:1px solid var(--acc);background:var(--acc);color:#fff;font-family:inherit;font-size:14px;font-weight:600;line-height:1;text-decoration:none;cursor:pointer;box-shadow:none}
+.ws .ws-btn:hover{background:#185a91;text-decoration:none}
+.ws .ws-btn.sec{background:#fff;color:var(--ink);border-color:#cbd5e1}.ws .ws-btn.sec:hover{background:var(--soft)}
+.ws .ws-btn.ghost{background:transparent;border-color:transparent;color:var(--muted);padding:0 8px;font-weight:500}.ws .ws-btn.ghost:hover{color:var(--red);background:transparent}
+.ws-msg{font-size:12px;margin:8px 0 0}
+.ws-stats{display:flex;flex-wrap:wrap;align-items:stretch;border:1px solid var(--line);border-radius:4px;margin:0 0 8px}
+.ws-stat{flex:1 1 0;min-width:96px;padding:12px 16px;border-right:1px solid var(--line)}.ws-stat:last-child{border-right:0}
+.ws-stat dt{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px}.ws-stat dd{margin:4px 0 0;font-size:24px;font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums;line-height:1.1}
+.ws-dot{width:8px;height:8px;border-radius:50%;background:#cbd5e1;flex:none}.ws-dot.working{background:var(--acc)}.ws-dot.ok{background:var(--ok)}.ws-dot.red{background:var(--red)}.ws-dot.amb{background:var(--amber)}
+.ws-stat.auto{flex:1.6 1 0}.ws-stat.auto dd{font-size:16px;font-weight:500;padding-top:6px}
+.ws-meta{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin:0 0 32px}.ws-meta a{color:var(--acc)}
+.ws-sec{margin-bottom:32px}.ws-sec>h2,.ws-title{font-size:15px;font-weight:600;color:var(--ink);margin:0 0 12px;display:flex;align-items:baseline;gap:8px}
+.ws-sec>h2 small{font-size:12px;font-weight:400;color:var(--amber)}
+.ws-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:16px;align-items:start}
+.agent-log{border:1px solid var(--line);border-radius:4px;background:var(--soft);font:12px/1.6 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--text);min-width:0}
+.agent-log-head{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border-bottom:1px solid var(--line);color:var(--muted)}.agent-log-head h3{font-family:inherit;font-size:12px;font-weight:600;color:var(--ink);margin:0}
+.agent-log-body{max-height:440px;overflow-y:auto;padding:4px 0}
+.log-line{display:grid;grid-template-columns:60px 120px minmax(0,1fr) 52px 16px;gap:8px;padding:2px 12px;white-space:nowrap}.log-line>span{overflow:hidden;text-overflow:ellipsis}.log-line:hover{background:#eef2f7}
+.log-line .log-file{display:none}.log-time,.log-dur{color:var(--muted)}.log-dur{text-align:right}.log-err{color:var(--red)}.log-ok{color:var(--ok)}.log-line a{color:var(--acc);text-decoration:none}.log-empty{padding:4px 12px;color:var(--muted)}
+.log-line>span[class^="tag-"]{color:var(--ink);font-weight:600}
+.live-list{display:grid;gap:8px;min-width:0}#live-jobs{max-height:480px;overflow-y:auto;align-content:start}
+.live-job{border:1px solid var(--line);border-radius:4px;padding:12px 16px;background:#fff}
+.live-job .jh{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.live-job h3{font-size:14px;font-weight:600;color:var(--ink);margin:0;overflow-wrap:anywhere}.live-job .jo{font-size:12px;color:var(--muted)}
+.live-job p{font-size:13px;color:var(--muted);margin:8px 0 0;overflow-wrap:anywhere}
+.st{font-size:12px;font-weight:600;padding:2px 8px;border-radius:4px;white-space:nowrap;border:1px solid currentColor;flex:none}
+.st-run{color:var(--acc)}.st-public,.st-approved{color:var(--ok)}.st-cleaned{color:var(--teal)}.st-hold,.st-stale{color:var(--amber)}.st-withheld,.st-error{color:var(--red)}
+.live-steps{display:flex;gap:4px;flex-wrap:wrap;list-style:none;padding:0;margin:8px 0 0}
+.live-step{font-size:11px;padding:2px 8px;border:1px solid var(--line);border-radius:4px;background:#fff;color:var(--muted)}
+.live-step.running{color:var(--acc);border-color:var(--acc)}.live-step.done{color:var(--ink);background:var(--soft)}.live-step.error{color:var(--red);border-color:var(--red)}
+.job-detail{margin-top:8px}.job-detail>summary{font-size:12px;color:var(--acc);cursor:pointer}
+.trace{display:grid;gap:4px;margin:8px 0 0;font:11px/1.4 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}.trace-row{display:grid;grid-template-columns:140px 1fr 52px;gap:8px;align-items:center}.trace-row span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted)}.trace-row span:last-child{text-align:right}
+.trace-track{position:relative;height:8px;background:var(--soft);border-radius:2px}.trace-bar{position:absolute;top:0;bottom:0;min-width:2px;border-radius:2px;background:var(--acc)}.trace-bar.bar-guild{background:var(--ink)}.trace-bar.running{opacity:.5}.trace-bar.error{background:var(--red)}
+.live-job-links{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;margin-top:8px}.live-job-links a{color:var(--acc)}
+.ws .live-error{color:var(--red)}
+.ws-empty{border:1px dashed #cbd5e1;border-radius:4px;padding:32px 16px;text-align:center;color:var(--muted);font-size:14px}
+.live-review{border:1px solid var(--line);border-left:3px solid var(--amber);border-radius:4px;padding:12px 16px;background:#fff}
+.live-review>summary{cursor:pointer;list-style:none}.live-review h3{font-size:14px;font-weight:600;color:var(--ink);margin:0}.live-review p{font-size:13px;color:var(--muted);margin:4px 0}
+.review-body{display:grid;gap:8px;margin-top:8px;font-size:13px}.review-body a{color:var(--acc)}.live-note{white-space:pre-wrap}
+.live-review .review-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.live-review textarea{min-height:64px;width:100%}
+.ws-intake{display:flex;align-items:center;justify-content:space-between;gap:8px 16px;flex-wrap:wrap;margin:0 0 16px}
+.ws-intake .pdf-intake{margin:0;flex:1 1 320px}.ws-intake .pdf-dropzone{display:flex;align-items:center;gap:8px 12px;flex-wrap:wrap;padding:8px 12px;text-align:left;border:1px dashed #cbd5e1;background:#fff}
+.ws-intake .pdf-dropzone>svg{width:18px;height:18px;margin:0;color:var(--muted)}.ws-intake .pdf-dropzone h2{font-size:13px;font-weight:600;color:var(--ink);margin:0}.ws-intake .pdf-dropzone label.btn{display:none}
+.ws-intake .pdf-dropzone p{margin:0;font-size:12px}.ws-intake .pdf-dropzone [data-intake-files],.ws-intake .pdf-dropzone .form-message{margin:0;flex-basis:100%}.ws-intake>p{margin:0;font-size:12px}.ws-intake>p a{color:var(--acc)}
+.ws label.ws-btn{margin:0}
+#document-workspace{border-top:1px solid #e3e8ef;padding-top:24px}
+#document-workspace .workspace-actions,#document-workspace .workspace-totals{display:none!important}
+#document-workspace .workspace-heading{margin:0 0 16px!important}
+#document-workspace.ws-none .workspace-empty button{display:none}
+#document-workspace h1{font-size:15px!important;font-weight:600!important;color:#0B2545;letter-spacing:0}
+@media(max-width:900px){.ws-grid{grid-template-columns:1fr}}
+@media(max-width:600px){.ws{padding-top:16px}.ws-actions{width:100%}.ws-actions>a.ws-btn{flex:1 1 auto}.ws-actions>form{display:flex;flex-direction:column;flex:1 1 auto}.ws-actions>form.rs{flex:0 0 auto}
+.ws-stat{flex:1 1 50%;padding:8px 12px;border-bottom:1px solid var(--line)}.ws-stat:nth-child(even){border-right:0}.ws-stat.auto{flex:1 1 100%;border-bottom:0;border-right:0}.ws-stat dd{font-size:20px}
+.log-line{grid-template-columns:62px 72px minmax(0,1fr) 16px}#live-jobs{max-height:560px}.log-dur{display:none}.trace-row{grid-template-columns:90px 1fr 44px}}
 </style>
-<section class="home-page" aria-labelledby="hp-title">
-<p class="hp-eyebrow">ArgenSec Publication Gate</p>
-<h1 id="hp-title">Patient data never reaches the public website.</h1>
-<div class="hp-action"><a class="hp-cta" href="/live">Watch it live <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a><a class="hp-cta hp-secondary" href="/office"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5M5 20h14"/></svg>Upload a PDF</a></div>
-
-<figure class="hp-diagram">
-{# Wide version: left to right #}
-<svg class="hp-wide" viewBox="0 0 960 220" role="img" aria-labelledby="hpw-title hpw-desc">
-<title id="hpw-title">How the publication gate works</title>
-<desc id="hpw-desc">A PAMI office uploads a PDF. AI agents from AkashML and Guild.ai check every page at the ArgenSec gate, and each decision is logged in ClickHouse. Safe purchase files are published on the public website. Patient data is kept private.</desc>
-<defs><marker id="hpw-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="hx-head" d="M0 0L10 5L0 10z"/></marker></defs>
-{# document #}
-<path class="hx-paper" d="M76 46H112L128 62V134H76Z"/>
-<path class="hx-stroke" d="M112 46V62H128"/>
-<path class="hx-text-line" d="M86 76H118M86 88H118M86 100H110M86 112H116"/>
-<rect class="hx-tag" x="66" y="118" width="30" height="16" rx="2"/>
-<text class="hx-tag-text" x="81" y="129.5" text-anchor="middle">PDF</text>
-<text class="hx-label" x="102" y="176" text-anchor="middle">PAMI office uploads a PDF</text>
-{# wire to gate #}
-<path class="hx-wire" d="M156 90H352" marker-end="url(#hpw-arrow)"/>
-{# gate #}
-<g transform="translate(364 50)">{{ brand.logo(80) }}</g>
-<text class="hx-label" x="404" y="176" text-anchor="middle">AI checks every page</text>
-<text class="hx-meta" x="404" y="200" text-anchor="middle">AkashML · Guild.ai · ClickHouse</text>
-{# split #}
-<path class="hx-wire" d="M456 90H520C556 90 556 46 592 46H632" marker-end="url(#hpw-arrow)"/>
-<path class="hx-wire" d="M520 90C556 90 556 134 592 134H632"/>
-<path class="hx-wire" d="M592 134H632" marker-end="url(#hpw-arrow)"/>
-{# public page #}
-<rect class="hx-paper" x="646" y="22" width="68" height="50" rx="3"/>
-<path class="hx-stroke" d="M646 33H714"/>
-<path class="hx-text-line" d="M656 45H698M656 55H690"/>
-<circle class="hx-ok" cx="714" cy="22" r="10"/>
-<path class="hx-mark" d="M709.5 22.2l3 3 5.5-6"/>
-<text class="hx-label" x="740" y="52">Purchase published</text>
-{# lock #}
-<path class="hx-stroke" d="M668 124v-8a12 12 0 0 1 24 0v8"/>
-<rect class="hx-paper" x="660" y="124" width="40" height="32" rx="3"/>
-<circle class="hx-stroke" cx="680" cy="138" r="3.5"/>
-<path class="hx-stroke" d="M680 141.5V147"/>
-<circle class="hx-no" cx="702" cy="106" r="10"/>
-<path class="hx-mark" d="M698 106h8"/>
-<text class="hx-label" x="740" y="140">Patient data kept private</text>
-</svg>
-
-{# Tall version: top to bottom, for phones #}
-<svg class="hp-tall" viewBox="0 0 340 500" role="img" aria-labelledby="hpt-title hpt-desc">
-<title id="hpt-title">How the publication gate works</title>
-<desc id="hpt-desc">A PAMI office uploads a PDF. AI agents from AkashML and Guild.ai check every page at the ArgenSec gate, and each decision is logged in ClickHouse. Safe purchase files are published on the public website. Patient data is kept private.</desc>
-<defs><marker id="hpt-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="hx-head" d="M0 0L10 5L0 10z"/></marker></defs>
-{# document #}
-<path class="hx-paper" d="M144 8H180L196 24V96H144Z"/>
-<path class="hx-stroke" d="M180 8V24H196"/>
-<path class="hx-text-line" d="M154 38H186M154 50H186M154 62H178M154 74H184"/>
-<rect class="hx-tag" x="134" y="80" width="30" height="16" rx="2"/>
-<text class="hx-tag-text" x="149" y="91.5" text-anchor="middle">PDF</text>
-<text class="hx-label" x="170" y="124" text-anchor="middle">PAMI office uploads a PDF</text>
-<path class="hx-wire" d="M170 138V170" marker-end="url(#hpt-arrow)"/>
-{# gate #}
-<g transform="translate(134 178)">{{ brand.logo(72) }}</g>
-<text class="hx-label" x="170" y="276" text-anchor="middle">AI checks every page</text>
-<text class="hx-meta" x="170" y="298" text-anchor="middle">AkashML · Guild.ai · ClickHouse</text>
-{# split #}
-<path class="hx-wire" d="M170 312V322C170 340 86 334 86 352V364" marker-end="url(#hpt-arrow)"/>
-<path class="hx-wire" d="M170 322C170 340 254 334 254 352V364" marker-end="url(#hpt-arrow)"/>
-{# public page #}
-<rect class="hx-paper" x="52" y="380" width="68" height="50" rx="3"/>
-<path class="hx-stroke" d="M52 391H120"/>
-<path class="hx-text-line" d="M62 403H104M62 413H96"/>
-<circle class="hx-ok" cx="120" cy="380" r="10"/>
-<path class="hx-mark" d="M115.5 380.2l3 3 5.5-6"/>
-<text class="hx-label" x="86" y="462" text-anchor="middle">Purchase</text>
-<text class="hx-label" x="86" y="482" text-anchor="middle">published</text>
-{# lock #}
-<path class="hx-stroke" d="M242 398v-8a12 12 0 0 1 24 0v8"/>
-<rect class="hx-paper" x="234" y="398" width="40" height="32" rx="3"/>
-<circle class="hx-stroke" cx="254" cy="412" r="3.5"/>
-<path class="hx-stroke" d="M254 415.5V421"/>
-<circle class="hx-no" cx="276" cy="380" r="10"/>
-<path class="hx-mark" d="M272 380h8"/>
-<text class="hx-label" x="254" y="462" text-anchor="middle">Patient data</text>
-<text class="hx-label" x="254" y="482" text-anchor="middle">kept private</text>
-</svg>
-</figure>
-</section>
+<div class="ws" id="live-workspace" data-agent-configured="{{ 'true' if agent_on else 'false' }}">
+<div class="ws-head">
+<div><h1>Workspace</h1><p>Every PAMI attachment is checked by AI agents before it can go public.</p></div>
+<div class="ws-actions">
+<form method="post" action="/live/demo/seed" data-live-form><button type="submit" class="ws-btn">Load demo files</button><div class="form-message ws-msg" role="status" aria-live="polite" hidden></div></form>
+<a class="ws-btn sec" href="/office">Upload PDF</a>
+<form class="rs" method="post" action="/live/reset" onsubmit="return confirm('Clear all files and purchases? Rules and audit history stay.')"><button type="submit" class="ws-btn ghost">Reset</button></form>
+</div>
+</div>
+<dl class="ws-stats" id="live-gate-node">
+<div class="ws-stat"><dt><span class="ws-dot" id="live-state-mark"></span>Checking</dt><dd id="live-count-processing">0</dd></div>
+<div class="ws-stat"><dt><span class="ws-dot ok"></span>Published</dt><dd id="live-count-published">—</dd></div>
+<div class="ws-stat"><dt><span class="ws-dot red"></span>Private</dt><dd id="live-count-blocked">—</dd></div>
+<div class="ws-stat"><dt><span class="ws-dot amb"></span>Review</dt><dd id="live-count-waiting">—</dd></div>
+{% if autonomous %}<div class="ws-stat auto"><dt>Finished without a person</dt><dd id="live-autonomy">— of —</dd></div>{% endif %}
+</dl>
+<div class="ws-meta"><span id="live-connection" role="status" aria-live="polite">Connecting…</span>{% if history_total %}<span>{{ "{:,}".format(history_total.value) }} history events · {{ history_total.ms }} ms · <a href="/dashboard">History →</a></span>{% endif %}</div>
+<section class="ws-sec" aria-labelledby="ws-activity"><h2 id="ws-activity">Agent activity <small id="live-stale-count"></small></h2>
+<div id="ws-empty" class="ws-empty" hidden>No files yet. Load demo files to watch the agents work.</div>
+<div class="ws-grid" id="ws-activity-grid">
+<section class="agent-log" aria-labelledby="agent-log-heading"><div class="agent-log-head"><h3 id="agent-log-heading">Agent log</h3><span id="agent-log-count">newest first</span></div><div class="agent-log-body" id="agent-log" role="log" aria-live="off"><div class="log-empty">Waiting for agent activity…</div></div></section>
+<div id="live-jobs" class="live-list" aria-busy="true"></div>
+</div></section>
+<section class="ws-sec" id="ws-waiting" aria-labelledby="live-waiting-heading" hidden><h2 id="live-waiting-heading">Waiting for a decision</h2><div id="live-waiting" class="live-list"></div></section>
+<noscript><p class="small muted">Live updates need JavaScript. Use the <a href="/review">review queue</a>.</p></noscript>
+</div>
 <div id="document-workspace">
-<div class="page-heading heading-with-action"><h1>Documents</h1></div>
+<h2 class="ws-title">All documents</h2>
 {% if workspace is defined %}
-<div class="decision-summary">{% for label,key in [('Total','total'),('Review','review'),('Private','blocked'),('Published','published')] %}<div><strong>{{ workspace.counts[key] }}</strong><span>{{ label }}</span></div>{% endfor %}</div>
 <div class="panel table-panel"><div class="table-wrap"><table class="document-list"><thead><tr><th scope="col">Document</th><th scope="col">Status</th><th scope="col">Office</th></tr></thead><tbody>{% for file in workspace.files %}<tr><td><a href="/purchase/{{ file.purchase_id }}#file-{{ file.id }}">{{ file.filename }}</a><small class="table-secondary">{{ file.procedure }}</small></td><td>{{ 'Recheck' if not file.current else 'Review' if file.decision == 'hold' else 'Private' if file.decision == 'withheld' else 'Published, cleaned' if file.decision == 'cleaned' else 'Published' }}</td><td>{{ file.office }}</td></tr>{% else %}<tr><td colspan="3" class="table-empty">No documents yet.</td></tr>{% endfor %}</tbody></table></div></div>
-<p class="small muted" style="margin-top:16px">{{ workspace.files|length }} shown · {{ workspace.counts.total }} total{% if workspace.counts.total > 100 %} · latest 100 loaded{% endif %}</p>
 {% else %}<p class="muted">Document list unavailable.</p>{% endif %}
-<div class="actions"><a class="text-link" href="/review">Review files</a><a class="text-link" href="/live">Activity</a></div>
 </div>
 {% if workspace is defined %}<script id="workspace-data" type="application/json">{{ workspace|tojson }}</script>{% endif %}
 <script type="module" src="{{ asset_url('workspace.js') }}"></script>
+<script>
+(() => {
+  'use strict';
+  const workspace = document.getElementById('live-workspace');
+  const jobsElement = document.getElementById('live-jobs');
+  const waitingElement = document.getElementById('live-waiting');
+  const connectionElement = document.getElementById('live-connection');
+  const reviews = new Map();
+  let jobsSignature = null;
+  let pollInFlight = false;
+  let stopped = false;
+  let timer = null;
+  let authBlocked = false;
+  const labels = {public: 'Published', approved: 'Reviewer approved', cleaned: 'Published, cleaned', hold: 'Needs review', withheld: 'Kept internal', stale: 'Recheck needed', error: 'Check failed'};
+  const badgeClasses = {public: 'b-public', approved: 'b-approved', cleaned: 'b-public', hold: 'b-hold', withheld: 'b-withheld', stale: 'b-hold', error: 'b-withheld'};
+  const stepStates = new Set(['running', 'done', 'error', 'pending', 'skipped']);
+  const text = value => value == null ? '' : String(value);
+  const numericId = value => /^\d+$/.test(text(value)) && Number(value) > 0 ? text(value) : null;
+  const count = value => Number.isSafeInteger(value) && value >= 0 ? value : 0;
+  function element(tag, className, value) {
+    const node = document.createElement(tag);
+    if (className) node.className = className;
+    if (value !== undefined) node.textContent = text(value);
+    return node;
+  }
+  function safeExternal(value) {
+    if (typeof value !== 'string' || !value) return null;
+    try {
+      const url = new URL(value);
+      return ['https:', 'http:'].includes(url.protocol) && !url.username && !url.password ? url.href : null;
+    } catch (_) { return null; }
+  }
+  function link(label, href, external = false) {
+    const node = element('a', 'text-link', label);
+    node.href = href;
+    if (external) { node.target = '_blank'; node.rel = 'noopener noreferrer'; }
+    return node;
+  }
+  function empty(title, message) {
+    const box = element('div', 'empty-state compact');
+    box.append(element('h3', '', title), element('p', '', message));
+    return box;
+  }
+  async function errorMessage(response) {
+    if (response.status === 401) return 'Your staff session needs authentication. Reload this page to sign in.';
+    let message = 'The request was not confirmed. Check the connection and try again.';
+    try { const body = await response.json(); if (typeof body.detail === 'string') message = body.detail; } catch (_) { /* Keep bounded, readable fallback. */ }
+    return message;
+  }
+  function attachForm(form, approval = false) {
+    form.addEventListener('submit', async event => {
+      event.preventDefault();
+      if (form.dataset.busy === 'true' || !form.reportValidity()) return;
+      const button = event.submitter;
+      if (approval && button?.value === 'approve' && !window.confirm(form.dataset.hasClean === 'true' ? 'Publish the cleaned copy? Confirm that you inspected it.' : 'Publish this exact file? Confirm that you inspected every page and recorded why it is appropriate for public access.')) return;
+      const body = new FormData(form);
+      if (button?.name) body.append(button.name, button.value);
+      const controls = Array.from(form.querySelectorAll('button'));
+      const priorDisabled = controls.map(control => control.disabled);
+      const message = form.querySelector('.form-message');
+      form.dataset.busy = 'true'; form.setAttribute('aria-busy', 'true');
+      controls.forEach(control => { control.disabled = true; });
+      message.hidden = false; message.className = 'form-message loading'; message.setAttribute('role', 'status');
+      message.textContent = approval ? 'Recording your decision…' : 'Queueing files…';
+      try {
+        const response = await fetch(form.getAttribute('action'), {method: 'POST', body, credentials: 'same-origin', cache: 'no-store'});
+        if (!response.ok) throw new Error(await errorMessage(response));
+        message.className = 'form-message';
+        message.textContent = approval ? 'Decision recorded.' : 'Files queued.';
+        authBlocked = false;
+        await poll();
+      } catch (error) {
+        message.className = 'form-message error';
+        message.textContent = error.message || 'Connection failed. The action was not confirmed.';
+        message.setAttribute('role', 'alert');
+      } finally {
+        form.dataset.busy = 'false'; form.removeAttribute('aria-busy');
+        controls.forEach((control, index) => { control.disabled = priorDisabled[index] || control.dataset.policyDisabled === 'true'; });
+      }
+    });
+  }
+  const logElement = document.getElementById('agent-log');
+  let feedSignature = null;
+  function agentClass(agent) {
+    const name = text(agent);
+    if (name.startsWith('AkashML')) return 'akash';
+    if (name.startsWith('Guild')) return 'guild';
+    if (name === 'Detectors') return 'detect';
+    if (name === 'OCR') return 'ocr';
+    if (name === 'Gate') return 'gate';
+    return 'other';
+  }
+  const clock = ts => Number.isFinite(ts) ? new Date(ts * 1000).toLocaleTimeString([], {hour12: false}) : '';
+  function duration(ms) {
+    if (!Number.isFinite(ms)) return '';
+    return ms < 1000 ? Math.round(ms) + ' ms' : ms < 60000 ? (ms / 1000).toFixed(1) + ' s' : Math.floor(ms / 60000) + 'm' + Math.round(ms % 60000 / 1000) + 's';
+  }
+  function renderFeed(feed) {
+    const signature = JSON.stringify(feed);
+    if (signature === feedSignature) return;
+    feedSignature = signature;
+    document.getElementById('agent-log-count').textContent = feed.length ? feed.length + ' events · newest first' : 'newest first';
+    const lines = feed.map(event => {
+      const line = element('div', 'log-line');
+      const status = text(event.status);
+      const what = element('span', 'log-what ' + (status === 'error' || status === 'withheld' ? 'log-err' : status === 'done' || status === 'public' || status === 'cleaned' ? 'log-ok' : ''),
+        text(event.action) + (event.detail ? ' · ' + text(event.detail) : status && status !== 'running' && status !== 'done' ? ' · ' + status : status === 'running' ? ' …' : ''));
+      what.title = what.textContent;
+      const file = element('span', 'log-file', event.file); file.title = text(event.file);
+      const url = safeExternal(event.url);
+      const go = element('span');
+      if (url) { const a = link('↗', url, true); a.className = ''; a.title = 'Open Guild session'; go.append(a); }
+      line.append(element('span', 'log-time', clock(event.ts)), element('span', 'tag-' + agentClass(event.agent), event.agent), file, what,
+        element('span', 'log-dur', duration(event.duration_ms)), go);
+      return line;
+    });
+    logElement.replaceChildren(...(lines.length ? lines : [element('div', 'log-empty', 'Waiting for agent activity…')]));
+  }
+  function trace(job) {
+    const steps = (Array.isArray(job.steps) ? job.steps : []).filter(step => Number.isFinite(step.started_at));
+    if (!steps.length) return null;
+    const now = Date.now() / 1000;
+    const start = Math.min(...steps.map(step => step.started_at));
+    const end = Math.max(...steps.map(step => Number.isFinite(step.ended_at) ? step.ended_at : now));
+    const span = Math.max(end - start, 0.001);
+    const box = element('div', 'trace');
+    for (const step of steps) {
+      const row = element('div', 'trace-row');
+      const label = element('span', '', step.name); label.title = text(step.agent);
+      const track = element('div', 'trace-track');
+      const stop = Number.isFinite(step.ended_at) ? step.ended_at : now;
+      const bar = element('div', 'trace-bar bar-' + agentClass(step.agent) + (stepStates.has(step.status) ? ' ' + step.status : ''));
+      bar.style.left = ((step.started_at - start) / span * 100).toFixed(2) + '%';
+      bar.style.width = ((stop - step.started_at) / span * 100).toFixed(2) + '%';
+      bar.title = text(step.agent) + ' · ' + text(step.status);
+      track.append(bar);
+      row.append(label, track, element('span', '', step.status === 'running' ? '…' : duration(step.duration_ms)));
+      box.append(row);
+    }
+    return box;
+  }
+  function renderJobs(jobs) {
+    const signature = JSON.stringify(jobs);
+    if (signature === jobsSignature) return;
+    jobsSignature = signature;
+    const nodes = jobs.map(job => {
+      const card = element('article', 'live-job');
+      const key = text(job.id ?? job.purchase_id) + ':' + text(job.file);
+      const wasOpen = [...jobsElement.querySelectorAll('details[data-job]')].some(node => node.dataset.job === key && node.open);
+      const heading = element('div', 'jh');
+      const name = element('div');
+      name.append(element('h3', '', job.file || 'PDF attachment'), element('span', 'jo', job.office));
+      const decision = Object.hasOwn(labels, job.decision) ? job.decision : null;
+      heading.append(name, element('span', 'st st-' + (decision || (job.done ? 'hold' : 'run')), decision ? labels[decision] : job.done ? 'Check finished' : 'Checking'));
+      const steps = element('ul', 'live-steps');
+      for (const step of Array.isArray(job.steps) ? job.steps : []) {
+        const state = stepStates.has(step.status) ? step.status : 'pending';
+        const agentic = /^(Guild orchestrator|Public |Clearance)/.test(text(step.name));
+        const item = element('li', 'live-step ' + state, text(step.name) + ' · ' + (agentic && step.detail ? text(step.detail) : state));
+        item.title = text(step.detail); steps.append(item);
+      }
+      card.append(heading);
+      if (steps.children.length) card.append(steps);
+      const timeline = trace(job);
+      if (timeline) {
+        const detail = element('details', 'job-detail'); detail.dataset.job = key; detail.open = wasOpen || location.hash === '#traces';
+        detail.append(element('summary', '', 'Trace'), timeline);
+        card.append(detail);
+      }
+      if (job.why) card.append(element('p', '', job.why));
+      if (job.stale) card.append(element('p', 'live-error', 'An earlier decision is no longer current. Recheck this file before public access.'));
+      const links = element('div', 'live-job-links');
+      const purchaseId = numericId(job.purchase_id);
+      if (purchaseId) links.append(link('Purchase details →', '/purchase/' + purchaseId));
+      const agentUrl = safeExternal(job.agent_url);
+      if (agentUrl) links.append(link('Guild run ↗', agentUrl, true));
+      if (job.stale) links.append(link('Recheck rules →', '/learning'));
+      card.append(links); return card;
+    });
+    jobsElement.replaceChildren(...nodes);
+  }
+  function reviewCard(id) {
+    const card = element('details', 'live-review');
+    card.name = 'activity-reviews'; card.open = reviews.size === 0;
+    const summary = element('summary');
+    const heading = element('h3');
+    const metadata = element('p');
+    const reason = element('p');
+    const original = link('Inspect original PDF ↗', '/internal/file/' + id, true);
+    const note = element('p', 'live-note');
+    const agentLink = link('Guild run ↗', '#', true); agentLink.hidden = true;
+    const clean = element('div', 'clean-note'); clean.hidden = true;
+    const cleanText = element('span', '', 'Approve publishes the cleaned copy.');
+    clean.append(cleanText, link('Cleaned preview ↗', '/internal/clean/' + id, true));
+    const warning = element('div', 'notice');
+    const recheck = link('Recheck current rules →', '/learning'); recheck.classList.add('live-recheck-link');
+    const form = element('form'); form.method = 'post'; form.action = '/review/' + id;
+    const field = element('div', 'field');
+    const label = element('label', '', 'Decision reason'); label.htmlFor = 'live-note-' + id;
+    const input = element('textarea'); input.id = label.htmlFor; input.name = 'note'; input.rows = 2; input.required = true; input.maxLength = 2000;
+    input.placeholder = 'Describe what you inspected and why this decision is appropriate.';
+    field.append(label, input);
+    const actions = element('div', 'review-actions');
+    const reject = element('button', 'ws-btn sec', 'Keep private'); reject.type = 'submit'; reject.name = 'action'; reject.value = 'reject';
+    const approve = element('button', 'ws-btn', 'Approve publication'); approve.type = 'submit'; approve.name = 'action'; approve.value = 'approve';
+    actions.append(reject, approve);
+    const message = element('div', 'form-message'); message.hidden = true; message.setAttribute('role', 'status'); message.setAttribute('aria-live', 'polite');
+    form.append(field, actions, message); attachForm(form, true);
+    summary.append(heading, metadata);
+    const body = element('div', 'review-body');
+    body.append(reason, original, clean, note, agentLink, warning, recheck, form);
+    card.append(summary, body);
+    return {card, heading, metadata, reason, note, agentLink, warning, recheck, form, approve, clean, cleanText};
+  }
+  function renderWaiting(waiting) {
+    const seen = new Set();
+    for (const item of waiting) {
+      const id = numericId(item.id); if (!id) continue;
+      seen.add(id);
+      let view = reviews.get(id);
+      if (!view) { view = reviewCard(id); reviews.set(id, view); waitingElement.append(view.card); }
+      view.heading.textContent = text(item.file);
+      view.metadata.textContent = text(item.office) + ' · ' + text(item.item);
+      view.reason.textContent = Array.isArray(item.why) ? item.why.map(text).join(' ') : text(item.why);
+      view.note.textContent = item.note ? 'Reviewer brief: ' + text(item.note) : workspace.dataset.agentConfigured === 'true' ? 'No completed reviewer brief is available yet. Inspect the original and findings.' : 'Guild is not configured. Inspect the original document and findings.';
+      view.clean.hidden = item.has_clean !== true;
+      view.form.dataset.hasClean = item.has_clean === true ? 'true' : 'false';
+      const removed = Array.isArray(item.removed) ? item.removed.map(text).filter(Boolean) : [];
+      view.cleanText.textContent = 'Approve publishes the cleaned copy' + (removed.length ? ' (without ' + removed.join(', ') + ').' : '.');
+      const url = safeExternal(item.agent_url); view.agentLink.hidden = !url;
+      if (url) view.agentLink.href = url;
+      const current = item.current === true;
+      view.warning.hidden = current; view.recheck.hidden = current;
+      view.warning.textContent = 'The rules changed. Recheck this file before approving publication.';
+      view.approve.dataset.policyDisabled = item.can_approve === true ? 'false' : 'true';
+      if (view.form.dataset.busy !== 'true') view.approve.disabled = item.can_approve !== true;
+    }
+    for (const [id, view] of reviews) if (!seen.has(id)) { view.card.remove(); reviews.delete(id); }
+    const existingEmpty = waitingElement.querySelector('.empty-state');
+    if (seen.size && existingEmpty) existingEmpty.remove();
+    if (!seen.size) waitingElement.replaceChildren();
+    document.getElementById('ws-waiting').hidden = !seen.size;
+  }
+  function render(data) {
+    if (!data || !Array.isArray(data.jobs) || !Array.isArray(data.waiting) || !data.counts) throw new Error('The activity feed returned an unexpected response.');
+    const counts = data.counts;
+    for (const name of ['processing', 'published', 'blocked', 'waiting']) document.getElementById('live-count-' + name).textContent = count(counts[name]);
+    const running = count(counts.processing);
+    document.getElementById('live-state-mark').classList.toggle('working', running > 0);
+    const autonomy = document.getElementById('live-autonomy');
+    if (autonomy && data.autonomy) autonomy.textContent = count(data.autonomy.finished) + ' of ' + count(data.autonomy.total);
+    const stale = count(counts.stale);
+    document.getElementById('live-stale-count').textContent = stale ? stale + (stale === 1 ? ' file needs' : ' files need') + ' a rules recheck' : '';
+    const idle = !data.jobs.length && !(Array.isArray(data.feed) && data.feed.length);
+    document.getElementById('ws-empty').hidden = !idle;
+    document.getElementById('ws-empty').textContent = count(counts.published) + count(counts.blocked) + count(counts.waiting) ? 'Agents are idle. Load demo files to watch them work.' : 'No files yet. Load demo files to watch the agents work.';
+    document.getElementById('ws-activity-grid').hidden = idle;
+    document.getElementById('document-workspace').classList.toggle('ws-none', idle);
+    renderJobs(data.jobs); renderWaiting(data.waiting);
+    if (Array.isArray(data.feed)) renderFeed(data.feed);
+    jobsElement.setAttribute('aria-busy', 'false'); waitingElement.setAttribute('aria-busy', 'false');
+    connectionElement.textContent = running ? 'Agents are checking ' + running + (running === 1 ? ' file' : ' files') + '…' : 'Up to date · ' + new Date().toLocaleTimeString([], {hour12: false});
+    connectionElement.classList.remove('live-error');
+  }
+  async function poll() {
+    if (pollInFlight || stopped || document.hidden || authBlocked) return;
+    pollInFlight = true;
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 10000);
+    try {
+      const response = await fetch('/api/activity', {credentials: 'same-origin', cache: 'no-store', headers: {'Accept': 'application/json'}, signal: controller.signal});
+      if (!response.ok) { if (response.status === 401) authBlocked = true; throw new Error(await errorMessage(response)); }
+      render(await response.json());
+    } catch (error) {
+      connectionElement.textContent = error.message || 'Activity is unavailable. The last displayed results may be stale; retrying.';
+      connectionElement.classList.add('live-error');
+      jobsElement.setAttribute('aria-busy', 'false'); waitingElement.setAttribute('aria-busy', 'false');
+    } finally { clearTimeout(timeout); pollInFlight = false; }
+  }
+  function schedule() { clearTimeout(timer); if (!stopped) timer = setTimeout(async () => { await poll(); schedule(); }, 1500); }
+  document.querySelectorAll('[data-live-form]').forEach(form => attachForm(form));
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) poll(); });
+  window.addEventListener('pagehide', () => { stopped = true; clearTimeout(timer); });
+  poll(); schedule();
+})();
+</script>
 {% endblock %}

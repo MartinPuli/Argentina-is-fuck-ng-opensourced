@@ -110,7 +110,7 @@ def test_live_upload_returns_before_work_finishes_and_attributes_submitter(live)
         return original(data, job)
     live.monkeypatch.setattr(live.app, "evaluate", slow)
     response = upload(live)
-    assert response.status_code == 303 and response.headers["location"] == "/live"
+    assert response.status_code == 303 and response.headers["location"] == "/"
     assert entered.wait(1)
     result = live.client.get("/api/activity")
     assert result.headers["cache-control"] == "no-store"
@@ -249,7 +249,7 @@ def test_live_demo_uses_validated_background_batches(live):
     specs = json.loads((live.app.FIXTURES / "purchases.json").read_text())
     expected = sum(len(spec["files"]) for spec in specs)
     response = live.client.post("/live/demo/seed", follow_redirects=False)
-    assert response.status_code == 303 and response.headers["location"] == "/live"
+    assert response.status_code == 303 and response.headers["location"] == "/"
     result = finished(live)
     assert len(result["jobs"]) == expected and result["counts"]["waiting"] == expected
     assert result["counts"]["published"] == 0
@@ -294,7 +294,7 @@ def test_reset_clears_demo_files_but_keeps_rules_and_audit(live):
     finished(live)
     assert demo_rows() == {"purchases": 1, "attachments": 1}
     response = live.client.post("/live/reset", follow_redirects=False)
-    assert response.status_code == 303 and response.headers["location"] == "/live"
+    assert response.status_code == 303 and response.headers["location"] == "/"
     assert demo_rows() == {"purchases": 0, "attachments": 0}
     assert activity.snapshot() == []
     result = live.client.get("/api/activity").json()

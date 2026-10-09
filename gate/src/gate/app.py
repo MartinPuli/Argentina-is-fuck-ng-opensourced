@@ -625,10 +625,9 @@ def queue_live(purchase: dict, item: str, files: list[tuple[str, bytes]], actor:
 
 
 @app.get("/live")
-def live_view(request: Request, user: str = Depends(staff)):
-    history = events.history()  # once per page load, never from the /api/activity poll
-    total = (history or {}).get("total") or None
-    return page(request, "live.html", offices=OFFICES, user=user, history_total=total, autonomous=autonomous())
+def live_view(user: str = Depends(staff)):
+    """The activity feed now lives on the workspace page."""
+    return RedirectResponse("/", status_code=303)
 
 
 @app.get("/documents/sample.pdf")
@@ -668,7 +667,7 @@ async def live_upload(office: str = Form(...), procedure: str = Form(...), item:
             LIVE_CAPACITY.release()
         raise
     queue_live(purchase, item, uploads, user)
-    return RedirectResponse("/live", status_code=303)
+    return RedirectResponse("/", status_code=303)
 
 
 @app.post("/live/demo/seed")
@@ -690,7 +689,7 @@ async def live_demo_seed(user: str = Depends(staff)):
     finally:
         for _ in range(remaining):
             LIVE_CAPACITY.release()
-    return RedirectResponse("/live", status_code=303)
+    return RedirectResponse("/", status_code=303)
 
 
 @app.post("/live/reset")
@@ -709,7 +708,7 @@ def live_reset(user: str = Depends(staff)):
         con.execute("delete from purchases")
     activity.clear()
     events.log("demo_reset", "", 0, actor=user)
-    return RedirectResponse("/live", status_code=303)
+    return RedirectResponse("/", status_code=303)
 
 
 @app.get("/api/activity")
@@ -799,7 +798,10 @@ def exposures(request: Request, user: str = Depends(staff)):
 
 @app.get("/")
 def home(request: Request, user: str = Depends(staff)):
-    return page(request, "home.html", user=user, workspace=workspace_snapshot())
+    history = events.history()  # once per page load, never from the /api/activity poll
+    total = (history or {}).get("total") or None
+    return page(request, "home.html", user=user, workspace=workspace_snapshot(),
+                history_total=total, autonomous=autonomous())
 
 
 @app.get("/office")

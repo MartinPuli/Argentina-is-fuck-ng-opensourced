@@ -22,8 +22,7 @@
 {% set selected = path == href or (href != '/' and path.startswith(href + '/')) or (href == '/' and path.startswith('/purchase/')) %}
 <a href="{{ href }}" class="pill-link {{ 'active' if selected else '' }}" {% if selected %}aria-current="page"{% endif %}>{{ label }}{{ extra|safe }}</a>
 {%- endmacro %}
-{{ nav_item('/', 'Documents') }}
-{{ nav_item('/live', 'Live') }}
+{{ nav_item('/', 'Workspace') }}
 {{ nav_item('/review', 'Review', '<span class="nav-count" data-review-count hidden></span>') }}
 <span class="pill-sep" aria-hidden="true"></span>
 <a class="pill-link pill-external" href="/public" target="_blank" rel="noopener">Public<span class="pill-ext-word"> site</span><span class="pill-ext-arrow" aria-hidden="true">↗</span></a>
