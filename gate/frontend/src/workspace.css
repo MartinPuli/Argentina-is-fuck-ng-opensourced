@@ -6,14 +6,14 @@
   --accent-soft-foreground: #244e65; --background: #fff; --foreground: #253d4b;
   --surface: #fff; --surface-foreground: #253d4b; --field-background: #fff;
   --field-foreground: #253d4b; --field-placeholder: #6d818d; --border: #dfe9ef;
-  --radius: .3rem; --radius-field: .3rem; --radius-selector: .3rem;
+  --radius: .25rem; --radius-field: .25rem; --radius-selector: .25rem;
   --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-family: var(--font-sans); font-weight: 400; color: var(--foreground);
 }
 .hero-workspace .workspace-heading { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin: 3px 0 32px; }
 .hero-workspace h1 { font-size: 32px; font-weight: 300; letter-spacing: -.9px; margin: 0; }
 .hero-workspace .workspace-actions { display: flex; gap: 8px; }
-.hero-workspace .button { font-size: 13px; font-weight: 400; min-height: 36px; height: 36px; padding: 0 14px; border: 1px solid #c9e3ef; border-radius: 5px; background: #c4e8f9; color: #203e50; box-shadow: none; transition: background .15s; }
+.hero-workspace .button { font-size: 13px; font-weight: 400; min-height: 36px; height: 36px; padding: 0 14px; border: 1px solid #c9e3ef; border-radius:4px; background: #c4e8f9; color: #203e50; box-shadow: none; transition: background .15s; }
 .hero-workspace .button:hover { background: #b1dff4; }
 .hero-workspace .button--secondary { border-color: #dce5eb; background: #fff; }
 .hero-workspace .button--ghost { border-color: transparent; background: transparent; }
@@ -31,10 +31,10 @@
 .hero-workspace .workspace-filters .filter-selected { background:#edf7fd; color:#234b61; border-color:#d5eaf5; }
 .hero-workspace .filter-count { font-size:10px; margin-left:6px; }
 .hero-workspace .workspace-search { width:260px; }
-.hero-workspace .search-field__group { background:#fff; border:1px solid #dce5eb; border-radius:5px; box-shadow:none; height:36px; }
+.hero-workspace .search-field__group { background:#fff; border:1px solid #dce5eb; border-radius:4px; box-shadow:none; height:36px; }
 .hero-workspace .search-field__input { font-size:12px; background:transparent; border:0; outline:0; padding:8px 9px; box-shadow:none; min-width:0; color:#314d5d; }
 .hero-workspace .search-field__clear-button { padding:0; width:25px; height:25px; min-height:25px; color:#597383; background:transparent; border:0; }
-.hero-workspace .workspace-table-wrap { position:relative; overflow-x:auto; border:1px solid #e1e9ee; border-radius:5px; background:#fff; }
+.hero-workspace .workspace-table-wrap { position:relative; overflow-x:auto; border:1px solid #e1e9ee; border-radius:4px; background:#fff; }
 .hero-workspace .workspace-table { width:100%; min-width:720px; border-collapse:collapse; font-size:12px; text-align:left; }
 .hero-workspace .workspace-table th { padding:13px 18px; font-size:11px; color:#6a7d89; font-weight:400; background:#f7fafc; white-space:nowrap; border-bottom:1px solid #e5edf2; }
 .hero-workspace .workspace-table td { padding:18px; border-bottom:1px solid #edf1f4; vertical-align:middle; background:#fff; }
@@ -63,10 +63,10 @@
 /* Match the operational shell; filenames and state remain visible on phones. */
 .hero-workspace .workspace-heading{margin-top:0;margin-bottom:30px}
 .hero-workspace h1{font-size:30px;letter-spacing:-.7px}
-.hero-workspace .button{min-height:38px;height:38px;border-radius:6px}
+.hero-workspace .button{min-height:38px;height:38px;border-radius:4px}
 .hero-workspace .workspace-table{min-width:0;font-size:13px}
 .hero-workspace .workspace-file{min-width:0;font-size:13px}
 .hero-workspace .workspace-reference{font-size:11px}
 .hero-workspace .workspace-chip{font-size:11px;height:auto;min-height:25px;white-space:normal}
-.hero-workspace .workspace-table-wrap{border-radius:6px}
+.hero-workspace .workspace-table-wrap{border-radius:4px}
 @media(max-width:760px){.hero-workspace .workspace-table .workspace-office,.hero-workspace .workspace-table .workspace-date,.hero-workspace .workspace-table .workspace-row-action{display:none}.hero-workspace .workspace-table td,.hero-workspace .workspace-table th{padding:14px 12px}.hero-workspace .workspace-table td:first-child{width:65%}.hero-workspace .workspace-table td:nth-child(2){width:35%}.hero-workspace .workspace-heading{flex-direction:row;align-items:center}.hero-workspace .button{min-height:44px;height:44px}.hero-workspace h1{font-size:28px}}
