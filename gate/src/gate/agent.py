@@ -13,10 +13,14 @@ import json
 import os
 import shutil
 import subprocess
+import threading
 import time
 
-POLL_SECONDS = 2
-MAX_WAIT_SECONDS = 90
+POLL_SECONDS = 3
+MAX_WAIT_SECONDS = 150
+CLI_TIMEOUT_SECONDS = 45
+# Each Guild CLI call is slow; a batch of files must queue instead of stampeding.
+_CLI_SLOTS = threading.BoundedSemaphore(4)
 
 
 def configured() -> bool:
@@ -37,16 +41,33 @@ def case_text(purchase: dict, filename: str, decision: str, reasons: list[str], 
 
 
 def _guild(*args: str) -> dict:
-    out = subprocess.run(["guild", *args], capture_output=True, text=True, timeout=60, check=True)
+    with _CLI_SLOTS:
+        out = subprocess.run(["guild", *args], capture_output=True, text=True,
+                             timeout=CLI_TIMEOUT_SECONDS, check=True)
     return json.loads(out.stdout)
 
 
 def _reply(session_id: str) -> str:
-    items = _guild("session", "events", session_id).get("items", [])
+    # Only the agent's answers: fetching every event is far slower and timed out under load.
+    items = _guild("session", "events", session_id, "--events", "agent_notification_message",
+                   "--limit", "20").get("items", [])
     for ev in reversed(items):
         if ev.get("type") == "agent_notification_message":
             content = ev.get("content") or {}
             return (content.get("data") if isinstance(content, dict) else str(content)) or ""
+    return ""
+
+
+def _wait(session_id: str, started: float, limit: float) -> str:
+    """Poll until the agent answers or the overall deadline passes. A failed poll is retried."""
+    while time.perf_counter() - started < limit:
+        time.sleep(POLL_SECONDS)
+        try:
+            reply = _reply(session_id)
+        except (subprocess.TimeoutExpired, subprocess.CalledProcessError, ValueError):
+            continue
+        if reply:
+            return reply
     return ""
 
 
@@ -57,10 +78,7 @@ def brief(purchase: dict, filename: str, decision: str, reasons: list[str], find
                          "--agent", os.environ["GUILD_AGENT"],
                          "--prompt", case_text(purchase, filename, decision, reasons, findings))
         sid = session["id"]
-        text = ""
-        while not text and time.perf_counter() - started < MAX_WAIT_SECONDS:
-            time.sleep(POLL_SECONDS)
-            text = _reply(sid)
+        text = _wait(sid, started, MAX_WAIT_SECONDS)
         return {"session": sid, "url": session.get("session_url", ""), "text": text.strip(),
                 "latency_ms": (time.perf_counter() - started) * 1000}
     except Exception as exc:  # the review queue must work without the agent
@@ -96,11 +114,7 @@ def verify(text: str, manifest: list[dict]) -> dict:
         session = _guild("session", "create", "--workspace", os.environ["GUILD_WORKSPACE"],
                          "--agent", os.getenv("GUILD_VERIFIER_AGENT", "nicopujia~pami-redaction-verifier"),
                          "--prompt", prompt)
-        sid, reply = session["id"], ""
-        while not reply and time.perf_counter() - started < VERIFY_WAIT_SECONDS:
-            time.sleep(POLL_SECONDS)
-            reply = _reply(sid)
-        reply = reply.strip()
+        reply = _wait(session["id"], started, VERIFY_WAIT_SECONDS).strip()
         verdict = "PASS" if reply.upper().startswith("PASS") else "FAIL" if reply else "ERROR"
         return {"verdict": verdict, "text": reply, "url": session.get("session_url", ""),
                 "latency_ms": (time.perf_counter() - started) * 1000}
@@ -123,10 +137,7 @@ def _ask(agent_name: str, prompt: str) -> tuple[str, str]:
     started = time.perf_counter()
     session = _guild("session", "create", "--workspace", os.environ["GUILD_WORKSPACE"],
                      "--agent", agent_name, "--prompt", prompt)
-    reply = ""
-    while not reply and time.perf_counter() - started < CALL_WAIT_SECONDS:
-        time.sleep(POLL_SECONDS)
-        reply = _reply(session["id"])
+    reply = _wait(session["id"], started, CALL_WAIT_SECONDS)
     if not reply:
         raise TimeoutError(f"{agent_name} did not answer")
     return reply.strip(), session.get("session_url", "")
@@ -174,7 +185,16 @@ def clearance(text: str, findings: list[dict], render=None, on_step=None) -> dic
     on_step(name, status, detail) reports progress for the live view. Never raises.
     """
     started = time.perf_counter()
-    step = on_step or (lambda *a: None)
+    report = on_step or (lambda *a: None)
+    running: list[str] = []
+
+    def step(name: str, status: str, detail: str) -> None:
+        if status == "running":
+            running.append(name)
+        elif name in running:
+            running.remove(name)
+        report(name, status, detail)
+
     render = render or (lambda spans: _redact_text(text, spans))
     sessions, log = [], []
     try:
@@ -228,6 +248,9 @@ def clearance(text: str, findings: list[dict], render=None, on_step=None) -> dic
                 "classification": classification, "sessions": sessions, "log": log,
                 "latency_ms": (time.perf_counter() - started) * 1000}
     except Exception as exc:  # the gate must keep working when Guild does not answer
+        for name in running:  # no step may stay "running" on a finished job
+            report(name, "error", "No answer from Guild" if isinstance(exc, (TimeoutError, subprocess.TimeoutExpired))
+                   else "Guild call failed")
         return {"error": f"{type(exc).__name__}: {exc}"[:200], "sessions": sessions, "log": log,
                 "latency_ms": (time.perf_counter() - started) * 1000}
 
