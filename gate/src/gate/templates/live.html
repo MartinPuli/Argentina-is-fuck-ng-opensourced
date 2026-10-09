@@ -16,7 +16,6 @@
 <section class="agent-log" aria-labelledby="agent-log-heading"><div class="agent-log-head"><h2 id="agent-log-heading">Agent log</h2><span id="agent-log-count">newest first</span></div><div class="agent-log-body" id="agent-log" role="log" aria-live="off"><div class="log-empty">Waiting for agent activity…</div></div></section>
 <div class="live-columns"><section aria-labelledby="live-jobs-heading"><div class="section-heading"><h2 id="live-jobs-heading">Files</h2></div><div id="live-jobs" class="live-list" aria-busy="true"><div class="empty-state compact"><h3>Loading file activity…</h3></div></div></section>
 <section aria-labelledby="live-waiting-heading"><div class="section-heading"><h2 id="live-waiting-heading">Review</h2></div><div id="live-waiting" class="live-list" aria-busy="true"><div class="empty-state compact"><h3>Loading review requests…</h3></div></div></section></div>
-{% include "intake.html" %}
 {% if history_total %}<p class="small muted" style="margin-top:24px">{{ "{:,}".format(history_total.value) }} simulated history events · {{ history_total.ms }} ms · <a href="/dashboard">History</a></p>{% endif %}
 <div class="live-static-links"><a href="/review">Review queue</a><a href="/public" target="_blank" rel="noopener">Public records</a></div>
 <noscript><div class="notice">Live updates require JavaScript. Use the upload forms and follow progress in the <a href="/review">review queue</a> and <a href="/dashboard">audit trail</a>.</div></noscript>

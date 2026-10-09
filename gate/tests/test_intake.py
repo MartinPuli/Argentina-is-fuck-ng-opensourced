@@ -76,5 +76,6 @@ def test_no_javascript_upload_and_sample_access(web):
     assert sample.status_code == 200 and sample.content == SAMPLE.read_bytes()
     response = web.client.post('/documents/upload', files={"files": ('test.pdf', sample.content)}, follow_redirects=False)
     assert response.status_code == 303 and response.headers['location'] == '/live'
-    for path in ['/', '/office', '/live']:
-        assert 'data-pdf-intake' in web.client.get(path).text
+    assert 'data-pdf-intake' in web.client.get('/office').text
+    for path in ['/', '/live']:  # Upload lives behind the main page's button only.
+        assert 'class="pdf-intake"' not in web.client.get(path).text
