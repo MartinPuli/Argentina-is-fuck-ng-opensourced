@@ -66,7 +66,7 @@ def test_public_portal_never_serves_withheld_or_held_files():
     Path(os.environ["GATE_DB"]).unlink(missing_ok=True)
     from gate.app import app
 
-    client = TestClient(app)
+    client = TestClient(app, headers={"origin": "http://testserver"})
     assert client.post("/demo/seed", follow_redirects=False).status_code == 303
     from gate.store import db
 
@@ -84,6 +84,18 @@ def test_public_portal_never_serves_withheld_or_held_files():
     client.post(f"/review/{held['id']}", data={"action": "approve", "reviewer": "Revisora Demo"})
     assert client.get(f"/public/file/{held['id']}").status_code == 200
     Path(os.environ["GATE_DB"]).unlink(missing_ok=True)
+
+
+def test_cross_site_approval_is_rejected():
+    """Semgrep finding: a foreign page must not be able to approve a held file."""
+    from gate.app import app
+
+    client = TestClient(app)
+    evil = client.post("/review/1", data={"action": "approve", "reviewer": "x"},
+                       headers={"origin": "https://evil.example"}, follow_redirects=False)
+    assert evil.status_code == 403
+    no_origin = client.post("/review/1", data={"action": "approve", "reviewer": "x"}, follow_redirects=False)
+    assert no_origin.status_code == 403
 
 
 if __name__ == "__main__":

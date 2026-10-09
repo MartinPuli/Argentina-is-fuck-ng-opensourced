@@ -12,10 +12,11 @@ import threading
 import time
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
+from urllib.parse import urlsplit
 
 from dotenv import load_dotenv
 from fastapi import Depends, FastAPI, File, Form, HTTPException, Request, UploadFile
-from fastapi.responses import RedirectResponse, Response
+from fastapi.responses import PlainTextResponse, RedirectResponse, Response
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from fastapi.templating import Jinja2Templates
 
@@ -40,6 +41,21 @@ templates.env.filters["fromjson"] = lambda v: json.loads(v) if v else None
 templates.env.globals["RULES"] = RULES
 events = Events()
 basic = HTTPBasic(auto_error=False)
+
+
+@app.middleware("http")
+async def same_origin_posts(request: Request, call_next):
+    """Reject cross-site form posts (CSRF).
+
+    Found by Semgrep: without this, any web page could make a reviewer's browser
+    submit "Approve for public" and publish a held medical file.
+    """
+    if request.method == "POST":
+        source = request.headers.get("origin") or request.headers.get("referer") or ""
+        host = request.headers.get("host", "")
+        if urlsplit(source).netloc != host:
+            return PlainTextResponse("cross-site request blocked", status_code=403)
+    return await call_next(request)
 
 
 def staff(creds: HTTPBasicCredentials | None = Depends(basic)) -> str:

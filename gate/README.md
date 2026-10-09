@@ -39,10 +39,17 @@ Every decision cites the rule behind it (Ley 25.326, Ley 27.275, Ley 26.529, AAI
 | AkashML | Open model (`openai/gpt-oss-120b`) reads each attachment for context risk. Patient files go to an open model, not a closed commercial one. |
 | Guild.ai | Hosts the reviewer agent ([guild-agent/PROMPT.md](guild-agent/PROMPT.md)). The app starts a session per held or withheld file and stores the brief. |
 | ClickHouse | Audit trail and dashboard: decisions by office, what the gate catches, gate latency, human decisions. |
+| Semgrep | Scanned this code, which was written with an AI assistant. See below. |
 
 Each one is optional at runtime. Without keys, the gate runs on deterministic checks and logs to SQLite.
 
 The Guild connector uses the `guild` CLI, logged in on the host, to open a session per case and poll for the brief.
+
+## What Semgrep found in our AI-written code
+
+`semgrep scan --config auto` flagged the HTML forms for missing CSRF protection. That was a real hole in the one place that matters most: the review form. Any web page could make a logged-in reviewer's browser submit "Approve for public" for a held file, and publish a patient's medical record. That is the exact leak this project exists to stop, created by the code meant to stop it.
+
+The fix is a same-origin check on every form post ([app.py](src/gate/app.py), `same_origin_posts`), with a test that a cross-site approval gets 403. Semgrep's rule still matches the templates because it looks for a Django-style token; the protection lives in the middleware.
 
 ## Run it
 
