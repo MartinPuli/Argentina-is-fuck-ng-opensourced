@@ -200,7 +200,7 @@ def test_cross_site_approval_is_rejected(web):
     ("/", "Documents"),
     ("/office", "Upload"),
     ("/review", "No files waiting for review."),
-    ("/public", "No purchases published yet."),
+    ("/public", "Todavía no hay compras publicadas."),
     ("/dashboard", "No findings recorded yet."),
 ])
 def test_screen_empty_states_render(web, route, label):
@@ -230,7 +230,7 @@ def test_all_populated_screens_render_current_decisions(web):
         "/office": ["Supporting attachments", "Load synthetic files"],
         purchase_url: ["Attachment decisions", "Reviewer approved", "Kept internal", "Needs review"],
         "/review": ["Decision reason", "Needs review", "Recent reviewer decisions", STAFF[0]],
-        "/public": ["Published purchases", web.app.public_filename(clean["purchase_id"], clean["id"])],
+        "/public": ["Compras publicadas", web.app.public_filename(clean["purchase_id"], clean["id"])],
         "/dashboard": ["Decisions by office", "Human review history", STAFF[0]],
     }
     for route, labels in expected_labels.items():
@@ -278,7 +278,7 @@ def test_public_file_serves_only_the_cleaned_copy(web):
     response = web.anonymous.get(f"/public/file/{att_id}")
     assert response.status_code == 200
     assert response.content == CLEANED and response.content != original
-    assert "Cleaned copy" in web.anonymous.get("/public").text
+    assert "versión pública" in web.anonymous.get("/public").text
     with web.store.db() as con:
         pid = con.execute("select purchase_id from attachments where id=?", (att_id,)).fetchone()[0]
     page = web.client.get(f"/purchase/{pid}").text
