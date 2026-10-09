@@ -13,6 +13,10 @@ You may share and adapt the licensed material, including commercially, under tho
 
 Credit **MartinPuli, _Argentina Government Data Leaks_**, link to the repository and this license, and identify the research snapshot or revision used.
 
+## Reference experiment software
+
+Python source and executable JSON fixtures in `experiments/reference-defense/` are licensed under that directory's [MIT license](experiments/reference-defense/LICENSE-MIT). Documentation and generated results remain under CC BY 4.0. The software grant does not relicense external works or other repository material.
+
 ## Third-party material
 
 This license does not apply to linked news articles, government documents, third-party databases, trademarks, or other external works. Their rights and terms remain with their respective rights holders. References to an institution or source do not imply endorsement.

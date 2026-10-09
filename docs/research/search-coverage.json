@@ -1,0 +1,70 @@
+{
+  "review_date": "2026-10-09",
+  "primary_window": [
+    "2025-10-09",
+    "2026-10-09"
+  ],
+  "exhaustive": false,
+  "measurement": "parsed title entries, not papers read",
+  "entries": 1378,
+  "keyword_matches": 177,
+  "keyword_filter": [
+    "intrusion",
+    "exfiltrat",
+    "provenance",
+    "threat intelligence",
+    "incident",
+    "agent",
+    "breach",
+    "stolen data",
+    "credential",
+    "insider",
+    "vulnerabilit",
+    "patch",
+    "access control",
+    "authorization",
+    "information flow",
+    "prompt injection",
+    "privacy leak",
+    "security polic",
+    "data leak"
+  ],
+  "sources": [
+    {
+      "venue": "USENIX Security 2026",
+      "url": "https://www.usenix.org/conference/usenixsecurity26/technical-sessions",
+      "sha256_html_snapshot": "1850201bfe7c1646504319900771cdd1e278d34a8a019bd7e9e95c3476bc1839",
+      "snapshot_bytes": 1421386,
+      "parsed_entries": 377,
+      "keyword_matches": 43,
+      "reading_status": "automated title triage only; selected full-text records stored separately"
+    },
+    {
+      "venue": "NDSS 2026",
+      "url": "https://www.ndss-symposium.org/ndss2026/accepted-papers/",
+      "sha256_html_snapshot": "97b26516887298f0c6446f5e1a51d350be3ad2c2fce36357e535f30c51b682a7",
+      "snapshot_bytes": 281717,
+      "parsed_entries": 265,
+      "keyword_matches": 33,
+      "reading_status": "automated title triage only; selected full-text records stored separately"
+    },
+    {
+      "venue": "IEEE S&P 2026",
+      "url": "https://sp2026.ieee-security.org/accepted-papers.html",
+      "sha256_html_snapshot": "ee58a5d42c2309a5ab38d0d1009f12e14758b1f062f1e3d456894b9ba10227ed",
+      "snapshot_bytes": 178208,
+      "parsed_entries": 254,
+      "keyword_matches": 35,
+      "reading_status": "automated title triage only; selected full-text records stored separately"
+    },
+    {
+      "venue": "ACM CCS 2026 accepted list",
+      "url": "https://www.sigsac.org/ccs/CCS2026/program/accepted-papers.html",
+      "sha256_html_snapshot": "07e46510b559ce3d93516a90e5052cb165bf49e3de3b17d9f3a61cb8d59afbaf",
+      "snapshot_bytes": 197852,
+      "parsed_entries": 482,
+      "keyword_matches": 66,
+      "reading_status": "automated title triage only; selected full-text records stored separately"
+    }
+  ]
+}

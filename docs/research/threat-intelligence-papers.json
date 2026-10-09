@@ -1,0 +1,275 @@
+{
+  "schema_version": 1,
+  "reviewed_at": "2026-10-09",
+  "window": {
+    "from": "2025-10-09",
+    "through": "2026-10-09"
+  },
+  "scope": "Five selected primary papers; not exhaustive.",
+  "reading_depth": "Targeted full-text methods/results/threat-model/limitations; no replication.",
+  "data_access": "Primary papers and publication metadata only; no stolen records or credentials accessed.",
+  "narrative_file": "THREAT-INTELLIGENCE-PAPERS.md",
+  "records": [
+    {
+      "id": "TI01",
+      "title": "KnowHow: Automatically Applying High-Level CTI Knowledge for Interpretable and Accurate Provenance Analysis",
+      "authors": [
+        "Yuhan Meng",
+        "Shaofei Li",
+        "Jiaping Gui",
+        "Peng Jiang",
+        "Ding Li"
+      ],
+      "venue": "NDSS 2026",
+      "status": "proceedings",
+      "date": "2026-02",
+      "first_preprint_date": "2025-09-06",
+      "window_basis": "2026 venue milestone; earlier preprint outside window",
+      "version_reviewed": "NDSS proceedings PDF",
+      "doi": "10.14722/ndss.2026.230199",
+      "url": "https://www.ndss-symposium.org/ndss-paper/knowhow-automatically-applying-high-level-cti-knowledge-for-interpretable-and-accurate-provenance-analysis/",
+      "full_text_url": "https://www.ndss-symposium.org/wp-content/uploads/2026-s199-paper.pdf",
+      "preprint_url": "https://arxiv.org/abs/2509.05698",
+      "full_text_access": true,
+      "method": "Behavioral CTI matching; lifecycle reasoning",
+      "metrics": [
+        {
+          "metric": "graph_recall",
+          "value": 1,
+          "datasets": 5,
+          "campaigns_in_datasets": 16,
+          "raw_graph_denominator": null,
+          "locator": "Table IV p10; Table VI p11"
+        },
+        {
+          "metric": "incomplete_attack_graphs_detected",
+          "numerator": 2,
+          "denominator": 3,
+          "retained_step_ratios": [
+            0.6,
+            0.7
+          ],
+          "locator": "Table XI and §VI-F p14"
+        }
+      ],
+      "locators": [
+        "§II p2",
+        "§IV–V pp4–9",
+        "§VI-B–C pp10–11",
+        "§VI-F p14",
+        "§IX limitations p16"
+      ],
+      "limitations": [
+        "Trusted kernel/auditor",
+        "Novel behaviors",
+        "Early detection delay"
+      ],
+      "implication": "Evaluate pre-exfiltration containment, not completed-graph detection alone.",
+      "interpretation": "Detection evidence; no prevention trial."
+    },
+    {
+      "id": "TI02",
+      "title": "Stayin’ Alive: How Global Stolen Data Markets Thrive on Telegram",
+      "authors": [
+        "Tina Marjanov",
+        "Taro Tsuchiya",
+        "Konstantinos Ioannidis",
+        "Jack Hughes",
+        "Nicolas Christin",
+        "Alice Hutchings"
+      ],
+      "venue": "USENIX Security 2026",
+      "status": "proceedings",
+      "date": "2026-08",
+      "first_preprint_date": null,
+      "version_reviewed": "USENIX proceedings PDF",
+      "pages": "5473–5492",
+      "url": "https://www.usenix.org/conference/usenixsecurity26/presentation/marjanov",
+      "full_text_url": "https://www.usenix.org/system/files/usenixsecurity26-marjanov.pdf",
+      "full_text_access": true,
+      "method": "Multilingual discovery; snowball sampling; longitudinal modeling",
+      "metrics": [
+        {
+          "metric": "gateway_channels",
+          "numerator": 155,
+          "denominator": 1521,
+          "unit": "sampled channels",
+          "locator": "§4.1 paper p4; §6.2 paper p8"
+        }
+      ],
+      "observation_period": {
+        "collection": "2024-08–2025-08",
+        "analyzed_messages": "2021-07–2025-07"
+      },
+      "locators": [
+        "§3 paper pp3–4 / PDF pp4–5",
+        "§4.1 paper p4 / PDF p5",
+        "§6.2 paper p8 / PDF p9",
+        "§8 paper pp10–12 / PDF pp11–13",
+        "§9.3 paper p13 / PDF p14"
+      ],
+      "limitations": [
+        "Survivorship",
+        "Discovery/language coverage",
+        "Closed channels unobserved",
+        "Observational associations"
+      ],
+      "implication": "External claims need local corroboration; disappearance is not remediation.",
+      "interpretation": "Ecosystem measurement; no causal prevention trial."
+    },
+    {
+      "id": "TI03",
+      "title": "Sealing the Window: Efficient Tamper Protection for Provenance Logs",
+      "authors": [
+        "Sagar Mishra",
+        "R. Sekar"
+      ],
+      "venue": "IEEE Symposium on Security and Privacy 2026",
+      "status": "published conference paper",
+      "date": "2026-05",
+      "first_preprint_date": null,
+      "version_reviewed": "Author copy: minor revisions to conference version; revision date unspecified",
+      "doi": "10.1109/SP63933.2026.00092",
+      "url": "https://sp2026.ieee-security.org/accepted-papers.html",
+      "full_text_url": "https://www.seclab.cs.sunysb.edu/seclab/pubs/winseal.pdf",
+      "full_text_access": true,
+      "method": "Hybrid flushing; remote collection; tamper authentication",
+      "metrics": [
+        {
+          "metric": "mean_runtime_overhead_percent",
+          "window_reduction_only": 9.5,
+          "with_tamper_detection": 15,
+          "workloads": [
+            "postmark",
+            "redis",
+            "httperf",
+            "sqlite"
+          ],
+          "concurrency_settings": [
+            1,
+            2,
+            4,
+            8
+          ],
+          "settings_count": 16,
+          "settings_count_is_derived": true,
+          "repetitions": null,
+          "locator": "§6.1.1/Fig5 PDF p13; §6.2/Fig11 PDF p15"
+        }
+      ],
+      "locators": [
+        "Version footnote PDF p1",
+        "§2.1 PDF p4",
+        "§4–5 PDF pp7–12",
+        "§6 PDF pp13–15"
+      ],
+      "limitations": [
+        "Clean initialization",
+        "Protected collector",
+        "Pre-root records",
+        "Offline deletion"
+      ],
+      "implication": "Separate integrity assurance from detector correctness and containment.",
+      "interpretation": "Log-tamper protection; not data-exfiltration prevention."
+    },
+    {
+      "id": "TI04",
+      "title": "A Context is Worth a Thousand Lies: Evading Intrusion Detectors via Intelligent Context Distortion",
+      "authors": [
+        "Magdy Nasr",
+        "Vansh Rastogi",
+        "Azadeh Tabiban"
+      ],
+      "venue": "IEEE Symposium on Security and Privacy 2026",
+      "status": "published conference paper",
+      "date": "2026-05",
+      "first_preprint_date": null,
+      "version_reviewed": "Author-hosted conference paper; revision date unspecified",
+      "doi": "10.1109/SP63933.2026.00202",
+      "url": "https://sp2026.ieee-security.org/accepted-papers.html",
+      "full_text_url": "https://azadeht.github.io/papers/Contorter_sp26.pdf",
+      "full_text_access": true,
+      "method": "Context distortion around malicious graph nodes",
+      "metrics": [
+        {
+          "metric": "black_box_settings_with_reported_zero_recall",
+          "numerator": 8,
+          "denominator": 24,
+          "derived": true,
+          "detectors": 4,
+          "datasets": 6,
+          "precision": "Two-decimal table entries",
+          "locator": "§4.1.1/Table3 PDF p9"
+        }
+      ],
+      "locators": [
+        "§2.3 PDF pp3–4",
+        "§3 PDF pp4–7",
+        "§4.1.1/Table3 PDF p9",
+        "§6 PDF pp13–14"
+      ],
+      "limitations": [
+        "Trusted auditors",
+        "Attacker log visibility",
+        "Manual executability checks"
+      ],
+      "implication": "Add adversarial-context regressions to incident replay.",
+      "interpretation": "Evasion evaluation; no prevention trial."
+    },
+    {
+      "id": "TI05",
+      "title": "Keys on Doormats: Exposed API Credentials on the Web",
+      "authors": [
+        "Nurullah Demir",
+        "Yash Vekaria",
+        "Georgios Smaragdakis",
+        "Zakir Durumeric"
+      ],
+      "venue": "ACM CCS 2026",
+      "status": "accepted; conference forthcoming at cutoff",
+      "date": "2026-03-12",
+      "first_preprint_date": "2026-03-12",
+      "version_reviewed": "arXiv:2603.12498v3",
+      "version_date": "2026-09-14",
+      "conference_dates": "2026-11-15–2026-11-19",
+      "doi": "10.1145/3830454.3846651",
+      "url": "https://www.sigsac.org/ccs/CCS2026/program/accepted-papers.html",
+      "full_text_url": "https://arxiv.org/html/2603.12498v3",
+      "history_url": "https://arxiv.org/abs/2603.12498",
+      "full_text_access": true,
+      "method": "Rendered-resource analysis; disclosure follow-up",
+      "metrics": [
+        {
+          "metric": "removed_exposures_day14",
+          "numerator": 699,
+          "denominator": 1405,
+          "remaining": 706,
+          "numerator_is_derived": true,
+          "locator": "§6.1/Fig8"
+        },
+        {
+          "metric": "inactive_credentials_day14",
+          "numerator": 310,
+          "denominator": 1175,
+          "remaining": 865,
+          "numerator_is_derived": true,
+          "locator": "§6.1/Fig8"
+        }
+      ],
+      "denominator_note": "Separate cohorts; suspected service IP blocking.",
+      "locators": [
+        "§4.1 methods/limitations",
+        "§4.3 disclosure",
+        "§6.1/Fig8",
+        "§7 recommendations"
+      ],
+      "limitations": [
+        "14 services",
+        "Verification coverage",
+        "Observational notification effects"
+      ],
+      "implication": "Verify removal, revocation, deployment assets, and recurrence separately.",
+      "interpretation": "Observed remediation; no randomized prevention estimate."
+    }
+  ]
+}

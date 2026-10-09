@@ -1,0 +1,293 @@
+{
+  "schema_version": 1,
+  "reviewed_on": "2026-10-09",
+  "window": {
+    "from": "2025-10-09",
+    "through": "2026-10-09"
+  },
+  "scope": "Selected autonomous vulnerability discovery, repair, threat-hunting and response evaluations; not an exhaustive systematic review.",
+  "reading_policy": "Methods, relevant results, evaluation definitions and limitations were read in full-text sections. No claim that every appendix or cited paper was read. No experiments reproduced.",
+  "records": [
+    {
+      "id": "cybergym-e2e",
+      "title": "CyberGym-E2E: Scalable Real-World Benchmark for AI Agents' End-to-End Cybersecurity Capabilities",
+      "date": "2026-06-03",
+      "version": {
+        "id": "arXiv:2606.04460v2",
+        "date": "2026-07-17"
+      },
+      "venue": "ICML 2026",
+      "peerreviewstatus": "Conference publication; arXiv metadata and official ICML listing checked.",
+      "url": "https://arxiv.org/html/2606.04460v2",
+      "venue_url": "https://icml.cc/Downloads/2026",
+      "readingdepth": "Full-text section reading: 3.2–3.4, 4.1–4.3, 4.5, 5; Tables 3–4. Other sections selective.",
+      "problem": "Separate discovery, reproduction, repair and preserved functionality.",
+      "method": "Containerized historical vulnerabilities; independent sanitizer and developer-test checks.",
+      "result": "S3 accepts a discovered vulnerability; S4 additionally checks the original vulnerability.",
+      "metrics": {
+        "evaluation_tasks": 920,
+        "projects": 139,
+        "model_harness": "GPT-5.4 / Codex",
+        "budget_usd": 10,
+        "time_limit_minutes": 90,
+        "patch_only_percent": 87.1,
+        "end_to_end_S3_percent": 65.9,
+        "end_to_end_S4_percent": 22.2,
+        "metric_definition": "Cumulative stages; S3 = agent crash blocked plus functionality tests; S4 = original crash also blocked."
+      },
+      "limits": "C/C++ sanitizer scope; shallow fixes can pass. These are not breach-prevention rates.",
+      "designimplication": "Require the intended leak regression, attack variants, and benign-use tests; preserve the independent oracle.",
+      "extractionlocators": [
+        "3.4: validation stages",
+        "4.2: Tables 3–4; alternative/shallow patches",
+        "4.5: adversarial behavior",
+        "5: limitations"
+      ]
+    },
+    {
+      "id": "patchbench",
+      "title": "PatchBench: Evaluating AI Agents for Vulnerability Patching",
+      "date": "2026-09-03",
+      "version": {
+        "id": "arXiv:2609.04075v1",
+        "date": "2026-09-03"
+      },
+      "venue": "arXiv",
+      "peerreviewstatus": "Preprint; peer-reviewed acceptance not verified.",
+      "url": "https://arxiv.org/html/2609.04075v1",
+      "readingdepth": "Full-text section reading: 4.3–6; construction excerpts in 4.2; Table 2.",
+      "problem": "Crash suppression can hide incomplete repair or broken behavior.",
+      "method": "Transplanted, mutated off-stack vulnerabilities; related crashing inputs, benign-output comparison and unit tests.",
+      "result": "PoC-only evaluation substantially overstates repair success.",
+      "metrics": {
+        "tasks": 213,
+        "agent_configurations": 11,
+        "mean_original_PoC_pass_percent": 83.1,
+        "mean_full_validation_solved_percent": 45.3,
+        "inflation_ratio_reported": 1.83,
+        "best_configuration": "Codex / GPT-5.6 Sol",
+        "best_PoC_pass_percent": 97.2,
+        "best_solved_percent": 59.2,
+        "budget_usd_per_task": 5,
+        "budget_exception": "Atlantis: four $5 nodes, $20 total."
+      },
+      "limits": "Reference patch required; finite tests still miss defects. Similarity does not establish training-data memorization.",
+      "designimplication": "Never call a fix verified solely because the original test stops failing.",
+      "extractionlocators": [
+        "4.2: construction",
+        "4.3: security/semantic validation",
+        "5.1–5.2: protocol; Table 2",
+        "5.4: output-state ablation",
+        "6: reference dependency and validation gap"
+      ]
+    },
+    {
+      "id": "aixcc-sok",
+      "title": "SoK: DARPA's AI Cyber Challenge (AIxCC): Competition Design, Architectures, and Lessons Learned",
+      "date": "2026-02-07",
+      "version": {
+        "id": "arXiv:2602.07666v5",
+        "date": "2026-08-02"
+      },
+      "venue": "35th USENIX Security Symposium, 2026, pp. 2705–2724",
+      "peerreviewstatus": "Peer-reviewed conference publication; official proceedings checked.",
+      "url": "https://arxiv.org/html/2602.07666v5",
+      "venue_url": "https://www.usenix.org/conference/usenixsecurity26/presentation/zhang-cen",
+      "readingdepth": "Full-text section reading: 6.2–6.4, 7.1–7.2; earlier draft also consulted.",
+      "problem": "Competition rank confounds technical ability, stability and strategy.",
+      "method": "Finalist architectures, telemetry and post-competition isolated reference experiments.",
+      "result": "System outages explain much of the ranking gap; foundational techniques solve substantial subsets.",
+      "metrics": {
+        "competition_years": "2023–2025",
+        "finalists": 7,
+        "annotated_challenge_vulnerabilities": 63,
+        "parallel_fuzzing_solved": 34,
+        "MultiRetrieval_valid_patches": 31,
+        "Claude_Code_valid_patches": 33,
+        "aggregation": "Union across three runs, ideal laboratory conditions; patches cross-validated by two experts."
+      },
+      "limits": "Incomplete telemetry; synthetic challenges; reference experiments are not end-to-end competitors.",
+      "designimplication": "Budget disk, queues, retries and cleanup; evaluate sustained service operation and submission accuracy.",
+      "extractionlocators": [
+        "6.2: patch validation",
+        "7.1: system stability and accuracy",
+        "7.2: annotation techniques and overview",
+        "Figure 3; Table 6"
+      ]
+    },
+    {
+      "id": "patchisland",
+      "title": "PatchIsland: Orchestration of LLM Agents for Continuous Vulnerability Repair",
+      "date": "2026-01-24",
+      "version": {
+        "id": "arXiv:2601.17471v2",
+        "date": "2026-07-16"
+      },
+      "venue": "arXiv",
+      "peerreviewstatus": "Preprint; peer-reviewed acceptance not verified.",
+      "url": "https://arxiv.org/html/2601.17471v2",
+      "readingdepth": "Full-text section reading: 5, 6.1–6.2, 7.5 and section 9 limitations; Tables 3–5.",
+      "problem": "Continuous repair must tolerate duplicate reports and agent failures.",
+      "method": "Diverse repair agents, shared build artifacts and patch-based deduplication.",
+      "result": "Laboratory plausible-patch success differs from autonomous competition repair.",
+      "metrics": {
+        "internal_successes": 84,
+        "internal_tasks": 92,
+        "internal_definition": "Synthetic C/Java vulnerabilities with supplied PoVs; crash blocked and functional tests pass.",
+        "competition_patches": 31,
+        "competition_discovered_vulnerabilities": 43,
+        "competition_repair_percent_reported": 72.1
+      },
+      "limits": "Plausible patches may be incorrect; initialization remains a failure point; ensemble costs exceed baselines.",
+      "designimplication": "Deduplicate by demonstrated remediation coverage; isolate workers; retain restartable incident state.",
+      "extractionlocators": [
+        "5: implementation",
+        "6.1: dataset; Table 3; success definition",
+        "7.5: Table 5",
+        "9: limitations"
+      ]
+    },
+    {
+      "id": "artemis",
+      "title": "Comparing AI Agents to Cybersecurity Professionals in Real-World Penetration Testing",
+      "date": "2025-12-10",
+      "version": {
+        "id": "arXiv:2512.09882v2",
+        "date": "2026-03-03"
+      },
+      "venue": "ICLR 2026",
+      "peerreviewstatus": "Conference publication reported by author; OpenReview access challenged, author publication list verified.",
+      "url": "https://arxiv.org/html/2512.09882v2",
+      "venue_url": "https://dho.stanford.edu/research/",
+      "readingdepth": "Full-text section reading: 3.1–3.2, 4.2, section 6 limitations and section 8 ethics; Table 1.",
+      "problem": "Laboratory tasks omit live-system complexity.",
+      "method": "Authorized university engagement comparing professionals and autonomous scaffolds; independent triage.",
+      "result": "ARTEMIS A2 ranked second on the study's weighted score.",
+      "metrics": {
+        "human_participants": 10,
+        "approximate_hosts": 8000,
+        "subnets": 12,
+        "scored_hours": 10,
+        "A2_submissions": 11,
+        "A2_valid_findings": 9,
+        "A2_valid_percent_reported": 82
+      },
+      "limits": "One network, small cohort; defenders approved normally blocked activity; humans monitored safety; false positives persisted.",
+      "designimplication": "Use evidence-backed findings, authorization boundaries and independent triage; avoid universal human-replacement claims.",
+      "extractionlocators": [
+        "Table 1",
+        "3.1–3.2: setup and scoring",
+        "4.2: variants and scored duration",
+        "6: limitations",
+        "8: ethics"
+      ]
+    },
+    {
+      "id": "cyber-defense-benchmark",
+      "title": "Cyber Defense Benchmark: Agentic Threat Hunting Evaluation for LLMs in SecOps",
+      "date": "2026-04-21",
+      "version": {
+        "id": "arXiv:2604.19533v3",
+        "date": "2026-04-23"
+      },
+      "venue": "Simbian AI technical report / arXiv",
+      "peerreviewstatus": "Vendor-authored preprint; peer-reviewed acceptance not verified.",
+      "url": "https://arxiv.org/pdf/2604.19533v3",
+      "readingdepth": "Full-text PDF reading: 8, 9.1, 10–12; corpus and labeling excerpts; Tables 2, 4–5.",
+      "problem": "Open-ended log investigation differs from security question answering.",
+      "method": "Obfuscated recorded procedures; SQL investigation; Sigma-derived timestamp labels.",
+      "result": "Narrative coverage and raw-event recall measure different outcomes; use both.",
+      "metrics": {
+        "campaigns": 26,
+        "covered_procedures": 105,
+        "available_procedures": 106,
+        "query_budget": 50,
+        "leading_model": "Claude Opus 4.6",
+        "leading_model_runs": 26,
+        "narrative_coverage_mean": 0.55,
+        "narrative_coverage_sample_sd": 0.05,
+        "raw_timestamp_recall_percent_mean": 4.48,
+        "raw_timestamp_recall_percent_sample_sd": 1.4
+      },
+      "limits": "Body/abstract disagree; reported metrics use Table 5. Strict timestamps, imperfect labels, restricted queries, proprietary campaign generator.",
+      "designimplication": "Expose coverage gaps and evidence; do not infer complete investigation from a fluent report.",
+      "extractionlocators": [
+        "PDF pp. 6–9: Tables 2, 4–5",
+        "8.3: metric definitions",
+        "10.2: validity",
+        "11: reproducibility",
+        "Abstract versus Table 5: stale-summary discrepancy"
+      ]
+    },
+    {
+      "id": "cyber-range-response",
+      "title": "A Cyber Range Evaluation of Autonomous Network Incident Response Agents",
+      "date": "2026-09-15",
+      "version": {
+        "id": "arXiv:2609.16541v1",
+        "date": "2026-09-15"
+      },
+      "venue": "arXiv",
+      "peerreviewstatus": "Preprint; peer-reviewed acceptance not verified.",
+      "url": "https://arxiv.org/html/2609.16541v1",
+      "readingdepth": "Full-text section reading: IV-C–V-C, VI opening discussion; Table I.",
+      "problem": "Containment can reduce compromise while harming availability.",
+      "method": "Heuristic, RL, noisy-training RL and no-action policies in an emulated network with simulated users.",
+      "result": "No-action outperformed active defenders against Guided under the chosen combined cost.",
+      "metrics": {
+        "episodes_total": 134,
+        "episode_hours": 2,
+        "configuration": "Guided attacker; users present",
+        "NoOp_mean_return": -2883,
+        "NoOp_sd": 117,
+        "noisy_RL_mean_return": -5812,
+        "noisy_RL_sd": 694,
+        "return_direction": "Higher is better; negative attack plus defense cost.",
+        "configuration_n": "Not reported in Table I; approximately 30 episodes per agent across configurations."
+      },
+      "limits": "Simplified cost model; access proxies data loss; false alerts strongly affect results. RL, not an LLM study.",
+      "designimplication": "Score blocked leakage alongside legitimate service continuity; add reversible, narrowly scoped responses.",
+      "extractionlocators": [
+        "IV-D: cost function/proxy",
+        "V-A–V-C: protocol; 134 episodes",
+        "Table I: returns",
+        "VI: practical limitations"
+      ]
+    },
+    {
+      "id": "cybergym",
+      "title": "CyberGym: Evaluating AI Agents' Real-World Cybersecurity Capabilities at Scale",
+      "date": "2025-06-03",
+      "version": {
+        "id": "arXiv:2506.02548v3",
+        "date": "2026-03-24"
+      },
+      "window_role": "Older foundation with an in-window ICLR 2026 revision; not a newly introduced 2026 benchmark.",
+      "venue": "ICLR 2026",
+      "peerreviewstatus": "Peer-reviewed conference publication; v3 PDF publication header checked.",
+      "url": "https://arxiv.org/html/2506.02548v3",
+      "venue_url": "https://arxiv.org/pdf/2506.02548v3",
+      "readingdepth": "Full-text section reading: 3.1–3.3, section 4 quantitative results, 5–6; Figure 4 protocol; PDF header.",
+      "problem": "Measure repository-scale vulnerability reproduction.",
+      "method": "Historical OSS-Fuzz cases with paired vulnerable/patched execution.",
+      "result": "The headline reasoning result uses a subset, not the full corpus.",
+      "metrics": {
+        "corpus_tasks": 1507,
+        "projects": 188,
+        "reasoning_experiment_tasks": 300,
+        "model_harness": "GPT-5 high reasoning / OpenHands",
+        "level": 1,
+        "iteration_limit": 100,
+        "reproduction_success_percent": 22.0
+      },
+      "limits": "Reproduction, not patching or full prevention; C/C++ sanitizer scope; internal zero-day totals disagree across sections.",
+      "designimplication": "Store version, sample, hint level, budget and oracle beside every reported score.",
+      "extractionlocators": [
+        "3.1–3.3: scope and task construction",
+        "4: thinking-mode experiment; Figure 4",
+        "5–6: outcomes and limitations",
+        "PDF p. 1: ICLR publication header"
+      ]
+    }
+  ]
+}

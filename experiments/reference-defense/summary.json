@@ -1,0 +1,755 @@
+{
+  "experiment": "reference-defense-1",
+  "generated_at": "2026-10-09T19:34:35.658883+00:00",
+  "workload_digest": "390d1dd108cdb5c4e9c146debb2dfbc46f40d85f35004338a17de065f0b65ebd",
+  "contract_digest": "c3b8b980bb53b6bdd59a9cb77a65b8be1eb3dc52d6d39b1ed9ece4f6fbb618ac",
+  "results": [
+    {
+      "mode": "no_containment",
+      "metrics": {
+        "all_reads": {
+          "requests": 20,
+          "http_200": 20,
+          "record_transmissions": 241,
+          "unique_records_delivered": 30,
+          "unique_record_ids": [
+            "alice-01",
+            "alice-02",
+            "alice-03",
+            "alice-04",
+            "alice-05",
+            "alice-06",
+            "alice-07",
+            "alice-08",
+            "alice-09",
+            "alice-10",
+            "bob-01",
+            "bob-02",
+            "bob-03",
+            "bob-04",
+            "bob-05",
+            "bob-06",
+            "bob-07",
+            "bob-08",
+            "bob-09",
+            "bob-10",
+            "carol-01",
+            "carol-02",
+            "carol-03",
+            "carol-04",
+            "carol-05",
+            "carol-06",
+            "carol-07",
+            "carol-08",
+            "carol-09",
+            "carol-10"
+          ]
+        },
+        "legitimate": {
+          "requests": 11,
+          "http_200": 11,
+          "record_transmissions": 214,
+          "unique_records_delivered": 30,
+          "unique_record_ids": [
+            "alice-01",
+            "alice-02",
+            "alice-03",
+            "alice-04",
+            "alice-05",
+            "alice-06",
+            "alice-07",
+            "alice-08",
+            "alice-09",
+            "alice-10",
+            "bob-01",
+            "bob-02",
+            "bob-03",
+            "bob-04",
+            "bob-05",
+            "bob-06",
+            "bob-07",
+            "bob-08",
+            "bob-09",
+            "bob-10",
+            "carol-01",
+            "carol-02",
+            "carol-03",
+            "carol-04",
+            "carol-05",
+            "carol-06",
+            "carol-07",
+            "carol-08",
+            "carol-09",
+            "carol-10"
+          ]
+        },
+        "A_legitimate": {
+          "requests": 4,
+          "http_200": 4,
+          "record_transmissions": 4,
+          "unique_records_delivered": 2,
+          "unique_record_ids": [
+            "alice-01",
+            "alice-07"
+          ]
+        },
+        "B_authorized_batch": {
+          "requests": 7,
+          "http_200": 7,
+          "record_transmissions": 210,
+          "unique_records_delivered": 30,
+          "unique_record_ids": [
+            "alice-01",
+            "alice-02",
+            "alice-03",
+            "alice-04",
+            "alice-05",
+            "alice-06",
+            "alice-07",
+            "alice-08",
+            "alice-09",
+            "alice-10",
+            "bob-01",
+            "bob-02",
+            "bob-03",
+            "bob-04",
+            "bob-05",
+            "bob-06",
+            "bob-07",
+            "bob-08",
+            "bob-09",
+            "bob-10",
+            "carol-01",
+            "carol-02",
+            "carol-03",
+            "carol-04",
+            "carol-05",
+            "carol-06",
+            "carol-07",
+            "carol-08",
+            "carol-09",
+            "carol-10"
+          ]
+        },
+        "credential_misuse": {
+          "requests": 7,
+          "http_200": 7,
+          "record_transmissions": 7,
+          "unique_records_delivered": 7,
+          "unique_record_ids": [
+            "alice-02",
+            "alice-03",
+            "alice-04",
+            "alice-05",
+            "alice-06",
+            "alice-08",
+            "alice-09"
+          ]
+        },
+        "scope_probes": {
+          "requests": 2,
+          "http_200": 2,
+          "record_transmissions": 20,
+          "unique_records_delivered": 10,
+          "unique_record_ids": [
+            "bob-01",
+            "bob-02",
+            "bob-03",
+            "bob-04",
+            "bob-05",
+            "bob-06",
+            "bob-07",
+            "bob-08",
+            "bob-09",
+            "bob-10"
+          ]
+        },
+        "misuse_before_confirmation": {
+          "requests": 3,
+          "http_200": 3,
+          "record_transmissions": 3,
+          "unique_records_delivered": 3,
+          "unique_record_ids": [
+            "alice-02",
+            "alice-03",
+            "alice-04"
+          ]
+        },
+        "misuse_after_confirmation": {
+          "requests": 4,
+          "http_200": 4,
+          "record_transmissions": 4,
+          "unique_records_delivered": 4,
+          "unique_record_ids": [
+            "alice-05",
+            "alice-06",
+            "alice-08",
+            "alice-09"
+          ]
+        },
+        "original_after_replacement": {
+          "requests": 3,
+          "http_200": 3,
+          "record_transmissions": 3,
+          "unique_records_delivered": 3,
+          "unique_record_ids": [
+            "alice-06",
+            "alice-08",
+            "alice-09"
+          ]
+        }
+      }
+    },
+    {
+      "mode": "naive_volume",
+      "metrics": {
+        "all_reads": {
+          "requests": 20,
+          "http_200": 14,
+          "record_transmissions": 139,
+          "unique_records_delivered": 30,
+          "unique_record_ids": [
+            "alice-01",
+            "alice-02",
+            "alice-03",
+            "alice-04",
+            "alice-05",
+            "alice-06",
+            "alice-07",
+            "alice-08",
+            "alice-09",
+            "alice-10",
+            "bob-01",
+            "bob-02",
+            "bob-03",
+            "bob-04",
+            "bob-05",
+            "bob-06",
+            "bob-07",
+            "bob-08",
+            "bob-09",
+            "bob-10",
+            "carol-01",
+            "carol-02",
+            "carol-03",
+            "carol-04",
+            "carol-05",
+            "carol-06",
+            "carol-07",
+            "carol-08",
+            "carol-09",
+            "carol-10"
+          ]
+        },
+        "legitimate": {
+          "requests": 11,
+          "http_200": 7,
+          "record_transmissions": 123,
+          "unique_records_delivered": 30,
+          "unique_record_ids": [
+            "alice-01",
+            "alice-02",
+            "alice-03",
+            "alice-04",
+            "alice-05",
+            "alice-06",
+            "alice-07",
+            "alice-08",
+            "alice-09",
+            "alice-10",
+            "bob-01",
+            "bob-02",
+            "bob-03",
+            "bob-04",
+            "bob-05",
+            "bob-06",
+            "bob-07",
+            "bob-08",
+            "bob-09",
+            "bob-10",
+            "carol-01",
+            "carol-02",
+            "carol-03",
+            "carol-04",
+            "carol-05",
+            "carol-06",
+            "carol-07",
+            "carol-08",
+            "carol-09",
+            "carol-10"
+          ]
+        },
+        "A_legitimate": {
+          "requests": 4,
+          "http_200": 3,
+          "record_transmissions": 3,
+          "unique_records_delivered": 1,
+          "unique_record_ids": [
+            "alice-01"
+          ]
+        },
+        "B_authorized_batch": {
+          "requests": 7,
+          "http_200": 4,
+          "record_transmissions": 120,
+          "unique_records_delivered": 30,
+          "unique_record_ids": [
+            "alice-01",
+            "alice-02",
+            "alice-03",
+            "alice-04",
+            "alice-05",
+            "alice-06",
+            "alice-07",
+            "alice-08",
+            "alice-09",
+            "alice-10",
+            "bob-01",
+            "bob-02",
+            "bob-03",
+            "bob-04",
+            "bob-05",
+            "bob-06",
+            "bob-07",
+            "bob-08",
+            "bob-09",
+            "bob-10",
+            "carol-01",
+            "carol-02",
+            "carol-03",
+            "carol-04",
+            "carol-05",
+            "carol-06",
+            "carol-07",
+            "carol-08",
+            "carol-09",
+            "carol-10"
+          ]
+        },
+        "credential_misuse": {
+          "requests": 7,
+          "http_200": 6,
+          "record_transmissions": 6,
+          "unique_records_delivered": 6,
+          "unique_record_ids": [
+            "alice-02",
+            "alice-03",
+            "alice-04",
+            "alice-05",
+            "alice-06",
+            "alice-09"
+          ]
+        },
+        "scope_probes": {
+          "requests": 2,
+          "http_200": 1,
+          "record_transmissions": 10,
+          "unique_records_delivered": 10,
+          "unique_record_ids": [
+            "bob-01",
+            "bob-02",
+            "bob-03",
+            "bob-04",
+            "bob-05",
+            "bob-06",
+            "bob-07",
+            "bob-08",
+            "bob-09",
+            "bob-10"
+          ]
+        },
+        "misuse_before_confirmation": {
+          "requests": 3,
+          "http_200": 3,
+          "record_transmissions": 3,
+          "unique_records_delivered": 3,
+          "unique_record_ids": [
+            "alice-02",
+            "alice-03",
+            "alice-04"
+          ]
+        },
+        "misuse_after_confirmation": {
+          "requests": 4,
+          "http_200": 3,
+          "record_transmissions": 3,
+          "unique_records_delivered": 3,
+          "unique_record_ids": [
+            "alice-05",
+            "alice-06",
+            "alice-09"
+          ]
+        },
+        "original_after_replacement": {
+          "requests": 3,
+          "http_200": 2,
+          "record_transmissions": 2,
+          "unique_records_delivered": 2,
+          "unique_record_ids": [
+            "alice-06",
+            "alice-09"
+          ]
+        }
+      }
+    },
+    {
+      "mode": "scope_only",
+      "metrics": {
+        "all_reads": {
+          "requests": 20,
+          "http_200": 18,
+          "record_transmissions": 221,
+          "unique_records_delivered": 30,
+          "unique_record_ids": [
+            "alice-01",
+            "alice-02",
+            "alice-03",
+            "alice-04",
+            "alice-05",
+            "alice-06",
+            "alice-07",
+            "alice-08",
+            "alice-09",
+            "alice-10",
+            "bob-01",
+            "bob-02",
+            "bob-03",
+            "bob-04",
+            "bob-05",
+            "bob-06",
+            "bob-07",
+            "bob-08",
+            "bob-09",
+            "bob-10",
+            "carol-01",
+            "carol-02",
+            "carol-03",
+            "carol-04",
+            "carol-05",
+            "carol-06",
+            "carol-07",
+            "carol-08",
+            "carol-09",
+            "carol-10"
+          ]
+        },
+        "legitimate": {
+          "requests": 11,
+          "http_200": 11,
+          "record_transmissions": 214,
+          "unique_records_delivered": 30,
+          "unique_record_ids": [
+            "alice-01",
+            "alice-02",
+            "alice-03",
+            "alice-04",
+            "alice-05",
+            "alice-06",
+            "alice-07",
+            "alice-08",
+            "alice-09",
+            "alice-10",
+            "bob-01",
+            "bob-02",
+            "bob-03",
+            "bob-04",
+            "bob-05",
+            "bob-06",
+            "bob-07",
+            "bob-08",
+            "bob-09",
+            "bob-10",
+            "carol-01",
+            "carol-02",
+            "carol-03",
+            "carol-04",
+            "carol-05",
+            "carol-06",
+            "carol-07",
+            "carol-08",
+            "carol-09",
+            "carol-10"
+          ]
+        },
+        "A_legitimate": {
+          "requests": 4,
+          "http_200": 4,
+          "record_transmissions": 4,
+          "unique_records_delivered": 2,
+          "unique_record_ids": [
+            "alice-01",
+            "alice-07"
+          ]
+        },
+        "B_authorized_batch": {
+          "requests": 7,
+          "http_200": 7,
+          "record_transmissions": 210,
+          "unique_records_delivered": 30,
+          "unique_record_ids": [
+            "alice-01",
+            "alice-02",
+            "alice-03",
+            "alice-04",
+            "alice-05",
+            "alice-06",
+            "alice-07",
+            "alice-08",
+            "alice-09",
+            "alice-10",
+            "bob-01",
+            "bob-02",
+            "bob-03",
+            "bob-04",
+            "bob-05",
+            "bob-06",
+            "bob-07",
+            "bob-08",
+            "bob-09",
+            "bob-10",
+            "carol-01",
+            "carol-02",
+            "carol-03",
+            "carol-04",
+            "carol-05",
+            "carol-06",
+            "carol-07",
+            "carol-08",
+            "carol-09",
+            "carol-10"
+          ]
+        },
+        "credential_misuse": {
+          "requests": 7,
+          "http_200": 7,
+          "record_transmissions": 7,
+          "unique_records_delivered": 7,
+          "unique_record_ids": [
+            "alice-02",
+            "alice-03",
+            "alice-04",
+            "alice-05",
+            "alice-06",
+            "alice-08",
+            "alice-09"
+          ]
+        },
+        "scope_probes": {
+          "requests": 2,
+          "http_200": 0,
+          "record_transmissions": 0,
+          "unique_records_delivered": 0,
+          "unique_record_ids": []
+        },
+        "misuse_before_confirmation": {
+          "requests": 3,
+          "http_200": 3,
+          "record_transmissions": 3,
+          "unique_records_delivered": 3,
+          "unique_record_ids": [
+            "alice-02",
+            "alice-03",
+            "alice-04"
+          ]
+        },
+        "misuse_after_confirmation": {
+          "requests": 4,
+          "http_200": 4,
+          "record_transmissions": 4,
+          "unique_records_delivered": 4,
+          "unique_record_ids": [
+            "alice-05",
+            "alice-06",
+            "alice-08",
+            "alice-09"
+          ]
+        },
+        "original_after_replacement": {
+          "requests": 3,
+          "http_200": 3,
+          "record_transmissions": 3,
+          "unique_records_delivered": 3,
+          "unique_record_ids": [
+            "alice-06",
+            "alice-08",
+            "alice-09"
+          ]
+        }
+      }
+    },
+    {
+      "mode": "scope_and_revocation",
+      "metrics": {
+        "all_reads": {
+          "requests": 20,
+          "http_200": 13,
+          "record_transmissions": 216,
+          "unique_records_delivered": 30,
+          "unique_record_ids": [
+            "alice-01",
+            "alice-02",
+            "alice-03",
+            "alice-04",
+            "alice-05",
+            "alice-06",
+            "alice-07",
+            "alice-08",
+            "alice-09",
+            "alice-10",
+            "bob-01",
+            "bob-02",
+            "bob-03",
+            "bob-04",
+            "bob-05",
+            "bob-06",
+            "bob-07",
+            "bob-08",
+            "bob-09",
+            "bob-10",
+            "carol-01",
+            "carol-02",
+            "carol-03",
+            "carol-04",
+            "carol-05",
+            "carol-06",
+            "carol-07",
+            "carol-08",
+            "carol-09",
+            "carol-10"
+          ]
+        },
+        "legitimate": {
+          "requests": 11,
+          "http_200": 10,
+          "record_transmissions": 213,
+          "unique_records_delivered": 30,
+          "unique_record_ids": [
+            "alice-01",
+            "alice-02",
+            "alice-03",
+            "alice-04",
+            "alice-05",
+            "alice-06",
+            "alice-07",
+            "alice-08",
+            "alice-09",
+            "alice-10",
+            "bob-01",
+            "bob-02",
+            "bob-03",
+            "bob-04",
+            "bob-05",
+            "bob-06",
+            "bob-07",
+            "bob-08",
+            "bob-09",
+            "bob-10",
+            "carol-01",
+            "carol-02",
+            "carol-03",
+            "carol-04",
+            "carol-05",
+            "carol-06",
+            "carol-07",
+            "carol-08",
+            "carol-09",
+            "carol-10"
+          ]
+        },
+        "A_legitimate": {
+          "requests": 4,
+          "http_200": 3,
+          "record_transmissions": 3,
+          "unique_records_delivered": 2,
+          "unique_record_ids": [
+            "alice-01",
+            "alice-07"
+          ]
+        },
+        "B_authorized_batch": {
+          "requests": 7,
+          "http_200": 7,
+          "record_transmissions": 210,
+          "unique_records_delivered": 30,
+          "unique_record_ids": [
+            "alice-01",
+            "alice-02",
+            "alice-03",
+            "alice-04",
+            "alice-05",
+            "alice-06",
+            "alice-07",
+            "alice-08",
+            "alice-09",
+            "alice-10",
+            "bob-01",
+            "bob-02",
+            "bob-03",
+            "bob-04",
+            "bob-05",
+            "bob-06",
+            "bob-07",
+            "bob-08",
+            "bob-09",
+            "bob-10",
+            "carol-01",
+            "carol-02",
+            "carol-03",
+            "carol-04",
+            "carol-05",
+            "carol-06",
+            "carol-07",
+            "carol-08",
+            "carol-09",
+            "carol-10"
+          ]
+        },
+        "credential_misuse": {
+          "requests": 7,
+          "http_200": 3,
+          "record_transmissions": 3,
+          "unique_records_delivered": 3,
+          "unique_record_ids": [
+            "alice-02",
+            "alice-03",
+            "alice-04"
+          ]
+        },
+        "scope_probes": {
+          "requests": 2,
+          "http_200": 0,
+          "record_transmissions": 0,
+          "unique_records_delivered": 0,
+          "unique_record_ids": []
+        },
+        "misuse_before_confirmation": {
+          "requests": 3,
+          "http_200": 3,
+          "record_transmissions": 3,
+          "unique_records_delivered": 3,
+          "unique_record_ids": [
+            "alice-02",
+            "alice-03",
+            "alice-04"
+          ]
+        },
+        "misuse_after_confirmation": {
+          "requests": 4,
+          "http_200": 0,
+          "record_transmissions": 0,
+          "unique_records_delivered": 0,
+          "unique_record_ids": []
+        },
+        "original_after_replacement": {
+          "requests": 3,
+          "http_200": 0,
+          "record_transmissions": 0,
+          "unique_records_delivered": 0,
+          "unique_record_ids": []
+        }
+      }
+    }
+  ],
+  "checks_passed": 34,
+  "checks_total": 34
+}

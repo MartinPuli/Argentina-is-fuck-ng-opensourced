@@ -1,0 +1,13 @@
+{
+  "contract_version": "reference-defense-1",
+  "fictional_data": true,
+  "owners": ["alice", "bob", "carol"],
+  "records_per_owner": 10,
+  "identities": {
+    "A": {"owners": ["alice"], "batch_allowed": false},
+    "B": {"owners": ["alice", "bob", "carol"], "batch_allowed": true}
+  },
+  "naive_volume_control": {"window_ticks": 10, "maximum_requests": 3},
+  "permitted_response_actions": ["revoke_credential", "issue_replacement"],
+  "public_bind_allowed": false
+}

@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "reviewed_on": "2026-10-09",
+  "window": ["2025-10-09", "2026-10-09"],
+  "exhaustive": false,
+  "independently_reproduced": false,
+  "narrative_file": "LEAK-LEARNING-PAPERS.md",
+  "records": [
+    {
+      "id": "LL01",
+      "title": "CTI-REALM: Benchmark to Evaluate Agent Performance on Security Detection Rule Generation Capabilities",
+      "first_date": "2026-03-13",
+      "version_date": "2026-03-17",
+      "version": "arXiv:2603.13517v2",
+      "venue_status": "preprint",
+      "url": "https://arxiv.org/html/2603.13517v2",
+      "metadata_url": "https://arxiv.org/abs/2603.13517",
+      "reading_depth": "fulltext_targeted",
+      "locators": ["3", "4", "5.1–5.7", "Table 4", "7", "Appendix H"],
+      "window_class": "new_work",
+      "design_tags": ["curated_memory", "held_out_evaluation", "composite_metric"]
+    },
+    {
+      "id": "LL02",
+      "title": "Cutting the Fuse: Actionable APT Attack Blocking in Provenance-based IDS",
+      "first_date": null,
+      "version": "USENIX Security 2026 proceedings, pp. 2327–2344",
+      "venue_status": "peer_reviewed_conference",
+      "url": "https://www.usenix.org/system/files/usenixsecurity26-wu-weiheng.pdf",
+      "venue_url": "https://www.usenix.org/conference/usenixsecurity26/presentation/wu-weiheng",
+      "reading_depth": "fulltext_targeted",
+      "locators": ["3", "4.3", "5", "6.1–6.7", "7"],
+      "window_class": "2026_publication_initial_date_unverified",
+      "design_tags": ["model_metric_vs_enforcement", "feedback", "operational_context"]
+    },
+    {
+      "id": "LL03",
+      "title": "Entente: Cross-silo Intrusion Detection on Network Log Graphs with Federated Learning",
+      "first_date": "2025-03-18",
+      "version": "NDSS 2026 proceedings, doi:10.14722/ndss.2026.230093",
+      "venue_status": "peer_reviewed_conference",
+      "url": "https://www.ndss-symposium.org/wp-content/uploads/2026-s93-paper.pdf",
+      "metadata_url": "https://arxiv.org/abs/2503.14284",
+      "reading_depth": "fulltext_targeted",
+      "locators": ["IV.C–D", "V.A–E", "VI", "Tables II–VII"],
+      "window_class": "2026_publication_earlier_preprint",
+      "design_tags": ["cross_silo_learning", "poisoning", "privacy", "class_imbalance"]
+    },
+    {
+      "id": "LL04",
+      "title": "Operationalizing Cyber Threat Intelligence with GraphRAG",
+      "first_date": "2026-08-13",
+      "version": "arXiv:2608.13050v1",
+      "venue_status": "preprint_technical_report",
+      "url": "https://arxiv.org/html/2608.13050v1",
+      "metadata_url": "https://arxiv.org/abs/2608.13050",
+      "reading_depth": "fulltext_targeted",
+      "locators": ["3–5", "6.1–6.6", "7.3", "Tables 7–8"],
+      "window_class": "new_work",
+      "design_tags": ["behavior_vs_indicator", "judge_limitations", "ablation"]
+    },
+    {
+      "id": "LL05",
+      "title": "CyTReX: Explainable AI-Based Cybersecurity Threat Reasoning Framework for DER Networks",
+      "first_date": "2026-10-03",
+      "version": "arXiv:2610.04286v1",
+      "venue_status": "preprint; author-declared Resilience Week 2026 presentation",
+      "url": "https://arxiv.org/html/2610.04286v1",
+      "metadata_url": "https://arxiv.org/abs/2610.04286",
+      "reading_depth": "fulltext_targeted",
+      "locators": ["V.A–E", "VI.A–D", "VII", "Tables IV–VII"],
+      "window_class": "new_work",
+      "design_tags": ["reasoning_latency", "unseen_labels", "evidence_traceability"]
+    }
+  ]
+}
