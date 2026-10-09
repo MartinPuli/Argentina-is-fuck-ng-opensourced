@@ -802,8 +802,12 @@ def review_queue(request: Request, user: str = Depends(staff)):
         done = con.execute(
             "select a.*, p.office from attachments a join purchases p on p.id=a.purchase_id "
             "where a.reviewed_by is not null order by a.reviewed_at desc limit 10").fetchall()
-    return page(request, "review.html", held=held, done=done, user=user,
-                stale_ids={a["id"] for a in held if not learning.current(a["id"])})
+        restricted = [a for a in con.execute(
+            "select a.*, p.office, p.procedure, p.item from attachments a join purchases p on p.id=a.purchase_id"
+            " where a.decision=? and a.reviewed_by is null order by a.id desc", (WITHHELD,)).fetchall()
+            if releasable(a["findings"])]
+    return page(request, "review.html", held=held, done=done, user=user, restricted=restricted,
+                stale_ids={a["id"] for a in [*held, *restricted] if not learning.current(a["id"])})
 
 
 @app.post("/review/{att_id}")
@@ -828,6 +832,42 @@ def review_decide(att_id: int, action: str = Form(...), reviewer: str = Form("")
     waited = (time.time() - row["created_at"]) * 1000
     events.log("approved" if new == "approved" else "rejected", row["office"], row["purchase_id"],
                att_id, row["filename"], new, [], user, waited)
+    return RedirectResponse("/review", status_code=303)
+
+
+def releasable(findings_json: str | None) -> bool:
+    """Only an automatic restriction can be undone by a person. A deterministic block never can."""
+    try:
+        findings = [f for f in json.loads(findings_json or "[]") if isinstance(f, dict)]
+    except (TypeError, ValueError):
+        return False
+    return (any(f.get("kind") == "autopilot_restricted" for f in findings)
+            and not any(f.get("severity") == "block" for f in findings))
+
+
+@app.post("/review/{att_id}/release")
+def review_release(att_id: int, action: str = Form(...), note: str = Form(""), user: str = Depends(staff)):
+    """Post-hoc audit of an automatic restriction: release it, or confirm it stays private."""
+    if action not in ("release", "keep"):
+        raise HTTPException(400, "A valid review action is required.")
+    if not note.strip() or len(note.strip()) > MAX_REVIEW_NOTE:
+        raise HTTPException(400, f"Explain the decision in 1–{MAX_REVIEW_NOTE} characters.")
+    if action == "release" and not learning.current(att_id):
+        raise HTTPException(409, "Recheck this file against the current rules before releasing it.")
+    new = "approved" if action == "release" else WITHHELD
+    with db() as con:
+        con.execute("BEGIN IMMEDIATE")
+        row = con.execute("select a.*, p.office from attachments a join purchases p on p.id=a.purchase_id"
+                          " where a.id=? and a.decision=? and a.reviewed_by is null", (att_id, WITHHELD)).fetchone()
+        if not row or not releasable(row["findings"]):
+            raise HTTPException(409, "Only an automatic restriction can be released.")
+        updated = con.execute("update attachments set decision=?, reviewed_by=?, reviewed_at=?, review_note=?"
+                              " where id=? and decision=? and reviewed_by is null",
+                              (new, user, time.time(), note.strip(), att_id, WITHHELD))
+        if updated.rowcount != 1:
+            raise HTTPException(409, "Only an automatic restriction can be released.")
+    events.log("released" if action == "release" else "kept_private", row["office"], row["purchase_id"],
+               att_id, row["filename"], new, ["autopilot_restricted"], user, 0)
     return RedirectResponse("/review", status_code=303)
 
 
