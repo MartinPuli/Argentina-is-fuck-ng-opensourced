@@ -1,15 +1,107 @@
 {% extends "base.html" %}{% from "components.html" import badge with context %}{% block title %}Audit{% endblock %}{% block body %}
-<div class="page-heading heading-with-action"><h1>Audit</h1><span class="source-label">Source: {{ s.backend }}</span></div>
+<style>
+.ch{--ch-yellow:var(--c-clickhouse,#facc15);--ch-red:var(--c-blocked,#dc2626);--ch-amber:var(--c-review,#f59e0b);margin-bottom:28px}
+.ch-top{display:flex;align-items:center;justify-content:space-between;gap:10px 16px;flex-wrap:wrap;margin-bottom:16px}
+.ch-top h1{margin:0}
+.ch-back{font-size:13px;margin-right:auto}
+.ch-sim{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:600;color:#9f1d1d;background:#fff1f1;border:1px solid #f3c4c4;border-radius:999px;padding:5px 12px}
+.ch-sim::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--ch-red)}
+.ch-hero{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:12px;margin-bottom:16px}
+.ch-hero>div{--c:#1d4ed8;--bg:#eef3ff;padding:18px 22px;border:1px solid var(--line);border-top:5px solid var(--c);border-radius:var(--radius);background:linear-gradient(180deg,var(--bg),var(--surface) 90%)}
+.ch-hero strong{display:block;font-size:48px;font-weight:700;line-height:1.05;letter-spacing:-1.5px;color:var(--c);font-variant-numeric:tabular-nums}
+.ch-hero strong small{font-size:22px;font-weight:600;margin-left:3px;letter-spacing:0}
+.ch-hero span{display:block;margin-top:8px;font-size:13px;color:var(--ink)}
+.ch-hero .ch-fast{--c:var(--ch-yellow);--bg:#fffae0}.ch-hero .ch-fast strong{color:#1f2937}
+.ch-hero .ch-risk{--c:var(--ch-red);--bg:#fff0f0}.ch-hero .ch-risk strong{color:#b91c1c}
+.ch-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.ch-card{--c:var(--accent);border:1px solid var(--line);border-top:4px solid var(--c);border-radius:var(--radius);background:var(--surface);padding:14px 20px 18px;min-width:0}
+.ch-office{--c:var(--ch-amber)}.ch-kinds{--c:#7c3aed}.ch-month{--c:#0d9488}.ch-policy{--c:var(--ch-red)}
+.ch-card header{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px}
+.ch-card h2{font-size:15px;font-weight:600;margin:0;color:var(--ink)}
+.ch-ms{font:700 11px/1 ui-monospace,monospace;color:#1f2937;background:var(--ch-yellow);border-radius:999px;padding:5px 9px;white-space:nowrap}
+.ch-ms::before{content:"⚡ "}
+.ch-bars{display:grid;grid-template-columns:minmax(0,9.5rem) 1fr 4.2rem;align-items:center;gap:8px 12px;font-size:12px}
+.ch-bars>span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ch-bars b{font-weight:700;text-align:right;font-variant-numeric:tabular-nums}
+.ch-bars b.risk{color:#b91c1c}
+.ch-bar{height:14px;background:color-mix(in srgb,var(--c) 14%,#fff);border-radius:3px;overflow:hidden}
+.ch-bar>span{display:block;height:100%;background:var(--c);border-radius:3px}
+.ch-bar.risk>span{background:var(--ch-red)}
+.ch-cols{display:flex;align-items:flex-end;gap:5px;height:180px}
+.ch-cols>div{flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;min-width:0}
+.ch-cols i{display:block;width:100%;min-height:2px;border-radius:3px 3px 0 0;background:linear-gradient(180deg,var(--c),color-mix(in srgb,var(--c) 65%,#fff))}
+.ch-cols .part i{opacity:.45}
+.ch-cols em{font-style:normal;font-size:10px;font-weight:600;color:var(--ink);margin-bottom:3px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.ch-axis{display:flex;gap:5px;border-top:1px solid var(--line);padding-top:5px}
+.ch-axis span{flex:1;text-align:center;font-size:10px;line-height:1.3;color:var(--muted);min-width:0;overflow:hidden}
+.ch-big{display:flex;flex-direction:column;justify-content:center;min-height:180px}
+.ch-big strong{font-size:60px;font-weight:700;line-height:1;letter-spacing:-2px;color:#b91c1c;font-variant-numeric:tabular-nums}
+.ch-big span{font-size:15px;color:var(--ink);margin-top:10px}
+.ch-big small{display:inline-flex;gap:8px;margin-top:10px;font-size:12px}
+.ch-big small i{font-style:normal;background:#fff0f0;color:#9f1d1d;border-radius:999px;padding:3px 9px}
+.lv{border:1px solid var(--line);border-radius:var(--radius);background:var(--surface)}
+.lv summary{cursor:pointer;padding:12px 16px;font-size:14px;font-weight:600;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.lv summary small{font-weight:400;color:var(--muted);font-size:12px}
+.lv-body{border-top:1px solid var(--line);padding:14px 16px 16px}
+.lv-stats{display:flex;flex-wrap:wrap;gap:6px 24px;font-size:13px;color:var(--muted);margin-bottom:14px}
+.lv-stats b{font-size:18px;font-weight:600;margin-right:5px;font-variant-numeric:tabular-nums}
+.lv-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:14px;margin-bottom:14px}
+.lv h3{font-size:13px;font-weight:600;margin:0;padding:12px 14px 6px}
+.lv-chips{display:flex;flex-wrap:wrap;gap:6px;padding:6px 14px 14px}
+.lv-chips span{font-size:12px;background:#f3f8fb;border:1px solid var(--line);border-radius:999px;padding:4px 10px}
+.lv-chips b{font-weight:600;margin-left:4px}
+.lv-chips p{margin:0;font-size:13px;color:var(--muted)}
+@media(max-width:1000px){.ch-grid,.lv-grid{grid-template-columns:1fr}}
+@media(max-width:760px){
+.ch-hero{grid-template-columns:1fr 1fr;gap:10px}
+.ch-hero>div:first-child{grid-column:1/-1}
+.ch-hero>div{padding:12px 14px}
+.ch-hero strong{font-size:32px}.ch-hero>div:first-child strong{font-size:42px}
+.ch-card{padding:12px 14px 16px}
+.ch-bars{grid-template-columns:minmax(0,7.5rem) 1fr 3.4rem;gap:8px}
+.ch-cols{gap:3px;height:140px}.ch-axis{gap:3px}
+.ch-cols em{display:none}.ch-cols>div.peak em{display:block}
+.ch-axis span:nth-child(even){visibility:hidden}
+.ch-big{min-height:120px}.ch-big strong{font-size:46px}
+}
+.ch-hero>div,.ch-card{border:1px solid var(--line);background:#fff}.ch-hero strong,.ch-big strong{font-weight:300;color:var(--ink);font-size:36px}.ch-hero strong small,.ch-card h2,.ch-bars b,.lv summary,.lv-stats b,.lv h3{font-weight:400}.ch-ms{background:var(--accent-soft);color:var(--muted);font-weight:400;border-radius:4px}.ch-ms:before{content:none}.ch-sim{font-weight:400;border-radius:4px}.ch-card{--c:#9ac9e4}.ch-bar.risk>span{background:#d5a6ac}.ch-cols i{background:#a8d7ee}
+</style>
+<section class="ch" aria-label="ClickHouse history">
+<div class="ch-top"><h1>Audit</h1><a class="ch-back text-link" href="/live">← Activity</a>{% if h %}<span class="ch-sim">Simulated telemetry, not real PAMI data</span>{% endif %}</div>
+{% if h %}
+{% set qms=[h.total.ms, h.by_office.ms, h.kinds.ms, h.monthly.ms, h.policy.ms] %}
+{% set kmax=h.kinds.rows|map(attribute=1)|max if h.kinds.rows else 1 %}
+{% set mmax=h.monthly.rows|map(attribute=1)|max if h.monthly.rows else 1 %}
+{% set u=namespace(unsafe=0,all=0) %}{% for m in h.monthly.rows %}{% set u.unsafe=u.unsafe+m[1] %}{% if m[2] %}{% set u.all=u.all+m[1]*100/m[2] %}{% endif %}{% endfor %}
+<div class="ch-hero">
+<div><strong>{{ '{:,}'.format(h.total.value) }}</strong><span>events in ClickHouse · counted in {{ h.total.ms }} ms</span></div>
+<div class="ch-fast"><strong>{{ qms|max|round|int }}<small>ms</small></strong><span>slowest of {{ qms|length }} live queries</span></div>
+<div class="ch-risk"><strong>{{ (u.unsafe / u.all * 100)|round|int if u.all else 0 }}<small>%</small></strong><span>uploads stopped</span></div>
+</div>
+<div class="ch-grid">
+<section class="ch-card ch-office"><header><h2>Stopped uploads by office</h2><span class="ch-ms">{{ h.by_office.ms }} ms</span></header>
+<div class="ch-bars">{% for o in h.by_office.rows %}<span title="{{ o[0] }} · {{ '{:,}'.format(o[1]) }} stopped">{{ o[0] }}</span><span class="ch-bar{{ ' risk' if o[2] >= 40 }}"><span style="width:{{ o[2] }}%"></span></span><b{% if o[2] >= 40 %} class="risk"{% endif %}>{{ o[2] }}%</b>{% endfor %}</div></section>
+<section class="ch-card ch-kinds"><header><h2>Findings by type</h2><span class="ch-ms">{{ h.kinds.ms }} ms</span></header>
+<div class="ch-bars">{% for k in h.kinds.rows %}<span>{{ k[0]|replace('_',' ')|capitalize|replace('Dni','DNI')|replace('Icd10','ICD-10 code')|replace('Person cuil','CUIL') }}</span><span class="ch-bar"><span style="width:{{ (k[1] / kmax * 100)|round(1) }}%"></span></span><b>{{ '{:,}'.format(k[1]) }}</b>{% endfor %}</div></section>
+<section class="ch-card ch-month"><header><h2>Stopped uploads per month</h2><span class="ch-ms">{{ h.monthly.ms }} ms</span></header>
+<div class="ch-cols">{% for m in h.monthly.rows %}<div class="{{ 'peak' if m[1] == mmax }}{{ ' part' if loop.first or loop.last }}" title="{{ m[0] }}{{ ' (partial month)' if loop.first or loop.last }}:{{ '{:,}'.format(m[1]) }} stopped ({{ m[2] }}%)"><em>{{ '{:.1f}k'.format(m[1] / 1000) if m[1] >= 1000 else m[1] }}</em><i style="height:{{ (m[1] / mmax * 100)|round(1) }}%"></i></div>{% endfor %}</div>
+<div class="ch-axis">{% for m in h.monthly.rows %}<span>{{ m[0][:3] }}{% if loop.first or m[0][:3] == 'Jan' %}<br>’{{ m[0][-2:] }}{% endif %}</span>{% endfor %}</div></section>
+<section class="ch-card ch-policy"><header><h2>New rule v3, old files</h2><span class="ch-ms">{{ h.policy.ms }} ms</span></header>
+<div class="ch-big"><strong>{{ '{:,}'.format(h.policy.files) }}</strong><span>past files v3 would now block</span><small><i>{{ h.policy.kind|replace('_',' ')|capitalize }}</i><i>{{ h.policy.offices }} offices</i></small></div></section>
+</div>
+{% else %}
+<div class="notice subtle">History needs ClickHouse. Showing the live log only.</div>
+{% endif %}
+</section>
 {% set ns=namespace(p=0,h=0,w=0) %}{% for o in s.by_office %}{% set ns.p=ns.p+o[1] %}{% set ns.h=ns.h+o[2] %}{% set ns.w=ns.w+o[3] %}{% endfor %}
-<div class="decision-summary audit-summary"><div><span>Initially published</span><strong class="text-public">{{ ns.p }}</strong></div><div><span>Sent for review</span><strong class="text-hold">{{ ns.h }}</strong></div><div><span>Kept internal</span><strong class="text-withheld">{{ ns.w }}</strong></div><div><span>Median processing time</span><strong>{{ s.latency[0]|int }}<small class="unit">ms</small></strong><small>{{ s.latency[2] }} evaluated files · max {{ s.latency[1]|int }} ms</small></div></div>
-<div class="notice subtle">{{ s.total }} recorded events. Initial decisions remain in this history after a reviewer acts; they are not current inventory counts.</div>
-<div class="audit-grid"><section class="panel table-panel"><div class="panel-heading"><h2>Decisions by office</h2></div><div class="table-wrap"><table><thead><tr><th scope="col">Office</th><th scope="col">Public</th><th scope="col">Review</th><th scope="col">Internal</th></tr></thead><tbody>{% for o in s.by_office %}<tr><td>{{ o[0] }}</td><td>{{ o[1] }}</td><td>{{ o[2] }}</td><td>{{ o[3] }}</td></tr>{% else %}<tr><td colspan="4" class="table-empty">No office activity.</td></tr>{% endfor %}</tbody></table></div></section><section class="panel table-panel"><div class="panel-heading"><h2>Recorded findings</h2></div><div class="finding-list">{% for k in s.kinds %}<div><span>{{ k[0]|replace('_',' ')|capitalize }}</span><strong>{{ k[1] }}</strong></div>{% else %}<p class="muted">No findings recorded yet.</p>{% endfor %}</div><p class="panel-footnote">Finding occurrences. One file can contain several.</p></section></div>
-<section class="recent-section"><div class="section-heading"><h2>Human review history</h2></div><div class="panel table-panel"><div class="table-wrap"><table><thead><tr><th scope="col">Reviewer</th><th scope="col">Result</th><th scope="col">File</th><th scope="col">Time (UTC)</th></tr></thead><tbody>{% for r in s.reviews %}<tr><td>{{ r[0] }}</td><td>{{ badge(r[1]) }}</td><td>{{ r[2] }}</td><td class="small">{{ r[3] }}</td></tr>{% else %}<tr><td colspan="4" class="table-empty">No reviewer decisions.</td></tr>{% endfor %}</tbody></table></div></div></section>
-{% if h %}{% set kmax=h.kinds.rows|map(attribute=1)|max if h.kinds.rows else 1 %}{% set mmax=h.monthly.rows|map(attribute=1)|max if h.monthly.rows else 1 %}
-<section class="recent-section sim-history"><div class="page-heading heading-with-action"><div><h2>Simulated history · {{ '{:,}'.format(h.total.value) }} events</h2><p class="muted">Simulated telemetry, not real PAMI data. UGL names are plausible, not an official list. Every number below is a live ClickHouse query.</p></div><span class="source-label sim-label">Simulated data · count {{ h.total.ms }} ms</span></div>
-<div class="notice subtle"><strong>{{ '{:,}'.format(h.policy.files) }}</strong> files decided under policy v1 or v2 contain {{ h.policy.kind|replace('_',' ') }}, which v3 now blocks. {{ h.policy.offices }} UGLs affected. <span class="query-time">{{ h.policy.ms }} ms</span></div>
-<div class="audit-grid"><section class="panel table-panel"><div class="panel-heading"><h2>Unsafe upload rate by UGL</h2><span class="query-time">{{ h.by_office.ms }} ms</span></div><div class="bar-list">{% for o in h.by_office.rows %}<div><span>{{ o[0] }}</span><span class="bar{{ ' risk' if o[2] >= 40 }}"><span style="width:{{ o[2] }}%"></span></span><strong>{{ o[2] }}%<small>{{ '{:,}'.format(o[1]) }}</small></strong></div>{% endfor %}</div><p class="panel-footnote">Uploads not published as-is, out of all decisions. Top 8.</p></section>
-<section class="panel table-panel"><div class="panel-heading"><h2>Findings by category</h2><span class="query-time">{{ h.kinds.ms }} ms</span></div><div class="bar-list">{% for k in h.kinds.rows %}<div><span>{{ k[0]|replace('_',' ')|capitalize }}</span><span class="bar"><span style="width:{{ (k[1] / kmax * 100)|round(1) }}%"></span></span><strong>{{ '{:,}'.format(k[1]) }}</strong></div>{% endfor %}</div></section></div>
-<section class="panel table-panel recent-section"><div class="panel-heading"><h2>Unsafe attempts per month</h2><span class="query-time">{{ h.monthly.ms }} ms</span></div><div class="bar-list">{% for m in h.monthly.rows %}<div><span>{{ m[0] }}</span><span class="bar"><span style="width:{{ (m[1] / mmax * 100)|round(1) }}%"></span></span><strong>{{ '{:,}'.format(m[1]) }}<small>{{ m[2] }}%</small></strong></div>{% endfor %}</div></section>
-</section>{% endif %}
+<details class="lv"{% if not h %} open{% endif %}><summary>Live audit log <small>{{ s.total }} real demo events · {{ s.backend }}</small></summary>
+<div class="lv-body">
+<div class="lv-stats"><span><b class="text-public">{{ ns.p }}</b>published</span><span><b class="text-hold">{{ ns.h }}</b>sent for review</span><span><b class="text-withheld">{{ ns.w }}</b>kept internal</span><span><b>{{ (s.latency[0] / 1000)|round(1) }}</b>s median scan</span></div>
+<div class="lv-grid">
+<div class="panel table-panel"><h3>Decisions by office</h3><div class="table-wrap"><table><thead><tr><th scope="col">Office</th><th scope="col">Public</th><th scope="col">Review</th><th scope="col">Internal</th></tr></thead><tbody>{% for o in s.by_office %}<tr><td>{{ o[0] }}</td><td>{{ o[1] }}</td><td>{{ o[2] }}</td><td>{{ o[3] }}</td></tr>{% else %}<tr><td colspan="4" class="table-empty">No office activity.</td></tr>{% endfor %}</tbody></table></div></div>
+<div class="panel table-panel"><h3>Findings</h3><div class="lv-chips">{% for k in s.kinds %}<span>{{ k[0]|replace('_',' ')|capitalize }}<b>{{ k[1] }}</b></span>{% else %}<p>No findings recorded yet.</p>{% endfor %}</div></div>
+</div>
+<div class="panel table-panel"><h3>Human review history</h3><div class="table-wrap"><table><thead><tr><th scope="col">Reviewer</th><th scope="col">Result</th><th scope="col">File</th><th scope="col">Time (UTC)</th></tr></thead><tbody>{% for r in s.reviews %}<tr><td>{{ r[0] }}</td><td>{{ badge(r[1]) }}</td><td>{{ r[2] }}</td><td class="small">{{ r[3] }}</td></tr>{% else %}<tr><td colspan="4" class="table-empty">No reviewer decisions.</td></tr>{% endfor %}</tbody></table></div></div>
+</div>
+</details>
 {% endblock %}

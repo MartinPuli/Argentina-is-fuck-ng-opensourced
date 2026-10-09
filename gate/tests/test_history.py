@@ -38,7 +38,7 @@ def test_dashboard_hides_history_without_clickhouse(web):
     response = client.get("/dashboard", auth=AUTH)
     assert response.status_code == 200
     assert "Decisions by office" in response.text
-    assert "Simulated history" not in response.text
+    assert "Simulated telemetry" not in response.text
 
 
 def test_dashboard_shows_simulated_history_with_query_times(web):
@@ -48,9 +48,9 @@ def test_dashboard_shows_simulated_history_with_query_times(web):
     assert response.status_code == 200
     text = response.text
     assert "<title>Audit</title>" in text
-    assert text.count("Simulated history · 1,000,000 events") == 1
-    assert "Simulated history · 1,000,000 events" in text
-    assert "Simulated telemetry, not real PAMI data." in text
+    assert text.count('<section class="ch" ') == 1
+    assert "1,000,000" in text
+    assert "Simulated telemetry, not real PAMI data" in text
     for label in ("UGL XIX Misiones", "52.4%", "Model context", "Sep 2026", "29,564"):
         assert label in text, label
     for ms in ("12.3 ms", "31.0 ms", "41.5 ms", "36.2 ms", "49.6 ms"):
