@@ -63,7 +63,7 @@
 <div class="hp-action"><a class="hp-cta" href="/live">Watch it live <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a><a class="hp-cta hp-upload" href="/office"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5M5 20h14"/></svg> Upload a PDF</a></div>
 </div>
 <div id="document-workspace">
-<div class="page-heading heading-with-action"><h1>Documents</h1><a class="btn" href="/office">Upload PDF</a></div>
+<div class="page-heading heading-with-action"><h1>Documents</h1></div>
 {% if workspace is defined %}
 <div class="decision-summary">{% for label,key in [('Total','total'),('Review','review'),('Private','blocked'),('Published','published')] %}<div><strong>{{ workspace.counts[key] }}</strong><span>{{ label }}</span></div>{% endfor %}</div>
 <div class="panel table-panel"><div class="table-wrap"><table class="document-list"><thead><tr><th scope="col">Document</th><th scope="col">Status</th><th scope="col">Office</th></tr></thead><tbody>{% for file in workspace.files %}<tr><td><a href="/purchase/{{ file.purchase_id }}#file-{{ file.id }}">{{ file.filename }}</a><small class="table-secondary">{{ file.procedure }}</small></td><td>{{ 'Recheck' if not file.current else 'Review' if file.decision == 'hold' else 'Private' if file.decision == 'withheld' else 'Published, cleaned' if file.decision == 'cleaned' else 'Published' }}</td><td>{{ file.office }}</td></tr>{% else %}<tr><td colspan="3" class="table-empty">No documents yet.</td></tr>{% endfor %}</tbody></table></div></div>
