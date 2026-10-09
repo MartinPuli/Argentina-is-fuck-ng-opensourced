@@ -29,7 +29,7 @@ In May 2026, [Chequeado](https://chequeado.com/investigaciones/pami-expone-datos
 ## Links
 
 - Repo: https://github.com/MartinPuli/Argentina-is-fuck-ng-opensourced (app in `gate/`)
-- Live site: https://argensec.pujia.ar (press "Send 8 fictional office files" on `/live`)
+- Live site: https://argensec.pujia.ar (on Activity, `/live`, choose "Test data > Load synthetic files")
 - Video: [VIDEO LINK]
 
 All demo documents are fictional. No real patient data is used.

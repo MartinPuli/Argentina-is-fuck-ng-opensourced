@@ -1,5 +1,5 @@
 {% extends "base.html" %}{% block title %}Documents{% endblock %}{% block body %}
-<link rel="stylesheet" href="/assets/workspace.css">
+<link rel="stylesheet" href="{{ asset_url('workspace.css') }}">
 <div id="document-workspace">
 <div class="page-heading heading-with-action"><h1>Documents</h1><a class="btn" href="/office">Upload PDF</a></div>
 {% if workspace is defined %}
@@ -10,5 +10,5 @@
 <div class="actions"><a class="text-link" href="/review">Review files</a><a class="text-link" href="/live">Activity</a></div>
 </div>
 {% if workspace is defined %}<script id="workspace-data" type="application/json">{{ workspace|tojson }}</script>{% endif %}
-<script type="module" src="/assets/workspace.js"></script>
+<script type="module" src="{{ asset_url('workspace.js') }}"></script>
 {% endblock %}

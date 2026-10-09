@@ -48,7 +48,7 @@ The app drives the loop. The orchestrator prompt allows native sub-agent calls, 
 
 [argensec.pujia.ar](https://argensec.pujia.ar) runs with `GATE_OPEN_DEMO=1`, so judges can open staff pages without a login. All data there is fictional. This setting is for the demo only. Never set it in a real deployment.
 
-On `/live`, press **Send 8 fictional office files** to run the demo. Press **Reset demo** to clear purchases and files between takes. Learned rules and the audit history stay.
+On **Activity** (`/live`), open **Test data** and press **Load synthetic files** to run the demo. Press **Clear workspace** to clear purchases and files between takes. Rules and the audit history stay.
 
 ## Run locally
 
@@ -114,7 +114,7 @@ Uploads accept up to eight PDFs, 10 MiB per file, 25 MiB combined and 50 pages p
 
 ## Learn from incidents without turning reports into authority
 
-Open **Learning library** at `/learning`. Two sourced cases have authored local recipes: PAMI supporting attachments and a fictional payroll-publication adaptation of Río Negro reporting. The latter does not establish that the actual incident involved public PDFs. Recipes work with sponsor calls disabled; they are authored engineering checks, not rules autonomously discovered from a breach.
+Open **Rules** at `/learning`. Two sourced cases have authored local recipes: PAMI supporting attachments and a fictional payroll-publication adaptation of Río Negro reporting. The latter does not establish that the actual incident involved public PDFs. Recipes work with sponsor calls disabled; they are authored engineering checks, not rules autonomously discovered from a breach.
 
 The workflow is **source → candidate → example tests → authenticated activation → recheck existing PDFs → export**. Each candidate stores source status, literal phrase groups, an action restricted to `hold` or `withheld`, fictional positive/benign examples, improvement proposals and an immutable digest. All phrase groups must match, with any alternative within a group sufficient. Passing the authored examples is not independent accuracy evidence.
 
@@ -130,7 +130,7 @@ The workflow is **source → candidate → example tests → authenticated activ
 
 All learning routes require staff authentication; mutations also require the matching origin. Activation requires passing tests tied to the exact digest. Activation and retirement advance the policy revision: previously checked public/approved attachments become unavailable until rechecked. A stale held file cannot be approved to bypass that step. New uploads use active rules immediately. Recheck can restrict a prior public/approved result, preserves an unchanged benign approval, and never automatically releases an existing hold or withheld result. Retirement is not publication approval.
 
-A **new report** requires a configured AkashML model. Its URL is recorded, not fetched; its sanitized summary is sent to that configured provider. Custom submissions remain explicitly unverified even when the submitter describes them as acknowledged. The model can propose only an inactive candidate. When no model is configured, the UI disables this option and direct requests return a clear error; known recipes remain usable offline.
+A **New source** report (**Propose rule**) requires a configured AkashML model. Its URL is recorded, not fetched; its sanitized summary is sent to that configured provider. Custom submissions remain explicitly unverified even when the submitter describes them as acknowledged. The model can propose only an inactive candidate. When no model is configured, the UI disables this option and direct requests return a clear error; known recipes remain usable offline.
 
 The bundle contains `SKILL.md`, an improvement proposal and saved evidence. Exporting installs nothing and grants no authority. Another enrolled gate needs a new inactive candidate, fresh fictional positive/benign tests, its own review and authenticated activation. Saved source tests are not a fresh evaluation of that installation.
 
