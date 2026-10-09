@@ -5,6 +5,20 @@ Status: implementation proposal, October 9, 2026. Pi is not integrated in the ap
 
 ## Product behavior
 
+### Shared memory across three prevention paths
+
+Treat each reviewed incident as a versioned lesson that can apply to PDF publication, source code or credentials. Pi supplies relevant tenant context when connected; it is not a replacement for a PDF detector, code scanner or secret scanner. Our controller chooses the applicable path and records the actual checks. Today only the PDF lesson lifecycle is implemented; code repair and credential response remain proposed.
+
+| Incident pattern | Proposed executable defense | Proof required before reporting success |
+| --- | --- | --- |
+| Patient details in procurement files | Validated publication rule and verified cleaned copy | Sensitive fictional identifiers absent; equipment details preserved |
+| Private download without authorization | Scanner finding and a proposed source-code patch | Anonymous and cross-user downloads blocked; authorized downloads work |
+| Credential committed in code or exported in a document | Dedicated secret scan, publication/CI block and an authorized provider response | No secret values in logs; old authorized test credential rejected; replacement accepted |
+
+An incident report starts a hypothesis, not a claim that we reproduced its root cause. The lesson links its source, applicable target, generated rule or patch, regression evidence and exported skill/proposal. A failed check leaves it inactive. Findings about credentials show type, location and a non-secret identifier rather than the credential itself. Until scanner and rotation adapters actually execute, the UI must call their outputs proposals.
+
+The sourced Argentina exposure comparison at `/exposures` remains available, with access from the home page alongside `/learning`. It is research context for choosing lessons. It does not establish culpability or a national ranking by unique affected people: files, records and allegations remain separate, with source dates and uncertainty retained.
+
 An institution brings a sanitized incident report and an owned application. The system identifies a specific failure, proposes a prevention change, tests it against an unseen variation and legitimate work, and records the exact version a reviewer approves. Future documents and changes use that version. A failed test leaves the candidate inactive.
 
 Example: a procurement attachment includes a patient's identity and medical justification. A reviewed incident becomes a candidate PDF rule. The gate tests a fictional medical attachment, a differently worded medical attachment, and an ordinary equipment specification. After approval, new uploads use the rule; stored files require rechecking. This addresses accidental publication. It does not establish that a historical server intrusion had the same cause or would have been stopped.
