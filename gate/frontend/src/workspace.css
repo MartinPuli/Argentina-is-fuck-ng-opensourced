@@ -34,7 +34,7 @@
 .hero-workspace .search-field__group { background:#fff; border:1px solid #dce5eb; border-radius:5px; box-shadow:none; height:36px; }
 .hero-workspace .search-field__input { font-size:12px; background:transparent; border:0; outline:0; padding:8px 9px; box-shadow:none; min-width:0; color:#314d5d; }
 .hero-workspace .search-field__clear-button { padding:0; width:25px; height:25px; min-height:25px; color:#597383; background:transparent; border:0; }
-.hero-workspace .workspace-table-wrap { overflow-x:auto; border:1px solid #e1e9ee; border-radius:5px; background:#fff; }
+.hero-workspace .workspace-table-wrap { position:relative; overflow-x:auto; border:1px solid #e1e9ee; border-radius:5px; background:#fff; }
 .hero-workspace .workspace-table { width:100%; min-width:720px; border-collapse:collapse; font-size:12px; text-align:left; }
 .hero-workspace .workspace-table th { padding:13px 18px; font-size:11px; color:#6a7d89; font-weight:400; background:#f7fafc; white-space:nowrap; border-bottom:1px solid #e5edf2; }
 .hero-workspace .workspace-table td { padding:18px; border-bottom:1px solid #edf1f4; vertical-align:middle; background:#fff; }

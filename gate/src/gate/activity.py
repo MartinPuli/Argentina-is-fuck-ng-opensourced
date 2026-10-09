@@ -46,3 +46,14 @@ def finish(job: dict, **fields) -> None:
 def snapshot() -> list[dict]:
     with _lock:
         return [dict(j, steps=[dict(s) for s in j["steps"]]) for j in _jobs]
+
+
+def running() -> bool:
+    with _lock:
+        return any(not j["done"] for j in _jobs)
+
+
+def clear() -> None:
+    """Forget all jobs, for a demo reset between takes."""
+    with _lock:
+        _jobs.clear()

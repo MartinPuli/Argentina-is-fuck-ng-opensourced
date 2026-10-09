@@ -13,6 +13,7 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
+SIM_TABLE = "gate_events_sim"  # simulated history, filled by scripts/simulate_history.py
 DB_PATH = Path(os.getenv("GATE_DB", Path(__file__).resolve().parents[2] / "gate.db"))
 
 SCHEMA = """
@@ -122,6 +123,54 @@ class Events:
         total = q("select count() from gate_events").result_rows[0][0]
         return {"by_office": by_office, "kinds": kinds, "latency": latency,
                 "reviews": reviews, "total": total, "backend": self.backend}
+
+    def history(self) -> dict | None:
+        """Live queries over the simulated history table (scripts/simulate_history.py).
+
+        None unless ClickHouse is configured and the table exists. Each result carries
+        its measured round-trip time in ms.
+        """
+        if not self.ch:
+            return None
+        try:
+            with self.lock:
+                if not self.ch.command(f"exists table {SIM_TABLE}"):
+                    return None
+                return self._ch_history()
+        except Exception:
+            return None  # the audit page must still render if the cluster is unreachable
+
+    def _ch_history(self) -> dict:
+        def timed(sql: str) -> tuple[list, float]:
+            start = time.perf_counter()
+            rows = self.ch.query(sql).result_rows
+            return rows, round((time.perf_counter() - start) * 1000, 1)
+
+        t = SIM_TABLE
+        total, total_ms = timed(f"select count() from {t}")
+        by_office, office_ms = timed(
+            f"select office, countIf(decision != 'public') unsafe, "
+            f"round(unsafe / count() * 100, 1) rate from {t} where event = 'decision' "
+            f"group by office order by rate desc, unsafe desc limit 8")
+        kinds, kinds_ms = timed(
+            f"select k, count() c from {t} array join kinds as k where event = 'decision' "
+            f"group by k order by c desc limit 8")
+        monthly, monthly_ms = timed(
+            f"select formatDateTime(toStartOfMonth(ts), '%b %Y') m, countIf(decision != 'public') unsafe, "
+            f"round(unsafe / count() * 100, 1) "
+            f"from {t} where event = 'decision' group by toStartOfMonth(ts) as mm, m order by mm")
+        policy, policy_ms = timed(
+            f"select count(), uniqExact(office) from {t} where event = 'decision' "
+            f"and policy_version in ('v1', 'v2') and has(kinds, 'model_context') "
+            f"and decision != 'withheld'")
+        return {
+            "total": {"value": total[0][0], "ms": total_ms},
+            "by_office": {"rows": by_office, "ms": office_ms},
+            "kinds": {"rows": kinds, "ms": kinds_ms},
+            "monthly": {"rows": monthly, "ms": monthly_ms},
+            "policy": {"files": policy[0][0], "offices": policy[0][1], "kind": "model_context",
+                       "ms": policy_ms},
+        }
 
     def _sqlite_stats(self) -> dict:
         with db() as con:
