@@ -94,7 +94,7 @@
 {% endif %}
 </section>
 {% set ns=namespace(p=0,h=0,w=0) %}{% for o in s.by_office %}{% set ns.p=ns.p+o[1] %}{% set ns.h=ns.h+o[2] %}{% set ns.w=ns.w+o[3] %}{% endfor %}
-<details class="lv"{% if not h %} open{% endif %}><summary>Live audit log <small>{{ s.total }} real demo events · {{ s.backend }}</small></summary>
+<details class="lv"{% if not h %} open{% endif %}><summary>Live audit log <small>{{ s.total }} real events · {{ s.backend }}</small></summary>
 <div class="lv-body">
 <div class="lv-stats"><span><b class="text-public">{{ ns.p }}</b>published</span><span><b class="text-hold">{{ ns.h }}</b>sent for review</span><span><b class="text-withheld">{{ ns.w }}</b>kept internal</span><span><b>{{ (s.latency[0] / 1000)|round(1) }}</b>s median scan</span></div>
 <div class="lv-grid">

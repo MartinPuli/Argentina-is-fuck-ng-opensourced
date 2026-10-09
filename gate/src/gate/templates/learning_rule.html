@@ -100,7 +100,7 @@
 <section class="lr-card"><h2>Flags a file that contains</h2>
 {% for group in rule.spec.groups %}<div class="lr-group">{% for phrase in group %}<span class="lr-phrase">{{ phrase }}</span>{% if not loop.last %}<span class="lr-or">or</span>{% endif %}{% endfor %}</div>{% if not loop.last %}<div class="lr-and">AND</div>{% endif %}{% endfor %}
 </section>
-<section class="lr-card"><h2>Tests on fictional files</h2>
+<section class="lr-card"><h2>Tests on sample files</h2>
 {% if res %}{% set leaks = res.cases|selectattr('should_match')|list %}
 <div class="lr-score {{ 'ok' if res.passed else 'bad' }}"><strong>{{ res.passed_count }} of {{ res.total }} checks passed</strong></div>
 <p class="lr-before">Before this rule: {{ leaks|selectattr('baseline_match')|list|length }} of {{ leaks|length }} leaks caught. With it: {{ leaks|selectattr('candidate_match')|list|length }} of {{ leaks|length }}.</p>
