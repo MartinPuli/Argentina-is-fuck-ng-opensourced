@@ -4,7 +4,7 @@
 {% set res = rule.results %}
 <style>
 .lr{--lr-ok:var(--c-published,#17663f);--lr-ok-soft:#e5f5eb;--lr-bad:var(--c-blocked,#a8322d);--lr-bad-soft:#fdecea;--lr-warn:var(--c-review,#8a5300);--lr-warn-soft:#fff4e0;--lr-blue:#1b5aa6;--lr-blue-soft:#e7f0fd}
-.lr .chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;padding:3px 9px;border-radius:999px;border:1px solid transparent;white-space:nowrap;line-height:1.4}
+.lr .chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;padding:3px 9px;border-radius:3px;border:1px solid transparent;white-space:nowrap;line-height:1.4}
 .lr .chip::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
 .lr .chip.rule-draft{background:#f1ebfb;color:#5b3596;border-color:#e2d6f5}
 .lr .chip.rule-tested{background:var(--lr-blue-soft);color:var(--lr-blue);border-color:#cfe0f8}
@@ -21,7 +21,7 @@
 .lr-steps .dot{width:10px;height:10px;border-radius:50%;border:2px solid var(--line);background:var(--surface,#fff)}
 .lr-steps .done{color:var(--ink)}.lr-steps .done .dot{background:var(--lr-ok);border-color:var(--lr-ok)}
 .lr-steps .bad{color:var(--lr-bad)}.lr-steps .bad .dot{background:var(--lr-bad);border-color:var(--lr-bad)}
-.lr-next{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 16px;border:1px solid var(--line);border-left:4px solid var(--lr-blue);border-radius:var(--radius,6px);background:var(--lr-blue-soft);margin-bottom:20px}
+.lr-next{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 16px;border:1px solid var(--line);border-left:4px solid var(--lr-blue);border-radius:4px;background:var(--lr-blue-soft);margin-bottom:20px}
 .lr-next.is-active{border-left-color:var(--lr-ok);background:var(--lr-ok-soft)}
 .lr-next.is-failed{border-left-color:var(--lr-bad);background:var(--lr-bad-soft)}
 .lr-next.is-retired{border-left-color:#8a96a0;background:#f3f5f7}
@@ -30,10 +30,10 @@
 .lr-next form{margin:0}
 .lr-next button{font-size:13px;white-space:nowrap}
 .lr-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-.lr-card{border:1px solid var(--line);border-radius:var(--radius,6px);background:var(--surface,#fff);padding:16px}
+.lr-card{border:1px solid var(--line);border-radius:4px;background:var(--surface,#fff);padding:16px}
 .lr-card h2{font-size:14px;margin:0 0 12px;color:var(--muted);font-weight:400}
 .lr-group{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
-.lr-phrase{font-family:ui-monospace,monospace;font-size:12px;background:#f3f7fb;border:1px solid var(--line);border-radius:4px;padding:3px 7px;overflow-wrap:anywhere}
+.lr-phrase{font-family:ui-monospace,monospace;font-size:12px;background:#f3f7fb;border:1px solid var(--line);border-radius:3px;padding:3px 7px;overflow-wrap:anywhere}
 .lr-or{font-size:11px;color:var(--muted)}
 .lr-and{font-size:11px;font-weight:600;color:var(--accent);letter-spacing:.05em;margin:8px 0}
 .lr-score{display:flex;align-items:baseline;gap:10px;margin-bottom:4px}
@@ -54,7 +54,7 @@
 .lr-more p,.lr-more li{font-size:13px;color:var(--muted)}
 .lr-more ol{padding-left:18px}
 .lr-ex{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.lr-ex article{border:1px solid var(--line);border-radius:6px;padding:12px}
+.lr-ex article{border:1px solid var(--line);border-radius:4px;padding:12px}
 .lr-ex p{white-space:pre-wrap;font-size:12px;margin:8px 0}
 .lr-digest{font-family:ui-monospace,monospace;font-size:11px;overflow-wrap:anywhere}
 @media(max-width:760px){
@@ -62,7 +62,7 @@
  .lr-next{flex-direction:column;align-items:flex-start}
  .lr-steps li+li::before{width:14px}
 }
-.lr .chip{border-radius:4px}.lr .chip.rule-draft{color:var(--muted);background:#f1f6fa;border-color:var(--line)}
+.lr .chip{border-radius:3px}.lr .chip.rule-draft{color:var(--muted);background:#f1f6fa;border-color:var(--line)}
 </style>
 <div class="lr">
 <a class="back-link" href="/learning">← Rules</a>

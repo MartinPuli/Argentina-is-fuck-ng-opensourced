@@ -7,20 +7,20 @@
 .lx-head p{margin:6px 0 0;color:var(--muted);font-size:14px}
 .lx-section{margin-top:32px}
 .lx-section>h2{font-size:15px;margin:0 0 10px}
-.lx-list{list-style:none;margin:0;padding:0;border:1px solid var(--line);border-radius:var(--radius,6px);background:var(--surface,#fff)}
+.lx-list{list-style:none;margin:0;padding:0;border:1px solid var(--line);border-radius:4px;background:var(--surface,#fff)}
 .lx-row{display:grid;grid-template-columns:minmax(0,1fr) 150px 90px 92px 118px;align-items:center;gap:16px;padding:14px 16px;border-top:1px solid var(--line)}
 .lx-row:first-child{border-top:0}
-.lx-row.lx-labels{padding:8px 16px;font-size:11px;color:var(--muted);background:#f7fbfe;border-radius:var(--radius,6px) var(--radius,6px) 0 0}
+.lx-row.lx-labels{padding:8px 16px;font-size:11px;color:var(--muted);background:#f7fbfe;border-radius:4px 4px 0 0}
 .lx-name{min-width:0}
 .lx-name a{font-size:14px;color:var(--ink);text-decoration:none;display:block}
 .lx-name a:hover{color:var(--accent)}
 .lx-from{font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .lx-from a{color:inherit}
 .lx-tests{font-size:13px;color:var(--muted);white-space:nowrap}
-.lx-tests.ok,.lx-tests.bad{justify-self:start;padding:3px 9px;border-radius:999px;font-size:12px}
+.lx-tests.ok,.lx-tests.bad{justify-self:start;padding:3px 9px;border-radius:3px;font-size:12px}
 .lx-tests.ok{color:var(--lx-ok);background:var(--lx-ok-soft)}
 .lx-tests.bad{color:var(--lx-bad);background:var(--lx-bad-soft)}
-.lx .chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;padding:3px 9px;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.lx .chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;padding:3px 9px;border-radius:3px;border:1px solid transparent;white-space:nowrap}
 .lx .chip::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
 .lx .chip.rule-draft{background:#f1ebfb;color:#5b3596;border-color:#e2d6f5}
 .lx .chip.rule-tested{background:#e7f0fd;color:#1b5aa6;border-color:#cfe0f8}
@@ -31,7 +31,7 @@
 .lx-act form{margin:0}
 .lx-act button,.lx-act .btn{font-size:12px;padding:6px 12px;white-space:nowrap}
 .lx-act .form-message{font-size:11px}
-.lx-banner{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 16px;border:1px solid #f0d9a8;border-left:4px solid var(--lx-warn);background:var(--lx-warn-soft);border-radius:var(--radius,6px);margin-bottom:20px}
+.lx-banner{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 16px;border:1px solid #f0d9a8;border-left:4px solid var(--lx-warn);background:var(--lx-warn-soft);border-radius:4px;margin-bottom:20px}
 .lx-banner h2{font-size:15px;margin:0;color:var(--lx-warn)}
 .lx-banner form{margin:0}
 .lx-src{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:16px;padding:12px 16px;border-top:1px solid var(--line)}
@@ -55,7 +55,7 @@
  .lx-src strong{grid-column:1/-1}
  .lx-banner{flex-direction:column;align-items:flex-start}
 }
-.lx .chip,.lx-tests.ok,.lx-tests.bad{border-radius:4px}.lx .chip.rule-draft{color:var(--muted);background:#f1f6fa;border-color:var(--line)}
+.lx .chip,.lx-tests.ok,.lx-tests.bad{border-radius:3px}.lx .chip.rule-draft{color:var(--muted);background:#f1f6fa;border-color:var(--line)}
 </style>
 <div class="lx">
 <div class="lx-head"><div><h1>Rules</h1></div><a class="btn btn-secondary" href="#new-source">New rule</a></div>
