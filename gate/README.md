@@ -164,3 +164,7 @@ Application code, templates, static assets and fictional fixtures are available 
 `/live` retains the team's live processing view alongside the detailed `/office`, `/review` and learning screens. Live uploads run in background threads; the staff-only `/api/activity` reports actual processing steps. This small-demo queue is in memory, is not durable across restarts, and is not shared across multiple workers.
 
 `/exposures` compares a bounded set of sourced Argentine exposures, with companies and public bodies separated. No verified company totals support a definitive national ranking in this review. Reported files, claimed records and unknown quantities remain distinct; [methodology and sources](../docs/research/EXPOSURE-RANKING-NOTES.md) explain the limitations.
+
+## Security memory
+
+[Pi implementation plan](../docs/research/PI-IMPLEMENTATION-PLAN.md): proposed integration for turning incident evidence into tested PDF rules, code fixes and credential-response workflows. Pi access and execution are not yet verified.

@@ -71,7 +71,7 @@
       event.preventDefault();
       if (form.dataset.busy === 'true' || !form.reportValidity()) return;
       const button = event.submitter;
-      if (approval && button?.value === 'approve' && !window.confirm('Publish this exact file? Confirm that you inspected every page and recorded why it is appropriate for public access.')) return;
+      if (approval && button?.value === 'approve' && !window.confirm(form.dataset.hasClean === 'true' ? 'Publish the cleaned copy? Confirm that you inspected it.' : 'Publish this exact file? Confirm that you inspected every page and recorded why it is appropriate for public access.')) return;
       const body = new FormData(form);
       if (button?.name) body.append(button.name, button.value);
       const controls = Array.from(form.querySelectorAll('button'));
@@ -104,6 +104,8 @@
     jobsSignature = signature;
     const nodes = jobs.map(job => {
       const card = element('article', 'panel live-job');
+      const key = text(job.id ?? job.purchase_id) + ':' + text(job.file);
+      const wasOpen = [...jobsElement.querySelectorAll('details[data-job]')].some(node => node.dataset.job === key && node.open);
       const heading = element('div', 'attachment-heading');
       const name = element('div', 'attachment-name');
       name.append(element('h3', '', job.file || 'PDF attachment'), element('span', 'small muted', job.office));
@@ -117,11 +119,9 @@
         item.title = text(step.detail); steps.append(item);
       }
       card.append(heading);
-      // The agentic clearance procedure stays visible after it finishes: rounds and verdicts.
-      if (!job.done) card.append(steps);
-      else if ((job.steps || []).some(s => /^Public reviewer/.test(text(s.name)))) {
-        steps.replaceChildren(...[...steps.children].filter(li => /^(Guild orchestrator|Public |Clearance)/.test(li.textContent)));
-        card.append(steps);
+      if (steps.children.length) {
+        const detail = element('details', 'job-detail'); detail.dataset.job = key; detail.open = wasOpen;
+        detail.append(element('summary', '', 'Processing details'), steps); card.append(detail);
       }
       if (job.why) card.append(element('p', '', job.why));
       if (job.stale) card.append(element('p', 'live-error', 'An earlier decision is no longer current. Recheck this file before public access.'));
@@ -136,7 +136,9 @@
     jobsElement.replaceChildren(...(nodes.length ? nodes : [empty('No files in the activity feed yet.', 'Upload a PDF to start.')]));
   }
   function reviewCard(id) {
-    const card = element('article', 'panel live-review');
+    const card = element('details', 'panel live-review review-accordion');
+    card.name = 'activity-reviews'; card.open = reviews.size === 0;
+    const summary = element('summary');
     const heading = element('h3');
     const metadata = element('p');
     const reason = element('p');
@@ -160,7 +162,10 @@
     actions.append(reject, approve);
     const message = element('div', 'form-message'); message.hidden = true; message.setAttribute('role', 'status'); message.setAttribute('aria-live', 'polite');
     form.append(field, actions, message); attachForm(form, true);
-    card.append(heading, metadata, reason, original, clean, note, agentLink, warning, recheck, form);
+    summary.append(heading, metadata);
+    const body = element('div', 'review-body');
+    body.append(reason, original, clean, note, agentLink, warning, recheck, form);
+    card.append(summary, body);
     return {card, heading, metadata, reason, note, agentLink, warning, recheck, form, approve, clean, cleanText};
   }
   function renderWaiting(waiting) {
@@ -175,6 +180,7 @@
       view.reason.textContent = Array.isArray(item.why) ? item.why.map(text).join(' ') : text(item.why);
       view.note.textContent = item.note ? 'Reviewer brief: ' + text(item.note) : workspace.dataset.agentConfigured === 'true' ? 'No completed reviewer brief is available yet. Inspect the original and findings.' : 'Guild is not configured. Inspect the original document and findings.';
       view.clean.hidden = item.has_clean !== true;
+      view.form.dataset.hasClean = item.has_clean === true ? 'true' : 'false';
       const removed = Array.isArray(item.removed) ? item.removed.map(text).filter(Boolean) : [];
       view.cleanText.textContent = 'Approve publishes the cleaned copy' + (removed.length ? ' (without ' + removed.join(', ') + ').' : '.');
       const url = safeExternal(item.agent_url); view.agentLink.hidden = !url;
@@ -195,14 +201,14 @@
     const counts = data.counts;
     for (const name of ['published', 'blocked', 'waiting']) document.getElementById('live-count-' + name).textContent = count(counts[name]);
     const running = count(counts.processing);
-    document.getElementById('live-busy').textContent = running ? 'Checking ' + running + (running === 1 ? ' file' : ' files') + '…' : 'No file checks are currently running.';
+    document.getElementById('live-busy').textContent = running ? 'Checking ' + running + (running === 1 ? ' file' : ' files') + '…' : 'Up to date';
     document.getElementById('live-gate-node').classList.toggle('is-busy', running > 0);
     document.getElementById('live-state-mark').classList.toggle('working', running > 0);
     const stale = count(counts.stale);
     document.getElementById('live-stale-count').textContent = stale ? stale + (stale === 1 ? ' file needs' : ' files need') + ' the current rules checked before public access.' : 'No stored files are awaiting a rules recheck.';
     renderJobs(data.jobs); renderWaiting(data.waiting);
     jobsElement.setAttribute('aria-busy', 'false'); waitingElement.setAttribute('aria-busy', 'false');
-    connectionElement.textContent = 'Activity updated at ' + new Date().toLocaleTimeString() + '. Counts show current stored publication status.';
+    connectionElement.textContent = 'Updated ' + new Date().toLocaleTimeString();
     connectionElement.classList.remove('live-error');
   }
   async function poll() {

@@ -47,6 +47,8 @@ def test_dashboard_shows_simulated_history_with_query_times(web):
     response = client.get("/dashboard", auth=AUTH)
     assert response.status_code == 200
     text = response.text
+    assert "<title>Audit</title>" in text
+    assert text.count("Simulated history · 1,000,000 events") == 1
     assert "Simulated history · 1,000,000 events" in text
     assert "Simulated telemetry, not real PAMI data." in text
     for label in ("UGL XIX Misiones", "52.4%", "Model context", "Sep 2026", "29,564"):

@@ -117,3 +117,25 @@ def test_assets_mount_targets_built_frontend_only(workspace):
     mount = next(route for route in workspace.app.app.routes if route.path == "/assets")
     assert mount.name == "assets"
     assert Path(mount.app.directory) == Path(workspace.app.__file__).parent / "static"
+
+
+def test_server_rendered_documents_work_without_frontend_javascript(workspace):
+    add_file(workspace, "hold", 7)
+    response = workspace.client.get("/", auth=AUTH)
+    assert 'fictional-7.pdf' in response.text
+    assert '/purchase/' in response.text and 'Review files' in response.text
+    assert 'Loading…' not in response.text
+    assert PRIVATE_MARKER not in response.text
+    assert response.context['workspace']['counts']['review'] == 1
+    activate_rule(workspace)
+    stale = workspace.client.get("/", auth=AUTH)
+    assert '<td>Recheck</td>' in stale.text
+    assert stale.context['workspace']['counts']['published'] == 0
+
+
+@pytest.mark.parametrize('asset,content_type', [('workspace.js', 'javascript'), ('workspace.css', 'text/css')])
+def test_compiled_assets_are_served_in_the_running_application(workspace, asset, content_type):
+    response = workspace.client.get('/assets/' + asset)
+    assert response.status_code == 200
+    assert content_type in response.headers['content-type']
+    assert len(response.content) > 1000

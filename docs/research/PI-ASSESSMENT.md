@@ -55,3 +55,7 @@ The competitive overlap is substantial: security memory, cause analysis, variant
 4. Independently test the resulting candidate against the original failure, a held-out variation and legitimate A/B operations. Preserve failures and unsupported advice. Any comparative product evaluation or public performance claim must fit the permitted scope.
 
 Until those conditions hold, Pi is a well-matched research and optional integration candidate. It does not replace one of the three currently planned sponsor responsibilities or demonstrate a fourth working integration.
+
+## Implementation follow-through
+
+See [PI-IMPLEMENTATION-PLAN.md](PI-IMPLEMENTATION-PLAN.md) for the proposed PDF, code and credential workflows, boundaries and acceptance checks. This plan is not evidence of a working Pi integration.

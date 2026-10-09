@@ -1,6 +1,14 @@
 {% extends "base.html" %}{% block title %}Documents{% endblock %}{% block body %}
 <link rel="stylesheet" href="/assets/workspace.css">
-<div id="document-workspace"><div class="page-heading"><h1>Documents</h1></div><p role="status">Loading…</p></div>
-<noscript><p>JavaScript is required for the document list.</p><a href="/review">Review files</a> · <a href="/office">Upload PDF</a></noscript>
+<div id="document-workspace">
+<div class="page-heading heading-with-action"><h1>Documents</h1><a class="btn" href="/office">Upload PDF</a></div>
+{% if workspace is defined %}
+<div class="decision-summary">{% for label,key in [('Total','total'),('Review','review'),('Private','blocked'),('Published','published')] %}<div><strong>{{ workspace.counts[key] }}</strong><span>{{ label }}</span></div>{% endfor %}</div>
+<div class="panel table-panel"><div class="table-wrap"><table class="document-list"><thead><tr><th scope="col">Document</th><th scope="col">Status</th><th scope="col">Office</th></tr></thead><tbody>{% for file in workspace.files %}<tr><td><a href="/purchase/{{ file.purchase_id }}#file-{{ file.id }}">{{ file.filename }}</a><small class="table-secondary">{{ file.procedure }}</small></td><td>{{ 'Recheck' if not file.current else 'Review' if file.decision == 'hold' else 'Private' if file.decision == 'withheld' else 'Published, cleaned' if file.decision == 'cleaned' else 'Published' }}</td><td>{{ file.office }}</td></tr>{% else %}<tr><td colspan="3" class="table-empty">No documents yet.</td></tr>{% endfor %}</tbody></table></div></div>
+<p class="small muted" style="margin-top:16px">{{ workspace.files|length }} shown · {{ workspace.counts.total }} total{% if workspace.counts.total > 100 %} · latest 100 loaded{% endif %}</p>
+{% else %}<p class="muted">Document list unavailable.</p>{% endif %}
+<div class="actions"><a class="text-link" href="/review">Review files</a><a class="text-link" href="/live">Activity</a></div>
+</div>
+{% if workspace is defined %}<script id="workspace-data" type="application/json">{{ workspace|tojson }}</script>{% endif %}
 <script type="module" src="/assets/workspace.js"></script>
 {% endblock %}

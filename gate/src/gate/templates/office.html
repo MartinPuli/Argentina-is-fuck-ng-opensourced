@@ -1,9 +1,9 @@
 {% extends "base.html" %}{% block title %}New purchase{% endblock %}{% block body %}
-<div class="page-heading"><h1>Upload</h1></div>
+<div class="page-heading heading-with-action"><h1>Upload</h1><a class="text-link" href="/">Back to documents</a></div>
 <div class="upload-layout"><form class="panel upload-form" method="post" action="/office" enctype="multipart/form-data" data-async data-loading="Checking the attachments…">
 <div class="panel-heading"><h2>Purchase details</h2><span class="mini-label">Public information</span></div><p class="field-hint">Purchase details are public. Do not include patient information.</p>
 <div class="form-grid"><div class="field span-two"><label for="office">Local office</label><select id="office" name="office" required>{% for o in offices %}<option>{{ o }}</option>{% endfor %}</select></div>
-<div class="field"><label for="procedure">Procedure reference</label><input id="procedure" name="procedure" value="Compulsa abreviada 1100/2026" required maxlength="160"></div><div class="field"><label for="amount">Amount in ARS</label><input id="amount" name="amount" type="number" min="0" step="0.01" value="1000000" required></div>
+<div class="field"><label for="procedure">Procedure reference</label><input id="procedure" name="procedure" placeholder="Procedure reference" required maxlength="160"></div><div class="field"><label for="amount">Amount in ARS</label><input id="amount" name="amount" type="number" min="0" step="0.01" placeholder="0" required></div>
 <div class="field span-two"><label for="item">Item being purchased</label><input id="item" name="item" placeholder="Motorized wheelchair" required maxlength="240"></div></div>
 <div class="upload-area"><label for="files">Supporting attachments</label><input id="files" name="files" type="file" accept="application/pdf,.pdf" multiple required aria-describedby="file-limits file-selection"><div id="file-selection" class="file-selection" aria-live="polite">No files selected</div><small id="file-limits">Up to 8 PDFs · 10 MB per file · 25 MB total · 50 pages per file</small></div>
 <div class="form-footer"><button type="submit">Check files</button></div><div class="form-message" role="status" aria-live="polite" hidden></div></form>

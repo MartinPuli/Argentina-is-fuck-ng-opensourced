@@ -608,8 +608,7 @@ def api_activity(user: str = Depends(staff)):
                         headers={"Cache-Control": "no-store"})
 
 
-@app.get("/api/workspace")
-def api_workspace(user: str = Depends(staff)):
+def workspace_snapshot():
     """Bounded operational metadata; publication counts require a current check."""
     with db() as con:
         con.execute("BEGIN")
@@ -627,7 +626,12 @@ def api_workspace(user: str = Depends(staff)):
         counts["blocked"] += row["decision"] == WITHHELD
         counts["stale"] += not current[row["id"]]
     files = [{**dict(row), "current": current[row["id"]]} for row in recent]
-    return JSONResponse({"counts": counts, "files": files}, headers={"Cache-Control": "no-store"})
+    return {"counts": counts, "files": files}
+
+
+@app.get("/api/workspace")
+def api_workspace(user: str = Depends(staff)):
+    return JSONResponse(workspace_snapshot(), headers={"Cache-Control": "no-store"})
 
 
 @app.get("/exposures")
@@ -641,7 +645,7 @@ def exposures(request: Request, user: str = Depends(staff)):
 
 @app.get("/")
 def home(request: Request, user: str = Depends(staff)):
-    return page(request, "home.html", user=user)
+    return page(request, "home.html", user=user, workspace=workspace_snapshot())
 
 
 @app.get("/office")
