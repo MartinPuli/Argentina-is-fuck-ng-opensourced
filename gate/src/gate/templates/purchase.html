@@ -1,11 +1,76 @@
-{% extends "base.html" %}{% from "components.html" import badge, evidence, brief, removed with context %}{% block title %}Purchase decisions{% endblock %}{% block body %}
-<a class="back-link" href="/">← Documents</a><div class="page-heading heading-with-action"><div><h1>{{ purchase.item }}</h1><p>{{ purchase.procedure }} <span class="separator">·</span> {{ purchase.amount|money }} ARS</p></div><a class="btn btn-secondary" href="/public">View public result ↗</a></div>
+{% extends "base.html" %}{% from "components.html" import evidence with context %}{% block title %}Purchase decisions{% endblock %}{% block body %}
+<style>
+.pv{--pub:var(--c-published,#16a34a);--cln:var(--c-cleaned,#0891b2);--rev:var(--c-review,#d97706);--blk:var(--c-blocked,#dc2626);--gld:var(--c-guild,#7c3aed);--ln:var(--line,#dde7ee);--mu:var(--muted,#5d7180)}
+.pv-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.pv-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin:0 0 16px}
+.pv-head h1{margin:0 0 4px}.pv-head p{margin:0;color:var(--mu);font-size:13px}
+.pv-tally{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 20px;padding:0;list-style:none}
+.pv-tally li{display:flex;align-items:baseline;gap:6px;padding:6px 14px;border-radius:999px;font-size:13px;color:#fff;background:color-mix(in srgb,var(--c) 75%,#000)}
+.pv-tally b{font-size:18px}.pv-tally a{margin-left:6px;font-size:12px;color:#fff;font-weight:600}
+.pv-tally .pub,.pv-card.pub{--c:var(--pub)}.pv-card.cln{--c:var(--cln)}.pv-tally .rev,.pv-card.rev{--c:var(--rev)}.pv-tally .blk,.pv-card.blk{--c:var(--blk)}
+.pv-card{background:var(--surface,#fff);border:1px solid color-mix(in srgb,var(--c) 30%,var(--ln));border-left:6px solid var(--c);border-radius:10px;padding:16px 18px;margin:0 0 12px}
+.pv-top{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.pv-out{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:6px;font-size:12px;font-weight:700;letter-spacing:.2px;white-space:nowrap;color:#fff;background:color-mix(in srgb,var(--c) 75%,#000)}
+.pv-name{font-size:15px;font-weight:600;margin:0;overflow-wrap:anywhere;flex:1;min-width:0}
+.pv-why{margin:8px 0 0;font-size:13px;color:var(--mu)}
+.pv-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 13px;border-radius:7px;font-size:13px;font-weight:600;text-decoration:none;border:1px solid var(--ln);color:var(--ink,#16283a);background:var(--surface,#fff);white-space:nowrap}
+.pv-btn:hover{border-color:var(--c,var(--cln))}
+.pv-btn.pub-btn{--b:var(--c,var(--pub));background:color-mix(in srgb,var(--b) 75%,#000);border-color:transparent;color:#fff;box-shadow:0 2px 8px color-mix(in srgb,var(--b) 35%,transparent)}
+.pv-btn.pub-btn:hover{background:color-mix(in srgb,var(--b) 62%,#000)}
+.pv-btn.go{background:color-mix(in srgb,var(--rev) 75%,#000);border-color:transparent;color:#fff}
+.pv-links{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.pv-flow{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;margin-top:14px;padding:14px;border-radius:8px;background:color-mix(in srgb,var(--c) 6%,var(--surface,#fff))}
+.pv-doc{display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.pv-doc small{font-size:11px;color:var(--mu)}
+.pv-removed{border-left:2px dashed color-mix(in srgb,var(--c) 35%,transparent);border-right:2px dashed color-mix(in srgb,var(--c) 35%,transparent);padding:0 14px;min-width:0}
+.pv-removed h4{margin:0 0 8px;font-size:12px;font-weight:700;color:color-mix(in srgb,var(--blk) 75%,#000)}
+.pv-chips{display:flex;flex-wrap:wrap;gap:6px;margin:0;padding:0;list-style:none}
+.pv-chips li{display:inline-flex;gap:6px;align-items:baseline;padding:4px 9px;border-radius:999px;background:color-mix(in srgb,var(--blk) 12%,#fff);border:1px solid color-mix(in srgb,var(--blk) 30%,#fff);color:color-mix(in srgb,var(--blk) 70%,#000);font-size:12px;font-weight:600}
+.pv-chips s{font-family:ui-monospace,monospace;font-size:11px;font-weight:400;text-decoration-thickness:1px}
+.pv-chips i{font-style:normal;font-size:10px;font-weight:400}
+.pv-ver{display:inline-flex;align-items:center;gap:6px;font-size:12px}
+.pv-ver b{padding:2px 8px;border-radius:5px;font-weight:700;font-size:11px;color:#fff}
+.pv-ver .pass{background:color-mix(in srgb,var(--pub) 75%,#000)}.pv-ver .fail{background:color-mix(in srgb,var(--blk) 75%,#000)}
+.pv-ver a{color:color-mix(in srgb,var(--gld) 85%,#000);font-weight:600}
+.pv-more{margin-top:10px;font-size:12px}
+.pv-more summary{cursor:pointer;color:var(--mu);padding:4px 0}
+.pv-more[open] summary{margin-bottom:8px}
+.pv-more p{margin:6px 0;font-size:12px}.pv-fp{font-family:ui-monospace,monospace;font-size:11px;color:var(--mu)}
+@media(max-width:760px){.pv-flow{grid-template-columns:1fr;gap:12px}.pv-removed{border:0;border-top:2px dashed color-mix(in srgb,var(--c) 35%,transparent);border-bottom:2px dashed color-mix(in srgb,var(--c) 35%,transparent);padding:12px 0}.pv-card{padding:14px}.pv-name{flex-basis:100%}}
+</style>
+<div class="pv">
+<a class="back-link" href="/">← Documents</a>
+<div class="pv-head"><div><h1>{{ purchase.item }}</h1><p>{{ purchase.procedure }} · {{ purchase.amount|money }} ARS</p></div><a class="pv-btn" href="/public">Public site ↗</a></div>
 {% set counts = namespace(public=0, hold=0, withheld=0) %}{% for a in atts %}{% if a.decision in ('public','approved','cleaned') and a.id not in stale_ids %}{% set counts.public=counts.public+1 %}{% elif a.decision == 'hold' or a.id in stale_ids %}{% set counts.hold=counts.hold+1 %}{% else %}{% set counts.withheld=counts.withheld+1 %}{% endif %}{% endfor %}
-<div class="decision-summary"><div><strong>{{ atts|length }}</strong><span>Files</span></div><div><strong class="text-public">{{ counts.public }}</strong><span>Published</span></div><div><strong class="text-hold">{{ counts.hold }}</strong><span>Pending</span></div><div><strong class="text-withheld">{{ counts.withheld }}</strong><span>Private</span></div></div>
-<div class="section-heading inline-heading"><h2>Attachment decisions</h2>{% if stale_ids %}<a class="text-link" href="/learning">Recheck updated rules →</a>{% endif %}{% if counts.hold %}<a class="text-link" href="/review">Review {{ counts.hold }} held {{ 'file' if counts.hold == 1 else 'files' }} →</a>{% endif %}</div>
-{% for a in atts %}{% set fs=a.findings|fromjson %}{% set m=a.model|fromjson %}{% set ag=a.agent|fromjson %}
-<article class="panel attachment-panel" id="file-{{ a.id }}"><div class="attachment-heading"><div class="attachment-name"><h3>{{ a.filename }}</h3><span class="file-fingerprint">File {{ a.id }} · SHA-256 {{ a.sha256[:12] }}…</span></div>{% if a.id in stale_ids %}<span class="badge b-hold">Recheck required</span>{% else %}{{ badge(a.decision) }}{% endif %}</div><p class="decision-reason">{{ (a.reasons|fromjson)|join(' ') }}</p>{{ evidence(fs) }}
-{% set visible = a.decision in ('public','approved','cleaned') and a.id not in stale_ids %}{% if a.public_pdf %}{{ removed(a) }}<div class="attachment-actions"><span class="link-pair"><a class="text-link" href="/internal/file/{{ a.id }}" target="_blank" rel="noopener">Original (internal) ↗</a>{% if visible %}<a class="text-link" href="/public/file/{{ a.id }}" target="_blank" rel="noopener">Public copy ↗</a>{% else %}<a class="text-link" href="/internal/clean/{{ a.id }}" target="_blank" rel="noopener">Cleaned preview ↗</a>{% endif %}</span></div>{% else %}<div class="attachment-actions"><a class="text-link" href="/internal/file/{{ a.id }}" target="_blank" rel="noopener">Original PDF</a>{% if visible %}<a class="text-link" href="/public/file/{{ a.id }}" target="_blank" rel="noopener">Public PDF</a>{% else %}<span class="small muted">Private</span>{% endif %}</div>{% endif %}
-{% if m and not m.error %}<details class="analysis-detail"><summary>Context analysis</summary><p>Re-identification risk: <strong>{{ m.reidentification_risk }}</strong>. {{ (m.reasons or [])|join(' ') }}</p>{% if m.model %}<span class="small muted">Model: {{ m.model }}</span>{% endif %}</details>{% else %}<div class="notice subtle">Context analysis unavailable. Review required.</div>{% endif %}{{ brief(ag, agent_on and a.decision not in ('public','approved','cleaned')) }}</article>
+{% if atts %}<ul class="pv-tally" aria-label="Summary"><li class="pub"><b>{{ counts.public }}</b> public</li><li class="rev"><b>{{ counts.hold }}</b> waiting for a person{% if counts.hold %}<a href="{{ '/learning' if stale_ids else '/review' }}">{{ 'Recheck' if stale_ids else 'Review' }} →</a>{% endif %}</li><li class="blk"><b>{{ counts.withheld }}</b> kept internal</li></ul>{% endif %}
+<h2 class="pv-sr">Attachment decisions</h2>
+{% for a in atts %}{% set fs=a.findings|fromjson or [] %}{% set m=a.model|fromjson %}{% set ag=a.agent|fromjson %}{% set reasons=a.reasons|fromjson or [] %}
+{% set stale = a.id in stale_ids %}{% set visible = a.decision in ('public','approved','cleaned') and not stale %}
+{% set tone = 'rev' if stale or a.decision == 'hold' else (('cln' if a.public_pdf else 'pub') if visible else 'blk') %}
+{% set label = 'Recheck required' if stale else {'public':'Published', 'approved':'Reviewer approved', 'cleaned':'Published, cleaned', 'hold':'Needs review', 'withheld':'Kept internal'}.get(a.decision, a.decision) %}
+<article class="pv-card {{ tone }}" id="file-{{ a.id }}">
+<div class="pv-top"><span class="pv-out">{{ {'pub':'✓','cln':'✓','rev':'!','blk':'✕'}[tone] }} {{ label }}</span><h3 class="pv-name">{{ a.filename }}</h3></div>
+{% set go %}<a class="pv-btn go" href="{{ '/learning' if stale else '/review' }}">{{ 'Recheck' if stale else 'Review' }} →</a>{% endset %}
+{% if a.decision == 'approved' and a.review_note %}<p class="pv-why">Reviewer: {{ a.review_note }}</p>{% elif reasons %}<p class="pv-why">{{ reasons[0] }}</p>{% endif %}
+{% if a.public_pdf %}{% set man=a.manifest|fromjson or [] %}{% set v=a.verifier|fromjson %}
+<div class="pv-flow">
+<div class="pv-doc"><a class="pv-btn" href="/internal/file/{{ a.id }}" target="_blank" rel="noopener">🔒 Original (internal)</a><small>Staff only</small></div>
+<div class="pv-removed"><h4>Removed {{ man|length }} {{ 'item' if man|length == 1 else 'items' }}</h4>{% if man %}<ul class="pv-chips">{% for r in man %}<li>{{ r.category }} <s>{{ r.masked }}</s> <i>p.{{ r.page }}</i></li>{% endfor %}</ul>{% endif %}</div>
+<div class="pv-doc">{% if visible %}<a class="pv-btn pub-btn" href="/public/file/{{ a.id }}" target="_blank" rel="noopener">Public copy ↗</a>{% else %}<a class="pv-btn" href="/internal/clean/{{ a.id }}" target="_blank" rel="noopener">Cleaned preview ↗</a>{% endif %}
+{% if v %}<span class="pv-ver"><b class="{{ 'pass' if v.verdict == 'PASS' else 'fail' }}">Verifier {{ v.verdict }}</b>{% if v.url|web_url %}<a href="{{ v.url|web_url }}" target="_blank" rel="noopener">Guild ↗</a>{% endif %}</span>{% else %}<small>Not verified</small>{% endif %}</div>
+</div>
+{% else %}<div class="pv-links"><a class="pv-btn" href="/internal/file/{{ a.id }}" target="_blank" rel="noopener">🔒 Original (internal)</a>{% if visible %}<a class="pv-btn pub-btn" href="/public/file/{{ a.id }}" target="_blank" rel="noopener">Public PDF ↗</a>{% endif %}{% if tone == 'rev' %}{{ go }}{% endif %}</div>{% endif %}
+{% if tone == 'rev' and a.public_pdf %}<div class="pv-links">{{ go }}</div>{% endif %}
+<details class="pv-more"><summary>Details</summary>
+{% for r in (reasons if a.decision == 'approved' and a.review_note else reasons[1:]) %}<p>{{ r }}</p>{% endfor %}
+{{ evidence(fs) }}
+{% if a.review_note %}<p><strong>Reviewer{% if a.reviewed_by %} ({{ a.reviewed_by }}){% endif %}:</strong> {{ a.review_note }}</p>{% endif %}
+{% if m and not m.error %}<p><strong>Context agent:</strong> re-identification risk {{ m.reidentification_risk }}. {{ (m.reasons or [])|join(' ') }}</p>{% else %}<p>Context agent: unavailable.</p>{% endif %}
+{% if ag and ag.text %}<p><strong>Guild brief:</strong> {{ ag.text }}</p>{% elif ag and ag.error %}<p>Guild brief: unavailable.</p>{% endif %}
+{% if a.public_pdf and a.verifier %}{% set v=a.verifier|fromjson %}{% if v and v.text %}<p><strong>Verifier:</strong> {{ v.text }}</p>{% endif %}{% endif %}
+<p class="pv-fp">File {{ a.id }} · SHA-256 {{ a.sha256[:12] }}…</p>
+</details>
+</article>
 {% else %}<div class="empty-state"><h2>No attachments in this purchase</h2><a class="btn" href="/office">New purchase</a></div>{% endfor %}
+</div>
 {% endblock %}

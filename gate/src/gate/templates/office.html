@@ -1,11 +1,47 @@
 {% extends "base.html" %}{% block title %}New purchase{% endblock %}{% block body %}
-<div class="page-heading"><h1>Upload</h1></div>
-<div class="upload-layout"><form class="panel upload-form" method="post" action="/office" enctype="multipart/form-data" data-async data-loading="Checking the attachments…">
-<div class="panel-heading"><h2>Purchase details</h2><span class="mini-label">Public information</span></div><p class="field-hint">Purchase details are public. Do not include patient information.</p>
-<div class="form-grid"><div class="field span-two"><label for="office">Local office</label><select id="office" name="office" required>{% for o in offices %}<option>{{ o }}</option>{% endfor %}</select></div>
-<div class="field"><label for="procedure">Procedure reference</label><input id="procedure" name="procedure" value="Compulsa abreviada 1100/2026" required maxlength="160"></div><div class="field"><label for="amount">Amount in ARS</label><input id="amount" name="amount" type="number" min="0" step="0.01" value="1000000" required></div>
-<div class="field span-two"><label for="item">Item being purchased</label><input id="item" name="item" placeholder="Motorized wheelchair" required maxlength="240"></div></div>
-<div class="upload-area"><label for="files">Supporting attachments</label><input id="files" name="files" type="file" accept="application/pdf,.pdf" multiple required aria-describedby="file-limits file-selection"><div id="file-selection" class="file-selection" aria-live="polite">No files selected</div><small id="file-limits">Up to 8 PDFs · 10 MB per file · 25 MB total · 50 pages per file</small></div>
-<div class="form-footer"><button type="submit">Check files</button></div><div class="form-message" role="status" aria-live="polite" hidden></div></form>
-<aside class="upload-aside"><details class="demo-panel"><summary>Test data</summary><form method="post" action="/live/demo/seed" data-async data-loading="Queuing files…"><button type="submit" class="btn-secondary full-width">Load synthetic files</button><div class="form-message" role="status" aria-live="polite" hidden></div></form><small>Fictional PDFs</small></details></aside></div>
+<style>
+.of{--cln:var(--c-cleaned,#0891b2);--pub:var(--c-published,#16a34a);--blk:var(--c-blocked,#dc2626);--ln:var(--line,#dde7ee);--mu:var(--muted,#5d7180);max-width:720px}
+.of h1{margin:0 0 4px}.of-sub{margin:0 0 20px;color:var(--mu);font-size:14px}
+.of-form{background:var(--surface,#fff);border:1px solid var(--ln);border-top:5px solid var(--cln);border-radius:12px;padding:22px}
+.of-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.of-wide{grid-column:1/-1}
+.of label{display:block;font-size:13px;font-weight:600;margin:0 0 6px}
+.of input:not([type=file]),.of select{width:100%;min-height:44px;font-size:14px}
+.of input:user-invalid,.of select:user-invalid{border-color:var(--blk);background:color-mix(in srgb,var(--blk) 5%,#fff)}
+.of input:user-valid{border-color:color-mix(in srgb,var(--pub) 60%,var(--ln))}
+.of-note{font-size:12px;color:var(--mu);margin:6px 0 0}
+.of-drop{position:relative;margin-top:18px;border:2px dashed color-mix(in srgb,var(--cln) 55%,var(--ln));border-radius:12px;background:color-mix(in srgb,var(--cln) 6%,#fff);padding:26px 18px;text-align:center;transition:background .15s,border-color .15s}
+.of-drop:hover,.of-drop:focus-within{background:color-mix(in srgb,var(--cln) 12%,#fff);border-color:var(--cln)}
+.of-drop input[type=file]{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}
+.of-drop strong{display:block;font-size:16px;color:color-mix(in srgb,var(--cln) 75%,#000)}
+.of-drop .of-ico{font-size:28px;line-height:1;display:block;margin-bottom:6px}
+.of-drop small{display:block;color:var(--mu);font-size:12px;margin-top:4px}
+.of-drop .file-selection{margin-top:10px;font-size:13px;font-weight:600;color:var(--mu);overflow-wrap:anywhere}
+.of-drop:has(input:valid){border-style:solid;border-color:var(--pub);background:color-mix(in srgb,var(--pub) 8%,#fff)}
+.of-drop:has(input:valid) .file-selection{color:color-mix(in srgb,var(--pub) 75%,#000)}
+.of-drop:has(input:valid) .file-selection:before{content:"✓ "}
+.of-drop:has(input:user-invalid){border-color:var(--blk)}
+.of-submit{display:block;width:100%;margin-top:18px;min-height:50px;font-size:16px;font-weight:700;border:0;border-radius:10px;color:#fff;cursor:pointer;background:color-mix(in srgb,var(--cln) 75%,#000);box-shadow:0 3px 12px color-mix(in srgb,var(--cln) 35%,transparent)}
+.of-submit:hover{background:color-mix(in srgb,var(--cln) 62%,#000)}.of-submit:disabled{opacity:.6;cursor:wait}
+.of-demo{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px;font-size:13px;color:var(--mu)}
+.of-demo button{background:none;border:0;padding:0;color:color-mix(in srgb,var(--cln) 75%,#000);font-weight:600;font-size:13px;text-decoration:underline;cursor:pointer;min-height:0}
+.of-demo .form-message{flex-basis:100%;margin:0}
+@media(max-width:760px){.of-grid{grid-template-columns:1fr}.of-form{padding:16px}}
+</style>
+<div class="of">
+<h1>New purchase</h1>
+<p class="of-sub">Upload the PDFs. Agents remove patient data before anything goes public.</p>
+<form class="of-form" method="post" action="/office" enctype="multipart/form-data" data-async data-loading="Checking the attachments…">
+<div class="of-grid">
+<div class="of-wide"><label for="item">Item</label><input id="item" name="item" placeholder="Motorized wheelchair" required maxlength="240"></div>
+<div><label for="procedure">Procedure</label><input id="procedure" name="procedure" placeholder="Compulsa abreviada 1100/2026" required maxlength="160"></div>
+<div><label for="amount">Amount (ARS)</label><input id="amount" name="amount" type="number" min="0" step="0.01" inputmode="decimal" placeholder="1000000" required></div>
+<div class="of-wide"><label for="office">Office</label><select id="office" name="office" required>{% for o in offices %}<option>{{ o }}</option>{% endfor %}</select></div>
+</div>
+<p class="of-note">These details are public. No patient names here.</p>
+<div class="of-drop"><span class="of-ico" aria-hidden="true">📄</span><strong>Attachments: drop PDFs here or click to choose</strong><small id="file-limits">Up to 8 PDFs, 10 MB each</small><input id="files" name="files" type="file" accept="application/pdf,.pdf" multiple required aria-label="Attachments (PDF)" aria-describedby="file-limits file-selection"><div id="file-selection" class="file-selection" aria-live="polite">No files selected</div></div>
+<button class="of-submit" type="submit">Check files</button>
+<div class="form-message" role="status" aria-live="polite" hidden></div>
+</form>
+<form class="of-demo" method="post" action="/live/demo/seed" data-async data-loading="Queuing files…"><span>No PDFs handy?</span><button type="submit">Load synthetic files</button><div class="form-message" role="status" aria-live="polite" hidden></div></form>
+</div>
 {% endblock %}
