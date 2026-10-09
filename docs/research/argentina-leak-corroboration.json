@@ -1,0 +1,457 @@
+{
+  "schema_version": 1,
+  "evidence_cutoff": "2026-10-09",
+  "event_window": {
+    "start": "2025-10-09",
+    "end": "2026-10-09"
+  },
+  "recent_month": {
+    "start": "2026-09-09",
+    "end": "2026-10-09"
+  },
+  "scope": "Targeted public-report corroboration, not a census, forensic dataset comparison or complete monitoring-account archive.",
+  "baseline_read": [
+    "docs/INCIDENTS.md",
+    "docs/SOURCES.md"
+  ],
+  "method": [
+    "Search Spanish institution and incident terms with 2025/2026 and September/October qualifiers; follow original news and authority responses.",
+    "Separate occurrence, public claim, publication, enforcement and resale dates; retain unknowns.",
+    "Do not collect leaked samples or infer unique people from rows, files, images or bytes.",
+    "Syndicated copies and monitors repeating one seller post share an evidence chain."
+  ],
+  "search_topics": [
+    "RENAPER/Health October claims",
+    "ARCA/WorkManagement/SIDE December coverage",
+    "PFA/Dictadores/Gov.eth enforcement",
+    "ANSES and Mi Argentina September claims",
+    "Córdoba and Azul municipal cases",
+    "medical-study retrospective dates"
+  ],
+  "summary": {
+    "records": 11,
+    "new_named_cases_for_review": 2,
+    "new_enforcement_updates_for_review": 1,
+    "new_cases_with_independently_verified_mass_exfiltration_count": 0,
+    "unique_people_total": null,
+    "confirmed_breach_total": null
+  },
+  "sources": {
+    "C1": {
+      "publisher": "Cadena 3",
+      "kind": "original reporting quoting municipal response",
+      "published": "2026-08-13",
+      "url": "https://www.cadena3.com/noticia/sociedad/que-dijo-la-municipalidad-tras-el-hackeo-al-sistema-de-transporte_583247"
+    },
+    "A1": {
+      "publisher": "Diario El Tiempo (Azul)",
+      "kind": "local journalism quoting municipal response",
+      "published": "2026-09-18",
+      "url": "https://www.diarioeltiempo.com.ar/nota-hackeo-en-la-municipalidad-de-azul-denuncia-por-filtracion-de-datos-de-50-000-vecinos-frente-a-la-desmentida-oficial-210255"
+    },
+    "A2": {
+      "publisher": "Séptima Sección",
+      "kind": "local reporting quoting municipal response",
+      "published": "2026-09-18",
+      "url": "https://septimaseccion.com.ar/hackearon-el-sitio-web-de-la-municipalidad-de-azul/"
+    },
+    "G1": {
+      "publisher": "Diario Crónica / Noticias Argentinas",
+      "kind": "syndicated agency report; one reporting chain",
+      "published": "2026-06-24",
+      "url": "https://www.diariocronica.com.ar/noticias/2026/06/24/151102-cayo-en-madrid-el-hacker-argentino-goveth-acusado-de-vulnerar-datos-de-milei-y-de-filtrar-bases-estatales"
+    },
+    "W1": {
+      "publisher": "Infobae",
+      "kind": "journalism reporting allegation and government response",
+      "published": "2025-12-19",
+      "url": "https://www.infobae.com/politica/2025/12/19/denuncian-una-masiva-filtracion-de-datos-personales-de-ciudadanos-argentinos-en-la-dark-web/"
+    },
+    "W2": {
+      "publisher": "AAIP",
+      "kind": "official regulator statement",
+      "published": "2025-12-23",
+      "url": "https://www.argentina.gob.ar/noticias/la-aaip-inicio-una-investigacion-de-oficio-ante-presunta-filtracion-masiva-de-datos"
+    },
+    "W3": {
+      "publisher": "Bloomberg Línea",
+      "kind": "journalism reproducing ARCA statement",
+      "published": "2025-12-19",
+      "url": "https://www.bloomberglinea.com/economia/finanzas-personales/la-respuesta-de-arca-ante-una-presunta-filtracion-de-datos-de-contribuyentes-argentinos/"
+    },
+    "P1": {
+      "publisher": "Ministry of Security / PFA",
+      "kind": "official enforcement statement",
+      "published": "2026-05-27",
+      "url": "https://www.argentina.gob.ar/noticias/el-dfi-de-la-pfa-desarticulo-una-importante-banda-de-hackers"
+    },
+    "P2": {
+      "publisher": "TN",
+      "kind": "journalism explicitly identifying historical resale",
+      "published": "2026-05-28",
+      "url": "https://tn.com.ar/tecno/novedades/2026/05/28/cayo-una-banda-que-vendia-datos-filtrados-del-renaper-pami-y-mi-argentina-para-cometer-estafas-digitales/"
+    },
+    "N1": {
+      "publisher": "Chequeado",
+      "kind": "original verification and direct agency response",
+      "published": "2026-09-20",
+      "url": "https://chequeado.com/nota/que-se-sabe-sobre-el-supuesto-hackeo-a-la-anses-y-como-cuidar-tus-datos/"
+    },
+    "M1": {
+      "publisher": "DataTrends LATAM",
+      "kind": "secondary report without identified primary confirmation",
+      "published": "2026-09-30",
+      "url": "https://www.datatrendslatam.com/argentina-investiga-posible-filtracion-de-6-millones-de-datos-de-mi-argentina"
+    },
+    "M2": {
+      "publisher": "Empre / Nicolás Pstyga",
+      "kind": "commentary without linked underlying forensic report",
+      "published": "2026-10-03",
+      "url": "https://empre.ar/analisis/se-vienen-seis-meses-caoticos-para-la-ciberseguridad-gubernamental/"
+    },
+    "R1": {
+      "publisher": "Undercode News",
+      "kind": "automated-looking aggregation; lead only",
+      "published": null,
+      "date_note": "Relative timestamp; absolute publication date not verified. Text attributes alert to October 1.",
+      "url": "https://undercodenews.com/argentina-ministry-of-health-and-renaper-data-leak-claim-raises-fresh-concerns/"
+    },
+    "S1": {
+      "publisher": "Cenital / Pablo Ibáñez",
+      "kind": "political column with attributed broker-case reporting",
+      "published": "2026-01-04",
+      "url": "https://cenital.com/all-in-de-milei-a-trump-por-venezuela-mientras-multiplica-el-dano-local-con-andis-y-la-side/"
+    },
+    "H1": {
+      "publisher": "Derechos Digitales",
+      "kind": "primary report landing page; period verified, PDF retrieval size-limited",
+      "published": "2026-09-30",
+      "url": "https://www.derechosdigitales.org/recursos/en-la-mira-2/"
+    },
+    "H2": {
+      "publisher": "El Cronista",
+      "kind": "journalism; excerpt retrieved",
+      "published": null,
+      "date_note": "Exact article date not reverified; text explicitly dates medical-study offer to April 2025.",
+      "url": "https://www.cronista.com/economia-politica/que-pueden-hacer-y-que-no-los-municipios-con-tus-datos-personales/"
+    },
+    "H3": {
+      "publisher": "El País",
+      "kind": "new coverage of historical report; indexed excerpt read, full open failed",
+      "published": "2026-10-09",
+      "url": "https://elpais.com/america-futura/2026-10-09/la-vigilancia-y-el-control-digital-se-expande-en-america-latina-al-margen-de-los-signos-politicos.html"
+    },
+    "R2": {
+      "publisher": "Noticias Argentinas",
+      "kind": "historical journalism with current page header",
+      "published": "2021-10-15",
+      "updated": "2021-10-16",
+      "url": "https://noticiasargentinas.com/politica/la-oposicion-pide-explicaciones-por-la-filtracion-de-datos-en-el-renaper"
+    }
+  },
+  "records": [
+    {
+      "id": "cordoba-global-visum",
+      "entity": "Córdoba municipal transport / Global Visum",
+      "relation_to_existing_register": "new named case",
+      "event_date": "2026-02 (early; exact access date unspecified)",
+      "notifications": [
+        "2026-02-02",
+        "2026-02-11"
+      ],
+      "report_dates": [
+        "2026-08-13"
+      ],
+      "claim_or_resale_date": null,
+      "status": "municipal response acknowledges reported supplier vulnerability; criminal exfiltration not established",
+      "count": [
+        {
+          "value": 20000,
+          "qualifier": "approximately",
+          "unit": "DNI photographs",
+          "attribution": "researcher as reported by Cadena 3",
+          "verified": false
+        }
+      ],
+      "finding": "Municipality said supplier fixed the flaw after notification, and municipal officials learned through press coverage. No independently verified unique-person total.",
+      "overlap": "Different service from named baseline cases; no dataset comparison performed.",
+      "add_as_confirmed_mass_leak": false,
+      "sources": [
+        "C1"
+      ]
+    },
+    {
+      "id": "azul-2026",
+      "entity": "Municipality of Azul",
+      "relation_to_existing_register": "new named case",
+      "event_date": "2026-09-17 (inferred from Sept 18 article saying previous night)",
+      "report_dates": [
+        "2026-09-18"
+      ],
+      "claim_or_resale_date": "2026-09-17 (reported claim context)",
+      "status": "defacement acknowledged in quoted municipal statement; data-disclosure allegation disputed",
+      "count": [
+        {
+          "value": 50000,
+          "qualifier": "more than",
+          "unit": "citizens, as alleged",
+          "attribution": "attacker claim reported by El Tiempo",
+          "verified": false
+        },
+        {
+          "value": 6,
+          "unit": "databases, as alleged",
+          "attribution": "same claim",
+          "verified": false
+        }
+      ],
+      "finding": "Municipality denied access to sensitive databases, saying internal systems were separate from its informational website. No public forensic report located.",
+      "overlap": "No established relationship to other register entries.",
+      "add_as_confirmed_mass_leak": false,
+      "sources": [
+        "A1",
+        "A2"
+      ]
+    },
+    {
+      "id": "gov-eth-arrest",
+      "entity": "Gov.eth investigation / RENAPER-DNRPA resale context",
+      "relation_to_existing_register": "new enforcement update; overlaps Dictadores investigation",
+      "event_date": "2026-06-24 (reported arrest; underlying activity described as 2024–2026)",
+      "report_dates": [
+        "2026-06-24"
+      ],
+      "claim_or_resale_date": null,
+      "status": "arrest reported by news agency; not a newly dated database intrusion",
+      "count": [],
+      "finding": "NA coverage links the arrest to prior campaigns and the Dictadores investigation. Crónica republishes NA; those are one reporting chain, not independent confirmations.",
+      "overlap": "Named investigative/community overlap; record-level duplication not measured.",
+      "add_as_confirmed_mass_leak": false,
+      "sources": [
+        "G1"
+      ]
+    },
+    {
+      "id": "work-management-arca",
+      "entity": "WorkManagement / SudamericaData; ARCA, ANSES, DNRPA labels",
+      "relation_to_existing_register": "corroboration of existing December entry",
+      "event_date": null,
+      "report_dates": [
+        "2025-12-19",
+        "2025-12-23"
+      ],
+      "claim_or_resale_date": "2025-12-18",
+      "status": "alleged broker collection; AAIP inquiry confirmed; direct ARCA intrusion denied",
+      "count": [
+        {
+          "value": 1,
+          "qualifier": "approximately",
+          "unit": "terabyte collection claimed",
+          "verified": false
+        },
+        {
+          "value": 60000000,
+          "qualifier": "more than",
+          "unit": "records labelled ARCA",
+          "verified": false
+        },
+        {
+          "value": 75000000,
+          "qualifier": "more than",
+          "unit": "records labelled vehicle ownership",
+          "verified": false
+        },
+        {
+          "value": 176000000,
+          "qualifier": "more than",
+          "unit": "records labelled ANSES employment",
+          "verified": false
+        },
+        {
+          "value": 100000000,
+          "qualifier": "more than",
+          "unit": "records labelled mobile telecommunications",
+          "verified": false
+        }
+      ],
+      "finding": "Figures are relayed seller claims. AAIP opened its inquiry December 19, announced December 23. ARCA denied unauthorized access and confidential-data compromise.",
+      "overlap": "One broker episode, not four newly confirmed government breaches. Unique people and extraction dates unresolved.",
+      "add_as_confirmed_mass_leak": false,
+      "sources": [
+        "W1",
+        "W2",
+        "W3"
+      ]
+    },
+    {
+      "id": "pfa-may-resale",
+      "entity": "PFA enforcement against resale of government-linked data",
+      "relation_to_existing_register": "additional corroboration of existing May entry",
+      "event_date": "Investigation began 2025-10; underlying extraction dates unspecified",
+      "report_dates": [
+        "2026-05-27",
+        "2026-05-28"
+      ],
+      "claim_or_resale_date": null,
+      "status": "officially reported criminal resale investigation",
+      "count": [],
+      "finding": "Official notice names identity, vehicle, medical and credential material and shared participants with Dictadores. TN explicitly describes use of records stolen in earlier years.",
+      "overlap": "Do not create separate new RENAPER, DNRPA, SISA, Mi Argentina and PAMI intrusions from this operation. PFA is the investigating authority, not the identified victim.",
+      "add_as_confirmed_mass_leak": false,
+      "sources": [
+        "P1",
+        "P2"
+      ]
+    },
+    {
+      "id": "anses-sipa-september",
+      "entity": "ANSES / SIPA",
+      "relation_to_existing_register": "reverified existing September entry",
+      "event_date": null,
+      "report_dates": [
+        "2026-09-20"
+      ],
+      "claim_or_resale_date": "2026-09-14 (monitor reports)",
+      "status": "unverified offer; ANSES denial obtained by Chequeado",
+      "count": [
+        {
+          "value": 38000000,
+          "unit": "records",
+          "verified": false
+        },
+        {
+          "value": 9500000,
+          "qualifier": "approximately",
+          "unit": "people allegedly represented",
+          "verified": false
+        }
+      ],
+      "finding": "Daily Dark Web and Dark Web Informer repeated one seller allegation and identified it as unverified. Chequeado found no independent public confirmation.",
+      "overlap": "Overlap with earlier employment datasets unknown. Shared institution names do not prove either a fresh extraction or recycling.",
+      "add_as_confirmed_mass_leak": false,
+      "sources": [
+        "N1"
+      ]
+    },
+    {
+      "id": "mi-argentina-september",
+      "entity": "Mi Argentina",
+      "relation_to_existing_register": "reverified existing September/October entry",
+      "event_date": null,
+      "report_dates": [
+        "2026-09-30",
+        "2026-10-03"
+      ],
+      "claim_or_resale_date": null,
+      "status": "conflicting secondary reporting; neither claim nor debunking independently established",
+      "count": [
+        {
+          "value": 6000000,
+          "unit": "records claimed by September report",
+          "verified": false
+        },
+        {
+          "value": 4000,
+          "qualifier": "fewer than",
+          "unit": "records described by October commentary",
+          "verified": false
+        }
+      ],
+      "finding": "The smaller-count commentary claims mostly old material, without linked forensic analysis. The large-count report does not identify a primary source confirming its asserted official inquiry.",
+      "overlap": "Recycling is a hypothesis reported by commentary, not verified deduplication.",
+      "add_as_confirmed_mass_leak": false,
+      "sources": [
+        "M1",
+        "M2"
+      ]
+    },
+    {
+      "id": "renaper-health-october-lead",
+      "entity": "RENAPER / national Health Ministry",
+      "relation_to_existing_register": "new low-confidence lead, not promotion to incident",
+      "event_date": null,
+      "report_dates": [],
+      "claim_or_resale_date": "2026-10-01 (date attributed by aggregator; original post not independently verified here)",
+      "status": "uncorroborated social-media allegation relayed by aggregator",
+      "count": [],
+      "finding": "No usable public count, system identity or access timeline in the retrieved account. No official statement or original Argentine journalism corroborating this specific lead located in targeted searches.",
+      "overlap": "Could be historical, third-party or fabricated; none established. No two-organization breach count warranted.",
+      "add_as_confirmed_mass_leak": false,
+      "sources": [
+        "R1"
+      ]
+    },
+    {
+      "id": "side-name-context",
+      "entity": "SIDE references in WorkManagement coverage",
+      "relation_to_existing_register": "attribution clarification, not additional incident",
+      "event_date": null,
+      "report_dates": [
+        "2026-01-04"
+      ],
+      "claim_or_resale_date": "2025-12-18 (broker-claim context)",
+      "status": "SIDE official name/image referenced; no SIDE database compromise established by this source",
+      "count": [],
+      "finding": "Cenital reports that a broker-case poster used an intelligence official's name and image. That is not evidence of access to SIDE systems.",
+      "overlap": "Same WorkManagement episode. No separate verified SIDE leak located in this targeted pass.",
+      "add_as_confirmed_mass_leak": false,
+      "sources": [
+        "S1"
+      ]
+    },
+    {
+      "id": "medical-studies-historical",
+      "entity": "Medical-study collection discussed in 2026 retrospective coverage",
+      "relation_to_existing_register": "excluded historical context",
+      "event_date": "Offer reported in 2025-04; exact extraction date unknown",
+      "report_dates": [
+        "2026-09-30",
+        "2026-10-09"
+      ],
+      "claim_or_resale_date": "2025-04 (as described by El Cronista)",
+      "status": "older case discussed in new coverage; outside rolling event window",
+      "count": [
+        {
+          "value": 665000,
+          "qualifier": "more than",
+          "unit": "medical studies",
+          "verified": false
+        }
+      ],
+      "finding": "Derechos Digitales dates its report's case window June 2024–May 2025. El Cronista places the medical-study offer in April 2025. Neither supplies an independently audited unique-patient count here.",
+      "overlap": "New publication does not create a new 2026 health breach; not PAMI's separate 2026 purchasing-page exposure.",
+      "add_as_confirmed_mass_leak": false,
+      "sources": [
+        "H1",
+        "H2",
+        "H3"
+      ]
+    },
+    {
+      "id": "renaper-2021-date-trap",
+      "entity": "RENAPER historical news page",
+      "relation_to_existing_register": "excluded historical context already covered",
+      "event_date": "2021-10",
+      "report_dates": [
+        "2021-10-15",
+        "2021-10-16"
+      ],
+      "claim_or_resale_date": null,
+      "status": "historical article; current header/crawl date misleading",
+      "count": [],
+      "finding": "The retrieved page shows an August 2026 header but article publication and update timestamps are October 2021.",
+      "overlap": "Already excluded RENAPER 2021 case; no new intrusion or resale inferred.",
+      "add_as_confirmed_mass_leak": false,
+      "sources": [
+        "R2"
+      ]
+    }
+  ],
+  "remaining_gaps": [
+    "No public dataset-level overlap comparison; recycling assertions remain attributed.",
+    "No primary final findings located for Mi Argentina September allegation or RENAPER/Health October lead.",
+    "Gov.eth arrest read through NA syndication; no separate police announcement located.",
+    "Derechos Digitales PDF was not retrieved by web tool because its 16.9 MB response exceeded tool size; primary landing-page period was read.",
+    "AySA December mention and Sanatorio Delta extortion-listing lead did not yield sufficient original corroboration in this pass; not promoted."
+  ]
+}

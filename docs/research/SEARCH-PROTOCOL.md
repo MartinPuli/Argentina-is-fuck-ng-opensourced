@@ -39,12 +39,15 @@ The current reviews use **targeted full-text reading**: relevant methods, evalua
 - [Learning from incidents](LEAK-LEARNING-PAPERS.md) / [records](leak-learning-papers.json).
 - [Threat intelligence and evidence integrity](THREAT-INTELLIGENCE-PAPERS.md) / [records](threat-intelligence-papers.json).
 - [Access control and exposure](ACCESS-AND-EXPOSURE-PAPERS.md) / [records](access-exposure-papers.json).
+- [October agent reliability](OCTOBER-AGENT-RELIABILITY.md) / [records](october-agent-reliability.json).
+- [October artifact security](OCTOBER-ARTIFACT-SECURITY.md) / [records](october-artifact-security.json).
+- [Early exfiltration detection](EARLY-EXFILTRATION-DETECTION.md) / [records](early-exfiltration-detection.json).
 
-This checkpoint contains **32 selected paper records** across those five files: eight defense/repair, nine agent-safety, five incident-learning, five threat-intelligence and five access/exposure records. They include explicitly labeled earlier foundations and later publication milestones, so 32 does not mean 32 newly submitted papers inside the window.
+This checkpoint contains **38 selected paper records** across eight files: the previous 32 plus two October agent-reliability, two artifact-security and two exfiltration-detection reviews. They include explicitly labeled earlier foundations and later publication milestones, so 38 does not mean 38 newly submitted papers inside the window. Reading-depth limitations appear in each file; none of these six additions was experimentally reproduced.
 
 ## Additional discovery and implementation research
 
-The [additional discovery pass](ADDITIONAL-DISCOVERY.md) records 986 further title entries and 175 keyword matches across CCS 2025, RAID 2026, ACSAC 2025, AsiaCCS 2026 and an October arXiv snapshot. It prioritizes 18 candidates but adds zero full-text reviews. These counts are not globally deduplicated and must not be added to paper-reading counts. RAID's event occurs after the cutoff; public acceptance metadata is distinguished from a paper's first publication.
+The [additional discovery pass](ADDITIONAL-DISCOVERY.md) records 986 further title entries and 175 keyword matches across CCS 2025, RAID 2026, ACSAC 2025, AsiaCCS 2026 and an October arXiv snapshot. The original discovery pass prioritized 18 candidates without reading their full text. Five of those candidates (AD01–AD05) were subsequently reviewed; their current status and review links are now recorded. The separate insider-threat paper adds the sixth new review. These counts are not globally deduplicated and must not be added to paper-reading counts. RAID's event occurs after the cutoff; public acceptance metadata is distinguished from a paper's first publication.
 
 The [country precedents](COUNTRY-PRECEDENTS.md), [competitor profiles](../../competitor-profiles/_summary.md) and [sandbox documentation review](SANDBOX-ARCHITECTURE.md) are implementation research. Government statements and vendor documentation are not additional academic papers or independent product benchmarks.
 

@@ -2,6 +2,8 @@
 
 **Research/design snapshot: October 9, 2026.** This is a proposed product, with a separate local reference experiment. A deployed autonomous defense, sponsor integrations, government pilot and measured national impact are not established.
 
+**Build skill selected by the user:** [AppBuilder Design System](../../.agents/skills/app-builder-design-system/SKILL.md), from [ruchitrshah/AppBuilder-Skills](https://github.com/ruchitrshah/AppBuilder-Skills), pinned at `531fe62b6603df4d607d3df484b5dc3ecd9bee8e`. Follow [project guidance](../../AGENTS.md) when applying its planning and interface conventions to this web-based defense. Its mobile examples do not add a mobile deliverable.
+
 ## The product in ordinary language
 
 Build a system that gives an institution a practical answer to four questions: **Who is accessing our private data? Is that access allowed? What can we safely stop right now? How do we know the repair worked?**
@@ -15,6 +17,8 @@ The useful memory is a library of tested failure patterns. After a confirmed inc
 **BREACHSTOP turns a documented leak mechanism into a repeatable defense test, rehearses a repair in an isolated copy, and checks the actual deployed outcome.** Keep application compromise and credential misuse as the main demonstration. Publication mistakes remain a separate module.
 
 The [competitive review](../../competitor-profiles/_summary.md) found established products for simulation, coordinated AI workflows and remediation revalidation. Our proposed contribution is a small open-source implementation with inspectable evidence and tests. We have not demonstrated a unique market gap or superiority over those products.
+
+The later [Pi assessment](PI-ASSESSMENT.md) identifies particularly close overlap with security memory, cause/variant analysis and contextual repairs. Pi also documents an OAuth MCP integration that could provide repair context if tenant access is available. Preserve independent enforcement and outcome checks as our implementation responsibility; do not present the memory-and-repair concept itself as novel.
 
 The [country precedents](COUNTRY-PRECEDENTS.md) suggest adopting explicit institutional identities, independently enforced data access and a clear path from discovery to repair. They do not establish that any government eliminated leaks.
 

@@ -6,7 +6,7 @@
     "2026-10-09"
   ],
   "exhaustive": false,
-  "scope": "Additional public index discovery and candidate metadata/abstract triage only. No full-text-complete readings or reproductions in this file.",
+  "scope": "Original discovery pass used metadata/abstract triage. A later October 9 pass reviewed five candidates at targeted full-text depth; linked records contain the findings. No reproductions.",
   "parsed_additional_title_entries": 986,
   "additional_keyword_matches": 175,
   "count_unit": "Within-source normalized title entries; NOT globally deduplicated papers or papers read",
@@ -184,7 +184,7 @@
       "title": "From Investigation Failures to Reliable SOC Agents: Understanding and Improving LLM-Based Alert Triage",
       "canonical_primary_url": "https://arxiv.org/abs/2610.10608",
       "discovery_source": "arxiv_oct26",
-      "reading_status": "abstract_screened",
+      "reading_status": "fulltext_targeted",
       "fulltext_read": false,
       "first_preprint_date": "2026-10-07",
       "first_publication_date": null,
@@ -196,14 +196,18 @@
       "priority_reason_inference": "Audit evidence sufficiency before dismissing alerts.",
       "next_step": "Read methods, evaluation unit, threat model and limitations before adopting any numerical claim.",
       "public_fulltext_link": "https://arxiv.org/html/2610.10608v1",
-      "absent_from_original_27_title_check": true
+      "absent_from_original_27_title_check": true,
+      "initial_discovery_status": "abstract_screened",
+      "review_file": "october-agent-reliability.json",
+      "review_record": "OAR-01",
+      "reviewed_on": "2026-10-09"
     },
     {
       "id": "AD02",
       "title": "NOMOS: Compiling Written Policies into Statically Verified Tool-Call Gates for LLM Agents",
       "canonical_primary_url": "https://arxiv.org/abs/2610.11030",
       "discovery_source": "arxiv_oct26",
-      "reading_status": "abstract_screened",
+      "reading_status": "fulltext_targeted",
       "fulltext_read": false,
       "first_preprint_date": "2026-10-08",
       "first_publication_date": null,
@@ -215,14 +219,18 @@
       "priority_reason_inference": "Compare deterministic authorization gates against prose-only policy.",
       "next_step": "Read methods, evaluation unit, threat model and limitations before adopting any numerical claim.",
       "public_fulltext_link": "https://arxiv.org/html/2610.11030v1",
-      "absent_from_original_27_title_check": true
+      "absent_from_original_27_title_check": true,
+      "initial_discovery_status": "abstract_screened",
+      "review_file": "october-agent-reliability.json",
+      "review_record": "OAR-02",
+      "reviewed_on": "2026-10-09"
     },
     {
       "id": "AD03",
       "title": "PyCache Trap: The Inspection-Execution Gap in Agent Skill Scanners",
       "canonical_primary_url": "https://arxiv.org/abs/2610.10612",
       "discovery_source": "arxiv_oct26",
-      "reading_status": "abstract_screened",
+      "reading_status": "fulltext_targeted",
       "fulltext_read": false,
       "first_preprint_date": "2026-10-07",
       "first_publication_date": null,
@@ -234,14 +242,18 @@
       "priority_reason_inference": "Check whether admitted artifacts match executed artifacts.",
       "next_step": "Read methods, evaluation unit, threat model and limitations before adopting any numerical claim.",
       "public_fulltext_link": "https://arxiv.org/html/2610.10612v1",
-      "absent_from_original_27_title_check": true
+      "absent_from_original_27_title_check": true,
+      "initial_discovery_status": "abstract_screened",
+      "review_file": "october-artifact-security.json",
+      "review_record": "OA01",
+      "reviewed_on": "2026-10-09"
     },
     {
       "id": "AD04",
       "title": "Anytime-valid detection of LLM weight exfiltration",
       "canonical_primary_url": "https://arxiv.org/abs/2610.11843",
       "discovery_source": "arxiv_oct26",
-      "reading_status": "abstract_screened",
+      "reading_status": "fulltext_targeted",
       "fulltext_read": false,
       "first_preprint_date": "2026-10-08",
       "first_publication_date": null,
@@ -254,14 +266,18 @@
       "next_step": "Read methods, evaluation unit, threat model and limitations before adopting any numerical claim.",
       "notes": "Workshop occurs December 13, 2026, after cutoff. Scope is model-weight covert channels, not general database-leak prevention.",
       "public_fulltext_link": "https://arxiv.org/html/2610.11843v1",
-      "absent_from_original_27_title_check": true
+      "absent_from_original_27_title_check": true,
+      "initial_discovery_status": "abstract_screened",
+      "review_file": "early-exfiltration-detection.json",
+      "review_record": "2610.11843v1",
+      "reviewed_on": "2026-10-09"
     },
     {
       "id": "AD05",
       "title": "DITTO: A Context-aware Pickle-based Pre-Trained Model Scanner for Effective Security Audits",
       "canonical_primary_url": "https://arxiv.org/abs/2610.10735",
       "discovery_source": "arxiv_oct26",
-      "reading_status": "abstract_screened",
+      "reading_status": "fulltext_targeted",
       "fulltext_read": false,
       "first_preprint_date": "2026-10-07",
       "first_publication_date": null,
@@ -273,7 +289,11 @@
       "priority_reason_inference": "Assess model-artifact admission before unsafe deserialization.",
       "next_step": "Read methods, evaluation unit, threat model and limitations before adopting any numerical claim.",
       "public_fulltext_link": "https://arxiv.org/html/2610.10735v1",
-      "absent_from_original_27_title_check": true
+      "absent_from_original_27_title_check": true,
+      "initial_discovery_status": "abstract_screened",
+      "review_file": "october-artifact-security.json",
+      "review_record": "OA02",
+      "reviewed_on": "2026-10-09"
     },
     {
       "id": "AD06",
@@ -526,7 +546,7 @@
     }
   ],
   "candidate_count": 18,
-  "fulltext_read_count": 0,
+  "fulltext_read_count": 5,
   "reproduced_count": 0,
   "remaining": [
     "Resolve public full text and first dates of index-only entries.",

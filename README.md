@@ -26,13 +26,22 @@ Read the **[complete report](REPORT.md)** for the connected explanation, or choo
 | [Source index](docs/SOURCES.md) | Deduplicated links to the report's source material. |
 | [PAMI contribution review](docs/research/PAMI-CONTRIBUTION-REVIEW.md) | Review of the newly contributed PAMI analysis, citation corrections and implications for the defense. |
 
+## Latest research and team build guidance
+
+- [Leak count and counting rules](docs/research/ARGENTINA-LEAK-COUNT.md): separate established disclosures, allegations and official incident statistics.
+- [Social threat-intelligence leads](docs/research/ARGENTINA-SOCIAL-LEAK-LEADS.md) and [corroboration](docs/research/ARGENTINA-LEAK-CORROBORATION.md): additional reports, dates, overlap and evidence limits.
+- [Sponsor implementation plan](docs/research/SPONSOR-DEFENSE-PLAN.md): concrete ClickHouse, Guild and Semgrep roles, integration constraints and a measurable demo.
+- [Pi assessment](docs/research/PI-ASSESSMENT.md): a documented OAuth MCP integration, useful security context, substantial competitive overlap and unverified tenant access.
+- [AppBuilder skill](.agents/skills/app-builder-design-system/SKILL.md): user-selected, repository-local copy from [ruchitrshah/AppBuilder-Skills](https://github.com/ruchitrshah/AppBuilder-Skills), pinned to `531fe62b6603df4d607d3df484b5dc3ecd9bee8e`; see [project instructions](AGENTS.md).
+- Six further paper reviews: [agent reliability](docs/research/OCTOBER-AGENT-RELIABILITY.md), [artifact security](docs/research/OCTOBER-ARTIFACT-SECURITY.md), [exfiltration detection](docs/research/EARLY-EXFILTRATION-DETECTION.md).
+
 ## From research to a defense
 
 | Document | What it establishes |
 |---|---|
 | [What to build](docs/research/WHAT-TO-BUILD.md) | Plain-English architecture, how past incidents become reusable tests, development order and remaining work. |
 | [Measured effects](docs/research/MEASURED-EFFECTS.md) | Actual local HTTP results, the records exposed before containment, and the cost to legitimate use. |
-| [Search coverage](docs/research/SEARCH-PROTOCOL.md) | 32 selected paper records; separate discovery ledgers contain 1,378 initial and 986 additional title entries, not globally deduplicated. |
+| [Search coverage](docs/research/SEARCH-PROTOCOL.md) | 38 selected paper records; separate discovery ledgers contain 1,378 initial and 986 additional title entries, not globally deduplicated. |
 | [Autonomous defense and repair](docs/research/AUTONOMOUS-DEFENSE-PAPERS.md) | Eight selected papers, with versions, evaluation definitions and limitations. |
 | [Agent safety](docs/research/AGENT-SAFETY-PAPERS.md) | Nine selected papers on untrusted evidence, permissions and trustworthy evaluation. |
 | [Learning from incidents](docs/research/LEAK-LEARNING-PAPERS.md) | Five studies on incident context, feedback, shared learning and the gap between scores and enforcement. |
@@ -41,7 +50,7 @@ Read the **[complete report](REPORT.md)** for the connected explanation, or choo
 | [Other countries](docs/research/COUNTRY-PRECEDENTS.md) | Government-confirmed programs, historical deployments and lessons for Argentina. |
 | [Competitive comparison](competitor-profiles/_summary.md) | Existing commercial capabilities, open-source response building blocks and honest positioning. |
 | [Sandbox architecture](docs/research/SANDBOX-ARCHITECTURE.md) | Firecracker, gVisor, Kata and E2B; separate repair, rehearsal and verification jobs. |
-| [Additional paper discovery](docs/research/ADDITIONAL-DISCOVERY.md) | Broader metadata coverage and 18 unread or abstract-screened candidates. |
+| [Additional paper discovery](docs/research/ADDITIONAL-DISCOVERY.md) | Broader metadata coverage: five of 18 queued candidates now reviewed; 13 remain unread or abstract-screened. |
 | [Hackathon fit](docs/HACKATHON-FIT.md) and [event brief](docs/EVENT-BRIEF.md) | Planned challenge fit, required integrations and evidence still needed. |
 | [Runnable reference experiment](experiments/reference-defense/README.md) | Standard-library Python, four control modes, response transcripts and additional independently specified cases. |
 | [Publication regression experiment](experiments/publication-regression/README.md) | Real local HTTP checks of stale artifacts, approved releases and a deliberate misclassification failure. |

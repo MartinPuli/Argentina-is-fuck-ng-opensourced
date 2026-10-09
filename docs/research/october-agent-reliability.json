@@ -1,0 +1,107 @@
+{
+  "schema_version": 1,
+  "review_date": "2026-10-09",
+  "narrative_file": "OCTOBER-AGENT-RELIABILITY.md",
+  "records": [
+    {
+      "id": "OAR-01",
+      "title": "From Investigation Failures to Reliable SOC Agents: Understanding and Improving LLM-Based Alert Triage",
+      "authors": [
+        "Saimon Amanuel Tsegai",
+        "Alex Kantchelian",
+        "Danfeng (Daphne) Yao",
+        "Peng Gao"
+      ],
+      "first_publication_date": "2026-10-07",
+      "version_date": "2026-10-07",
+      "version": "arXiv:2610.10608v1",
+      "status": "preprint",
+      "venue": null,
+      "url": "https://arxiv.org/abs/2610.10608v1",
+      "fulltext_url": "https://arxiv.org/html/2610.10608v1",
+      "pdf_url": "https://arxiv.org/pdf/2610.10608v1",
+      "reading_depth": "Relevant full-text methods, results, ablations, limitations; not abstract-only",
+      "locators": {
+        "methods": [
+          "III-A–D; Table I",
+          "IV-A",
+          "V-B–C; Algorithm 1"
+        ],
+        "results": [
+          "VI-A; Figure 6",
+          "VI-B",
+          "VI-C; Table II",
+          "VI-D"
+        ],
+        "limitations": [
+          "VI-C (Adversary ablation confidence interval)",
+          "VI-D (wardbeck retrieval failure)",
+          "VII"
+        ],
+        "implementation_inference": [
+          "V-C2 (Executor)",
+          "VI-B–C"
+        ]
+      },
+      "narrative_anchor": "oar-01",
+      "source_derived_narrative_words": 99,
+      "quantified_results_locator": "Table I; VI-A–C; Figure 6; Table II",
+      "reproduced_by_us": false,
+      "review_date": "2026-10-09",
+      "within_primary_window": true,
+      "code_executed": false,
+      "source_derived_prose_budget_limit": 130
+    },
+    {
+      "id": "OAR-02",
+      "title": "NOMOS: Compiling Written Policies into Statically Verified Tool-Call Gates for LLM Agents",
+      "authors": [
+        "Min-Young Yu",
+        "Tony Kim",
+        "Jang Won Choi"
+      ],
+      "first_publication_date": "2026-10-08",
+      "version_date": "2026-10-08",
+      "version": "arXiv:2610.11030v1",
+      "status": "preprint; submitted to IEEE Access, not accepted",
+      "venue": "IEEE Access submission",
+      "url": "https://arxiv.org/abs/2610.11030v1",
+      "fulltext_url": "https://arxiv.org/html/2610.11030v1",
+      "pdf_url": "https://arxiv.org/pdf/2610.11030v1",
+      "reading_depth": "Relevant full-text methods, results, audit, ablations, limitations; not abstract-only",
+      "locators": {
+        "methods": [
+          "3.1–3.4; Algorithm 1; Tables III–IV",
+          "4"
+        ],
+        "results": [
+          "5.1; Table V",
+          "5.2–5.3; Tables VI–VII",
+          "5.8; Table XI",
+          "5.10–5.11; Tables XV–XVII"
+        ],
+        "limitations": [
+          "3.1 (semantic fidelity)",
+          "4 (checker audit)",
+          "5.8 (known-payee diversion)",
+          "5.11 (utility and weaker binding)",
+          "6 (structured-field poisoning; proprietary implementation)"
+        ],
+        "implementation_inference": [
+          "3.3–3.4",
+          "5.3",
+          "5.11",
+          "6"
+        ]
+      },
+      "narrative_anchor": "oar-02",
+      "source_derived_narrative_words": 93,
+      "quantified_results_locator": "Table V (executed writes); Table XI (pairs, not calls); 5.8 (known-payee diversion)",
+      "reproduced_by_us": false,
+      "review_date": "2026-10-09",
+      "within_primary_window": true,
+      "code_executed": false,
+      "source_derived_prose_budget_limit": 130
+    }
+  ]
+}

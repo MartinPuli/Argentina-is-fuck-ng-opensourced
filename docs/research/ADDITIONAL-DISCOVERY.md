@@ -54,3 +54,7 @@ Reasons below are **our triage inferences**, not validated paper findings. No ab
 ## Work still required
 
 Read the selected methods and limitations, verify exact versions, audit denominators and alert/report units, check artifact availability, and deduplicate against the existing venues. Then continue the other titles, venues, journals, workshops and preprint months. Neither the 986 additional entries nor the earlier 1,378 entries establish exhaustive coverage. No national leak-prevention rate can be inferred from this metadata pass.
+
+## Later review checkpoint — October 9, 2026
+
+The discovery counts above describe the original metadata pass. AD01–AD05 have since advanced to targeted full-text review: [agent reliability](OCTOBER-AGENT-RELIABILITY.md), [artifact security](OCTOBER-ARTIFACT-SECURITY.md), and [exfiltration detection](EARLY-EXFILTRATION-DETECTION.md). Their initial screening status remains recorded in the JSON. The other 13 queued candidates remain unread or abstract-screened; no paper was reproduced.

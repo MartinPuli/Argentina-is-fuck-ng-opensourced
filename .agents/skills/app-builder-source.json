@@ -1,0 +1,24 @@
+{
+  "upstream": "https://github.com/ruchitrshah/AppBuilder-Skills",
+  "commit": "531fe62b6603df4d607d3df484b5dc3ecd9bee8e",
+  "installed_on": "2026-10-09",
+  "skill_name": "app-builder-design-system",
+  "scope": "repository-local; selected by user",
+  "license_note": "Upstream README declares MIT; original README retained. No standalone LICENSE file was present at this revision.",
+  "modified_from_upstream": false,
+  "sha256_files": {
+    "README.md": "faa46c3277b71066ef291dbf3c8281012013ffda980a012be5e315dce9bafb14",
+    "SKILL.md": "b2727ec2c5a22f2cf6d1ce20a882a0eeffb91c4ec49918e6889d3382d8cd3d10",
+    "references/advanced-practices.md": "34430089cd3de65fbfff889321d833cbfcc34abf99ff81559bbe5e4757964381",
+    "references/animation-and-motion.md": "6b48d4a684a7e65ac9dace3a52963ba4661452019646494158079fe248f6aa44",
+    "references/app-lifecycle-essentials.md": "a3ccd71f03e955326963166b20419ea58852e4138cc90ec29e0ee9ea8923f2a0",
+    "references/backend-patterns.md": "484e3266cc9167c7545ebfc234e103a6cfeaa02938e1980288bf25398c7bf087",
+    "references/components.md": "d33c8f87a5df3aeb25acf713216e2c68eda40c0e49e9a950c35cd84131714bb8",
+    "references/design-tokens.md": "a56c51f19e86fc44d25689cbff90b084258dbd83668a9b2f65095c4598905954",
+    "references/file-structure.md": "d388417a9cb7da0a4124e808b575910befb09b7201c8813a6ca98391654f450f",
+    "references/patterns-and-edge-cases.md": "6e58c0d75e9eee3e7e4b7b5ca69c890e8bd6ba564a56c38d1bf40e2d6874c820",
+    "references/planning-template.md": "9f92456e150ae22fd32afe358c2fd376399741524e5f72c83f9768d05c9340d1",
+    "references/security-and-data-protection.md": "397ae2727317f5a205e88df7067bb6213360b022b5ec56f86fe18fe3a767ef82",
+    "references/store-publishing-checklist.md": "b6b33d55da9156995317c9874325d097af790d7d305d8b08bbcf8a1450704fd8"
+  }
+}

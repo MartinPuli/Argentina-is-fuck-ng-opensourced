@@ -20,3 +20,5 @@ Python source and executable JSON fixtures in `experiments/reference-defense/` a
 ## Third-party material
 
 This license does not apply to linked news articles, government documents, third-party databases, trademarks, or other external works. Their rights and terms remain with their respective rights holders. References to an institution or source do not imply endorsement.
+
+The vendored AppBuilder skill in `.agents/skills/app-builder-design-system/` comes from [ruchitrshah/AppBuilder-Skills](https://github.com/ruchitrshah/AppBuilder-Skills). Its retained [upstream README](.agents/skills/app-builder-design-system/README.md) declares MIT licensing; it is not relicensed under this repository's CC BY grant. [Provenance and exact file hashes](.agents/skills/app-builder-source.json) identify the unmodified revision. The upstream revision did not include a standalone license file.

@@ -1,5 +1,17 @@
 # Process notes
 
+## 2026-10-09 — Broader leak leads, repository synchronization and build skill
+
+- User requested a pull/review of collaborators' work, more Argentine leak research using accounts such as DailyDarkWeb, defensible counts, sponsor improvements and publication. Fetched and fast-forward-pulled: repository was already current at `185a932`; latest teammate change remained `fa859d5` (PAMI analysis), already reviewed separately.
+- Three parallel lanes investigated social leads, independent corroboration and official sponsor documentation. Original X posts could not be retrieved; secondary attribution remains explicit. No account export, comprehensive national census or new confirmed mass-leak total is claimed.
+- Preserved seven new social leads/exclusions, eleven corroboration records, and a separately counted original 15-entry sample with four confirmed institution-level disclosures. Added supplier and municipal cases without treating advertised counts as verified people.
+- Rechecked CERT.ar's existing 2025/2024 statistics and their comparison inconsistency; retained calendar-year incidents separately from the rolling disclosure register.
+- Sponsor research found that Guild needs an authenticated public integration adapter rather than direct loopback access, initial credential policies need narrowing, and Semgrep's normal scan exit code cannot establish a clean result. No sponsor accounts or deployments were changed.
+- Integrated six pending targeted full-text paper reviews and updated reading coverage to 38 selected records. Broad literature research remains incomplete; publication is not goal completion.
+- User then explicitly selected `ruchitrshah/AppBuilder-Skills`. Read the skill-installer and upstream skill; used the installer to add the unchanged pinned revision inside the repository. Read relevant planning/file/security references and added project agent guidance. Audience/backend scope were already supplied; no repeated clarification was necessary. No mobile or Supabase requirement was inferred.
+- User also asked to evaluate Pi, the product-security sponsor. Public-source assessment is separate from product access or an executed integration. Pi is not counted merely for sponsoring the event.
+- Final checks: all 26 JSON files parse; authored local Markdown links resolve; the 38 reviewed titles are distinct; all 13 vendored skill hashes match provenance; no matches in the limited credential-pattern scan. Independent review confirmed the 15-entry/4-disclosure classification and corrected a Chaco source-date reference. Existing experiment code was unchanged, so experiments were not rerun.
+
 ## 2026-10-09 — Pulled and reviewed teammate contribution
 
 - At the user's request, fetched and fast-forwarded main from 6040e89 to fa859d5. The incoming commit added only the 408-line PAMI analysis; local research changes did not overlap and were preserved.

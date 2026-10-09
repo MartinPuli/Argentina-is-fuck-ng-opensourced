@@ -1,0 +1,253 @@
+{
+  "schema_version": 1,
+  "reviewed_on": "2026-10-09",
+  "window": [
+    "2025-10-09",
+    "2026-10-09"
+  ],
+  "exhaustive": false,
+  "count_unit": "distinct institution-specific disclosure episodes established in this reviewed sample; not attacks, headlines, victims or national total",
+  "records": [
+    {
+      "id": "AR-001",
+      "entity_or_episode": "“Dictadores” / “Sherlock” investigation",
+      "public_date_in_review": "2025-10-16",
+      "date_basis": "public report/response date in existing timeline; not asserted intrusion date",
+      "intrusion_date": null,
+      "evidence_status": "enforcement_development",
+      "scope": "mixed",
+      "dedup_group": "dictadores-sherlock",
+      "confirmed_government_disclosure_count": 0,
+      "sources": [
+        "https://www.argentina.gob.ar/noticias/el-dfi-de-la-pfa-desmantelo-una-organizacion-cybercriminal-que-hackeaba-y-filtraba-datos-de"
+      ],
+      "narrative_file": "../INCIDENTS.md"
+    },
+    {
+      "id": "AR-002",
+      "entity_or_episode": "WorkManagement / SudamericaData",
+      "public_date_in_review": "2025-12-18",
+      "date_basis": "public report/response date in existing timeline; not asserted intrusion date",
+      "intrusion_date": null,
+      "evidence_status": "alleged_disputed",
+      "scope": "private_intermediary",
+      "dedup_group": "sudamericadata",
+      "confirmed_government_disclosure_count": 0,
+      "sources": [
+        "https://www.infobae.com/politica/2025/12/19/denuncian-una-masiva-filtracion-de-datos-personales-de-ciudadanos-argentinos-en-la-dark-web/",
+        "https://www.argentina.gob.ar/noticias/la-aaip-inicio-una-investigacion-de-oficio-ante-presunta-filtracion-masiva-de-datos"
+      ],
+      "narrative_file": "../INCIDENTS.md"
+    },
+    {
+      "id": "AR-003",
+      "entity_or_episode": "IBR-CONICET, Rosario",
+      "public_date_in_review": "2026-03-05",
+      "date_basis": "public report/response date in existing timeline; not asserted intrusion date",
+      "intrusion_date": null,
+      "evidence_status": "alleged_disputed",
+      "scope": "government",
+      "dedup_group": "ibr-conicet",
+      "confirmed_government_disclosure_count": 0,
+      "sources": [
+        "https://www.c5n.com/tecnologia/ciberataque-al-conicet-una-agrupacion-criminal-amenaza-filtrar-datos-n231386"
+      ],
+      "narrative_file": "../INCIDENTS.md"
+    },
+    {
+      "id": "AR-004",
+      "entity_or_episode": "“Chronus Team” claims across public bodies",
+      "public_date_in_review": "2026-03-27",
+      "date_basis": "public report/response date in existing timeline; not asserted intrusion date",
+      "intrusion_date": null,
+      "evidence_status": "umbrella_claim",
+      "scope": "mixed",
+      "dedup_group": "chronus-campaign",
+      "confirmed_government_disclosure_count": 0,
+      "sources": [
+        "https://www.fiscalespenalesalta.gob.ar/ciberdelincuencia-se-investiga-el-accionar-en-argentina-de-una-banda-internacional-de-hackivistas/",
+        "https://chequeado.com/el-explicador/que-se-sabe-sobre-el-hackeo-a-ioma-y-otros-organismos-publicos-y-como-cuidar-tus-datos/"
+      ],
+      "narrative_file": "../INCIDENTS.md"
+    },
+    {
+      "id": "AR-005",
+      "entity_or_episode": "IOMA, Buenos Aires province",
+      "public_date_in_review": "2026-03-30",
+      "date_basis": "public report/response date in existing timeline; not asserted intrusion date",
+      "intrusion_date": null,
+      "evidence_status": "confirmed_disclosure",
+      "scope": "government",
+      "dedup_group": "ioma",
+      "confirmed_government_disclosure_count": 1,
+      "sources": [
+        "https://www.lanacion.com.ar/sociedad/la-provincia-advirtio-un-hackeo-al-ioma-alerta-por-la-filtracion-de-padrones-de-afiliacion-y-nid31032026/"
+      ],
+      "narrative_file": "../INCIDENTS.md"
+    },
+    {
+      "id": "AR-006",
+      "entity_or_episode": "OSEP, Mendoza",
+      "public_date_in_review": "2026-03-30",
+      "date_basis": "public report/response date in existing timeline; not asserted intrusion date",
+      "intrusion_date": null,
+      "evidence_status": "alleged_disputed",
+      "scope": "government",
+      "dedup_group": "osep",
+      "confirmed_government_disclosure_count": 0,
+      "sources": [
+        "https://www.elsol.com.ar/mendoza/que-dijo-osep-sobre-el-supuesto-hackeo-a-sus-sistemas-y-la-amenaza-de-filtracion-de-datos/"
+      ],
+      "narrative_file": "../INCIDENTS.md"
+    },
+    {
+      "id": "AR-007",
+      "entity_or_episode": "Salta Police",
+      "public_date_in_review": "2026-03-31",
+      "date_basis": "public report/response date in existing timeline; not asserted intrusion date",
+      "intrusion_date": null,
+      "evidence_status": "incident_acknowledged",
+      "scope": "government",
+      "dedup_group": "salta-police",
+      "confirmed_government_disclosure_count": 0,
+      "sources": [
+        "https://www.eltribuno.com/salta/2026-3-31-14-51-0-grave-ciberataque-masivo-el-ministerio-de-seguridad-salud-y-la-policia-de-salta-fueron-hackeados"
+      ],
+      "narrative_file": "../INCIDENTS.md"
+    },
+    {
+      "id": "AR-008",
+      "entity_or_episode": "SCBA judiciary personnel",
+      "public_date_in_review": "2026-04-02",
+      "date_basis": "public report/response date in existing timeline; not asserted intrusion date",
+      "intrusion_date": null,
+      "evidence_status": "confirmed_disclosure",
+      "scope": "government",
+      "dedup_group": "scba-personnel",
+      "confirmed_government_disclosure_count": 1,
+      "sources": [
+        "https://www.scba.gov.ar/institucional/nota.asp?id=58623&veradjuntos=no"
+      ],
+      "narrative_file": "../INCIDENTS.md"
+    },
+    {
+      "id": "AR-009",
+      "entity_or_episode": "PAMI purchasing website",
+      "public_date_in_review": "2026-05-21",
+      "date_basis": "public report/response date in existing timeline; not asserted intrusion date",
+      "intrusion_date": null,
+      "evidence_status": "confirmed_disclosure",
+      "scope": "government",
+      "dedup_group": "pami-publication",
+      "confirmed_government_disclosure_count": 1,
+      "sources": [
+        "https://chequeado.com/investigaciones/pami-expone-datos-medicos-y-documentos-sensibles-de-sus-afiliados-en-su-sitio-web/",
+        "https://chequeado.com/investigaciones/finalmente-pami-dejo-de-mostrar-en-su-web-la-informacion-privada-de-sus-afiliados/"
+      ],
+      "narrative_file": "../INCIDENTS.md"
+    },
+    {
+      "id": "AR-010",
+      "entity_or_episode": "Resale of government-linked records",
+      "public_date_in_review": "2026-05-27",
+      "date_basis": "public report/response date in existing timeline; not asserted intrusion date",
+      "intrusion_date": null,
+      "evidence_status": "enforcement_development",
+      "scope": "mixed",
+      "dedup_group": "may-data-resale-investigation",
+      "confirmed_government_disclosure_count": 0,
+      "sources": [
+        "https://www.argentina.gob.ar/noticias/el-dfi-de-la-pfa-desarticulo-una-importante-banda-de-hackers"
+      ],
+      "narrative_file": "../INCIDENTS.md"
+    },
+    {
+      "id": "AR-011",
+      "entity_or_episode": "Catamarca provincial systems",
+      "public_date_in_review": "2026-06-07",
+      "date_basis": "public report/response date in existing timeline; not asserted intrusion date",
+      "intrusion_date": null,
+      "evidence_status": "alleged_disputed",
+      "scope": "government",
+      "dedup_group": "catamarca",
+      "confirmed_government_disclosure_count": 0,
+      "sources": [
+        "https://radiovalleviejo.com/la-secretaria-de-modernizacion-de-catamarca-informo-sobre-presunta-filtracion-de-datos/",
+        "https://www.elancasti.com.ar/politica-y-economia/fadel-presento-un-proyecto-que-el-ejecutivo-informe-la-presunta-filtracion-datos-n614364/amp"
+      ],
+      "narrative_file": "../INCIDENTS.md"
+    },
+    {
+      "id": "AR-012",
+      "entity_or_episode": "Río Negro executive-branch payroll information",
+      "public_date_in_review": "2026-06-24",
+      "date_basis": "public report/response date in existing timeline; not asserted intrusion date",
+      "intrusion_date": null,
+      "evidence_status": "confirmed_disclosure",
+      "scope": "government",
+      "dedup_group": "rio-negro-payroll",
+      "confirmed_government_disclosure_count": 1,
+      "sources": [
+        "https://rionegro.gov.ar/articulo/59894/el-gobierno-denuncio-filtracion-de-informacion-de-sus-sistemas-informaticos"
+      ],
+      "narrative_file": "../INCIDENTS.md"
+    },
+    {
+      "id": "AR-013",
+      "entity_or_episode": "ANSES / SIPA",
+      "public_date_in_review": "2026-09-14",
+      "date_basis": "public report/response date in existing timeline; not asserted intrusion date",
+      "intrusion_date": null,
+      "evidence_status": "alleged_disputed",
+      "scope": "government",
+      "dedup_group": "anses-sipa",
+      "confirmed_government_disclosure_count": 0,
+      "sources": [
+        "https://chequeado.com/nota/que-se-sabe-sobre-el-supuesto-hackeo-a-la-anses-y-como-cuidar-tus-datos/"
+      ],
+      "narrative_file": "../INCIDENTS.md"
+    },
+    {
+      "id": "AR-014",
+      "entity_or_episode": "Mi Argentina",
+      "public_date_in_review": "2026-09-30",
+      "date_basis": "public report/response date in existing timeline; not asserted intrusion date",
+      "intrusion_date": null,
+      "evidence_status": "alleged_disputed",
+      "scope": "government",
+      "dedup_group": "mi-argentina-september",
+      "confirmed_government_disclosure_count": 0,
+      "sources": [
+        "https://www.datatrendslatam.com/argentina-investiga-posible-filtracion-de-6-millones-de-datos-de-mi-argentina",
+        "https://empre.ar/analisis/se-vienen-seis-meses-caoticos-para-la-ciberseguridad-gubernamental/"
+      ],
+      "narrative_file": "../INCIDENTS.md"
+    },
+    {
+      "id": "AR-015",
+      "entity_or_episode": "Chaco Legislature",
+      "public_date_in_review": "2025-11-10",
+      "date_basis": "public report date",
+      "intrusion_date": null,
+      "evidence_status": "disruption_without_established_confidential_leak",
+      "scope": "government",
+      "dedup_group": "chaco-legislature",
+      "confirmed_government_disclosure_count": 0,
+      "sources": [
+        "https://www.diarionorte.com/318976-la-legislatura-informa-sobre-un-incidente-de-seguridad-informatica",
+        "https://www.diariolavozdelchaco.com/2025/11/18/la-legislatura-recibio-informes-periciales-de-ecom-sobre-el-incidente-de-ciberseguridad/"
+      ],
+      "narrative_file": "../INCIDENTS.md"
+    }
+  ],
+  "counts": {
+    "reviewed_timeline_entries": 15,
+    "confirmed_government_disclosure_episodes": 4
+  },
+  "aggregation_limits": [
+    "Institution-level episodes can share a campaign; this is not a count of distinct attackers or intrusion events.",
+    "No unique-person total can be derived.",
+    "Social leads are retained in a separate ledger and are not automatically promoted.",
+    "Report dates do not establish fresh intrusions inside the rolling window."
+  ]
+}

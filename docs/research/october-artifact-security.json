@@ -1,0 +1,90 @@
+{
+  "review_date": "2026-10-09",
+  "primary_window": ["2025-10-09", "2026-10-09"],
+  "exhaustive": false,
+  "independently_reproduced": false,
+  "narrative_file": "OCTOBER-ARTIFACT-SECURITY.md",
+  "reading_scope": "Targeted full-text methods, evaluation and limitations; no downloaded code or models executed.",
+  "records": [
+    {
+      "id": "OA01",
+      "title": "PyCache Trap: The Inspection-Execution Gap in Agent Skill Scanners",
+      "authors": ["Jie Liao", "Simeng Qin", "Wenqi Ren", "Wei Zhou", "Junhao Wen", "Ranjie Duan", "Yang Liu", "Xiaojun Jia"],
+      "first_date": "2026-10-07",
+      "version_date": "2026-10-07",
+      "version": "arXiv:2610.10612v1",
+      "venue_status": "preprint; peer review unverified",
+      "window_class": "new_work",
+      "metadata_url": "https://arxiv.org/abs/2610.10612v1",
+      "url": "https://arxiv.org/html/2610.10612v1",
+      "reading_depth": "fulltext_targeted",
+      "locators": ["3.1–3.3", "4.1–4.4", "Tables3–4", "AppendicesB–D"],
+      "method": "Execution graph; interpreter-matched source/cache reproduction.",
+      "normalization_preserves": "Executable fields; exact typed constants.",
+      "normalization_excludes": "Filenames; line-location metadata.",
+      "artifact_validation": {
+        "table": 3,
+        "python": "3.11",
+        "substitutions_detected": 100,
+        "substitutions_total": 100,
+        "compatible_pairs_false_positives": 0,
+        "compatible_pairs_total": 86,
+        "pair_fpr_wilson95": [0, 0.04],
+        "eav_legitimate_rejections": 14,
+        "legitimate_total": 100,
+        "rejection_reason": "sourceless"
+      },
+      "mixed_detection": {
+        "table": 4,
+        "attack_families": 5,
+        "attacks": 500,
+        "benign": 200,
+        "recall_percent": 92.8,
+        "false_positive_percent": 10.0
+      },
+      "limits": "Supported loaders/normalization only; unresolved paths; fixed cohorts; independent egress enforcement required.",
+      "implementation_decision": "A1–A4",
+      "proof_boundary": "Correspondence, not behavioral safety."
+    },
+    {
+      "id": "OA02",
+      "title": "DITTO: A Context-aware Pickle-based Pre-Trained Model Scanner for Effective Security Audits",
+      "authors": ["Qiaolin Qin", "Wanpeng Li", "Benoit Baudry", "Lorenzo De Carli", "Heng Li", "Ettore Merlo"],
+      "first_date": "2026-10-07",
+      "version_date": "2026-10-07",
+      "version": "arXiv:2610.10735v1",
+      "venue_status": "preprint; peer review unverified",
+      "window_class": "new_work",
+      "metadata_url": "https://arxiv.org/abs/2610.10735v1",
+      "url": "https://arxiv.org/html/2610.10735v1",
+      "reading_depth": "fulltext_targeted",
+      "locators": ["IV–VII", "TablesV,VII,IX", "EthicalConsiderations"],
+      "method": "Framework-aligned symbolic Pickle tracing; semantic classification.",
+      "default_evaluation": {
+        "analyzer": "DeepSeek-V4-Flash-0731",
+        "temperature": 0,
+        "documented_pytorch_allowlist": "2.13.0",
+        "runs": 3,
+        "models_per_run": 1051,
+        "benign_per_run": 959,
+        "malicious_per_run": 92,
+        "scanned_per_run": 1051,
+        "false_negatives": 0,
+        "false_positive_reports_across_runs": 20,
+        "reported_rounded_mean_false_positives": 7,
+        "reported_false_positive_percent": 0.7,
+        "reported_f1": 0.966
+      },
+      "analyzer_sensitivity": {
+        "table": "IX",
+        "analyzer": "GPT-4.1-nano",
+        "false_negatives": 24,
+        "malicious_denominator": 92
+      },
+      "metric_boundary": "Classification excludes scan failures; coverage means completed assessments.",
+      "limits": "Trusted framework/matching loader; version-dependent allowlist; stochastic judgments; prompt injection; context limits; remote-trace confidentiality.",
+      "implementation_decision": "A1,A4–A6",
+      "proof_boundary": "Deserialization assessment, not universal model safety."
+    }
+  ]
+}

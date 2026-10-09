@@ -1,5 +1,7 @@
 # Comparable defenses: what exists and what we should build
 
+**Later same-day addition:** [Pi Security assessment](../docs/research/PI-ASSESSMENT.md) documents close overlap with the proposed memory/repair loop and an optional public MCP integration. The six profiles below remain the original comparison set; Pi was researched separately at the user's request.
+
 **Snapshot: October 9, 2026.** This targeted comparison found substantial prior art. It does not establish an empty market or a capability gap across every vendor.
 
 | Organization | Main role in this comparison | Evidence |

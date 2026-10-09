@@ -5,6 +5,8 @@
 
 This chapter is an excerpt of the [full report](../REPORT.md). Preserve its evidence labels and dates when quoting or reusing it.
 
+**Follow-up research:** [counting ledger and additional-search results](research/ARGENTINA-LEAK-COUNT.md), [public social-media leads](research/ARGENTINA-SOCIAL-LEAK-LEADS.md), and [independent corroboration](research/ARGENTINA-LEAK-CORROBORATION.md). These preserve new supplier/municipal cases, unresolved claims and duplicate-report controls without silently promoting them to confirmed breaches.
+
 ## 3. Major cases and developments during the period
 
 The rows below are **not additive breach counts**: some are parts of the same campaign, some are disputed, and some concern enforcement against earlier theft.

@@ -1,6 +1,6 @@
 # Sources
 
-This index contains the **35 unique references checked for the report’s October 9, 2026 cutoff**. It is derived from the report’s citations, with the original URLs preserved. No additional research was performed for this index.
+This index contains the **35 unique references checked for the original report’s October 9, 2026 cutoff**. It is derived from that report's citations, with the original URLs preserved. Additional same-day sources are indexed separately in the [social-lead ledger](research/argentina-social-leak-leads.json), [corroboration ledger](research/argentina-leak-corroboration.json), [counting note](research/ARGENTINA-LEAK-COUNT.md) and [sponsor plan](research/SPONSOR-DEFENSE-PLAN.md); 35 is not the total source count for the expanded repository.
 
 Inclusion does not mean that a source independently confirms a breach. Official notices may describe an investigation, denial or preliminary finding; several news articles reproduce the same institutional statement. Commentary and monitoring entries require particular care. The report distinguishes confirmed disclosures, acknowledged incidents, disputed claims and enforcement developments.
 

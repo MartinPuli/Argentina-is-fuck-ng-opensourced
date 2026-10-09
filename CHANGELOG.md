@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-10-09 — Additional Argentine leads, sponsor feasibility and selected build skill
+
+- Pulled `main`; no newer teammate changes existed beyond the previously reviewed PAMI contribution.
+- Added seven social-intelligence leads/exclusions and eleven corroboration records. Preserved inaccessible original-post URLs, disputed claims, private suppliers, enforcement overlap and old incidents in fresh coverage.
+- Added an auditable count: four confirmed institution-level government disclosures in the original 15-entry reviewed sample. New search results are not silently counted as confirmed mass leaks or distinct victims.
+- Verified practical ClickHouse, Guild and Semgrep roles and constraints; the hosted defense remains proposed, not integrated.
+- Evaluated Pi on request: public OAuth MCP documentation exists, while tenant access and Guild compatibility remain unverified. Recorded the strong competitive overlap and an optional context/repair-guidance role.
+- Added six selected full-text paper reviews, bringing the recorded total to 38; five earlier discovery candidates now link to completed targeted reviews. No papers were reproduced.
+- Installed the user-selected AppBuilder skill locally in the repository at upstream revision `531fe62b6603df4d607d3df484b5dc3ecd9bee8e`. Added agent guidance, provenance hashes and third-party license attribution without changing the established web-demo scope.
+
+
 ## 2026-10-09 — International precedents and stronger repair boundaries
 
 - Compared documented country programs and six selected commercial/open-source comparators. Distinguished government evidence, historical adoption and vendor capability claims.

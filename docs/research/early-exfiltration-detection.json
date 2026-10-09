@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "reviewed_at": "2026-10-09",
+  "license": "CC-BY-4.0",
+  "scope": "Two full-HTML reviews; no replication or citizen-database validation.",
+  "records": [
+    {
+      "title": "Anytime-valid detection of LLM weight exfiltration",
+      "date": "2026-10-08",
+      "version": "2610.11843v1",
+      "venue": "NeurIPS 2026 E-Values workshop",
+      "peer_review_status": "Oral acceptance author-reported; independently unverified.",
+      "url": "https://arxiv.org/html/2610.11843v1",
+      "metadata_url": "https://arxiv.org/abs/2610.11843",
+      "reading_depth": "Full HTML, appendices A–D; figure captions only.",
+      "problem": "Sampler covert channel.",
+      "method": "Trusted replay; calibrated response-event e-process.",
+      "evaluation": {
+        "dataset": "LMSYS-Chat-1M",
+        "models": ["Llama-3.2-3B", "OLMoE-1B-7B", "Qwen3-32B", "Qwen3-30B-A3B"],
+        "edge_fitting_responses_per_model": 125,
+        "rate_calibration_responses_per_model": 125,
+        "matched_test_prompts_per_setting": 250,
+        "response_output_token_cap": 512,
+        "bootstrap_streams_per_setting": 1000,
+        "responses_per_bootstrap_stream": 250,
+        "independent_deployment_trials": false
+      },
+      "result": {
+        "seed_blind_alarm_percent_each_model": 100.0,
+        "seed_blind_median_first_alarm_responses_in_model_order": [6, 10, 9, 14],
+        "benign_alarm_percent_each_model": 0.0,
+        "seed_aware_selected_setting": {
+          "model": "Qwen3-30B-A3B",
+          "maximum_score_gap": 0.1,
+          "reported_bits_per_token": 0.0304,
+          "attack_alarm_percent": 0.0,
+          "stream_denominator": 1000,
+          "response_horizon": 250
+        },
+        "theoretical_anytime_false_alarm_bound": 0.01,
+        "alpha": 0.005,
+        "gamma": 0.005,
+        "alarm_threshold": 200
+      },
+      "assumptions": "Trusted independent calibration; unchanged prompt/model/hardware/serving distribution; conditional event-rate bound.",
+      "limits": "Seed-blind rates estimate capacity, not delivered payload. Decoder needs logprobs. Completed-response updates cannot guarantee small-secret protection.",
+      "design_implication": "Recalibrate and test adaptive evasion.",
+      "extraction_locators": ["§2, Eq7", "§3, Table1", "AppendixB", "AppendixC.1–C.3", "AppendixD"],
+      "pdf_inspected": false,
+      "author_code_executed": false
+    },
+    {
+      "title": "A Bayesian Correlated Equilibrium for Early Insider-Threat Detection",
+      "date": "2026-09-02",
+      "version": "2609.03096v1",
+      "venue": "GameSec 2026",
+      "peer_review_status": "Acceptance author-reported; independently unverified.",
+      "url": "https://arxiv.org/html/2609.03096v1",
+      "metadata_url": "https://arxiv.org/abs/2609.03096v1",
+      "reading_depth": "Full HTML, Appendix0.A; figure captions only.",
+      "problem": "Insider early warning.",
+      "method": "Behavioral Bayesian filtering; tiered committee intervention.",
+      "evaluation": {
+        "dataset": "CERT r6.2",
+        "evaluation_type": "CERT-based closed-loop simulation",
+        "dataset_synthetic": true,
+        "dataset_owner_url": "https://sei.cmu.edu/library/insider-threat-test-dataset/",
+        "daily_window_users": 4000,
+        "malicious_users_per_window": 5,
+        "certifiers": 25,
+        "byzantine_certifiers": [3, 9],
+        "table2_runs": 10,
+        "concept_drift_rollout_replicates": 2,
+        "exact_pooled_event_counts": null
+      },
+      "result": {
+        "threshold": 0.75,
+        "aggregation": "median",
+        "byzantine3": {"pre_exfiltration_percent": 28.3, "benign_users_ever_intervened_percent": 1.54, "mean_delay_after_exfiltration_days": 0.55, "median_delay_after_exfiltration_days": 0.90, "mean_time_from_window_start_days": 0.76},
+        "byzantine9": {"pre_exfiltration_percent": 17.5, "benign_users_ever_intervened_percent": 1.58, "mean_delay_after_exfiltration_days": 0.40, "median_delay_after_exfiltration_days": 0.90, "mean_time_from_window_start_days": 0.93},
+        "reported_MTTD_improvement_over_rational_ablation_days_range": [1.7, 4.5],
+        "false_positive_denominator": "Benign users; ever intervened.",
+        "pre_exfiltration_exact_pooled_denominator": "Not disclosed.",
+        "delay_censoring_convention": "Unspecified."
+      },
+      "assumptions": "Positive evidence drift; bounded increments; trusted filter. Median honest-range guarantee requires fewer-than-half Byzantine.",
+      "limits": "Patient evasion can erase drift; high-risk max lacks median robustness. Counterfactual trajectories do not establish production prevention.",
+      "design_implication": "Database transfer uncertain; measure false blocks.",
+      "extraction_locators": ["§§3–5", "§6.1, Theorem6.1/Proposition2", "§7, Table2/Findings1", "§8, Limitations", "Appendix0.A"],
+      "pdf_inspected": false,
+      "author_code_executed": false
+    }
+  ]
+}
