@@ -25,7 +25,7 @@ load_dotenv(Path(__file__).resolve().parents[2] / ".env")
 
 from . import activity, agent, llm  # noqa: E402
 from .detect import scan  # noqa: E402
-from .policy import PUBLIC, WITHHELD, decide  # noqa: E402
+from .policy import HOLD, PUBLIC, WITHHELD, decide  # noqa: E402
 from .rules import RULES  # noqa: E402
 from .store import Events, db  # noqa: E402
 
@@ -74,12 +74,15 @@ def page(request: Request, name: str, **ctx) -> Response:
     return templates.TemplateResponse(request, name, ctx)
 
 
-STEP_READ = "Read file"
-STEP_SCAN = "Find IDs and health data"
-STEP_AI = "AI context check · AkashML"
-STEP_VISION = "AI image check · AkashML"
+STEP_READ = "Read"
+STEP_SCAN = "Find IDs"
+STEP_AI = "AkashML AI"
+STEP_VISION = "AkashML vision"
 STEP_DECIDE = "Decide"
-STEP_BRIEF = "Note for reviewer · Guild agent"
+STEP_BRIEF = "Guild agent note"
+SHORT = {"CUIL of a private person": "CUIL", "National ID (DNI) number": "DNI", "PAMI affiliate number": "affiliate no.",
+         "Date of birth": "birth date", "Home address": "address", "Image or copy of an identity document": "ID copy",
+         "Disability certificate": "disability cert.", "Diagnosis code (ICD-10)": "diagnosis", "Clinical language": "medical terms"}
 LABEL = {"public": "Published", "approved": "Published", "hold": "Needs you", "withheld": "Blocked"}
 
 
@@ -111,6 +114,18 @@ def evaluate(pdf: bytes, job: dict) -> tuple:
 
     decision, reasons, findings = decide(result, model, images)
     activity.step(job, STEP_DECIDE, "done", LABEL[decision])
+    kinds = {f["kind"] for f in findings}
+    if decision == WITHHELD:
+        why = "Found " + ", ".join(SHORT.get(h, h) for h in hits[:4])
+    elif "model_context" in kinds:
+        why = "No name, but details point to one patient"
+    elif "unreadable_scan" in kinds or "model_image" in kinds:
+        why = "Image it can't verify"
+    elif decision == HOLD:
+        why = "Medical wording, no ID"
+    else:
+        why = "Nothing private found"
+    activity.finish(job, why=why)
     return model, decision, reasons, findings, (time.perf_counter() - started) * 1000
 
 
@@ -172,7 +187,7 @@ def brief_in_background(att_id, purchase, filename, decision, reasons, findings,
                [], "guild-agent", brief.get("latency_ms", 0))
     activity.step(job, STEP_BRIEF, "error" if "error" in brief else "done",
                   "unavailable" if "error" in brief else "ready")
-    activity.finish(job, done=True)
+    activity.finish(job, done=True, agent_url=brief.get("url", ""))
 
 
 def create_purchase(office: str, procedure: str, item: str, amount: float) -> dict:
@@ -243,8 +258,11 @@ def api_activity(user: str = Depends(staff)):
                    "waiting": counts.get("hold", 0), "blocked": counts.get("withheld", 0)},
         "waiting": [{
             "id": w["id"], "file": w["filename"], "office": w["office"], "item": w["item"], "pid": w["pid"],
-            "why": sorted({f["label"] for f in json.loads(w["findings"] or "[]")}),
+            "why": sorted({SHORT.get(f["label"], f["label"]) for f in json.loads(w["findings"] or "[]")
+                           if f["kind"] not in ("model_context", "unreadable_scan", "model_image")}),
+            "risk": next((f["evidence"] for f in json.loads(w["findings"] or "[]") if f["kind"] == "model_context"), ""),
             "note": (json.loads(w["agent"]) or {}).get("text", "") if w["agent"] else "",
+            "agent_url": (json.loads(w["agent"]) or {}).get("url", "") if w["agent"] else "",
         } for w in waiting],
     }
 

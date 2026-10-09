@@ -61,7 +61,7 @@ cp .env.example .env   # add keys if you have them
 uv run uvicorn gate.app:app --port 8765
 ```
 
-Open http://localhost:8765 and press **Simulate office uploads**. The live page shows each step the agent takes. Tests: `uv run python -m pytest -q tests`.
+Open http://localhost:8765 and press **Send 8 office files**. The live page shows each step the agent takes. Tests: `uv run python -m pytest -q tests`.
 
 OCR needs Tesseract with Spanish data (`spa.traineddata`).
 

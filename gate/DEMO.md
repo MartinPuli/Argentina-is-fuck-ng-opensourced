@@ -1,7 +1,7 @@
 # Demo script (about 2 minutes)
 
 1. **The problem (20 s).** Show the Chequeado headline. "In May, PAMI published retirees' medical histories, disability certificates and ID copies on its public purchasing site. Local offices attached the whole clinical file to each purchase. Nobody checked before it went live."
-2. **Live page (40 s).** Press **Simulate office uploads** and let it run: each file shows its steps as the agent works (read, find IDs, AkashML check, decide, Guild note).
+2. **Live page (40 s).** Press **Send 8 office files** and let it run: each file shows its steps as the agent works (read, find IDs, AkashML check, decide, Guild note).
 3. **Purchase page (30 s).** Wheelchair purchase from UGL Jujuy:
    - Spec sheet and supplier quote: **public**. Point out the company CUIT is recognized as public business data.
    - Medical summary: **withheld**. DNI, CUIL with valid check digit, affiliate number, birth date, address, all masked, each citing the law.
