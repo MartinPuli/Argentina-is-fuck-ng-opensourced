@@ -404,6 +404,23 @@ async def live_demo_seed(user: str = Depends(staff)):
     return RedirectResponse("/live", status_code=303)
 
 
+@app.post("/live/reset")
+def live_reset(user: str = Depends(staff)):
+    """Clear demo purchases and files between takes. Learned rules and the audit history stay."""
+    if activity.running():
+        return PlainTextResponse("Files are still being checked. Wait for them to finish, then reset.",
+                                 status_code=409)
+    with db() as con:
+        con.execute("create table if not exists learning_checks (attachment_id integer primary key, "
+                    "revision text not null, checked_at real not null)")
+        con.execute("delete from learning_checks")
+        con.execute("delete from attachments")
+        con.execute("delete from purchases")
+    activity.clear()
+    events.log("demo_reset", "", 0, actor=user)
+    return RedirectResponse("/live", status_code=303)
+
+
 @app.get("/api/activity")
 def api_activity(user: str = Depends(staff)):
     """Staff-only progress; only current publication decisions count as published."""

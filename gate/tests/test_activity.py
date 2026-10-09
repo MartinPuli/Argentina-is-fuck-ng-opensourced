@@ -248,3 +248,58 @@ def test_activity_snapshot_does_not_expose_mutable_internal_state():
     snapshot = activity.snapshot()
     snapshot[0]["steps"][0]["status"] = "forged"
     assert activity.snapshot()[0]["steps"][0]["status"] == "running"
+
+
+def demo_rows():
+    with store.db() as con:
+        return {table: con.execute(f"select count(*) from {table}").fetchone()[0]
+                for table in ("purchases", "attachments")}
+
+
+def test_reset_clears_demo_files_but_keeps_rules_and_audit(live):
+    rule = enable_rule()
+    assert upload(live).status_code == 303
+    finished(live)
+    assert demo_rows() == {"purchases": 1, "attachments": 1}
+    response = live.client.post("/live/reset", follow_redirects=False)
+    assert response.status_code == 303 and response.headers["location"] == "/live"
+    assert demo_rows() == {"purchases": 0, "attachments": 0}
+    assert activity.snapshot() == []
+    result = live.client.get("/api/activity").json()
+    assert result["jobs"] == [] and result["waiting"] == []
+    assert all(value == 0 for value in result["counts"].values())
+    assert live.client.get("/public", auth=None).status_code == 200
+    with store.db() as con:
+        assert con.execute("select count(*) from learning_checks").fetchone()[0] == 0
+        assert con.execute("select actor from events where event='demo_reset'").fetchone()[0] == AUTH[0]
+        assert con.execute("select count(*) from events where event='submitted'").fetchone()[0] == 1
+    assert learning.get_rule(rule["id"])["status"] == "active"
+
+
+def test_reset_refuses_while_a_job_is_running(live):
+    entered, release = threading.Event(), threading.Event()
+    live.blockers.append(release)
+    original = live.app.evaluate
+    def slow(data, job=None):
+        entered.set()
+        assert release.wait(3)
+        return original(data, job)
+    live.monkeypatch.setattr(live.app, "evaluate", slow)
+    assert upload(live).status_code == 303
+    assert entered.wait(1)
+    response = live.client.post("/live/reset", follow_redirects=False)
+    assert response.status_code == 409
+    assert demo_rows()["purchases"] == 1 and len(activity.snapshot()) == 1
+    release.set()
+    finished(live)
+    assert live.client.post("/live/reset", follow_redirects=False).status_code == 303
+    assert demo_rows() == {"purchases": 0, "attachments": 0}
+
+
+def test_reset_rejects_cross_origin_posts(live):
+    assert upload(live).status_code == 303
+    finished(live)
+    for headers in ({"origin": "https://evil.example"}, {"origin": "null"}):
+        assert live.client.post("/live/reset", headers=headers, follow_redirects=False).status_code == 403
+    assert demo_rows() == {"purchases": 1, "attachments": 1}
+    assert len(activity.snapshot()) == 1
