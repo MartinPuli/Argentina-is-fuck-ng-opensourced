@@ -56,6 +56,18 @@
  .lx-banner{flex-direction:column;align-items:flex-start}
 }
 .lx .chip,.lx-tests.ok,.lx-tests.bad{border-radius:3px}.lx .chip.rule-draft{color:var(--muted);background:#f1f6fa;border-color:var(--line)}
+.lx .chip{border-radius:4px;font-weight:500;padding:2px 8px}
+.lx .chip.rule-draft,.lx .chip.rule-retired{background:var(--c-surface-alt,#f8fafc);color:var(--c-muted,#4b5b70);border-color:var(--c-line-strong,#cbd5e1)}
+.lx .chip.rule-tested{background:var(--c-primary-soft,#eff6ff);color:var(--c-primary-ink,#1e40af);border-color:var(--c-primary-line,#bfdbfe)}
+.lx .btn{min-height:32px;padding:4px 12px;font-size:13px;font-weight:500}
+.lx-head{margin-bottom:24px}.lx-head .acts{display:flex;gap:8px}
+.lx-section{margin-top:40px}.lx-section>h2,.lx-section .lx-head h2{font-size:16px;font-weight:600;margin:0}.lx-section>h2{margin-bottom:8px}.lx-section .lx-head{margin-bottom:8px}
+.lx button{min-height:32px;padding:4px 12px;font-size:13px;font-weight:500}
+.lx-row.lx-labels{background:var(--c-surface-alt,#f8fafc);font-weight:600}
+.lx-banner{border:1px solid var(--c-review-line,#fcd34d);border-left:1px solid var(--c-review-line,#fcd34d);background:var(--c-review-soft,#fef3c7)}
+.lx-banner h2{font-weight:600}
+.lx-src strong{font-weight:500}
+.lx .empty-state{background:#fff;border-style:dashed}
 </style>
 <div class="lx">
 <div class="lx-head"><div><h1>Rules</h1></div><div class="acts"><a class="btn btn-secondary" href="/guidelines">Guidelines</a><a class="btn btn-secondary" href="#new-source">New rule</a></div></div>
@@ -83,7 +95,7 @@
 <section id="news-leads" class="lx-section"><div class="lx-head"><h2>Public reporting</h2>
 <form method="post" action="/learning/discover" data-async data-loading="Searching…"><button type="submit" class="btn-secondary">Find recent reports</button><div class="form-message" role="status" aria-live="polite" hidden></div></form></div>
 {% if leads %}<div class="lx-list">{% for lead in leads %}<div class="lx-src"><div><strong>{{ lead.title }}</strong><p class="small muted">{{ lead.publisher }} · {{ lead.published_at[:10] }} · Unverified lead</p></div><a href="{{ lead.url }}" target="_blank" rel="noopener noreferrer">Report ↗</a><a class="btn btn-secondary" href="/learning?lead={{ lead.id }}#source-form">Use source</a></div>{% endfor %}</div>{% else %}<p class="small muted">No reports collected yet.</p>{% endif %}
-<p class="small muted">Google News headlines from the last 30 days. Multiple articles may describe one incident. Discovery does not change rules.</p></section>
+<p class="small muted">Google News, last 30 days. Discovery does not change rules.</p></section>
 <details class="lx-more" id="source-form" {% if source_prefill %}open{% endif %}><summary>Add source</summary>
 <form class="panel lx-form" method="post" action="/learning/propose" data-async data-loading="Drafting a rule…">
 {% if not llm_on %}<div class="notice">AkashML is not configured.</div>{% endif %}

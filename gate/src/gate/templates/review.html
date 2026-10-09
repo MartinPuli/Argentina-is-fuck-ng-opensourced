@@ -1,15 +1,44 @@
 {% extends "base.html" %}{% from "components.html" import badge, evidence, brief with context %}{% block title %}Review queue{% endblock %}{% block body %}
-<div class="page-heading heading-with-action"><div><h1>Review</h1></div><span class="count-label">{{ held|length }} waiting</span></div>
+<style>
+.rv{--ln:var(--c-line,#e2e8f0);--mu:var(--c-muted,#4b5b70);--ink:var(--c-ink,#0f1f33)}
+.rv .page-heading{margin:0 0 24px;align-items:center}
+.rv .page-heading h1{margin:0}
+.rv .count-label{background:#fff;color:var(--mu);border:1px solid var(--ln);border-radius:4px;padding:2px 8px;font-size:12px;font-weight:500}
+.rv .count-label.has{color:var(--c-review,#b45309);background:var(--c-review-soft,#fef3c7);border-color:var(--c-review-line,#fcd34d)}
+.rv .panel{padding:16px;border:1px solid var(--ln);border-radius:4px;box-shadow:none;background:#fff}
+.rv .review-panel{margin-bottom:8px}
+.rv .attachment-heading{gap:16px;align-items:center;flex-wrap:nowrap}
+.rv .attachment-name{flex:1 1 auto}
+.rv .attachment-name h2{font-size:15px;font-weight:600;color:var(--ink);margin:0}
+.rv .doc-icon{display:none}
+.rv .review-body{margin-top:16px}
+.rv .lv-chips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 16px}
+.rv .chip{font-weight:500}
+.rv .decision-reason,.rv .purchase-context{margin:0 0 8px}
+.rv .btn{min-height:32px;padding:4px 12px;font-size:13px;font-weight:500}
+.rv .review-form{margin-top:16px;padding-top:16px}
+.rv .review-actions{justify-content:flex-end;gap:8px;margin-top:8px}
+.rv .review-actions button{min-height:36px;font-weight:600}
+.rv .field label{font-size:12px;font-weight:600;color:var(--mu)}
+.rv .empty-state{background:#fff;border:1px dashed var(--c-line-strong,#cbd5e1);padding:32px 16px}
+.rv .empty-state h2{font-size:15px;font-weight:600;margin:0 0 16px}
+.rv .section-heading{margin:0 0 16px;align-items:center}
+.rv .section-heading h2{font-size:16px;font-weight:600;margin:0}
+.rv .recent-section{margin-top:40px}
+.rv .agent-brief{background:var(--c-surface-alt,#f8fafc)}
+@media(max-width:760px){.rv .attachment-heading{flex-wrap:wrap;gap:8px}.rv .review-actions{justify-content:stretch}.rv .review-actions button{flex:1}}
+</style><div class="rv">
+<div class="page-heading heading-with-action"><div><h1>Review</h1></div><span class="count-label{{ ' has' if held }}">{{ held|length }} waiting</span></div>
 {% for a in held %}{% set fs=a.findings|fromjson %}{% set ag=a.agent|fromjson %}
 <details class="panel review-panel review-accordion" name="review-files" {% if loop.first %}open{% endif %}><summary class="attachment-heading"><span class="doc-icon" aria-hidden="true">PDF</span><div class="attachment-name"><h2>{{ a.filename }}</h2><span class="small muted">{{ a.office }} · {{ a.procedure }}</span></div>{{ badge('hold') }}</summary><div class="review-body"><p class="purchase-context">{{ a.item }}</p><p class="decision-reason">{{ (a.reasons|fromjson)|join(' ') }}</p><a class="btn btn-secondary" href="/internal/file/{{ a.id }}" target="_blank" rel="noopener">Open PDF</a>{% if a.public_pdf %}<div class="clean-note"><span>Approve publishes the cleaned copy.</span><a class="text-link" href="/internal/clean/{{ a.id }}" target="_blank" rel="noopener">Cleaned preview ↗</a></div>{% endif %}
 <details class="findings-detail"><summary>Inspect {{ fs|length }} {{ 'finding' if fs|length == 1 else 'findings' }} and policy context</summary>{{ evidence(fs) }}{% for r in fs|map(attribute='rule')|unique %}{% if r in RULES %}<p class="rule"><strong>{{ RULES[r].title }}.</strong> {{ RULES[r].text }} <span class="muted">{{ RULES[r].source }}</span></p>{% endif %}{% endfor %}</details>{{ brief(ag, agent_on) }}
 {% if a.id in stale_ids %}<div class="notice">Rules changed since this file was checked. <a href="/learning">Recheck existing PDFs</a> before approving publication.</div>{% endif %}<form method="post" action="/review/{{ a.id }}" class="review-form" data-async data-loading="Recording your decision…"><input type="hidden" name="reviewer" value="{{ user }}"><div class="field"><label for="note-{{ a.id }}">Decision reason</label><textarea id="note-{{ a.id }}" name="note" rows="2" required maxlength="2000" placeholder="Reason for decision"></textarea></div><div class="review-actions"><button class="btn-secondary" name="action" value="reject">Keep private</button><button name="action" value="approve" {% if a.id in stale_ids %}disabled{% endif %} data-confirm="{% if a.public_pdf %}Publish the cleaned copy? Confirm that you inspected it.{% else %}Publish this exact file? Confirm that you inspected the original and it contains no information that must stay private.{% endif %}">{{ 'Publish cleaned copy' if a.public_pdf else 'Publish original' }}</button></div><div class="form-message" role="status" aria-live="polite" hidden></div></form></div></details>
 {% else %}<section class="empty-state"><h2>No files waiting for review.</h2><a class="btn btn-secondary" href="/office">Upload PDF</a></section>{% endfor %}
-{% if restricted %}<section class="recent-section" id="restricted"><div class="section-heading heading-with-action"><h2>Restricted automatically</h2><span class="count-label">{{ restricted|length }} to audit</span></div>
+{% if restricted %}<section class="recent-section" id="restricted"><div class="section-heading heading-with-action"><h2>Restricted automatically</h2><span class="count-label has">{{ restricted|length }} to audit</span></div>
 {% for a in restricted %}{% set fs=a.findings|fromjson %}{% set ag=a.agent|fromjson %}<div class="panel review-panel"><div class="attachment-heading"><span class="doc-icon" aria-hidden="true">PDF</span><div class="attachment-name"><h2>{{ a.filename }}</h2><span class="small muted">{{ a.office }} · {{ a.procedure }}</span></div>{{ badge('withheld') }}</div><div class="review-body">
 <div class="lv-chips">{% for l in fs|rejectattr('kind', 'equalto', 'autopilot_restricted')|map(attribute='label')|unique %}<span class="chip chip-review">{{ l }}</span>{% endfor %}</div>{% if ag and ag.text %}<p class="small muted">{{ ag.text }}</p>{% endif %}
 <a class="btn btn-secondary" href="/internal/file/{{ a.id }}" target="_blank" rel="noopener">Open PDF</a>{% if a.public_pdf %} <a class="text-link" href="/internal/clean/{{ a.id }}" target="_blank" rel="noopener">Cleaned preview ↗</a>{% endif %}
 {% if a.id in stale_ids %}<div class="notice">Rules changed since this file was checked. <a href="/learning">Recheck existing PDFs</a> before releasing.</div>{% endif %}<form method="post" action="/review/{{ a.id }}/release" class="review-form" data-async data-loading="Recording your decision…"><div class="field"><label for="release-note-{{ a.id }}">Reason</label><textarea id="release-note-{{ a.id }}" name="note" rows="2" required maxlength="2000" placeholder="Why release or keep private"></textarea></div><div class="review-actions"><button class="btn-secondary" name="action" value="keep">Keep private</button><button name="action" value="release" {% if a.id in stale_ids %}disabled{% endif %} data-confirm="{% if a.public_pdf %}Release the cleaned copy? Confirm that you inspected it.{% else %}Release this exact file? Confirm that it contains no information that must stay private.{% endif %}">Release</button></div><div class="form-message" role="status" aria-live="polite" hidden></div></form></div></div>
 {% endfor %}</section>{% endif %}
 {% if done %}<section class="recent-section"><div class="section-heading"><h2>Recent reviewer decisions</h2></div><div class="panel table-panel"><div class="table-wrap"><table><thead><tr><th scope="col">File</th><th scope="col">Result</th><th scope="col">Reviewer</th><th scope="col">Decision reason</th></tr></thead><tbody>{% for d in done %}<tr><td>{{ d.filename }}<small class="table-secondary">{{ d.office }}</small></td><td>{{ badge(d.decision) }}</td><td>{{ d.reviewed_by }}</td><td>{{ d.review_note }}</td></tr>{% endfor %}</tbody></table></div></div></section>{% endif %}
-{% endblock %}
+</div>{% endblock %}

@@ -1,21 +1,44 @@
 {% extends "base.html" %}{% block title %}Guidelines{% endblock %}{% block body %}
-<div class="page-head"><h1>Guidelines</h1><a class="btn btn-secondary" href="/learning">Rules</a></div>
-<p class="small muted">Source review: {{ guidelines.reviewed_on }} · Operational summaries</p>
-<section class="panel">
+<style>
+.gl{--ln:var(--c-line,#e2e8f0);--mu:var(--c-muted,#4b5b70);--ink:var(--c-ink,#0f1f33)}
+.gl-head{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:0 0 8px}.gl-head h1{margin:0}
+.gl-meta{margin:0 0 32px;font-size:13px;color:var(--mu)}
+.gl-section{margin:0 0 32px}
+.gl-section>h2{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.4px;color:var(--mu);margin:0 0 8px}
+.gl-list{border:1px solid var(--ln);border-radius:4px;background:#fff}
+.gl-item{border-top:1px solid var(--ln)}.gl-item:first-child{border-top:0}
+.gl-item>summary{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 16px;cursor:pointer;list-style:none;font-size:14px;font-weight:500;color:var(--ink)}
+.gl-item>summary::-webkit-details-marker{display:none}
+.gl-item>summary:after{content:"+";color:var(--mu);font-size:16px;line-height:1}
+.gl-item[open]>summary:after{content:"\2212"}
+.gl-item>summary:hover{background:var(--c-surface-alt,#f8fafc)}
+.gl-body{padding:0 16px 16px;font-size:13px;color:var(--ink)}
+.gl-body p{margin:0 0 8px}
+.gl-kind{display:inline-block;margin:0 0 8px;padding:0 8px;border:1px solid var(--ln);border-radius:4px;font-size:12px;color:var(--mu)}
+.gl-src{display:flex;flex-wrap:wrap;gap:8px;align-items:baseline}
+.gl .btn{min-height:32px;padding:4px 12px;font-size:13px;font-weight:500}
+.gl-foot{font-size:12px;color:var(--mu);margin:0 0 8px}
+.gl-ver{font-size:12px}.gl-ver summary{cursor:pointer;color:var(--mu)}.gl-ver p{overflow-wrap:anywhere;font-family:ui-monospace,monospace;font-size:11px;margin:8px 0}
+</style>
+<div class="gl">
+<div class="gl-head"><h1>Guidelines</h1><a class="btn btn-secondary" href="/learning">Rules</a></div>
+<p class="gl-meta">Sources reviewed {{ guidelines.reviewed_on }}</p>
+<section class="gl-section"><h2>Sources</h2><div class="gl-list">
 {% for id, source in guidelines.sources.items() %}
-<details class="findings-detail"><summary>{{ source.title }}</summary>
-<p>{{ source.locator }}</p><p class="small muted">{{ source.scope }}</p>
-<a href="{{ source.url }}" target="_blank" rel="noopener noreferrer">Official source ↗</a></details>
+<details class="gl-item"><summary>{{ source.title }}</summary><div class="gl-body">
+<p>{{ source.locator }}</p><p class="muted">{{ source.scope }}</p>
+<a href="{{ source.url }}" target="_blank" rel="noopener noreferrer">Official source ↗</a></div></details>
 {% endfor %}
-</section>
-<section class="section"><h2>Publication policies</h2>
+</div></section>
+<section class="gl-section"><h2>Publication policies</h2><div class="gl-list">
 {% for id, rule in guidelines.policies.items() %}
-<details class="findings-detail"><summary>{{ rule.title }}</summary>
-<p class="small muted">{{ rule.kind }}</p><p>{{ rule.text }}</p>
+<details class="gl-item"><summary>{{ rule.title }}</summary><div class="gl-body">
+<span class="gl-kind">{{ rule.kind }}</span><p>{{ rule.text }}</p>
 {% for source_id in rule.source_ids %}{% set source = guidelines.sources[source_id] %}
-<p><a href="{{ source.url }}" target="_blank" rel="noopener noreferrer">{{ source.title }} ↗</a> <span class="small muted">{{ source.locator }}</span></p>
-{% endfor %}</details>{% endfor %}
-</section>
-<p class="small muted">{{ guidelines.notice }}</p>
-<details class="findings-detail"><summary>Version</summary><p class="small" style="overflow-wrap:anywhere">{{ guidelines.digest }}</p><a href="/api/guidelines">View source pack</a></details>
+<p class="gl-src"><a href="{{ source.url }}" target="_blank" rel="noopener noreferrer">{{ source.title }} ↗</a> <span class="muted">{{ source.locator }}</span></p>
+{% endfor %}</div></details>{% endfor %}
+</div></section>
+<p class="gl-foot">{{ guidelines.notice }}</p>
+<details class="gl-ver"><summary>Version</summary><p>{{ guidelines.digest }}</p><a href="/api/guidelines">View source pack</a></details>
+</div>
 {% endblock %}

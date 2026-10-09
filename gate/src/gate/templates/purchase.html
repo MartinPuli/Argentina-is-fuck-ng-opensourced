@@ -1,71 +1,71 @@
 {% extends "base.html" %}{% from "components.html" import evidence with context %}{% block title %}Purchase decisions{% endblock %}{% block body %}
 <style>
-.pv{--pub:var(--c-published,#16a34a);--cln:var(--c-cleaned,#0891b2);--rev:var(--c-review,#d97706);--blk:var(--c-blocked,#dc2626);--gld:var(--c-guild,#7c3aed);--ln:var(--line,#dde7ee);--mu:var(--muted,#5d7180)}
+.pv{--pub:var(--c-published,#15803d);--cln:var(--c-cleaned,#0e7490);--rev:var(--c-review,#b45309);--blk:var(--c-blocked,#b91c1c);--ln:var(--c-line,#e2e8f0);--mu:var(--c-muted,#4b5b70);--ink:var(--c-ink,#0f1f33);--acc:var(--c-primary,#2563eb);color:var(--ink)}
+.pv .intake-details{padding:8px 16px;margin:0 0 24px;font-size:13px}.pv .intake-details summary{cursor:pointer;color:var(--mu)}
 .pv-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-.pv-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin:0 0 16px}
-.pv-head h1{margin:0 0 4px}.pv-head p{margin:0;color:var(--mu);font-size:13px}
-.pv-tally{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 20px;padding:0;list-style:none}
-.pv-tally li{display:flex;align-items:baseline;gap:6px;padding:6px 14px;border-radius:3px;font-size:13px;color:#fff;background:color-mix(in srgb,var(--c) 75%,#000)}
-.pv-tally b{font-size:18px}.pv-tally a{margin-left:6px;font-size:12px;color:#fff;font-weight:600}
+.pv .back-link{margin-bottom:16px}
+.pv-head{margin:0 0 24px}.pv-head h1{margin:0 0 8px;overflow-wrap:anywhere}.pv-head p{margin:0;color:var(--mu);font-size:13px}
+.pv-tally{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0 0 24px;padding:0;list-style:none;font-size:13px;color:var(--mu)}
+.pv-tally li{display:inline-flex;align-items:center;gap:8px;padding:4px 8px;border:1px solid var(--ln);border-radius:4px}
+.pv-tally b{font-weight:600;color:var(--ink)}.pv-tally a{font-weight:600;color:var(--acc)}
+.pv-dot{width:8px;height:8px;border-radius:50%;background:var(--c)}
 .pv-tally .pub,.pv-card.pub{--c:var(--pub)}.pv-card.cln{--c:var(--cln)}.pv-tally .rev,.pv-card.rev{--c:var(--rev)}.pv-tally .blk,.pv-card.blk{--c:var(--blk)}
-.pv-card{background:var(--surface,#fff);border:1px solid color-mix(in srgb,var(--c) 30%,var(--ln));border-left:6px solid var(--c);border-radius:4px;padding:16px 18px;margin:0 0 12px}
-.pv-top{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-.pv-out{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:3px;font-size:12px;font-weight:700;letter-spacing:.2px;white-space:nowrap;color:#fff;background:color-mix(in srgb,var(--c) 75%,#000)}
-.pv-name{font-size:15px;font-weight:600;margin:0;overflow-wrap:anywhere;flex:1;min-width:0}
+.pv-card{border:1px solid var(--ln);border-radius:4px;padding:16px;margin:0 0 8px;background:#fff}
+.pv-top{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.pv-name{font-size:15px;font-weight:600;margin:0;overflow-wrap:anywhere;min-width:0;color:var(--ink)}
+.pv-out{flex:none;display:inline-flex;align-items:center;gap:8px;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:600;white-space:nowrap;color:var(--c);background:color-mix(in srgb,var(--c) 10%,#fff);border:1px solid color-mix(in srgb,var(--c) 30%,#fff)}
+.pv-out:before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
 .pv-why{margin:8px 0 0;font-size:13px;color:var(--mu)}
-.pv-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 13px;border-radius:4px;font-size:13px;font-weight:600;text-decoration:none;border:1px solid var(--ln);color:var(--ink,#16283a);background:var(--surface,#fff);white-space:nowrap}
-.pv-btn:hover{border-color:var(--c,var(--cln))}
-.pv-btn.pub-btn{--b:var(--c,var(--pub));background:color-mix(in srgb,var(--b) 75%,#000);border-color:transparent;color:#fff}
-.pv-btn.pub-btn:hover{background:color-mix(in srgb,var(--b) 62%,#000)}
-.pv-btn.go{background:color-mix(in srgb,var(--rev) 75%,#000);border-color:transparent;color:#fff}
-.pv-links{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-.pv-flow{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;margin-top:14px;padding:14px;border-radius:4px;background:color-mix(in srgb,var(--c) 6%,var(--surface,#fff))}
-.pv-doc{display:flex;flex-direction:column;gap:6px;align-items:flex-start}
-.pv-doc small{font-size:11px;color:var(--mu)}
-.pv-removed{border-left:2px dashed color-mix(in srgb,var(--c) 35%,transparent);border-right:2px dashed color-mix(in srgb,var(--c) 35%,transparent);padding:0 14px;min-width:0}
-.pv-removed h4{margin:0 0 8px;font-size:12px;font-weight:700;color:color-mix(in srgb,var(--blk) 75%,#000)}
-.pv-chips{display:flex;flex-wrap:wrap;gap:6px;margin:0;padding:0;list-style:none}
-.pv-chips li{display:inline-flex;gap:6px;align-items:baseline;padding:4px 9px;border-radius:3px;background:color-mix(in srgb,var(--blk) 12%,#fff);border:1px solid color-mix(in srgb,var(--blk) 30%,#fff);color:color-mix(in srgb,var(--blk) 70%,#000);font-size:12px;font-weight:600}
-.pv-chips s{font-family:ui-monospace,monospace;font-size:11px;font-weight:400;text-decoration-thickness:1px}
-.pv-chips i{font-style:normal;font-size:10px;font-weight:400}
-.pv-ver{display:inline-flex;align-items:center;gap:6px;font-size:12px}
-.pv-ver b{padding:2px 8px;border-radius:3px;font-weight:700;font-size:11px;color:#fff}
-.pv-ver .pass{background:color-mix(in srgb,var(--pub) 75%,#000)}.pv-ver .fail{background:color-mix(in srgb,var(--blk) 75%,#000)}
-.pv-ver a{color:color-mix(in srgb,var(--gld) 85%,#000);font-weight:600}
-.pv-more{margin-top:10px;font-size:12px}
+.pv-btn{display:inline-flex;align-items:center;gap:8px;min-height:32px;padding:4px 12px;border-radius:4px;font-size:13px;font-weight:500;text-decoration:none;border:1px solid var(--c-line-strong,#cbd5e1);color:var(--ink);background:#fff;white-space:nowrap}
+.pv-btn:hover{background:var(--c-surface-alt,#f8fafc);text-decoration:none}
+.pv-btn.pub-btn,.pv-btn.go{background:var(--acc);border-color:var(--acc);color:#fff}.pv-btn.pub-btn:hover,.pv-btn.go:hover{background:var(--c-primary-hover,#1d4ed8)}
+.pv-links{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.pv-flow{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:16px;align-items:start;margin-top:16px;padding-top:16px;border-top:1px solid var(--ln)}
+.pv-doc{display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+.pv-doc small{font-size:12px;color:var(--mu)}
+.pv-removed{min-width:0}
+.pv-removed h4{margin:0 0 8px;font-size:12px;font-weight:600;color:var(--mu)}
+.pv-chips{display:flex;flex-wrap:wrap;gap:8px;margin:0;padding:0;list-style:none}
+.pv-chips li{display:inline-flex;gap:8px;align-items:baseline;padding:2px 8px;border-radius:4px;background:var(--c-surface-alt,#f8fafc);border:1px solid var(--ln);color:var(--ink);font-size:12px}
+.pv-chips s{font-family:ui-monospace,monospace;font-size:11px;color:var(--mu);text-decoration:none}
+.pv-chips i{font-style:normal;font-size:11px;color:var(--mu)}
+.pv-ver{display:inline-flex;align-items:center;gap:8px;font-size:12px;flex-wrap:wrap}
+.pv-ver b{padding:2px 8px;border-radius:4px;font-weight:600;font-size:12px;border:1px solid}
+.pv-ver .pass{color:var(--pub);background:color-mix(in srgb,var(--pub) 10%,#fff);border-color:color-mix(in srgb,var(--pub) 30%,#fff)}.pv-ver .fail{color:var(--blk);background:color-mix(in srgb,var(--blk) 10%,#fff);border-color:color-mix(in srgb,var(--blk) 30%,#fff)}
+.pv-ver a{color:var(--acc);font-weight:500}
+.pv-more{margin-top:8px;font-size:12px}
 .pv-more summary{cursor:pointer;color:var(--mu);padding:4px 0}
 .pv-more[open] summary{margin-bottom:8px}
-.pv-more p{margin:6px 0;font-size:12px}.pv-fp{font-family:ui-monospace,monospace;font-size:11px;color:var(--mu)}
-@media(max-width:760px){.pv-flow{grid-template-columns:1fr;gap:12px}.pv-removed{border:0;border-top:2px dashed color-mix(in srgb,var(--c) 35%,transparent);border-bottom:2px dashed color-mix(in srgb,var(--c) 35%,transparent);padding:12px 0}.pv-card{padding:14px}.pv-name{flex-basis:100%}}
-.pv{--pub:#638d81;--cln:#74afcb;--rev:#bca370;--blk:#bc9399;--gld:#6b99b4}.pv-card{border:1px solid var(--line);border-radius:4px}.pv-name,.pv-out,.pv-btn,.pv-removed h4,.pv-chips li,.pv-ver b,.pv-tally a{font-weight:400}.pv-tally li,.pv-out{background:#edf7fd;color:var(--ink);border-radius:4px}.pv-tally a{color:var(--accent)}.pv-btn.pub-btn,.pv-btn.go{background:#c4e8f9;color:var(--ink);border:1px solid #b9deef}.pv-flow{background:#f8fcfe;border-radius:4px}.pv-chips li{border-radius:4px}.pv-ver .pass{background:#edf7f3;color:var(--public)}.pv-ver .fail{background:var(--withheld-soft);color:var(--withheld)}
+.pv-more p{margin:8px 0;font-size:12px}.pv-fp{font-family:ui-monospace,monospace;font-size:11px;color:var(--mu);margin:8px 0 0;overflow-wrap:anywhere}
+@media(max-width:760px){.pv-flow{grid-template-columns:1fr}.pv-top{flex-direction:column-reverse;align-items:flex-start;gap:8px}}
 </style>
 <div class="pv">
 <a class="back-link" href="/">← Documents</a>
-<div class="pv-head"><div><h1>{{ purchase.item }}</h1><p>{{ purchase.procedure }} · {% if purchase.amount is not none %}{{ purchase.amount|money }} ARS{% else %}Amount not specified{% endif %}</p></div><a class="pv-btn" href="/public" target="_blank" rel="noopener">Public site ↗</a></div>
+<div class="pv-head"><h1>{{ purchase.item }}</h1><p>{{ purchase.procedure }} · {% if purchase.amount is not none %}{{ purchase.amount|money }} ARS{% else %}Amount not specified{% endif %}</p></div>
 {% if purchase.intake_details %}
 <details class="panel intake-details"><summary>Detected document details · Staff only</summary>
 {% for hint in purchase.intake_details|fromjson %}<p class="small muted">{{ hint.filename }} · Page {{ hint.page }}</p><dl>{% for field, value in hint.fields.items() %}<dt>{{ field|capitalize }}</dt><dd>{{ value }}</dd>{% endfor %}</dl>{% else %}<p>No labeled purchase fields found. The file was still analyzed.</p>{% endfor %}
 </details>
 {% endif %}
 {% set counts = namespace(public=0, hold=0, withheld=0) %}{% for a in atts %}{% if a.decision in ('public','approved','cleaned') and a.id not in stale_ids %}{% set counts.public=counts.public+1 %}{% elif a.decision == 'hold' or a.id in stale_ids %}{% set counts.hold=counts.hold+1 %}{% else %}{% set counts.withheld=counts.withheld+1 %}{% endif %}{% endfor %}
-{% if atts %}<ul class="pv-tally" aria-label="Summary"><li class="pub"><b>{{ counts.public }}</b> public</li><li class="rev"><b>{{ counts.hold }}</b> waiting for a person{% if counts.hold %}<a href="{{ '/learning' if stale_ids else '/review' }}">{{ 'Recheck' if stale_ids else 'Review' }} →</a>{% endif %}</li><li class="blk"><b>{{ counts.withheld }}</b> kept internal</li></ul>{% endif %}
+{% if atts %}<ul class="pv-tally" aria-label="Summary"><li class="pub"><span class="pv-dot"></span><b>{{ counts.public }}</b> public</li><li class="rev"><span class="pv-dot"></span><b>{{ counts.hold }}</b> needs review{% if counts.hold %}<a href="{{ '/learning' if stale_ids else '/review' }}">{{ 'Recheck' if stale_ids else 'Review' }} →</a>{% endif %}</li><li class="blk"><span class="pv-dot"></span><b>{{ counts.withheld }}</b> kept internal</li></ul>{% endif %}
 <h2 class="pv-sr">Attachment decisions</h2>
 {% for a in atts %}{% set fs=a.findings|fromjson or [] %}{% set m=a.model|fromjson %}{% set ag=a.agent|fromjson %}{% set reasons=a.reasons|fromjson or [] %}
 {% set stale = a.id in stale_ids %}{% set visible = a.decision in ('public','approved','cleaned') and not stale %}
 {% set tone = 'rev' if stale or a.decision == 'hold' else (('cln' if a.public_pdf else 'pub') if visible else 'blk') %}
 {% set label = 'Recheck required' if stale else {'public':'Published', 'approved':'Reviewer approved', 'cleaned':'Published, cleaned', 'hold':'Needs review', 'withheld':'Kept internal'}.get(a.decision, a.decision) %}
 <article class="pv-card {{ tone }}" id="file-{{ a.id }}">
-<div class="pv-top"><span class="pv-out">{{ {'pub':'✓','cln':'✓','rev':'!','blk':'✕'}[tone] }} {{ label }}</span><h3 class="pv-name">{{ a.filename }}</h3></div>
+<div class="pv-top"><h3 class="pv-name">{{ a.filename }}</h3><span class="pv-out">{{ label }}</span></div>
 {% set go %}<a class="pv-btn go" href="{{ '/learning' if stale else '/review' }}">{{ 'Recheck' if stale else 'Review' }} →</a>{% endset %}
 {% if a.decision == 'approved' and a.review_note %}<p class="pv-why">Reviewer: {{ a.review_note }}</p>{% elif reasons %}<p class="pv-why">{{ reasons[0] }}</p>{% endif %}
 {% if a.public_pdf %}{% set man=a.manifest|fromjson or [] %}{% set v=a.verifier|fromjson %}{% set c=a.clearance|fromjson %}{% set cr=((c.levels or {}).public or {}) if c and not c.error else {} %}{% set ns=namespace(url='') %}{% if cr.review %}{% for s in c.sessions or [] %}{% if (s.agent or '').startswith('reviewer') or (s.agent == 'orchestrator' and not ns.url) %}{% set ns.url=s.url|web_url or ns.url %}{% endif %}{% endfor %}{% endif %}
 <div class="pv-flow">
-<div class="pv-doc"><a class="pv-btn" href="/internal/file/{{ a.id }}" target="_blank" rel="noopener">🔒 Original (internal)</a><small>Staff only</small></div>
+<div class="pv-doc"><a class="pv-btn" href="/internal/file/{{ a.id }}" target="_blank" rel="noopener">Original (internal)</a></div>
 <div class="pv-removed"><h4>Removed {{ man|length }} {{ 'item' if man|length == 1 else 'items' }}</h4>{% if man %}<ul class="pv-chips">{% for r in man %}<li>{{ r.category }} <s>{{ r.masked }}</s> <i>p.{{ r.page }}</i></li>{% endfor %}</ul>{% endif %}</div>
 <div class="pv-doc">{% if visible %}<a class="pv-btn pub-btn" href="/public/file/{{ a.id }}" target="_blank" rel="noopener">Public copy ↗</a>{% else %}<a class="pv-btn" href="/internal/clean/{{ a.id }}" target="_blank" rel="noopener">Cleaned preview ↗</a>{% endif %}
 {% if cr.review %}<span class="pv-ver"><b class="{{ 'pass' if cr.review == 'PASS' else 'fail' }}">{{ 'Verified · ' if cr.review == 'PASS' }}Guild reviewer {{ cr.review }}{% if cr.rounds %} (round {{ cr.rounds }}){% endif %}</b>{% if ns.url %}<a href="{{ ns.url }}" target="_blank" rel="noopener">Guild ↗</a>{% endif %}</span>{% elif v %}<span class="pv-ver"><b class="{{ 'pass' if v.verdict == 'PASS' else 'fail' }}">Verifier {{ v.verdict }}</b>{% if v.url|web_url %}<a href="{{ v.url|web_url }}" target="_blank" rel="noopener">Guild ↗</a>{% endif %}</span>{% else %}<small>Not verified</small>{% endif %}</div>
 </div>
-{% else %}<div class="pv-links"><a class="pv-btn" href="/internal/file/{{ a.id }}" target="_blank" rel="noopener">🔒 Original (internal)</a>{% if visible %}<a class="pv-btn pub-btn" href="/public/file/{{ a.id }}" target="_blank" rel="noopener">Public PDF ↗</a>{% endif %}{% if tone == 'rev' %}{{ go }}{% endif %}</div>{% endif %}
+{% else %}<div class="pv-links"><a class="pv-btn" href="/internal/file/{{ a.id }}" target="_blank" rel="noopener">Original (internal)</a>{% if visible %}<a class="pv-btn pub-btn" href="/public/file/{{ a.id }}" target="_blank" rel="noopener">Public PDF ↗</a>{% endif %}{% if tone == 'rev' %}{{ go }}{% endif %}</div>{% endif %}
 {% if tone == 'rev' and a.public_pdf %}<div class="pv-links">{{ go }}</div>{% endif %}
 {% set sc=senso.get(a.id) %}{% if sc and sc.status == 'cited' %}<p class="pv-fp">Policy source: <a href="/guidelines" title="Senso content {{ sc.content_id }} · version {{ sc.version_id }}">Senso ↗</a> · {{ sc.rule_ids|join(', ') }} · “{{ sc.excerpt|truncate(140) }}”</p>{% endif %}
 <details class="pv-more"><summary>Details</summary>
@@ -78,6 +78,6 @@
 <p class="pv-fp">File {{ a.id }} · SHA-256 {{ a.sha256[:12] }}…</p>
 </details>
 </article>
-{% else %}<div class="empty-state"><h2>No attachments in this purchase</h2><a class="btn" href="/office">New purchase</a></div>{% endfor %}
+{% else %}<div class="empty-state"><h2>No attachments in this purchase</h2><a class="btn btn-secondary" href="/office">New purchase</a></div>{% endfor %}
 </div>
 {% endblock %}
