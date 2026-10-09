@@ -10,7 +10,8 @@ body.public-view main{max-width:none;margin:0;padding:0;min-height:100dvh}
 .pp-brand{display:flex;align-items:center;gap:12px;color:var(--pp-navy);font-weight:600;font-size:17px;letter-spacing:-.2px}
 .pp-brand:hover{text-decoration:none}
 .pp-brand small{display:block;font-size:12px;font-weight:400;color:var(--pp-navy);letter-spacing:0}
-.pp-demo{font-size:12px;color:var(--pp-navy);background:#fff;font-weight:600;border-radius:3px;padding:3px 10px;white-space:nowrap}
+.pp-demo{font-size:12px;color:var(--pp-navy);background:#fff;border:1px solid #c5dfef;font-weight:600;border-radius:3px;padding:3px 10px;white-space:nowrap}
+.pp-foot{border-top:1px solid var(--pp-line);padding:16px 0 24px;font-size:13px;color:var(--pp-muted)}
 .pp-band{height:3px;background:#1d9fd8}
 .pp-head{padding:28px 0 22px}
 .pp-head h1{font-size:28px;letter-spacing:-.6px;margin:0;font-weight:500;color:var(--pp-navy)}
@@ -50,7 +51,7 @@ body.public-view main{max-width:none;margin:0;padding:0;min-height:100dvh}
 .pp-top{background:#e6f3fb;border-bottom:1px solid #c5dfef;color:#0b3a5c}.pp-brand{font-size:16px;font-weight:600;color:#0b3a5c}.pp-brand:focus-visible{outline-offset:4px}.pp-flag{flex:none;display:block}
 </style>
 <div class="pp">
-<header class="pp-top"><div class="pp-wrap"><a class="pp-brand" href="/public"><svg class="pp-flag" width="36" height="24" viewBox="0 0 90 60" aria-hidden="true" focusable="false"><rect width="90" height="60" fill="#74ACDF"/><rect y="20" width="90" height="20" fill="#fff"/><circle cx="45" cy="30" r="7" fill="#F6B40E" stroke="#85340A" stroke-width="1.5"/><rect x="1" y="1" width="88" height="58" fill="none" stroke="#5b7a92" stroke-width="2"/></svg><span>PAMI · Public procurement</span></a></div></header>
+<header class="pp-top"><div class="pp-wrap"><a class="pp-brand" href="/public"><svg class="pp-flag" width="36" height="24" viewBox="0 0 90 60" aria-hidden="true" focusable="false"><rect width="90" height="60" fill="#74ACDF"/><rect y="20" width="90" height="20" fill="#fff"/><circle cx="45" cy="30" r="7" fill="#F6B40E" stroke="#85340A" stroke-width="1.5"/><rect x="1" y="1" width="88" height="58" fill="none" stroke="#5b7a92" stroke-width="2"/></svg><span>PAMI · Public procurement</span></a><span class="pp-demo">Demo · fictional data</span></div></header>
 <div class="pp-band" aria-hidden="true"></div>
 <div class="pp-hero"><div class="pp-wrap"><div class="pp-head"><h1>Published purchases</h1><p>Purchases published by PAMI local offices (UGL)</p></div></div></div>
 <div class="pp-wrap">
@@ -61,5 +62,6 @@ body.public-view main{max-width:none;margin:0;padding:0;min-height:100dvh}
 {% if private %}<p class="pp-private"><svg width="13" height="13" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M4 7V5a4 4 0 1 1 8 0v2h1v8H3V7h1zm2 0h4V5a2 2 0 1 0-4 0v2z"/></svg>{% if autonomous %}{{ private }} {{ 'adjunto retenido automáticamente' if private == 1 else 'adjuntos retenidos automáticamente' }} para proteger datos de pacientes.{% else %}{{ private }} {{ 'private document' if private == 1 else 'private documents' }}{% endif %}</p>{% endif %}
 </article>{% else %}<div class="pp-empty"><h2>No purchases published yet.</h2></div>{% endfor %}</div>
 </div>
+<footer class="pp-foot"><div class="pp-wrap">Demo. All people and records are fictional.</div></footer>
 </div>
 {% endblock %}
