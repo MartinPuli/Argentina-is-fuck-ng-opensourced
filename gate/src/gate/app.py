@@ -828,10 +828,24 @@ def learning_rule(rule_id: int) -> dict:
     return rule
 
 
+def case_source(case: dict) -> dict:
+    return {k: case[k] for k in ("title", "url", "evidence_status", "summary")}
+
+
+def case_rules(rules: list[dict]) -> dict:
+    """Map each built-in case id to its newest non-retired rule id."""
+    found = {}
+    for case in CASES:
+        source = learning._source(case_source(case))
+        found[case["id"]] = next((r["id"] for r in sorted(rules, key=lambda r: -r["id"])
+                                  if r["status"] != "retired" and r["source"] == source), None)
+    return found
+
+
 @app.get("/learning")
 def learning_home(request: Request, user: str = Depends(staff)):
     rules = learning.list_rules()
-    return page(request, "learning.html", cases=CASES, rules=rules,
+    return page(request, "learning.html", cases=CASES, rules=rules, case_rules=case_rules(rules),
                 active_count=sum(r["status"] == "active" for r in rules),
                 pending_count=learning.pending_count(), user=user)
 
@@ -841,7 +855,10 @@ def learn_from_case(case_id: str, user: str = Depends(staff)):
     case = next((c for c in CASES if c["id"] == case_id), None)
     if case is None:
         raise HTTPException(404, "Source case not found.")
-    source = {k: case[k] for k in ("title", "url", "evidence_status", "summary")}
+    existing = case_rules(learning.list_rules())[case_id]
+    if existing is not None:
+        return RedirectResponse(f"/learning/rules/{existing}", status_code=303)
+    source = case_source(case)
     try:
         spec, generator = propose(source, recipe=case["recipe"])
         ident = learning.create_candidate(spec, source, user, generator=generator)

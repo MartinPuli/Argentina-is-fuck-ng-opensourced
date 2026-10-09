@@ -39,7 +39,7 @@
 .lx-src strong{font-weight:400;font-size:14px}
 .lx-src a{font-size:13px;white-space:nowrap}
 .lx-src form{margin:0}
-.lx-src button{font-size:12px;padding:6px 12px}
+.lx-src button,.lx-src .btn{font-size:12px;padding:6px 12px}
 .lx-more{margin-top:12px}
 .lx-more>summary{cursor:pointer;color:var(--accent);font-size:13px}
 .lx-form{margin-top:12px;max-width:640px}
@@ -73,7 +73,7 @@
 </ul>
 {% else %}<div class="empty-state"><h2>No rules yet.</h2><a class="text-link" href="#new-source">Choose a source below</a></div>{% endif %}
 <section id="new-source" class="lx-section"><h2>Create a rule from a source</h2>
-<div class="lx-list">{% for case in cases %}<div class="lx-src"><div><strong>{{ case.title }}</strong><details class="lx-more"><summary>{{ case.evidence_status }} · Context</summary><p class="small muted">{{ case.summary }}</p><p class="small muted">Proposed check: {{ case.mechanism }}</p></details></div><a class="text-link" href="{{ case.url }}" target="_blank" rel="noopener noreferrer">Source ↗</a><form method="post" action="/learning/from-case/{{ case.id }}" data-async data-loading="Drafting…"><button class="btn-secondary" type="submit">Create rule</button><div class="form-message" role="status" aria-live="polite" hidden></div></form></div>{% endfor %}</div>
+<div class="lx-list">{% for case in cases %}<div class="lx-src"><div><strong>{{ case.title }}</strong><details class="lx-more"><summary>{{ case.evidence_status }} · Context</summary><p class="small muted">{{ case.summary }}</p><p class="small muted">Proposed check: {{ case.mechanism }}</p></details></div><a class="text-link" href="{{ case.url }}" target="_blank" rel="noopener noreferrer">Source ↗</a>{% if case_rules[case.id] %}<a class="btn btn-secondary" href="/learning/rules/{{ case_rules[case.id] }}">View rule</a>{% else %}<form method="post" action="/learning/from-case/{{ case.id }}" data-async data-loading="Drafting…"><button class="btn-secondary" type="submit">Create rule</button><div class="form-message" role="status" aria-live="polite" hidden></div></form>{% endif %}</div>{% endfor %}</div>
 <details class="lx-more"><summary>Add source</summary>
 <form class="panel lx-form" method="post" action="/learning/propose" data-async data-loading="Drafting a rule…">
 {% if not llm_on %}<div class="notice">AkashML is not configured.</div>{% endif %}

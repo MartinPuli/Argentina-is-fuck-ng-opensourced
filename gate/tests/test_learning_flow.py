@@ -299,3 +299,30 @@ def test_custom_source_claim_is_saved_as_unverified_even_if_submitter_claims_ack
     assert detail.status_code == 200 and UNVERIFIED in detail.text
     skill = web.client.get(f"/learning/rules/{rule['id']}/skill.md")
     assert skill.status_code == 200 and UNVERIFIED in skill.text
+
+
+def test_builtin_case_creates_at_most_one_rule_until_it_is_retired(web):
+    rule = propose(web)
+    route = f"/learning/rules/{rule['id']}"
+    again = web.client.post(f"/learning/from-case/{CASE_ID}", follow_redirects=False)
+    assert again.status_code == 303 and again.headers["location"] == route
+    assert [r["id"] for r in web.learning.list_rules()] == [rule["id"]]
+    library = web.client.get("/learning")
+    assert library.status_code == 200
+    assert f'href="{route}">View rule</a>' in library.text
+    assert f'action="/learning/from-case/{CASE_ID}"' not in library.text
+    assert "Create rule" in library.text  # Other built-in sources still offer it.
+
+    assert web.client.post(route + "/test", follow_redirects=False).status_code == 303
+    assert web.client.post(route + "/activate", data={"digest": rule["digest"]},
+                           follow_redirects=False).status_code == 303
+    assert web.client.post(f"/learning/from-case/{CASE_ID}",
+                           follow_redirects=False).headers["location"] == route
+    assert web.client.post(route + "/retire", data={"digest": rule["digest"]},
+                           follow_redirects=False).status_code == 303
+    assert f'action="/learning/from-case/{CASE_ID}"' in web.client.get("/learning").text
+    fresh = web.client.post(f"/learning/from-case/{CASE_ID}", follow_redirects=False)
+    assert fresh.status_code == 303
+    rules = web.learning.list_rules()
+    assert len(rules) == 2 and fresh.headers["location"] == f"/learning/rules/{rules[0]['id']}"
+    assert rules[0]["id"] != rule["id"] and rules[0]["status"] == "draft"
