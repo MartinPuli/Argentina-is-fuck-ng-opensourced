@@ -1,7 +1,7 @@
 <!-- SPDX-License-Identifier: CC-BY-4.0 -->
 # Pi: turn incident evidence into tested prevention
 
-Status: implementation proposal, October 9, 2026. Pi is not integrated in the application. The existing PDF gate, learned-rule lifecycle, review decisions and exports are implemented separately. Access and product limitations are documented in [PI-ASSESSMENT.md](PI-ASSESSMENT.md).
+Status: implementation proposal, October 9, 2026. Pi is not integrated in the application. The milestone 1 adapter contract exists in [pi_context.py](../../gate/src/gate/pi_context.py) with only a not-connected provider; access is still missing. The existing PDF gate, learned-rule lifecycle, review decisions and exports are implemented separately. Access and product limitations are documented in [PI-ASSESSMENT.md](PI-ASSESSMENT.md).
 
 ## Product behavior
 

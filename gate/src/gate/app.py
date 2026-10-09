@@ -28,7 +28,7 @@ from fastapi.templating import Jinja2Templates
 load_dotenv(Path(__file__).resolve().parents[3] / ".env")
 load_dotenv(Path(__file__).resolve().parents[2] / ".env")
 
-from . import activity, agent, sanitize, llm, learning  # noqa: E402
+from . import activity, agent, sanitize, llm, learning, pi_context  # noqa: E402
 from .detect import Finding, scan  # noqa: E402
 from .policy import HOLD, PUBLIC, WITHHELD, decide, valid_image_analysis, valid_text_analysis  # noqa: E402
 from .rules import RULES  # noqa: E402
@@ -813,6 +813,12 @@ def dashboard(request: Request, user: str = Depends(staff)):
 @app.get("/api/rules")
 def api_rules():
     return RULES
+
+
+@app.get("/api/pi/status")
+def api_pi_status(user: str = Depends(staff)):
+    # Pi Security is not connected; this reports why and what access is needed.
+    return pi_context.status()
 
 
 # Incident evidence generates candidates. Only reviewed, tested rules affect PDFs.
