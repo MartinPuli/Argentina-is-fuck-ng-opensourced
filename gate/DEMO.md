@@ -1,23 +1,29 @@
-# Publication Gate and incident-learning demonstration
+# Demo
 
-Use a fresh local database and the offline startup command in [README.md](README.md). Configure a staff password first; the default username is `reviewer`. Do not disable authentication. All documents below are fictional. Publication Gate is the primary deliverable; incident learning extends its publication workflow. This walkthrough demonstrates local controls, not a live sponsor run or public deployment. The broader server-defense experiments are separate future work.
+## 2-minute video script
 
-1. **Frame the problem.** Open the overview. Explain: “A public purchase record can include supporting documents that should stay private. We check each attachment separately.” The reporting link supplies context; the demonstration does not access real patient records.
-2. **Load the case.** Select **Open demo workspace**, authenticate, then **Run fictional case**. It creates three purchases containing eight attachments. On a fresh database with sponsor calls disabled, none is automatically public: missing model analysis sends otherwise unblocked files to review. Purchase metadata is already public.
-3. **Read the findings.** Open the wheelchair purchase. The medical justification is withheld by identifier rules. Scanned identity/disability documents are withheld if OCR finds a blocking identifier; if OCR is absent or fails, they remain held. A technical specification and supplier quote are also held because the context check is unavailable. Show the explicit reason instead of claiming the model ran.
-4. **Inspect and approve one safe file.** In **Review queue**, find `especificacion_tecnica_silla.pdf`. Select **Inspect original PDF** and read the entire fictional specification. Enter a reason such as “Inspected every page: fictional technical requirements only; no patient details.” Select **Approve publication** and confirm. The server records the authenticated identity; a typed name cannot replace it. Do not approve the medical, identity, prosthesis, bed or x-ray examples merely to make the demo look successful.
-5. **Verify both outcomes.** Open the public portal in a private/unauthenticated browser session. The approved specification is available; the remaining held/withheld files have no public download links. Record the numeric attachment ID from a withheld original link, then request `/public/file/<that-id>` in the unauthenticated session: expect 404. Do not confuse it with `/internal/file/<id>`, which requires staff credentials. Confirm the approved PDF opens as expected.
-6. **Show the audit.** Return to the authenticated **Audit trail**. Point out the initial hold/withheld decisions and the later approval attributed to the reviewer. Initial-decision counts are historical and do not change into a current-inventory count after approval. In this offline run the displayed backend is local SQLite.
-7. **Close with the measured scope.** “We observed a held file become downloadable only after authenticated review, while another private attachment remained blocked. Missing analysis did not silently publish it. This does not prove every private document will be detected.”
+Site: [argensec.pujia.ar](https://argensec.pujia.ar). All files are fictional.
 
-Pressing **Run fictional case** again adds new records. For another clean demonstration, restart with a new unused `GATE_DB` path rather than deleting an existing database.
+**Before each take:** open `/live` and press **Reset demo**. Wait until no file is still being checked. Keep these tabs ready: `/live`, `/public`, `/dashboard`, [issue #2](https://github.com/MartinPuli/Argentina-is-fuck-ng-opensourced/issues/2). The Guild rounds take time, so press the button before you start talking about it, or cut the wait in editing.
 
-For sponsor demonstrations, first record actual model responses, Guild session completion and ClickHouse writes/queries using the intended accounts. A configured status alone does not establish any of those outcomes. Keep that evidence separate from this offline script.
+| Time | Screen | Say |
+|---|---|---|
+| 0:00-0:15 | Chequeado article | "In May 2026, Chequeado found medical histories, disability certificates and ID cards on PAMI's public purchase site. Nothing checked the files before they went up. We built that check." |
+| 0:15-0:25 | `/live` | Press **Send 8 fictional office files**. "Three local offices upload eight purchase files. Some are clean. Some carry patient data." |
+| 0:25-0:50 | `/live` file cards | Point at the steps as they run. "Rule-based detectors look for IDs. AkashML's open text model reads for re-identification risk. Its vision model reads scanned pages. For files that can be cleaned, Guild agents take over. The orchestrator sorts the information into clinical, procurement and public. The public agent lists what to remove. A public reviewer checks the cleaned copy. If it fails, the feedback goes back for another round, up to three." Name the round and verdict you see on screen. |
+| 0:50-1:05 | A needs-review card | "If the agents can't agree, or the file is uncertain, it waits for a person. A Guild agent writes a one-line note. The reviewer opens the original and decides." |
+| 1:05-1:20 | Purchase page of a cleaned file | Show the **Removed** list. Open **Original (internal)**, then **Public copy**. "The text is deleted from the PDF, not covered. Each removal is listed by type and page. The public copy no longer points to anyone." |
+| 1:20-1:35 | `/public` | "This is what the public sees. Neutral file names, because an upload name can carry a patient's name. No patient data. Blocked files have no link at all." |
+| 1:35-1:50 | `/dashboard` | "Every decision goes to ClickHouse. To show PAMI scale we loaded one million simulated events, clearly labeled. Unsafe uploads by office, by data type, by month, and files affected by a rule update. Each query shows its time in milliseconds." |
+| 1:50-2:00 | Issue #2 | "Most of this code was written by AI, so we ran Semgrep on it. Its first scan found a CSRF hole that could publish a held medical file. We fixed it. Patient files stay private. Public purchases stay public." |
 
+Do not claim a FAIL round or a specific count unless it shows on screen in that take.
+
+Newer builds rename the buttons: **Test data > Load synthetic files** and **Clear workspace**. Use whatever the site shows.
 
 ## Extend the same gate with a lesson
 
-Keep the approved fictional technical specification from the first walkthrough as the legitimate-publication counterpart.
+Approve one harmless file first, such as the technical specification, as the legitimate-publication counterpart.
 
 1. **Open the source-backed library.** Visit `/learning` while signed in. Read the PAMI source card, its evidence status and stated limits. Choose **Build a rule** (`POST /learning/from-case/pami-private-attachments`). A draft appears at `/learning/rules/{id}`. Río Negro is a separate fictional publication adaptation, not a reconstruction of that incident's access mechanism.
 2. **Inspect before testing.** Read the phrase groups, proposed HOLD action and improvement suggestions. Open a positive and a benign example using **Open fictional PDF** (`/learning/rules/{id}/example/{index}.pdf`). These contain fictional references, not leaked records.
@@ -32,8 +38,8 @@ Keep the approved fictional technical specification from the first walkthrough a
 
 With AkashML configured, **Bring a new report** accepts a sanitized summary and source URL through `/learning/propose`. The URL is stored rather than fetched or independently verified. The submission remains labeled unverified; the model produces a candidate requiring the same tests and authenticated activation. Do not paste real leaked records, identifiers or credentials. Offline, use the authored cases and show the clear unavailable-model state.
 
-The current walkthrough does not verify the event's three-sponsor requirement. A separate observed run must record the intended AkashML result, Guild brief/session completion and ClickHouse write/query, or another approved substantive sponsor combination. Neither configuration nor mocked tests establish those integrations. Open `/exposures` for the sourced comparison. It separates companies from public bodies and does not invent an ordinal ranking from incomparable or unverified quantities.
+Open `/exposures` for the sourced comparison. It separates companies from public bodies and does not invent an ordinal ranking from incomparable or unverified quantities.
 
-## Team live view
+## Running locally without sponsors
 
-Open `/live` and press **Send 8 fictional office files**. Observe the actual queued checks and review cards; without configured model/OCR services, incomplete cases remain private for review. This view preserves the team’s live flow while the detailed office/review pages remain available.
+Without AkashML, Guild and ClickHouse, the same `/live` flow runs, but files that need a model stay private for review, and the simulated history panel is hidden. See [README.md](README.md) for setup.

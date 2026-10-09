@@ -1,8 +1,54 @@
-# Publication Gate
+# ArgenSec Gate (Publication Gate)
 
-The team’s **primary deliverable** is Publication Gate: a publication checkpoint for procurement attachments. It checks each file, retains uncertain documents for review, and enforces the current decision and learned-rule revision on public downloads. Incident learning extends this application with tested PDF checks and reusable review artifacts. The broader BREACHSTOP server-defense proposal remains a separate future module.
+ArgenSec Gate checks every PDF before PAMI, Argentina's health insurer for retirees, publishes it on its public purchase site. In May 2026, [Chequeado found](https://chequeado.com/investigaciones/pami-expone-datos-medicos-y-documentos-sensibles-de-sus-afiliados-en-su-sitio-web/) medical histories, disability certificates and ID card copies on that site. Nothing checked the files first. This is that check.
 
-The included test fixtures contain fictional documents inspired by [Chequeado's reporting on PAMI attachments](https://chequeado.com/investigaciones/pami-expone-datos-medicos-y-documentos-sensibles-de-sus-afiliados-en-su-sitio-web/). The [incident research](../docs/INCIDENTS.md) and [team problem analysis](../PAMI%20Data%20Exposure%20Problem%20Analysis.md) provide context. No real government system is connected. Detection is fallible; this is not a guarantee that every private document will be identified.
+Live demo: [argensec.pujia.ar](https://argensec.pujia.ar). Video script: [DEMO.md](DEMO.md). Security review: [SEMGREP-REPORT.md](SEMGREP-REPORT.md) and [issue #2](https://github.com/MartinPuli/Argentina-is-fuck-ng-opensourced/issues/2).
+
+All documents are fictional. No real government system is connected. Detection can miss things. This is not a guarantee that every private document is caught. The [incident research](../docs/INCIDENTS.md) and [team problem analysis](../PAMI%20Data%20Exposure%20Problem%20Analysis.md) give context.
+
+## What happens to a file
+
+1. Rule-based detectors run first, with no model. They catch DNI and CUIL numbers, PAMI affiliate numbers, birth dates, home addresses, ICD-10 codes, disability certificates and ID card copies. Company tax IDs stay public on purpose.
+2. Scanned pages are read with Spanish OCR and an AkashML vision model.
+3. An AkashML text model reads the text. It flags re-identification risk, such as age plus town plus hospital, and lists the exact phrases that point to a person.
+4. Rules learned from documented incidents run too (see below).
+5. The gate decides. Clean files are published. Wholly clinical or identity files are kept private. Files with removable patient details go to the Guild clearance loop. Anything uncertain waits for a person.
+6. The public download route checks the decision and the rule version on every request. Public files get neutral names like `compra-12-adjunto-34.pdf`, because an upload name can contain a patient's name.
+
+Models can only add caution. A rule-based block is final. A missing or failed check keeps the file private.
+
+## Clearance levels and the Guild loop
+
+Each piece of information belongs to one of three levels:
+
+- **clinical:** the full original. Internal only.
+- **procurement:** what buyers and suppliers need. No patient identity.
+- **public:** procurement minus anything that could point to a person when combined.
+
+The loop, one Guild session per step:
+
+1. The **orchestrator** agent ([prompt](guild-orchestrator/PROMPT.md)) classifies each piece of information into a level.
+2. The **public agent** ([prompt](guild-public/PROMPT.md)) lists the exact text to remove for the public level.
+3. The app removes that text from the PDF for real (deleted, not covered), then reruns the detectors on the cleaned bytes.
+4. The **public review agent** ([prompt](guild-verifier/PROMPT.md)) reads only the cleaned copy and answers PASS or FAIL. On FAIL its feedback goes back to the public agent. At most 3 rounds.
+5. The cleaned copy is published only if the reviewer says PASS and the detectors find nothing. Otherwise a person decides.
+
+A **reviewer-note agent** ([prompt](guild-agent/PROMPT.md)) writes a one-line note for each held file from masked findings only.
+
+The app drives the loop. The orchestrator prompt allows native sub-agent calls, but they did not trigger in our tests, so the app calls each agent in turn. Code: [agent.py](src/gate/agent.py) (`clearance()`, `verify()`, `brief()`) and [sanitize.py](src/gate/sanitize.py).
+
+## Sponsor tools
+
+- **ClickHouse:** data storage and analysis at PAMI scale. It holds the audit log of every decision, cleaned copy, agent verdict and human review. It also holds 1,000,000 clearly labeled simulated history events ([simulate_history.py](scripts/simulate_history.py)). The `/dashboard` page runs live queries on them: unsafe uploads by UGL, by data type, by month, and files affected by a rule update. Each shows its measured query time.
+- **AkashML:** inference. An open text model (`openai/gpt-oss-120b`) reads each file for re-identification risk and lists exact phrases to remove. A vision model (`Qwen/Qwen3.8-27B`) reads scanned pages. Code: [llm.py](src/gate/llm.py).
+- **Guild.ai:** runs the agent procedure above.
+- **Semgrep:** reviewed the AI-written code. The first scan ([initial-scan.json](semgrep/initial-scan.json)) found forms with no CSRF protection. Any site could make a signed-in reviewer approve a held medical file. We fixed it with a same-origin check. The later scan's findings were false positives. Our own review found two more bugs in rechecks and public files. See [SEMGREP-REPORT.md](SEMGREP-REPORT.md).
+
+## Live demo site
+
+[argensec.pujia.ar](https://argensec.pujia.ar) runs with `GATE_OPEN_DEMO=1`, so judges can open staff pages without a login. All data there is fictional. This setting is for the demo only. Never set it in a real deployment.
+
+On `/live`, press **Send 8 fictional office files** to run the demo. Press **Reset demo** to clear purchases and files between takes. Learned rules and the audit history stay.
 
 ## Run locally
 
@@ -90,28 +136,24 @@ The bundle contains `SKILL.md`, an improvement proposal and saved evidence. Expo
 
 [Integrated request tests](tests/test_learning_flow.py) render the library and lifecycle pages, inspect generated example PDFs, and verify exact public PDF bytes before/after activation and recheck. They use temporary SQLite and constructed model outputs to isolate learned-rule behavior; no live model or sponsor outcome is established. See [DEMO.md](DEMO.md).
 
-## Sponsor connectors and evidence
+## Sponsor setup and limits
 
-| Tool | Implemented connector | Evidence boundary |
-|---|---|---|
-| AkashML | Sends extracted text and rendered page images to configured text/vision models; can draft inactive PDF-rule candidates from sanitized new-report summaries. Repository defaults are `openai/gpt-oss-120b` and `Qwen/Qwen3.8-27B`. | A configured key is not a successful analysis. Provider/model availability must be checked separately. An open model does not establish private processing or retention guarantees. |
-| Guild | Uses an authenticated local `guild` CLI to request reviewer briefs from the selected workspace/agent. | Briefs assist a reviewer and have no publication authority. Settings or a running CLI do not establish a completed session. |
-| ClickHouse | Stores decision/review events and supplies audit queries when configured. Otherwise events use SQLite. | Configuration is not evidence that a remote write or query succeeded. Audit charts describe initial decisions, not current publication inventory. |
-| Semgrep | Teammate-reported security scan motivated the original CSRF fix. | The original scan output was not independently verified in this iteration. Do not present that report as a fresh scan result. |
+- **AkashML:** set `AKASHML_API_KEY`. Defaults are `openai/gpt-oss-120b` and `Qwen/Qwen3.8-27B`. It also drafts inactive rule candidates from new incident reports. An open model does not by itself guarantee private processing or retention.
+- **Guild.ai:** needs the `guild` CLI signed in on the host, plus `GUILD_WORKSPACE` and `GUILD_AGENT` (the reviewer-note agent). Agent definitions are in the `guild-*/` folders. If Guild does not answer, the file stays private.
+- **ClickHouse:** set `CLICKHOUSE_HOST` and credentials. Without it, events go to SQLite and the simulated history panel is hidden. Fill the simulated table with `uv run python scripts/simulate_history.py --rows 1000000`. Every row is flagged `simulated = 1`.
+- **Semgrep:** raw output is in [semgrep/](semgrep/). The first scan is [initial-scan.json](semgrep/initial-scan.json). The scans after the fix are [before.json](semgrep/before.json) and [after.json](semgrep/after.json).
 
-The current origin middleware compares scheme, host and effective port and rejects missing, null or mismatched origins on mutating requests, with same-origin Referer fallback only when Origin is absent. Request tests check these boundaries.
-
-For a separately verified sponsor run, configure the intended accounts in `.env` and start without the offline environment overrides. Do not label integrations executed until actual results are observed. The event still requires substantive use of at least three sponsors; the offline walkthrough demonstrates the local control only. See the [event brief](../docs/EVENT-BRIEF.md).
+The origin middleware compares scheme, host and port. It rejects missing, null or mismatched origins on every state-changing request. It falls back to a same-origin Referer only when Origin is absent. Request tests check this.
 
 ## Limits and data handling
 
 - Use the provided fictional PDFs or other owned synthetic data. No real patient files or leaked records are needed.
-- Purchase fields such as item, procedure, office and amount are public immediately. Their plaintext content is not classified. Released filenames are public too; filename sanitization protects header syntax, not privacy. Do not place personal information in these fields.
+- Purchase fields such as item, procedure, office and amount are public immediately. Their plaintext content is not classified. Do not place personal information in these fields. Public files use neutral names; the original upload name stays internal.
 - Pattern recognition, OCR, model judgments and human review can miss sensitive content. Mixed-image coverage is improved, not exhaustive document-format verification. No clinical-image accuracy claim or broad prevention rate is established.
-- Configured model connectors receive document content. Guild receives purchase/file metadata and findings; deterministic identifiers are masked, but filenames and model-generated explanations are not a complete redaction boundary. Audit events include filenames and reviewer identity.
+- Configured model connectors receive document content. The Guild orchestrator and public agent receive the document text. The public reviewer receives only the cleaned text. The reviewer-note agent receives masked findings and the filename. Audit events include filenames and reviewer identity.
 - The single configured staff account is a prototype identity boundary, not a multiuser identity provider. Individual staff accountability, rate limiting, durable job workers and broader authorization remain future work.
 - SQLite contains original PDFs; there is no application-level database encryption. Processing remains synchronous. External-service failures and storage availability need operational hardening.
-- Alternate publication paths, copies previously downloaded, credential theft and full-host recovery are outside this component's protection. No public deployment or real institutional integration is verified here.
+- Alternate publication paths, copies previously downloaded, credential theft and full-host recovery are outside this component's protection. The live site is a demo with fictional data. No real institutional integration exists.
 
 ## License
 

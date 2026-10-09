@@ -2,13 +2,16 @@
 
 ## Hackathon build: ArgenSec Gate
 
-**Team demo:** [argensec.pujia.ar](https://argensec.pujia.ar) · **Code and setup:** [gate/](gate/README.md) · **Walkthrough:** [gate/DEMO.md](gate/DEMO.md)
+ArgenSec Gate checks every PDF before PAMI publishes it on its public purchase site. Clean files are published. When patient details can be removed, a cleaned copy is published instead. Everything else stays private until a person decides. All documents are fictional.
 
-The team's publication gate checks procurement PDFs before they become public. It holds uncertain files for a person, blocks identified private data, and checks authorization again when a public download is requested. Fictional documents are inspired by documented PAMI publication failures.
+**Try it:** open [argensec.pujia.ar/live](https://argensec.pujia.ar/live) and press **Send 8 fictional office files**. Watch each check run, then open the review cards, the [public portal](https://argensec.pujia.ar/public) and the [audit dashboard](https://argensec.pujia.ar/dashboard).
 
-The incident-learning extension turns sourced lessons into bounded PDF rules, tests them against fictional sensitive and benign examples, activates the reviewed version, and rechecks existing files. Each lesson exports a reusable skill and improvement proposal. The staff workspace also includes live processing activity and an [Argentina exposure comparison](docs/research/EXPOSURE-RANKING-NOTES.md) with companies and public bodies kept separate.
+- **ClickHouse:** stores every decision, plus 1,000,000 clearly labeled simulated events with live queries and measured query time.
+- **AkashML:** an open text model finds re-identification risk and the exact phrases to remove. A vision model reads scanned pages.
+- **Guild.ai:** runs the agent procedure. Three clearance levels, then a public agent and a public reviewer that loop until the cleaned copy passes.
+- **Semgrep:** reviewed the AI-written code. Findings and fixes are in [issue #2](https://github.com/MartinPuli/Argentina-is-fuck-ng-opensourced/issues/2).
 
-The app contains AkashML, Guild and ClickHouse adapters, and records a Semgrep finding and fix. Local tests do not establish a live three-sponsor run. The team supplied the demo URL; deployment of this branch's extensions at that URL is not yet verified.
+Details: [gate/README.md](gate/README.md) · Video script: [gate/DEMO.md](gate/DEMO.md) · Submission: [gate/SUBMISSION.md](gate/SUBMISSION.md). Also built: rules learned from documented incidents (`/learning`) and an [Argentina exposure comparison](docs/research/EXPOSURE-RANKING-NOTES.md).
 
 ## Argentina government data leaks
 
