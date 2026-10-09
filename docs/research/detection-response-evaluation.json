@@ -2,7 +2,7 @@
   "schema_version": 1,
   "review_date": "2026-10-09",
   "narrative_file": "DETECTION-AND-RESPONSE-EVALUATION.md",
-  "fulltext_review_count": 2,
+  "fulltext_review_count": 3,
   "records": [
     {
       "id": "DRE-01",
@@ -87,6 +87,47 @@
       "source_derived_prose_budget_limit": 130,
       "first_preprint_within_primary_window": false,
       "venue_publication_within_primary_window": true,
+      "reproduced_by_us": false,
+      "code_executed": false,
+      "review_date": "2026-10-09"
+    },
+    {
+      "id": "DRE-03",
+      "queue_id": "AD09",
+      "title": "SoK: Reshaping Research on Network Intrusion Detection Systems",
+      "authors": [
+        "Giovanni Apruzzese"
+      ],
+      "first_publication_date": "2026-04-19",
+      "version_date": "2026-04-19",
+      "version_timestamp": "2026-04-19T17:54:59Z",
+      "version": "arXiv:2604.17556v1",
+      "status": "author-reported AsiaCCS 2026 acceptance; preprint version reviewed",
+      "venue": "ACM AsiaCCS 2026",
+      "doi": "10.1145/3779208.3807488",
+      "url": "https://arxiv.org/abs/2604.17556v1",
+      "fulltext_url": "https://arxiv.org/html/2604.17556v1",
+      "reading_status": "fulltext_targeted",
+      "counts_as_review": true,
+      "reading_depth": "Relevant full-text framing, trust assumptions, methods, evaluation and limitations",
+      "locators": {
+        "scope": [
+          "§1.1",
+          "§2.1–2.3"
+        ],
+        "assumptions": [
+          "§3–5"
+        ],
+        "results_and_denominators": [
+          "§6.1–6.3; Table 1"
+        ],
+        "limitations": [
+          "§7.1–7.2"
+        ]
+      },
+      "narrative_anchor": "dre-03",
+      "source_derived_prose_budget_limit": 130,
+      "within_primary_window": true,
       "reproduced_by_us": false,
       "code_executed": false,
       "review_date": "2026-10-09"

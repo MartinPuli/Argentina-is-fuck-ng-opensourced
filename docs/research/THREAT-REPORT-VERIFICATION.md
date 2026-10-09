@@ -1,6 +1,6 @@
 # Threat-report verification: extraction is not corroboration
 
-Reviewed **2026-10-09** against the **2025-10-09–2026-10-09** research window. Two papers received targeted full-text review; one requested paper remains unread. No experiments were reproduced. No criminal feeds, leaked records or author software were accessed or executed.
+Reviewed **2026-10-09** against the **2025-10-09–2026-10-09** research window. Three papers received targeted full-text review; one requested paper remains unread. No experiments were reproduced. No criminal feeds, leaked records or author software were accessed or executed.
 
 ## Reading record
 
@@ -9,8 +9,11 @@ Reviewed **2026-10-09** against the **2025-10-09–2026-10-09** research window.
 | AD08 | [Official paper record](https://doi.org/10.1109/ACSAC67867.2025.00052), [author PDF](https://angelosk.github.io/Papers/2025/IoC_extraction_paper_CR.pdf), [conference schedule](https://www.acsac.org/2025/program/final/) | Targeted full text. Contextual indicator annotation; conflicting label totals recorded below. |
 | AD18 | [Official accepted list](https://raid2026.org/accepted.html), [official metadata CSV](https://raid2026.org/data/accepted_papers.csv), [author repository](https://github.com/Eternaljj/TRAIL) | Index only. Public full text not located; attendee access required by the conference page. |
 | TRV02 | [Version history](https://arxiv.org/abs/2507.06252), [reviewed v2](https://arxiv.org/html/2507.06252v2) | Targeted full text, substituted for AD18. Pre-window first submission; in-window revision. |
+| TRV03 / AD15 | [Venue DOI](https://doi.org/10.1145/3719027.3765026), [institutional manuscript](https://pure.tudelft.nl/ws/portalfiles/portal/256014744/Bouwman_et_al._2025_Can_IOCs_Impose_Cost_The_Effects_of_Publishing_Threat_-_full_version_with_appendices.pdf) | Targeted full text. Observational publication-timing study; unnumbered accepted manuscript. |
 
 Titles, authors, versions, sections read and exact denominators are in [the companion records](threat-report-verification.json). The publisher-linked version of AD08 was not readable in this session; the review uses the hashed author PDF. AD18's conference is after the cutoff, and its acceptance metadata does not establish a public publication date. TRV02 was chosen because its accessible methods directly examine untrusted text entering a CTI workflow; it does not stand in for AD18's unknown results.
+
+An **indicator of compromise** is a clue such as a suspicious network address. TRV03 measures when such clues appeared in observed traffic; it cannot establish that each match was a real intrusion or that publishing the clue caused an attacker to stop. This supports checking current applicability before translating historical intelligence into a live response.
 
 ## Implications for this project — our analysis, not demonstrated product results
 

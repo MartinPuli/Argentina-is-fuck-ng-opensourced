@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-09 - Transferred checks, reconciled corpus and teammate review
+
+- Added five targeted full-text reviews after the 44-record checkpoint, bringing the evidence to 49 reviewed records across 13 files. Three metadata-only inaccessible records remain excluded. Eleven of 18 prioritized discovery candidates are now reviewed.
+- Recovered all ten historical index snapshots by exact hashes. Reconciled 2,364 entries into 2,362 candidate groups; 29 groups match reviews and 2,333 do not. Preserved versions, uncertain aliases, grouping evidence and the original discovery counts; corrected an arXiv identifier parsing gap without rewriting the old snapshot.
+- Added an authored lesson-transfer experiment with 129 main checks. A separate checker passed 520 assertions over 140 read responses in 20 further runs. Changed supported exposures were contained; unsupported formats, incomplete inventory and an unapproved rule remained explicit misses. Containment also interrupted the affected legitimate identity.
+- Kept simulated rule approval, same-user processes and deterministic checking distinct from autonomous learning, institutional authorization, hardened isolation or deployment.
+- Fetched the shared repository; main remained current and a new publication-gate branch appeared. Inspected the teammate's separate document-protection prototype and recorded three grounded findings without merging or changing that branch. Sponsor adapters and offline tests do not establish a live integrated run.
+
 ## 2026-10-09 — Observed exposure, independent response checks and six paper reviews
 
 - Added an observed-credential experiment with separate app, gateway, controller and observer processes. The controller corroborates an actual fictional exposure instead of accepting a trusted compromise flag.

@@ -72,13 +72,23 @@ The main run passed **88 declared checks**. A separately authored [checker](../.
 
 Here, “repair” is a trusted switch disabling the fixture route, not an agent-written patch or verified release. The observer knows the route and response format; it is not a general leak detector. Requests are sequential and observation times are scheduled. No detection latency, AI contribution, sponsor integration, public deployment, transactional recovery or protection from hostile same-user code is established. Issuing a replacement before app provisioning can strand state on partial failure; the experiment reports failure rather than proving crash recovery.
 
+## Can a defense check transfer to another service?
+
+The [lesson-transfer experiment](../../experiments/lesson-transfer/README.md) compares an original-path check with an explicitly authored mechanism check over the same owner-supplied route inventory. A separate controller re-fetches an observation and matches it to its own gateway registry before revoking that service's credential. A pinned rule is not permission to inspect or modify an unenrolled service.
+
+The main run passed 129 assertions. For a renamed route and nested credential field, the original check allowed one further fictional record after checking; the mechanism check allowed zero. One record had already escaped. The affected legitimate account completed 2/3 requests instead of 3/3, while B completed both batches. Public metadata stayed available. Exposure outside the inventory and a top-level JSON array remained undetected.
+
+A root-authored [independent checker](../../experiments/lesson-transfer/independent_check.py) then ran ten additional cases in both modes: **520 assertions and 140 read responses**. It confirmed three transferable changed exposures, harmless-metadata preservation, five coverage gaps, and rejection of an unapproved rule version. Each contained case still cost A one legitimate request; B completed both six-record batches in every run. The 129-character-key case also exposed a representation mismatch: the observer can collect it, but the controller rejects its length. Unsupported coverage must be reported explicitly before using this mechanism in a product.
+
+This is transfer of an authored, preimplemented check with simulated owner approval. It does not establish that an agent derived a defense from an Argentine breach, discovered unknown routes, learned a new mechanism, or safely propagated policy between institutions. [Main evidence](../../experiments/lesson-transfer/results.json) · [Independent evidence](../../experiments/lesson-transfer/independent-results.json).
+
 ## Next measurements for the product
 
 1. Measure the time and reliability of obtaining trustworthy compromise evidence under both malicious and legitimate traffic.
 2. Deploy separate protected enforcement and evaluation components, remove bypass routes, and test concurrent requests, controller failure and recovery.
 3. Demonstrate actual agent investigation, code repair, built-asset exposure removal and exact-revision deployment through three sponsor integrations.
 4. Compare the agent against the deterministic baseline, including incorrect interventions, preserved legitimate work, cost and repair quality.
-5. Turn a reviewed incident into a new test, evaluate unseen variations with and without that lesson, then show narrowly scoped transfer to another service.
+5. Extend authored-check transfer into evidenced lesson generation and actual owner review; report incomplete format and inventory coverage instead of treating it as a clean result.
 6. Add separate acceptance scenarios for employee misuse, public attachments and recipient exports before claiming broader coverage of the Argentina report.
 # Additional publication-boundary experiment
 

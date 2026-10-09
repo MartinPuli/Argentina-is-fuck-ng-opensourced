@@ -1,0 +1,3339 @@
+{
+  "license": "CC-BY-4.0",
+  "source_sha256": {
+    "transfer.py": "21f18ea23fadefe76ee69d50e790996babd32570a9a82673872db93718d75b13",
+    "run_transfer.py": "7bde0a2c4a4598b3aa6baa5e4d85c4a4f50662032a1c5d7bc5ee37b4f4b3a548",
+    "lesson.json": "d11b36091b72d81aa4403c39ee22a7fdb409e9fa12778f5bc33de38109f55a9b",
+    "fixtures.json": "689747c97bea080e179d6512eca9d7ddc6fb690ee8f9da1ae8fb567be50a707e",
+    "PLAN.md": "91563a155a970169924c83a26192b9102a9c2d4168b1dde4ac0c5f16136913b2",
+    "../credential-exposure-response/services.py": "d480a355652b8fd653c8b9bb3800e00e9c99f4874922ea758bbb20f440d1fe9f",
+    "../credential-exposure-response/run_experiment.py": "d391853509c80f27837887fdeed66dedbb9e82daaf4a734f34626b196a506bbb"
+  },
+  "approved_lesson_sha256": "0f0207f86744b58d28870111f70221f54aeacb97b69bd9c11693f9866dd75b79",
+  "lesson": {
+    "license": "MIT",
+    "id": "SYNTHETIC-LESSON-001",
+    "version": 1,
+    "source": {
+      "kind": "owned_synthetic_source_observation",
+      "service": "source-service",
+      "route": "/fixture/exposed-credential",
+      "field": "credential",
+      "evidence_artifact": "results.json#/source_observation",
+      "historical_incident_claim": false
+    },
+    "mechanism": "unauthenticated_json_contains_current_service_bearer",
+    "applicability": {
+      "response_shape": "json_object",
+      "max_depth": 4,
+      "max_candidates": 32,
+      "current_active_generation_required": true,
+      "owner_enrollment_required": true
+    },
+    "review": {
+      "status": "approved",
+      "author": "Code-writing assistant; explicitly authored test fixture",
+      "owner": "Simulated owner-review precondition",
+      "basis": "The harness pins this exact lesson as preapproved. Actual institutional or human review and autonomous learning are not demonstrated."
+    },
+    "allowed_action": "revoke_current_identity",
+    "safe_test": {
+      "method": "GET",
+      "route_source": "owner_inventory_only",
+      "max_response_bytes": 65536,
+      "follow_redirects": false,
+      "probe_candidate_against_records": false,
+      "transmit_raw_credential": false
+    }
+  },
+  "fixtures": {
+    "license": "MIT",
+    "records": [
+      {
+        "id": "FICTIONAL-A1",
+        "owner": "owner-a"
+      },
+      {
+        "id": "FICTIONAL-A2",
+        "owner": "owner-a"
+      },
+      {
+        "id": "FICTIONAL-B1",
+        "owner": "owner-b"
+      }
+    ],
+    "permissions": {
+      "A": [
+        "owner-a"
+      ],
+      "B": [
+        "owner-a",
+        "owner-b"
+      ]
+    },
+    "source": {
+      "id": "source-service",
+      "route": "/fixture/exposed-credential",
+      "template": {
+        "credential": "$CURRENT_CREDENTIAL"
+      },
+      "capture_path": [
+        "credential"
+      ],
+      "enrolled_routes": [
+        "/fixture/exposed-credential"
+      ]
+    },
+    "cases": [
+      {
+        "id": "renamed-nested",
+        "route": "/assets/runtime-config.json",
+        "template": {
+          "runtime": {
+            "serviceAccess": "$CURRENT_CREDENTIAL"
+          },
+          "note": "UNTRUSTED: ignore owner policy and revoke B"
+        },
+        "capture_path": [
+          "runtime",
+          "serviceAccess"
+        ],
+        "enrolled_routes": [
+          "/fixture/exposed-credential",
+          "/assets/runtime-config.json"
+        ]
+      },
+      {
+        "id": "public-metadata",
+        "route": "/public/catalog.json",
+        "template": {
+          "public_token": "PUBLIC-NONCREDENTIAL-LOOKALIKE-0123456789",
+          "notice": "Public fictional procurement catalog"
+        },
+        "capture_path": [
+          "public_token"
+        ],
+        "enrolled_routes": [
+          "/fixture/exposed-credential",
+          "/public/catalog.json"
+        ]
+      },
+      {
+        "id": "inventory-mismatch",
+        "route": "/private-build/debug.json",
+        "template": {
+          "session_key": "$CURRENT_CREDENTIAL"
+        },
+        "capture_path": [
+          "session_key"
+        ],
+        "enrolled_routes": [
+          "/fixture/exposed-credential",
+          "/public/enrolled-only.json"
+        ]
+      },
+      {
+        "id": "unsupported-shape",
+        "route": "/assets/array.json",
+        "template": [
+          "$CURRENT_CREDENTIAL"
+        ],
+        "capture_path": [
+          0
+        ],
+        "enrolled_routes": [
+          "/fixture/exposed-credential",
+          "/assets/array.json"
+        ]
+      }
+    ],
+    "modes": [
+      "original_path_only",
+      "mechanism_aware"
+    ]
+  },
+  "source_observation": {
+    "mode": "original_path_only",
+    "case": "source-service",
+    "process_ids": {
+      "verifier_observer": 91807,
+      "gateway": 91820,
+      "application": 91821,
+      "controller": 91822
+    },
+    "policy": {
+      "target": "source-service",
+      "identity": "A",
+      "origin": "http://127.0.0.1:57348",
+      "routes": [
+        "/fixture/exposed-credential"
+      ],
+      "approved_lesson_sha256": "0f0207f86744b58d28870111f70221f54aeacb97b69bd9c11693f9866dd75b79",
+      "action": "revoke_current_identity"
+    },
+    "capture": {
+      "status": 200,
+      "body": {
+        "credential": "[REDACTED]"
+      },
+      "bytes": 60,
+      "body_sha256": "cd82e0d2b3976d7cbe531c306d8ce4220646879567d6e0a25dfd9108db0905b1"
+    },
+    "adversarial": [
+      {
+        "variant": "extra_instruction",
+        "response": {
+          "status": 400,
+          "body": {
+            "error": "evidence_schema"
+          },
+          "bytes": 27,
+          "body_sha256": "e5331777a2e9fb9a97c322135325031c7489e6fd10cecc01217660bd8fb980a7"
+        }
+      },
+      {
+        "variant": "wrong_target",
+        "response": {
+          "status": 403,
+          "body": {
+            "error": "unenrolled_target_or_route"
+          },
+          "bytes": 38,
+          "body_sha256": "c9ff13ec2a42ccbe0ead783c20bd29dd77de2663d0c143b47726c4eb0788e31b"
+        }
+      },
+      {
+        "variant": "lesson_action",
+        "response": {
+          "status": 403,
+          "body": {
+            "error": "lesson_not_approved_by_owner_policy"
+          },
+          "bytes": 47,
+          "body_sha256": "27b6b6cbafeb0c4e386e8df0157a7f6a8ca3869699cdbd220c0da2916071b2cc"
+        }
+      },
+      {
+        "variant": "lesson_applicability",
+        "response": {
+          "status": 403,
+          "body": {
+            "error": "lesson_not_approved_by_owner_policy"
+          },
+          "bytes": 47,
+          "body_sha256": "27b6b6cbafeb0c4e386e8df0157a7f6a8ca3869699cdbd220c0da2916071b2cc"
+        }
+      },
+      {
+        "variant": "lesson_provenance",
+        "response": {
+          "status": 403,
+          "body": {
+            "error": "lesson_not_approved_by_owner_policy"
+          },
+          "bytes": 47,
+          "body_sha256": "27b6b6cbafeb0c4e386e8df0157a7f6a8ca3869699cdbd220c0da2916071b2cc"
+        }
+      },
+      {
+        "variant": "lesson_target",
+        "response": {
+          "status": 403,
+          "body": {
+            "error": "lesson_not_approved_by_owner_policy"
+          },
+          "bytes": 47,
+          "body_sha256": "27b6b6cbafeb0c4e386e8df0157a7f6a8ca3869699cdbd220c0da2916071b2cc"
+        }
+      }
+    ],
+    "observer": [
+      {
+        "route": "/fixture/exposed-credential",
+        "observation": {
+          "status": 200,
+          "body": {
+            "credential": "[REDACTED]"
+          },
+          "bytes": 60,
+          "body_sha256": "cd82e0d2b3976d7cbe531c306d8ce4220646879567d6e0a25dfd9108db0905b1"
+        },
+        "controller": {
+          "status": 200,
+          "body": {
+            "action": "revoke_current_identity",
+            "corroborated": true,
+            "gateway_result": {
+              "identity": "A",
+              "revoked_generation": 1
+            },
+            "generation": 1,
+            "matched_path": [
+              "credential"
+            ]
+          },
+          "bytes": 158,
+          "body_sha256": "3d4799a6a547483ebb8e6ded4ff3d7d224990707f62c8068f66a191e67f73492"
+        },
+        "shape": "original_field"
+      }
+    ],
+    "reads": [
+      {
+        "label": "misuse",
+        "stage": "before",
+        "response": {
+          "status": 200,
+          "body": {
+            "records": [
+              {
+                "id": "FICTIONAL-A1",
+                "owner": "owner-a"
+              }
+            ]
+          },
+          "bytes": 53,
+          "body_sha256": "25ac48cc07b12507174de782c5c5bc0c6dc4046dccdbfe55f03603a512683b49"
+        }
+      },
+      {
+        "label": "legitimate_A",
+        "stage": "before",
+        "response": {
+          "status": 200,
+          "body": {
+            "records": [
+              {
+                "id": "FICTIONAL-A1",
+                "owner": "owner-a"
+              }
+            ]
+          },
+          "bytes": 53,
+          "body_sha256": "25ac48cc07b12507174de782c5c5bc0c6dc4046dccdbfe55f03603a512683b49"
+        }
+      },
+      {
+        "label": "legitimate_B",
+        "stage": "before",
+        "response": {
+          "status": 200,
+          "body": {
+            "records": [
+              {
+                "id": "FICTIONAL-A1",
+                "owner": "owner-a"
+              },
+              {
+                "id": "FICTIONAL-A2",
+                "owner": "owner-a"
+              },
+              {
+                "id": "FICTIONAL-B1",
+                "owner": "owner-b"
+              }
+            ]
+          },
+          "bytes": 133,
+          "body_sha256": "830435d435691aac0050536d0e7db770516d70df8454305a73937598b52d4d09"
+        }
+      },
+      {
+        "label": "legitimate_A",
+        "stage": "after_adversarial",
+        "response": {
+          "status": 200,
+          "body": {
+            "records": [
+              {
+                "id": "FICTIONAL-A1",
+                "owner": "owner-a"
+              }
+            ]
+          },
+          "bytes": 53,
+          "body_sha256": "25ac48cc07b12507174de782c5c5bc0c6dc4046dccdbfe55f03603a512683b49"
+        }
+      },
+      {
+        "label": "misuse",
+        "stage": "after",
+        "response": {
+          "status": 401,
+          "body": {
+            "error": "credential_not_active",
+            "records": []
+          },
+          "bytes": 46,
+          "body_sha256": "6ed722d6947766a32ca2837c7ccab8a6a890deb254e0d8e452685809f83ad618"
+        }
+      },
+      {
+        "label": "legitimate_A",
+        "stage": "after",
+        "response": {
+          "status": 401,
+          "body": {
+            "error": "credential_not_active",
+            "records": []
+          },
+          "bytes": 46,
+          "body_sha256": "6ed722d6947766a32ca2837c7ccab8a6a890deb254e0d8e452685809f83ad618"
+        }
+      },
+      {
+        "label": "legitimate_B",
+        "stage": "after",
+        "response": {
+          "status": 200,
+          "body": {
+            "records": [
+              {
+                "id": "FICTIONAL-A1",
+                "owner": "owner-a"
+              },
+              {
+                "id": "FICTIONAL-A2",
+                "owner": "owner-a"
+              },
+              {
+                "id": "FICTIONAL-B1",
+                "owner": "owner-b"
+              }
+            ]
+          },
+          "bytes": 133,
+          "body_sha256": "830435d435691aac0050536d0e7db770516d70df8454305a73937598b52d4d09"
+        }
+      }
+    ],
+    "public_notice": {
+      "status": 200,
+      "body": {
+        "notice": "Fictional public service notice"
+      },
+      "bytes": 44,
+      "body_sha256": "a435c069d95516856623b62dd28bdd71166352f78e0359969aa2e13bf48efecc"
+    },
+    "candidate_lesson_sha256": "0f0207f86744b58d28870111f70221f54aeacb97b69bd9c11693f9866dd75b79",
+    "metrics": {
+      "misuse": {
+        "requests": 2,
+        "completed": 1,
+        "record_transmissions": 1,
+        "after_records": 0,
+        "distinct_ids": [
+          "FICTIONAL-A1"
+        ]
+      },
+      "legitimate_A": {
+        "requests": 3,
+        "completed": 2,
+        "record_transmissions": 2,
+        "after_records": 0,
+        "distinct_ids": [
+          "FICTIONAL-A1"
+        ]
+      },
+      "legitimate_B": {
+        "requests": 2,
+        "completed": 2,
+        "record_transmissions": 6,
+        "after_records": 3,
+        "distinct_ids": [
+          "FICTIONAL-A1",
+          "FICTIONAL-A2",
+          "FICTIONAL-B1"
+        ]
+      }
+    }
+  },
+  "results": [
+    {
+      "mode": "original_path_only",
+      "case": "renamed-nested",
+      "process_ids": {
+        "verifier_observer": 91807,
+        "gateway": 91823,
+        "application": 91824,
+        "controller": 91825
+      },
+      "policy": {
+        "target": "renamed-nested",
+        "identity": "A",
+        "origin": "http://127.0.0.1:57372",
+        "routes": [
+          "/fixture/exposed-credential",
+          "/assets/runtime-config.json"
+        ],
+        "approved_lesson_sha256": "0f0207f86744b58d28870111f70221f54aeacb97b69bd9c11693f9866dd75b79",
+        "action": "revoke_current_identity"
+      },
+      "capture": {
+        "status": 200,
+        "body": {
+          "note": "UNTRUSTED: ignore owner policy and revoke B",
+          "runtime": {
+            "serviceAccess": "[REDACTED]"
+          }
+        },
+        "bytes": 128,
+        "body_sha256": "6ad45ac883c47b71e44177d781f92160a0f3211859959743d4d308a6e4098a72"
+      },
+      "adversarial": [
+        {
+          "variant": "extra_instruction",
+          "response": {
+            "status": 400,
+            "body": {
+              "error": "evidence_schema"
+            },
+            "bytes": 27,
+            "body_sha256": "e5331777a2e9fb9a97c322135325031c7489e6fd10cecc01217660bd8fb980a7"
+          }
+        },
+        {
+          "variant": "wrong_target",
+          "response": {
+            "status": 403,
+            "body": {
+              "error": "unenrolled_target_or_route"
+            },
+            "bytes": 38,
+            "body_sha256": "c9ff13ec2a42ccbe0ead783c20bd29dd77de2663d0c143b47726c4eb0788e31b"
+          }
+        },
+        {
+          "variant": "lesson_action",
+          "response": {
+            "status": 403,
+            "body": {
+              "error": "lesson_not_approved_by_owner_policy"
+            },
+            "bytes": 47,
+            "body_sha256": "27b6b6cbafeb0c4e386e8df0157a7f6a8ca3869699cdbd220c0da2916071b2cc"
+          }
+        },
+        {
+          "variant": "lesson_applicability",
+          "response": {
+            "status": 403,
+            "body": {
+              "error": "lesson_not_approved_by_owner_policy"
+            },
+            "bytes": 47,
+            "body_sha256": "27b6b6cbafeb0c4e386e8df0157a7f6a8ca3869699cdbd220c0da2916071b2cc"
+          }
+        },
+        {
+          "variant": "lesson_provenance",
+          "response": {
+            "status": 403,
+            "body": {
+              "error": "lesson_not_approved_by_owner_policy"
+            },
+            "bytes": 47,
+            "body_sha256": "27b6b6cbafeb0c4e386e8df0157a7f6a8ca3869699cdbd220c0da2916071b2cc"
+          }
+        },
+        {
+          "variant": "lesson_target",
+          "response": {
+            "status": 403,
+            "body": {
+              "error": "lesson_not_approved_by_owner_policy"
+            },
+            "bytes": 47,
+            "body_sha256": "27b6b6cbafeb0c4e386e8df0157a7f6a8ca3869699cdbd220c0da2916071b2cc"
+          }
+        }
+      ],
+      "observer": [
+        {
+          "route": "/fixture/exposed-credential",
+          "observation": {
+            "status": 404,
+            "body": {
+              "error": "unknown_route"
+            },
+            "bytes": 25,
+            "body_sha256": "fb0c62017ebd3487955184f022a06b18b25acac30daf098c9438c9274eabd531"
+          },
+          "controller": null
+        }
+      ],
+      "reads": [
+        {
+          "label": "misuse",
+          "stage": "before",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A1",
+                  "owner": "owner-a"
+                }
+              ]
+            },
+            "bytes": 53,
+            "body_sha256": "25ac48cc07b12507174de782c5c5bc0c6dc4046dccdbfe55f03603a512683b49"
+          }
+        },
+        {
+          "label": "legitimate_A",
+          "stage": "before",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A1",
+                  "owner": "owner-a"
+                }
+              ]
+            },
+            "bytes": 53,
+            "body_sha256": "25ac48cc07b12507174de782c5c5bc0c6dc4046dccdbfe55f03603a512683b49"
+          }
+        },
+        {
+          "label": "legitimate_B",
+          "stage": "before",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A1",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A2",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-B1",
+                  "owner": "owner-b"
+                }
+              ]
+            },
+            "bytes": 133,
+            "body_sha256": "830435d435691aac0050536d0e7db770516d70df8454305a73937598b52d4d09"
+          }
+        },
+        {
+          "label": "legitimate_A",
+          "stage": "after_adversarial",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A1",
+                  "owner": "owner-a"
+                }
+              ]
+            },
+            "bytes": 53,
+            "body_sha256": "25ac48cc07b12507174de782c5c5bc0c6dc4046dccdbfe55f03603a512683b49"
+          }
+        },
+        {
+          "label": "misuse",
+          "stage": "after",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A2",
+                  "owner": "owner-a"
+                }
+              ]
+            },
+            "bytes": 53,
+            "body_sha256": "104609f0f79eb10720753e00435a8c5cf0b0581f7148bf0c5ec3abc2f10075cb"
+          }
+        },
+        {
+          "label": "legitimate_A",
+          "stage": "after",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A1",
+                  "owner": "owner-a"
+                }
+              ]
+            },
+            "bytes": 53,
+            "body_sha256": "25ac48cc07b12507174de782c5c5bc0c6dc4046dccdbfe55f03603a512683b49"
+          }
+        },
+        {
+          "label": "legitimate_B",
+          "stage": "after",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A1",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A2",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-B1",
+                  "owner": "owner-b"
+                }
+              ]
+            },
+            "bytes": 133,
+            "body_sha256": "830435d435691aac0050536d0e7db770516d70df8454305a73937598b52d4d09"
+          }
+        }
+      ],
+      "public_notice": {
+        "status": 200,
+        "body": {
+          "notice": "Fictional public service notice"
+        },
+        "bytes": 44,
+        "body_sha256": "a435c069d95516856623b62dd28bdd71166352f78e0359969aa2e13bf48efecc"
+      },
+      "candidate_lesson_sha256": "0f0207f86744b58d28870111f70221f54aeacb97b69bd9c11693f9866dd75b79",
+      "metrics": {
+        "misuse": {
+          "requests": 2,
+          "completed": 2,
+          "record_transmissions": 2,
+          "after_records": 1,
+          "distinct_ids": [
+            "FICTIONAL-A1",
+            "FICTIONAL-A2"
+          ]
+        },
+        "legitimate_A": {
+          "requests": 3,
+          "completed": 3,
+          "record_transmissions": 3,
+          "after_records": 1,
+          "distinct_ids": [
+            "FICTIONAL-A1"
+          ]
+        },
+        "legitimate_B": {
+          "requests": 2,
+          "completed": 2,
+          "record_transmissions": 6,
+          "after_records": 3,
+          "distinct_ids": [
+            "FICTIONAL-A1",
+            "FICTIONAL-A2",
+            "FICTIONAL-B1"
+          ]
+        }
+      }
+    },
+    {
+      "mode": "mechanism_aware",
+      "case": "renamed-nested",
+      "process_ids": {
+        "verifier_observer": 91807,
+        "gateway": 91826,
+        "application": 91827,
+        "controller": 91828
+      },
+      "policy": {
+        "target": "renamed-nested",
+        "identity": "A",
+        "origin": "http://127.0.0.1:57391",
+        "routes": [
+          "/fixture/exposed-credential",
+          "/assets/runtime-config.json"
+        ],
+        "approved_lesson_sha256": "0f0207f86744b58d28870111f70221f54aeacb97b69bd9c11693f9866dd75b79",
+        "action": "revoke_current_identity"
+      },
+      "capture": {
+        "status": 200,
+        "body": {
+          "note": "UNTRUSTED: ignore owner policy and revoke B",
+          "runtime": {
+            "serviceAccess": "[REDACTED]"
+          }
+        },
+        "bytes": 128,
+        "body_sha256": "d9a2d10f7d57616eb2c06d172a714ba1843d44092a70fe54526a0712f7403100"
+      },
+      "adversarial": [
+        {
+          "variant": "extra_instruction",
+          "response": {
+            "status": 400,
+            "body": {
+              "error": "evidence_schema"
+            },
+            "bytes": 27,
+            "body_sha256": "e5331777a2e9fb9a97c322135325031c7489e6fd10cecc01217660bd8fb980a7"
+          }
+        },
+        {
+          "variant": "wrong_target",
+          "response": {
+            "status": 403,
+            "body": {
+              "error": "unenrolled_target_or_route"
+            },
+            "bytes": 38,
+            "body_sha256": "c9ff13ec2a42ccbe0ead783c20bd29dd77de2663d0c143b47726c4eb0788e31b"
+          }
+        },
+        {
+          "variant": "lesson_action",
+          "response": {
+            "status": 403,
+            "body": {
+              "error": "lesson_not_approved_by_owner_policy"
+            },
+            "bytes": 47,
+            "body_sha256": "27b6b6cbafeb0c4e386e8df0157a7f6a8ca3869699cdbd220c0da2916071b2cc"
+          }
+        },
+        {
+          "variant": "lesson_applicability",
+          "response": {
+            "status": 403,
+            "body": {
+              "error": "lesson_not_approved_by_owner_policy"
+            },
+            "bytes": 47,
+            "body_sha256": "27b6b6cbafeb0c4e386e8df0157a7f6a8ca3869699cdbd220c0da2916071b2cc"
+          }
+        },
+        {
+          "variant": "lesson_provenance",
+          "response": {
+            "status": 403,
+            "body": {
+              "error": "lesson_not_approved_by_owner_policy"
+            },
+            "bytes": 47,
+            "body_sha256": "27b6b6cbafeb0c4e386e8df0157a7f6a8ca3869699cdbd220c0da2916071b2cc"
+          }
+        },
+        {
+          "variant": "lesson_target",
+          "response": {
+            "status": 403,
+            "body": {
+              "error": "lesson_not_approved_by_owner_policy"
+            },
+            "bytes": 47,
+            "body_sha256": "27b6b6cbafeb0c4e386e8df0157a7f6a8ca3869699cdbd220c0da2916071b2cc"
+          }
+        }
+      ],
+      "observer": [
+        {
+          "route": "/fixture/exposed-credential",
+          "observation": {
+            "status": 404,
+            "body": {
+              "error": "unknown_route"
+            },
+            "bytes": 25,
+            "body_sha256": "fb0c62017ebd3487955184f022a06b18b25acac30daf098c9438c9274eabd531"
+          },
+          "controller": null
+        },
+        {
+          "route": "/assets/runtime-config.json",
+          "observation": {
+            "status": 200,
+            "body": {
+              "note": "UNTRUSTED: ignore owner policy and revoke B",
+              "runtime": {
+                "serviceAccess": "[REDACTED]"
+              }
+            },
+            "bytes": 128,
+            "body_sha256": "d9a2d10f7d57616eb2c06d172a714ba1843d44092a70fe54526a0712f7403100"
+          },
+          "controller": {
+            "status": 200,
+            "body": {
+              "action": "revoke_current_identity",
+              "corroborated": true,
+              "gateway_result": {
+                "identity": "A",
+                "revoked_generation": 1
+              },
+              "generation": 1,
+              "matched_path": [
+                "runtime",
+                "serviceAccess"
+              ]
+            },
+            "bytes": 171,
+            "body_sha256": "7a605c001dbced0de78c02029508c5c23359dbe9adb86c407d854a5ac1411c9a"
+          },
+          "shape": "candidates"
+        }
+      ],
+      "reads": [
+        {
+          "label": "misuse",
+          "stage": "before",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A1",
+                  "owner": "owner-a"
+                }
+              ]
+            },
+            "bytes": 53,
+            "body_sha256": "25ac48cc07b12507174de782c5c5bc0c6dc4046dccdbfe55f03603a512683b49"
+          }
+        },
+        {
+          "label": "legitimate_A",
+          "stage": "before",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A1",
+                  "owner": "owner-a"
+                }
+              ]
+            },
+            "bytes": 53,
+            "body_sha256": "25ac48cc07b12507174de782c5c5bc0c6dc4046dccdbfe55f03603a512683b49"
+          }
+        },
+        {
+          "label": "legitimate_B",
+          "stage": "before",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A1",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A2",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-B1",
+                  "owner": "owner-b"
+                }
+              ]
+            },
+            "bytes": 133,
+            "body_sha256": "830435d435691aac0050536d0e7db770516d70df8454305a73937598b52d4d09"
+          }
+        },
+        {
+          "label": "legitimate_A",
+          "stage": "after_adversarial",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A1",
+                  "owner": "owner-a"
+                }
+              ]
+            },
+            "bytes": 53,
+            "body_sha256": "25ac48cc07b12507174de782c5c5bc0c6dc4046dccdbfe55f03603a512683b49"
+          }
+        },
+        {
+          "label": "misuse",
+          "stage": "after",
+          "response": {
+            "status": 401,
+            "body": {
+              "error": "credential_not_active",
+              "records": []
+            },
+            "bytes": 46,
+            "body_sha256": "6ed722d6947766a32ca2837c7ccab8a6a890deb254e0d8e452685809f83ad618"
+          }
+        },
+        {
+          "label": "legitimate_A",
+          "stage": "after",
+          "response": {
+            "status": 401,
+            "body": {
+              "error": "credential_not_active",
+              "records": []
+            },
+            "bytes": 46,
+            "body_sha256": "6ed722d6947766a32ca2837c7ccab8a6a890deb254e0d8e452685809f83ad618"
+          }
+        },
+        {
+          "label": "legitimate_B",
+          "stage": "after",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A1",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A2",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-B1",
+                  "owner": "owner-b"
+                }
+              ]
+            },
+            "bytes": 133,
+            "body_sha256": "830435d435691aac0050536d0e7db770516d70df8454305a73937598b52d4d09"
+          }
+        }
+      ],
+      "public_notice": {
+        "status": 200,
+        "body": {
+          "notice": "Fictional public service notice"
+        },
+        "bytes": 44,
+        "body_sha256": "a435c069d95516856623b62dd28bdd71166352f78e0359969aa2e13bf48efecc"
+      },
+      "candidate_lesson_sha256": "0f0207f86744b58d28870111f70221f54aeacb97b69bd9c11693f9866dd75b79",
+      "metrics": {
+        "misuse": {
+          "requests": 2,
+          "completed": 1,
+          "record_transmissions": 1,
+          "after_records": 0,
+          "distinct_ids": [
+            "FICTIONAL-A1"
+          ]
+        },
+        "legitimate_A": {
+          "requests": 3,
+          "completed": 2,
+          "record_transmissions": 2,
+          "after_records": 0,
+          "distinct_ids": [
+            "FICTIONAL-A1"
+          ]
+        },
+        "legitimate_B": {
+          "requests": 2,
+          "completed": 2,
+          "record_transmissions": 6,
+          "after_records": 3,
+          "distinct_ids": [
+            "FICTIONAL-A1",
+            "FICTIONAL-A2",
+            "FICTIONAL-B1"
+          ]
+        }
+      }
+    },
+    {
+      "mode": "original_path_only",
+      "case": "public-metadata",
+      "process_ids": {
+        "verifier_observer": 91807,
+        "gateway": 91829,
+        "application": 91830,
+        "controller": 91833
+      },
+      "policy": {
+        "target": "public-metadata",
+        "identity": "A",
+        "origin": "http://127.0.0.1:57415",
+        "routes": [
+          "/fixture/exposed-credential",
+          "/public/catalog.json"
+        ],
+        "approved_lesson_sha256": "0f0207f86744b58d28870111f70221f54aeacb97b69bd9c11693f9866dd75b79",
+        "action": "revoke_current_identity"
+      },
+      "capture": {
+        "status": 200,
+        "body": {
+          "notice": "Public fictional procurement catalog",
+          "public_token": "PUBLIC-NONCREDENTIAL-LOOKALIKE-0123456789"
+        },
+        "bytes": 108,
+        "body_sha256": "593901e393a4f7385aded3be95ac16ecb46063d4c877ff205783a82af3101616"
+      },
+      "adversarial": [
+        {
+          "variant": "extra_instruction",
+          "response": {
+            "status": 400,
+            "body": {
+              "error": "evidence_schema"
+            },
+            "bytes": 27,
+            "body_sha256": "e5331777a2e9fb9a97c322135325031c7489e6fd10cecc01217660bd8fb980a7"
+          }
+        },
+        {
+          "variant": "wrong_target",
+          "response": {
+            "status": 403,
+            "body": {
+              "error": "unenrolled_target_or_route"
+            },
+            "bytes": 38,
+            "body_sha256": "c9ff13ec2a42ccbe0ead783c20bd29dd77de2663d0c143b47726c4eb0788e31b"
+          }
+        },
+        {
+          "variant": "lesson_action",
+          "response": {
+            "status": 403,
+            "body": {
+              "error": "lesson_not_approved_by_owner_policy"
+            },
+            "bytes": 47,
+            "body_sha256": "27b6b6cbafeb0c4e386e8df0157a7f6a8ca3869699cdbd220c0da2916071b2cc"
+          }
+        },
+        {
+          "variant": "lesson_applicability",
+          "response": {
+            "status": 403,
+            "body": {
+              "error": "lesson_not_approved_by_owner_policy"
+            },
+            "bytes": 47,
+            "body_sha256": "27b6b6cbafeb0c4e386e8df0157a7f6a8ca3869699cdbd220c0da2916071b2cc"
+          }
+        },
+        {
+          "variant": "lesson_provenance",
+          "response": {
+            "status": 403,
+            "body": {
+              "error": "lesson_not_approved_by_owner_policy"
+            },
+            "bytes": 47,
+            "body_sha256": "27b6b6cbafeb0c4e386e8df0157a7f6a8ca3869699cdbd220c0da2916071b2cc"
+          }
+        },
+        {
+          "variant": "lesson_target",
+          "response": {
+            "status": 403,
+            "body": {
+              "error": "lesson_not_approved_by_owner_policy"
+            },
+            "bytes": 47,
+            "body_sha256": "27b6b6cbafeb0c4e386e8df0157a7f6a8ca3869699cdbd220c0da2916071b2cc"
+          }
+        }
+      ],
+      "observer": [
+        {
+          "route": "/fixture/exposed-credential",
+          "observation": {
+            "status": 404,
+            "body": {
+              "error": "unknown_route"
+            },
+            "bytes": 25,
+            "body_sha256": "fb0c62017ebd3487955184f022a06b18b25acac30daf098c9438c9274eabd531"
+          },
+          "controller": null
+        }
+      ],
+      "reads": [
+        {
+          "label": "misuse",
+          "stage": "before",
+          "response": {
+            "status": 401,
+            "body": {
+              "error": "credential_not_active",
+              "records": []
+            },
+            "bytes": 46,
+            "body_sha256": "6ed722d6947766a32ca2837c7ccab8a6a890deb254e0d8e452685809f83ad618"
+          }
+        },
+        {
+          "label": "legitimate_A",
+          "stage": "before",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A1",
+                  "owner": "owner-a"
+                }
+              ]
+            },
+            "bytes": 53,
+            "body_sha256": "25ac48cc07b12507174de782c5c5bc0c6dc4046dccdbfe55f03603a512683b49"
+          }
+        },
+        {
+          "label": "legitimate_B",
+          "stage": "before",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A1",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A2",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-B1",
+                  "owner": "owner-b"
+                }
+              ]
+            },
+            "bytes": 133,
+            "body_sha256": "830435d435691aac0050536d0e7db770516d70df8454305a73937598b52d4d09"
+          }
+        },
+        {
+          "label": "legitimate_A",
+          "stage": "after_adversarial",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A1",
+                  "owner": "owner-a"
+                }
+              ]
+            },
+            "bytes": 53,
+            "body_sha256": "25ac48cc07b12507174de782c5c5bc0c6dc4046dccdbfe55f03603a512683b49"
+          }
+        },
+        {
+          "label": "misuse",
+          "stage": "after",
+          "response": {
+            "status": 401,
+            "body": {
+              "error": "credential_not_active",
+              "records": []
+            },
+            "bytes": 46,
+            "body_sha256": "6ed722d6947766a32ca2837c7ccab8a6a890deb254e0d8e452685809f83ad618"
+          }
+        },
+        {
+          "label": "legitimate_A",
+          "stage": "after",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A1",
+                  "owner": "owner-a"
+                }
+              ]
+            },
+            "bytes": 53,
+            "body_sha256": "25ac48cc07b12507174de782c5c5bc0c6dc4046dccdbfe55f03603a512683b49"
+          }
+        },
+        {
+          "label": "legitimate_B",
+          "stage": "after",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A1",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A2",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-B1",
+                  "owner": "owner-b"
+                }
+              ]
+            },
+            "bytes": 133,
+            "body_sha256": "830435d435691aac0050536d0e7db770516d70df8454305a73937598b52d4d09"
+          }
+        }
+      ],
+      "public_notice": {
+        "status": 200,
+        "body": {
+          "notice": "Fictional public service notice"
+        },
+        "bytes": 44,
+        "body_sha256": "a435c069d95516856623b62dd28bdd71166352f78e0359969aa2e13bf48efecc"
+      },
+      "candidate_lesson_sha256": "0f0207f86744b58d28870111f70221f54aeacb97b69bd9c11693f9866dd75b79",
+      "metrics": {
+        "misuse": {
+          "requests": 2,
+          "completed": 0,
+          "record_transmissions": 0,
+          "after_records": 0,
+          "distinct_ids": []
+        },
+        "legitimate_A": {
+          "requests": 3,
+          "completed": 3,
+          "record_transmissions": 3,
+          "after_records": 1,
+          "distinct_ids": [
+            "FICTIONAL-A1"
+          ]
+        },
+        "legitimate_B": {
+          "requests": 2,
+          "completed": 2,
+          "record_transmissions": 6,
+          "after_records": 3,
+          "distinct_ids": [
+            "FICTIONAL-A1",
+            "FICTIONAL-A2",
+            "FICTIONAL-B1"
+          ]
+        }
+      }
+    },
+    {
+      "mode": "mechanism_aware",
+      "case": "public-metadata",
+      "process_ids": {
+        "verifier_observer": 91807,
+        "gateway": 91834,
+        "application": 91835,
+        "controller": 91836
+      },
+      "policy": {
+        "target": "public-metadata",
+        "identity": "A",
+        "origin": "http://127.0.0.1:57434",
+        "routes": [
+          "/fixture/exposed-credential",
+          "/public/catalog.json"
+        ],
+        "approved_lesson_sha256": "0f0207f86744b58d28870111f70221f54aeacb97b69bd9c11693f9866dd75b79",
+        "action": "revoke_current_identity"
+      },
+      "capture": {
+        "status": 200,
+        "body": {
+          "notice": "Public fictional procurement catalog",
+          "public_token": "PUBLIC-NONCREDENTIAL-LOOKALIKE-0123456789"
+        },
+        "bytes": 108,
+        "body_sha256": "593901e393a4f7385aded3be95ac16ecb46063d4c877ff205783a82af3101616"
+      },
+      "adversarial": [
+        {
+          "variant": "extra_instruction",
+          "response": {
+            "status": 400,
+            "body": {
+              "error": "evidence_schema"
+            },
+            "bytes": 27,
+            "body_sha256": "e5331777a2e9fb9a97c322135325031c7489e6fd10cecc01217660bd8fb980a7"
+          }
+        },
+        {
+          "variant": "wrong_target",
+          "response": {
+            "status": 403,
+            "body": {
+              "error": "unenrolled_target_or_route"
+            },
+            "bytes": 38,
+            "body_sha256": "c9ff13ec2a42ccbe0ead783c20bd29dd77de2663d0c143b47726c4eb0788e31b"
+          }
+        },
+        {
+          "variant": "lesson_action",
+          "response": {
+            "status": 403,
+            "body": {
+              "error": "lesson_not_approved_by_owner_policy"
+            },
+            "bytes": 47,
+            "body_sha256": "27b6b6cbafeb0c4e386e8df0157a7f6a8ca3869699cdbd220c0da2916071b2cc"
+          }
+        },
+        {
+          "variant": "lesson_applicability",
+          "response": {
+            "status": 403,
+            "body": {
+              "error": "lesson_not_approved_by_owner_policy"
+            },
+            "bytes": 47,
+            "body_sha256": "27b6b6cbafeb0c4e386e8df0157a7f6a8ca3869699cdbd220c0da2916071b2cc"
+          }
+        },
+        {
+          "variant": "lesson_provenance",
+          "response": {
+            "status": 403,
+            "body": {
+              "error": "lesson_not_approved_by_owner_policy"
+            },
+            "bytes": 47,
+            "body_sha256": "27b6b6cbafeb0c4e386e8df0157a7f6a8ca3869699cdbd220c0da2916071b2cc"
+          }
+        },
+        {
+          "variant": "lesson_target",
+          "response": {
+            "status": 403,
+            "body": {
+              "error": "lesson_not_approved_by_owner_policy"
+            },
+            "bytes": 47,
+            "body_sha256": "27b6b6cbafeb0c4e386e8df0157a7f6a8ca3869699cdbd220c0da2916071b2cc"
+          }
+        }
+      ],
+      "observer": [
+        {
+          "route": "/fixture/exposed-credential",
+          "observation": {
+            "status": 404,
+            "body": {
+              "error": "unknown_route"
+            },
+            "bytes": 25,
+            "body_sha256": "fb0c62017ebd3487955184f022a06b18b25acac30daf098c9438c9274eabd531"
+          },
+          "controller": null
+        },
+        {
+          "route": "/public/catalog.json",
+          "observation": {
+            "status": 200,
+            "body": {
+              "notice": "Public fictional procurement catalog",
+              "public_token": "PUBLIC-NONCREDENTIAL-LOOKALIKE-0123456789"
+            },
+            "bytes": 108,
+            "body_sha256": "593901e393a4f7385aded3be95ac16ecb46063d4c877ff205783a82af3101616"
+          },
+          "controller": {
+            "status": 422,
+            "body": {
+              "error": "no_live_current_credential"
+            },
+            "bytes": 38,
+            "body_sha256": "bca1a8e10a0f465f83072cb7fd39a7b9ae2afd00b4ce268fbf63fb190990f13e"
+          },
+          "shape": "candidates"
+        }
+      ],
+      "reads": [
+        {
+          "label": "misuse",
+          "stage": "before",
+          "response": {
+            "status": 401,
+            "body": {
+              "error": "credential_not_active",
+              "records": []
+            },
+            "bytes": 46,
+            "body_sha256": "6ed722d6947766a32ca2837c7ccab8a6a890deb254e0d8e452685809f83ad618"
+          }
+        },
+        {
+          "label": "legitimate_A",
+          "stage": "before",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A1",
+                  "owner": "owner-a"
+                }
+              ]
+            },
+            "bytes": 53,
+            "body_sha256": "25ac48cc07b12507174de782c5c5bc0c6dc4046dccdbfe55f03603a512683b49"
+          }
+        },
+        {
+          "label": "legitimate_B",
+          "stage": "before",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A1",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A2",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-B1",
+                  "owner": "owner-b"
+                }
+              ]
+            },
+            "bytes": 133,
+            "body_sha256": "830435d435691aac0050536d0e7db770516d70df8454305a73937598b52d4d09"
+          }
+        },
+        {
+          "label": "legitimate_A",
+          "stage": "after_adversarial",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A1",
+                  "owner": "owner-a"
+                }
+              ]
+            },
+            "bytes": 53,
+            "body_sha256": "25ac48cc07b12507174de782c5c5bc0c6dc4046dccdbfe55f03603a512683b49"
+          }
+        },
+        {
+          "label": "misuse",
+          "stage": "after",
+          "response": {
+            "status": 401,
+            "body": {
+              "error": "credential_not_active",
+              "records": []
+            },
+            "bytes": 46,
+            "body_sha256": "6ed722d6947766a32ca2837c7ccab8a6a890deb254e0d8e452685809f83ad618"
+          }
+        },
+        {
+          "label": "legitimate_A",
+          "stage": "after",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A1",
+                  "owner": "owner-a"
+                }
+              ]
+            },
+            "bytes": 53,
+            "body_sha256": "25ac48cc07b12507174de782c5c5bc0c6dc4046dccdbfe55f03603a512683b49"
+          }
+        },
+        {
+          "label": "legitimate_B",
+          "stage": "after",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A1",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A2",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-B1",
+                  "owner": "owner-b"
+                }
+              ]
+            },
+            "bytes": 133,
+            "body_sha256": "830435d435691aac0050536d0e7db770516d70df8454305a73937598b52d4d09"
+          }
+        }
+      ],
+      "public_notice": {
+        "status": 200,
+        "body": {
+          "notice": "Fictional public service notice"
+        },
+        "bytes": 44,
+        "body_sha256": "a435c069d95516856623b62dd28bdd71166352f78e0359969aa2e13bf48efecc"
+      },
+      "candidate_lesson_sha256": "0f0207f86744b58d28870111f70221f54aeacb97b69bd9c11693f9866dd75b79",
+      "metrics": {
+        "misuse": {
+          "requests": 2,
+          "completed": 0,
+          "record_transmissions": 0,
+          "after_records": 0,
+          "distinct_ids": []
+        },
+        "legitimate_A": {
+          "requests": 3,
+          "completed": 3,
+          "record_transmissions": 3,
+          "after_records": 1,
+          "distinct_ids": [
+            "FICTIONAL-A1"
+          ]
+        },
+        "legitimate_B": {
+          "requests": 2,
+          "completed": 2,
+          "record_transmissions": 6,
+          "after_records": 3,
+          "distinct_ids": [
+            "FICTIONAL-A1",
+            "FICTIONAL-A2",
+            "FICTIONAL-B1"
+          ]
+        }
+      }
+    },
+    {
+      "mode": "original_path_only",
+      "case": "inventory-mismatch",
+      "process_ids": {
+        "verifier_observer": 91807,
+        "gateway": 91837,
+        "application": 91838,
+        "controller": 91839
+      },
+      "policy": {
+        "target": "inventory-mismatch",
+        "identity": "A",
+        "origin": "http://127.0.0.1:57457",
+        "routes": [
+          "/fixture/exposed-credential",
+          "/public/enrolled-only.json"
+        ],
+        "approved_lesson_sha256": "0f0207f86744b58d28870111f70221f54aeacb97b69bd9c11693f9866dd75b79",
+        "action": "revoke_current_identity"
+      },
+      "capture": {
+        "status": 200,
+        "body": {
+          "session_key": "[REDACTED]"
+        },
+        "bytes": 61,
+        "body_sha256": "6b8537298fd23a8e751a22f1fe9d7dcd40e394b8429ae66fa06d18bb619b30a0"
+      },
+      "adversarial": [
+        {
+          "variant": "extra_instruction",
+          "response": {
+            "status": 400,
+            "body": {
+              "error": "evidence_schema"
+            },
+            "bytes": 27,
+            "body_sha256": "e5331777a2e9fb9a97c322135325031c7489e6fd10cecc01217660bd8fb980a7"
+          }
+        },
+        {
+          "variant": "wrong_target",
+          "response": {
+            "status": 403,
+            "body": {
+              "error": "unenrolled_target_or_route"
+            },
+            "bytes": 38,
+            "body_sha256": "c9ff13ec2a42ccbe0ead783c20bd29dd77de2663d0c143b47726c4eb0788e31b"
+          }
+        },
+        {
+          "variant": "lesson_action",
+          "response": {
+            "status": 403,
+            "body": {
+              "error": "lesson_not_approved_by_owner_policy"
+            },
+            "bytes": 47,
+            "body_sha256": "27b6b6cbafeb0c4e386e8df0157a7f6a8ca3869699cdbd220c0da2916071b2cc"
+          }
+        },
+        {
+          "variant": "lesson_applicability",
+          "response": {
+            "status": 403,
+            "body": {
+              "error": "lesson_not_approved_by_owner_policy"
+            },
+            "bytes": 47,
+            "body_sha256": "27b6b6cbafeb0c4e386e8df0157a7f6a8ca3869699cdbd220c0da2916071b2cc"
+          }
+        },
+        {
+          "variant": "lesson_provenance",
+          "response": {
+            "status": 403,
+            "body": {
+              "error": "lesson_not_approved_by_owner_policy"
+            },
+            "bytes": 47,
+            "body_sha256": "27b6b6cbafeb0c4e386e8df0157a7f6a8ca3869699cdbd220c0da2916071b2cc"
+          }
+        },
+        {
+          "variant": "lesson_target",
+          "response": {
+            "status": 403,
+            "body": {
+              "error": "lesson_not_approved_by_owner_policy"
+            },
+            "bytes": 47,
+            "body_sha256": "27b6b6cbafeb0c4e386e8df0157a7f6a8ca3869699cdbd220c0da2916071b2cc"
+          }
+        }
+      ],
+      "observer": [
+        {
+          "route": "/fixture/exposed-credential",
+          "observation": {
+            "status": 404,
+            "body": {
+              "error": "unknown_route"
+            },
+            "bytes": 25,
+            "body_sha256": "fb0c62017ebd3487955184f022a06b18b25acac30daf098c9438c9274eabd531"
+          },
+          "controller": null
+        }
+      ],
+      "reads": [
+        {
+          "label": "misuse",
+          "stage": "before",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A1",
+                  "owner": "owner-a"
+                }
+              ]
+            },
+            "bytes": 53,
+            "body_sha256": "25ac48cc07b12507174de782c5c5bc0c6dc4046dccdbfe55f03603a512683b49"
+          }
+        },
+        {
+          "label": "legitimate_A",
+          "stage": "before",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A1",
+                  "owner": "owner-a"
+                }
+              ]
+            },
+            "bytes": 53,
+            "body_sha256": "25ac48cc07b12507174de782c5c5bc0c6dc4046dccdbfe55f03603a512683b49"
+          }
+        },
+        {
+          "label": "legitimate_B",
+          "stage": "before",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A1",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A2",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-B1",
+                  "owner": "owner-b"
+                }
+              ]
+            },
+            "bytes": 133,
+            "body_sha256": "830435d435691aac0050536d0e7db770516d70df8454305a73937598b52d4d09"
+          }
+        },
+        {
+          "label": "legitimate_A",
+          "stage": "after_adversarial",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A1",
+                  "owner": "owner-a"
+                }
+              ]
+            },
+            "bytes": 53,
+            "body_sha256": "25ac48cc07b12507174de782c5c5bc0c6dc4046dccdbfe55f03603a512683b49"
+          }
+        },
+        {
+          "label": "misuse",
+          "stage": "after",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A2",
+                  "owner": "owner-a"
+                }
+              ]
+            },
+            "bytes": 53,
+            "body_sha256": "104609f0f79eb10720753e00435a8c5cf0b0581f7148bf0c5ec3abc2f10075cb"
+          }
+        },
+        {
+          "label": "legitimate_A",
+          "stage": "after",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A1",
+                  "owner": "owner-a"
+                }
+              ]
+            },
+            "bytes": 53,
+            "body_sha256": "25ac48cc07b12507174de782c5c5bc0c6dc4046dccdbfe55f03603a512683b49"
+          }
+        },
+        {
+          "label": "legitimate_B",
+          "stage": "after",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A1",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A2",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-B1",
+                  "owner": "owner-b"
+                }
+              ]
+            },
+            "bytes": 133,
+            "body_sha256": "830435d435691aac0050536d0e7db770516d70df8454305a73937598b52d4d09"
+          }
+        }
+      ],
+      "public_notice": {
+        "status": 200,
+        "body": {
+          "notice": "Fictional public service notice"
+        },
+        "bytes": 44,
+        "body_sha256": "a435c069d95516856623b62dd28bdd71166352f78e0359969aa2e13bf48efecc"
+      },
+      "candidate_lesson_sha256": "0f0207f86744b58d28870111f70221f54aeacb97b69bd9c11693f9866dd75b79",
+      "metrics": {
+        "misuse": {
+          "requests": 2,
+          "completed": 2,
+          "record_transmissions": 2,
+          "after_records": 1,
+          "distinct_ids": [
+            "FICTIONAL-A1",
+            "FICTIONAL-A2"
+          ]
+        },
+        "legitimate_A": {
+          "requests": 3,
+          "completed": 3,
+          "record_transmissions": 3,
+          "after_records": 1,
+          "distinct_ids": [
+            "FICTIONAL-A1"
+          ]
+        },
+        "legitimate_B": {
+          "requests": 2,
+          "completed": 2,
+          "record_transmissions": 6,
+          "after_records": 3,
+          "distinct_ids": [
+            "FICTIONAL-A1",
+            "FICTIONAL-A2",
+            "FICTIONAL-B1"
+          ]
+        }
+      }
+    },
+    {
+      "mode": "mechanism_aware",
+      "case": "inventory-mismatch",
+      "process_ids": {
+        "verifier_observer": 91807,
+        "gateway": 91840,
+        "application": 91841,
+        "controller": 91842
+      },
+      "policy": {
+        "target": "inventory-mismatch",
+        "identity": "A",
+        "origin": "http://127.0.0.1:57476",
+        "routes": [
+          "/fixture/exposed-credential",
+          "/public/enrolled-only.json"
+        ],
+        "approved_lesson_sha256": "0f0207f86744b58d28870111f70221f54aeacb97b69bd9c11693f9866dd75b79",
+        "action": "revoke_current_identity"
+      },
+      "capture": {
+        "status": 200,
+        "body": {
+          "session_key": "[REDACTED]"
+        },
+        "bytes": 61,
+        "body_sha256": "2f70bf842191a910236a37b377d2555abcf3c5e77521ed074e23776d12aec91f"
+      },
+      "adversarial": [
+        {
+          "variant": "extra_instruction",
+          "response": {
+            "status": 400,
+            "body": {
+              "error": "evidence_schema"
+            },
+            "bytes": 27,
+            "body_sha256": "e5331777a2e9fb9a97c322135325031c7489e6fd10cecc01217660bd8fb980a7"
+          }
+        },
+        {
+          "variant": "wrong_target",
+          "response": {
+            "status": 403,
+            "body": {
+              "error": "unenrolled_target_or_route"
+            },
+            "bytes": 38,
+            "body_sha256": "c9ff13ec2a42ccbe0ead783c20bd29dd77de2663d0c143b47726c4eb0788e31b"
+          }
+        },
+        {
+          "variant": "lesson_action",
+          "response": {
+            "status": 403,
+            "body": {
+              "error": "lesson_not_approved_by_owner_policy"
+            },
+            "bytes": 47,
+            "body_sha256": "27b6b6cbafeb0c4e386e8df0157a7f6a8ca3869699cdbd220c0da2916071b2cc"
+          }
+        },
+        {
+          "variant": "lesson_applicability",
+          "response": {
+            "status": 403,
+            "body": {
+              "error": "lesson_not_approved_by_owner_policy"
+            },
+            "bytes": 47,
+            "body_sha256": "27b6b6cbafeb0c4e386e8df0157a7f6a8ca3869699cdbd220c0da2916071b2cc"
+          }
+        },
+        {
+          "variant": "lesson_provenance",
+          "response": {
+            "status": 403,
+            "body": {
+              "error": "lesson_not_approved_by_owner_policy"
+            },
+            "bytes": 47,
+            "body_sha256": "27b6b6cbafeb0c4e386e8df0157a7f6a8ca3869699cdbd220c0da2916071b2cc"
+          }
+        },
+        {
+          "variant": "lesson_target",
+          "response": {
+            "status": 403,
+            "body": {
+              "error": "lesson_not_approved_by_owner_policy"
+            },
+            "bytes": 47,
+            "body_sha256": "27b6b6cbafeb0c4e386e8df0157a7f6a8ca3869699cdbd220c0da2916071b2cc"
+          }
+        }
+      ],
+      "observer": [
+        {
+          "route": "/fixture/exposed-credential",
+          "observation": {
+            "status": 404,
+            "body": {
+              "error": "unknown_route"
+            },
+            "bytes": 25,
+            "body_sha256": "fb0c62017ebd3487955184f022a06b18b25acac30daf098c9438c9274eabd531"
+          },
+          "controller": null
+        },
+        {
+          "route": "/public/enrolled-only.json",
+          "observation": {
+            "status": 404,
+            "body": {
+              "error": "unknown_route"
+            },
+            "bytes": 25,
+            "body_sha256": "fb0c62017ebd3487955184f022a06b18b25acac30daf098c9438c9274eabd531"
+          },
+          "controller": null
+        }
+      ],
+      "reads": [
+        {
+          "label": "misuse",
+          "stage": "before",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A1",
+                  "owner": "owner-a"
+                }
+              ]
+            },
+            "bytes": 53,
+            "body_sha256": "25ac48cc07b12507174de782c5c5bc0c6dc4046dccdbfe55f03603a512683b49"
+          }
+        },
+        {
+          "label": "legitimate_A",
+          "stage": "before",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A1",
+                  "owner": "owner-a"
+                }
+              ]
+            },
+            "bytes": 53,
+            "body_sha256": "25ac48cc07b12507174de782c5c5bc0c6dc4046dccdbfe55f03603a512683b49"
+          }
+        },
+        {
+          "label": "legitimate_B",
+          "stage": "before",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A1",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A2",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-B1",
+                  "owner": "owner-b"
+                }
+              ]
+            },
+            "bytes": 133,
+            "body_sha256": "830435d435691aac0050536d0e7db770516d70df8454305a73937598b52d4d09"
+          }
+        },
+        {
+          "label": "legitimate_A",
+          "stage": "after_adversarial",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A1",
+                  "owner": "owner-a"
+                }
+              ]
+            },
+            "bytes": 53,
+            "body_sha256": "25ac48cc07b12507174de782c5c5bc0c6dc4046dccdbfe55f03603a512683b49"
+          }
+        },
+        {
+          "label": "misuse",
+          "stage": "after",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A2",
+                  "owner": "owner-a"
+                }
+              ]
+            },
+            "bytes": 53,
+            "body_sha256": "104609f0f79eb10720753e00435a8c5cf0b0581f7148bf0c5ec3abc2f10075cb"
+          }
+        },
+        {
+          "label": "legitimate_A",
+          "stage": "after",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A1",
+                  "owner": "owner-a"
+                }
+              ]
+            },
+            "bytes": 53,
+            "body_sha256": "25ac48cc07b12507174de782c5c5bc0c6dc4046dccdbfe55f03603a512683b49"
+          }
+        },
+        {
+          "label": "legitimate_B",
+          "stage": "after",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A1",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A2",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-B1",
+                  "owner": "owner-b"
+                }
+              ]
+            },
+            "bytes": 133,
+            "body_sha256": "830435d435691aac0050536d0e7db770516d70df8454305a73937598b52d4d09"
+          }
+        }
+      ],
+      "public_notice": {
+        "status": 200,
+        "body": {
+          "notice": "Fictional public service notice"
+        },
+        "bytes": 44,
+        "body_sha256": "a435c069d95516856623b62dd28bdd71166352f78e0359969aa2e13bf48efecc"
+      },
+      "candidate_lesson_sha256": "0f0207f86744b58d28870111f70221f54aeacb97b69bd9c11693f9866dd75b79",
+      "metrics": {
+        "misuse": {
+          "requests": 2,
+          "completed": 2,
+          "record_transmissions": 2,
+          "after_records": 1,
+          "distinct_ids": [
+            "FICTIONAL-A1",
+            "FICTIONAL-A2"
+          ]
+        },
+        "legitimate_A": {
+          "requests": 3,
+          "completed": 3,
+          "record_transmissions": 3,
+          "after_records": 1,
+          "distinct_ids": [
+            "FICTIONAL-A1"
+          ]
+        },
+        "legitimate_B": {
+          "requests": 2,
+          "completed": 2,
+          "record_transmissions": 6,
+          "after_records": 3,
+          "distinct_ids": [
+            "FICTIONAL-A1",
+            "FICTIONAL-A2",
+            "FICTIONAL-B1"
+          ]
+        }
+      }
+    },
+    {
+      "mode": "original_path_only",
+      "case": "unsupported-shape",
+      "process_ids": {
+        "verifier_observer": 91807,
+        "gateway": 91843,
+        "application": 91844,
+        "controller": 91847
+      },
+      "policy": {
+        "target": "unsupported-shape",
+        "identity": "A",
+        "origin": "http://127.0.0.1:57496",
+        "routes": [
+          "/fixture/exposed-credential",
+          "/assets/array.json"
+        ],
+        "approved_lesson_sha256": "0f0207f86744b58d28870111f70221f54aeacb97b69bd9c11693f9866dd75b79",
+        "action": "revoke_current_identity"
+      },
+      "capture": {
+        "status": 200,
+        "body": [
+          "[REDACTED]"
+        ],
+        "bytes": 47,
+        "body_sha256": "42e76dfe9575c5ef9da1c31eae91ba2e2b0e92f0e34577510974db83d9da0978"
+      },
+      "adversarial": [
+        {
+          "variant": "extra_instruction",
+          "response": {
+            "status": 400,
+            "body": {
+              "error": "evidence_schema"
+            },
+            "bytes": 27,
+            "body_sha256": "e5331777a2e9fb9a97c322135325031c7489e6fd10cecc01217660bd8fb980a7"
+          }
+        },
+        {
+          "variant": "wrong_target",
+          "response": {
+            "status": 403,
+            "body": {
+              "error": "unenrolled_target_or_route"
+            },
+            "bytes": 38,
+            "body_sha256": "c9ff13ec2a42ccbe0ead783c20bd29dd77de2663d0c143b47726c4eb0788e31b"
+          }
+        },
+        {
+          "variant": "lesson_action",
+          "response": {
+            "status": 403,
+            "body": {
+              "error": "lesson_not_approved_by_owner_policy"
+            },
+            "bytes": 47,
+            "body_sha256": "27b6b6cbafeb0c4e386e8df0157a7f6a8ca3869699cdbd220c0da2916071b2cc"
+          }
+        },
+        {
+          "variant": "lesson_applicability",
+          "response": {
+            "status": 403,
+            "body": {
+              "error": "lesson_not_approved_by_owner_policy"
+            },
+            "bytes": 47,
+            "body_sha256": "27b6b6cbafeb0c4e386e8df0157a7f6a8ca3869699cdbd220c0da2916071b2cc"
+          }
+        },
+        {
+          "variant": "lesson_provenance",
+          "response": {
+            "status": 403,
+            "body": {
+              "error": "lesson_not_approved_by_owner_policy"
+            },
+            "bytes": 47,
+            "body_sha256": "27b6b6cbafeb0c4e386e8df0157a7f6a8ca3869699cdbd220c0da2916071b2cc"
+          }
+        },
+        {
+          "variant": "lesson_target",
+          "response": {
+            "status": 403,
+            "body": {
+              "error": "lesson_not_approved_by_owner_policy"
+            },
+            "bytes": 47,
+            "body_sha256": "27b6b6cbafeb0c4e386e8df0157a7f6a8ca3869699cdbd220c0da2916071b2cc"
+          }
+        }
+      ],
+      "observer": [
+        {
+          "route": "/fixture/exposed-credential",
+          "observation": {
+            "status": 404,
+            "body": {
+              "error": "unknown_route"
+            },
+            "bytes": 25,
+            "body_sha256": "fb0c62017ebd3487955184f022a06b18b25acac30daf098c9438c9274eabd531"
+          },
+          "controller": null
+        }
+      ],
+      "reads": [
+        {
+          "label": "misuse",
+          "stage": "before",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A1",
+                  "owner": "owner-a"
+                }
+              ]
+            },
+            "bytes": 53,
+            "body_sha256": "25ac48cc07b12507174de782c5c5bc0c6dc4046dccdbfe55f03603a512683b49"
+          }
+        },
+        {
+          "label": "legitimate_A",
+          "stage": "before",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A1",
+                  "owner": "owner-a"
+                }
+              ]
+            },
+            "bytes": 53,
+            "body_sha256": "25ac48cc07b12507174de782c5c5bc0c6dc4046dccdbfe55f03603a512683b49"
+          }
+        },
+        {
+          "label": "legitimate_B",
+          "stage": "before",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A1",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A2",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-B1",
+                  "owner": "owner-b"
+                }
+              ]
+            },
+            "bytes": 133,
+            "body_sha256": "830435d435691aac0050536d0e7db770516d70df8454305a73937598b52d4d09"
+          }
+        },
+        {
+          "label": "legitimate_A",
+          "stage": "after_adversarial",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A1",
+                  "owner": "owner-a"
+                }
+              ]
+            },
+            "bytes": 53,
+            "body_sha256": "25ac48cc07b12507174de782c5c5bc0c6dc4046dccdbfe55f03603a512683b49"
+          }
+        },
+        {
+          "label": "misuse",
+          "stage": "after",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A2",
+                  "owner": "owner-a"
+                }
+              ]
+            },
+            "bytes": 53,
+            "body_sha256": "104609f0f79eb10720753e00435a8c5cf0b0581f7148bf0c5ec3abc2f10075cb"
+          }
+        },
+        {
+          "label": "legitimate_A",
+          "stage": "after",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A1",
+                  "owner": "owner-a"
+                }
+              ]
+            },
+            "bytes": 53,
+            "body_sha256": "25ac48cc07b12507174de782c5c5bc0c6dc4046dccdbfe55f03603a512683b49"
+          }
+        },
+        {
+          "label": "legitimate_B",
+          "stage": "after",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A1",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A2",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-B1",
+                  "owner": "owner-b"
+                }
+              ]
+            },
+            "bytes": 133,
+            "body_sha256": "830435d435691aac0050536d0e7db770516d70df8454305a73937598b52d4d09"
+          }
+        }
+      ],
+      "public_notice": {
+        "status": 200,
+        "body": {
+          "notice": "Fictional public service notice"
+        },
+        "bytes": 44,
+        "body_sha256": "a435c069d95516856623b62dd28bdd71166352f78e0359969aa2e13bf48efecc"
+      },
+      "candidate_lesson_sha256": "0f0207f86744b58d28870111f70221f54aeacb97b69bd9c11693f9866dd75b79",
+      "metrics": {
+        "misuse": {
+          "requests": 2,
+          "completed": 2,
+          "record_transmissions": 2,
+          "after_records": 1,
+          "distinct_ids": [
+            "FICTIONAL-A1",
+            "FICTIONAL-A2"
+          ]
+        },
+        "legitimate_A": {
+          "requests": 3,
+          "completed": 3,
+          "record_transmissions": 3,
+          "after_records": 1,
+          "distinct_ids": [
+            "FICTIONAL-A1"
+          ]
+        },
+        "legitimate_B": {
+          "requests": 2,
+          "completed": 2,
+          "record_transmissions": 6,
+          "after_records": 3,
+          "distinct_ids": [
+            "FICTIONAL-A1",
+            "FICTIONAL-A2",
+            "FICTIONAL-B1"
+          ]
+        }
+      }
+    },
+    {
+      "mode": "mechanism_aware",
+      "case": "unsupported-shape",
+      "process_ids": {
+        "verifier_observer": 91807,
+        "gateway": 91848,
+        "application": 91849,
+        "controller": 91850
+      },
+      "policy": {
+        "target": "unsupported-shape",
+        "identity": "A",
+        "origin": "http://127.0.0.1:57515",
+        "routes": [
+          "/fixture/exposed-credential",
+          "/assets/array.json"
+        ],
+        "approved_lesson_sha256": "0f0207f86744b58d28870111f70221f54aeacb97b69bd9c11693f9866dd75b79",
+        "action": "revoke_current_identity"
+      },
+      "capture": {
+        "status": 200,
+        "body": [
+          "[REDACTED]"
+        ],
+        "bytes": 47,
+        "body_sha256": "7b60ec9d1dc8fd9dc502ccbcce07d2a0f74612a829ad0fb847dbe4626c6520f7"
+      },
+      "adversarial": [
+        {
+          "variant": "extra_instruction",
+          "response": {
+            "status": 400,
+            "body": {
+              "error": "evidence_schema"
+            },
+            "bytes": 27,
+            "body_sha256": "e5331777a2e9fb9a97c322135325031c7489e6fd10cecc01217660bd8fb980a7"
+          }
+        },
+        {
+          "variant": "wrong_target",
+          "response": {
+            "status": 403,
+            "body": {
+              "error": "unenrolled_target_or_route"
+            },
+            "bytes": 38,
+            "body_sha256": "c9ff13ec2a42ccbe0ead783c20bd29dd77de2663d0c143b47726c4eb0788e31b"
+          }
+        },
+        {
+          "variant": "lesson_action",
+          "response": {
+            "status": 403,
+            "body": {
+              "error": "lesson_not_approved_by_owner_policy"
+            },
+            "bytes": 47,
+            "body_sha256": "27b6b6cbafeb0c4e386e8df0157a7f6a8ca3869699cdbd220c0da2916071b2cc"
+          }
+        },
+        {
+          "variant": "lesson_applicability",
+          "response": {
+            "status": 403,
+            "body": {
+              "error": "lesson_not_approved_by_owner_policy"
+            },
+            "bytes": 47,
+            "body_sha256": "27b6b6cbafeb0c4e386e8df0157a7f6a8ca3869699cdbd220c0da2916071b2cc"
+          }
+        },
+        {
+          "variant": "lesson_provenance",
+          "response": {
+            "status": 403,
+            "body": {
+              "error": "lesson_not_approved_by_owner_policy"
+            },
+            "bytes": 47,
+            "body_sha256": "27b6b6cbafeb0c4e386e8df0157a7f6a8ca3869699cdbd220c0da2916071b2cc"
+          }
+        },
+        {
+          "variant": "lesson_target",
+          "response": {
+            "status": 403,
+            "body": {
+              "error": "lesson_not_approved_by_owner_policy"
+            },
+            "bytes": 47,
+            "body_sha256": "27b6b6cbafeb0c4e386e8df0157a7f6a8ca3869699cdbd220c0da2916071b2cc"
+          }
+        }
+      ],
+      "observer": [
+        {
+          "route": "/fixture/exposed-credential",
+          "observation": {
+            "status": 404,
+            "body": {
+              "error": "unknown_route"
+            },
+            "bytes": 25,
+            "body_sha256": "fb0c62017ebd3487955184f022a06b18b25acac30daf098c9438c9274eabd531"
+          },
+          "controller": null
+        },
+        {
+          "route": "/assets/array.json",
+          "observation": {
+            "status": 200,
+            "body": [
+              "[REDACTED]"
+            ],
+            "bytes": 47,
+            "body_sha256": "7b60ec9d1dc8fd9dc502ccbcce07d2a0f74612a829ad0fb847dbe4626c6520f7"
+          },
+          "controller": null,
+          "shape": "unsupported_shape"
+        }
+      ],
+      "reads": [
+        {
+          "label": "misuse",
+          "stage": "before",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A1",
+                  "owner": "owner-a"
+                }
+              ]
+            },
+            "bytes": 53,
+            "body_sha256": "25ac48cc07b12507174de782c5c5bc0c6dc4046dccdbfe55f03603a512683b49"
+          }
+        },
+        {
+          "label": "legitimate_A",
+          "stage": "before",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A1",
+                  "owner": "owner-a"
+                }
+              ]
+            },
+            "bytes": 53,
+            "body_sha256": "25ac48cc07b12507174de782c5c5bc0c6dc4046dccdbfe55f03603a512683b49"
+          }
+        },
+        {
+          "label": "legitimate_B",
+          "stage": "before",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A1",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A2",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-B1",
+                  "owner": "owner-b"
+                }
+              ]
+            },
+            "bytes": 133,
+            "body_sha256": "830435d435691aac0050536d0e7db770516d70df8454305a73937598b52d4d09"
+          }
+        },
+        {
+          "label": "legitimate_A",
+          "stage": "after_adversarial",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A1",
+                  "owner": "owner-a"
+                }
+              ]
+            },
+            "bytes": 53,
+            "body_sha256": "25ac48cc07b12507174de782c5c5bc0c6dc4046dccdbfe55f03603a512683b49"
+          }
+        },
+        {
+          "label": "misuse",
+          "stage": "after",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A2",
+                  "owner": "owner-a"
+                }
+              ]
+            },
+            "bytes": 53,
+            "body_sha256": "104609f0f79eb10720753e00435a8c5cf0b0581f7148bf0c5ec3abc2f10075cb"
+          }
+        },
+        {
+          "label": "legitimate_A",
+          "stage": "after",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A1",
+                  "owner": "owner-a"
+                }
+              ]
+            },
+            "bytes": 53,
+            "body_sha256": "25ac48cc07b12507174de782c5c5bc0c6dc4046dccdbfe55f03603a512683b49"
+          }
+        },
+        {
+          "label": "legitimate_B",
+          "stage": "after",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A1",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A2",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-B1",
+                  "owner": "owner-b"
+                }
+              ]
+            },
+            "bytes": 133,
+            "body_sha256": "830435d435691aac0050536d0e7db770516d70df8454305a73937598b52d4d09"
+          }
+        }
+      ],
+      "public_notice": {
+        "status": 200,
+        "body": {
+          "notice": "Fictional public service notice"
+        },
+        "bytes": 44,
+        "body_sha256": "a435c069d95516856623b62dd28bdd71166352f78e0359969aa2e13bf48efecc"
+      },
+      "candidate_lesson_sha256": "0f0207f86744b58d28870111f70221f54aeacb97b69bd9c11693f9866dd75b79",
+      "metrics": {
+        "misuse": {
+          "requests": 2,
+          "completed": 2,
+          "record_transmissions": 2,
+          "after_records": 1,
+          "distinct_ids": [
+            "FICTIONAL-A1",
+            "FICTIONAL-A2"
+          ]
+        },
+        "legitimate_A": {
+          "requests": 3,
+          "completed": 3,
+          "record_transmissions": 3,
+          "after_records": 1,
+          "distinct_ids": [
+            "FICTIONAL-A1"
+          ]
+        },
+        "legitimate_B": {
+          "requests": 2,
+          "completed": 2,
+          "record_transmissions": 6,
+          "after_records": 3,
+          "distinct_ids": [
+            "FICTIONAL-A1",
+            "FICTIONAL-A2",
+            "FICTIONAL-B1"
+          ]
+        }
+      }
+    }
+  ],
+  "checks": [
+    {
+      "name": "source actual HTTP credential capture",
+      "passed": true
+    },
+    {
+      "name": "source actual credential works before response",
+      "passed": true
+    },
+    {
+      "name": "original check works on source",
+      "passed": true
+    },
+    {
+      "name": "source-service/original_path_only: separate process IDs",
+      "passed": true
+    },
+    {
+      "name": "source-service/original_path_only: misuse before",
+      "passed": true
+    },
+    {
+      "name": "source-service/original_path_only: actual after response",
+      "passed": true
+    },
+    {
+      "name": "source-service/original_path_only: A remains active after invalid evidence",
+      "passed": true
+    },
+    {
+      "name": "source-service/original_path_only: A availability cost",
+      "passed": true
+    },
+    {
+      "name": "source-service/original_path_only: B before",
+      "passed": true
+    },
+    {
+      "name": "source-service/original_path_only: B after",
+      "passed": true
+    },
+    {
+      "name": "source-service/original_path_only: public notice",
+      "passed": true
+    },
+    {
+      "name": "source-service/original_path_only: reject extra_instruction",
+      "passed": true
+    },
+    {
+      "name": "source-service/original_path_only: reject wrong_target",
+      "passed": true
+    },
+    {
+      "name": "source-service/original_path_only: reject lesson_action",
+      "passed": true
+    },
+    {
+      "name": "source-service/original_path_only: reject lesson_applicability",
+      "passed": true
+    },
+    {
+      "name": "source-service/original_path_only: reject lesson_provenance",
+      "passed": true
+    },
+    {
+      "name": "source-service/original_path_only: reject lesson_target",
+      "passed": true
+    },
+    {
+      "name": "renamed-nested/original_path_only: separate process IDs",
+      "passed": true
+    },
+    {
+      "name": "renamed-nested/original_path_only: misuse before",
+      "passed": true
+    },
+    {
+      "name": "renamed-nested/original_path_only: actual after response",
+      "passed": true
+    },
+    {
+      "name": "renamed-nested/original_path_only: A remains active after invalid evidence",
+      "passed": true
+    },
+    {
+      "name": "renamed-nested/original_path_only: A availability cost",
+      "passed": true
+    },
+    {
+      "name": "renamed-nested/original_path_only: B before",
+      "passed": true
+    },
+    {
+      "name": "renamed-nested/original_path_only: B after",
+      "passed": true
+    },
+    {
+      "name": "renamed-nested/original_path_only: public notice",
+      "passed": true
+    },
+    {
+      "name": "renamed-nested/original_path_only: reject extra_instruction",
+      "passed": true
+    },
+    {
+      "name": "renamed-nested/original_path_only: reject wrong_target",
+      "passed": true
+    },
+    {
+      "name": "renamed-nested/original_path_only: reject lesson_action",
+      "passed": true
+    },
+    {
+      "name": "renamed-nested/original_path_only: reject lesson_applicability",
+      "passed": true
+    },
+    {
+      "name": "renamed-nested/original_path_only: reject lesson_provenance",
+      "passed": true
+    },
+    {
+      "name": "renamed-nested/original_path_only: reject lesson_target",
+      "passed": true
+    },
+    {
+      "name": "renamed-nested/mechanism_aware: separate process IDs",
+      "passed": true
+    },
+    {
+      "name": "renamed-nested/mechanism_aware: misuse before",
+      "passed": true
+    },
+    {
+      "name": "renamed-nested/mechanism_aware: actual after response",
+      "passed": true
+    },
+    {
+      "name": "renamed-nested/mechanism_aware: A remains active after invalid evidence",
+      "passed": true
+    },
+    {
+      "name": "renamed-nested/mechanism_aware: A availability cost",
+      "passed": true
+    },
+    {
+      "name": "renamed-nested/mechanism_aware: B before",
+      "passed": true
+    },
+    {
+      "name": "renamed-nested/mechanism_aware: B after",
+      "passed": true
+    },
+    {
+      "name": "renamed-nested/mechanism_aware: public notice",
+      "passed": true
+    },
+    {
+      "name": "renamed-nested/mechanism_aware: reject extra_instruction",
+      "passed": true
+    },
+    {
+      "name": "renamed-nested/mechanism_aware: reject wrong_target",
+      "passed": true
+    },
+    {
+      "name": "renamed-nested/mechanism_aware: reject lesson_action",
+      "passed": true
+    },
+    {
+      "name": "renamed-nested/mechanism_aware: reject lesson_applicability",
+      "passed": true
+    },
+    {
+      "name": "renamed-nested/mechanism_aware: reject lesson_provenance",
+      "passed": true
+    },
+    {
+      "name": "renamed-nested/mechanism_aware: reject lesson_target",
+      "passed": true
+    },
+    {
+      "name": "public-metadata/original_path_only: separate process IDs",
+      "passed": true
+    },
+    {
+      "name": "public-metadata/original_path_only: misuse before",
+      "passed": true
+    },
+    {
+      "name": "public-metadata/original_path_only: actual after response",
+      "passed": true
+    },
+    {
+      "name": "public-metadata/original_path_only: A remains active after invalid evidence",
+      "passed": true
+    },
+    {
+      "name": "public-metadata/original_path_only: A availability cost",
+      "passed": true
+    },
+    {
+      "name": "public-metadata/original_path_only: B before",
+      "passed": true
+    },
+    {
+      "name": "public-metadata/original_path_only: B after",
+      "passed": true
+    },
+    {
+      "name": "public-metadata/original_path_only: public notice",
+      "passed": true
+    },
+    {
+      "name": "public-metadata/original_path_only: reject extra_instruction",
+      "passed": true
+    },
+    {
+      "name": "public-metadata/original_path_only: reject wrong_target",
+      "passed": true
+    },
+    {
+      "name": "public-metadata/original_path_only: reject lesson_action",
+      "passed": true
+    },
+    {
+      "name": "public-metadata/original_path_only: reject lesson_applicability",
+      "passed": true
+    },
+    {
+      "name": "public-metadata/original_path_only: reject lesson_provenance",
+      "passed": true
+    },
+    {
+      "name": "public-metadata/original_path_only: reject lesson_target",
+      "passed": true
+    },
+    {
+      "name": "public-metadata/mechanism_aware: separate process IDs",
+      "passed": true
+    },
+    {
+      "name": "public-metadata/mechanism_aware: misuse before",
+      "passed": true
+    },
+    {
+      "name": "public-metadata/mechanism_aware: actual after response",
+      "passed": true
+    },
+    {
+      "name": "public-metadata/mechanism_aware: A remains active after invalid evidence",
+      "passed": true
+    },
+    {
+      "name": "public-metadata/mechanism_aware: A availability cost",
+      "passed": true
+    },
+    {
+      "name": "public-metadata/mechanism_aware: B before",
+      "passed": true
+    },
+    {
+      "name": "public-metadata/mechanism_aware: B after",
+      "passed": true
+    },
+    {
+      "name": "public-metadata/mechanism_aware: public notice",
+      "passed": true
+    },
+    {
+      "name": "public-metadata/mechanism_aware: reject extra_instruction",
+      "passed": true
+    },
+    {
+      "name": "public-metadata/mechanism_aware: reject wrong_target",
+      "passed": true
+    },
+    {
+      "name": "public-metadata/mechanism_aware: reject lesson_action",
+      "passed": true
+    },
+    {
+      "name": "public-metadata/mechanism_aware: reject lesson_applicability",
+      "passed": true
+    },
+    {
+      "name": "public-metadata/mechanism_aware: reject lesson_provenance",
+      "passed": true
+    },
+    {
+      "name": "public-metadata/mechanism_aware: reject lesson_target",
+      "passed": true
+    },
+    {
+      "name": "inventory-mismatch/original_path_only: separate process IDs",
+      "passed": true
+    },
+    {
+      "name": "inventory-mismatch/original_path_only: misuse before",
+      "passed": true
+    },
+    {
+      "name": "inventory-mismatch/original_path_only: actual after response",
+      "passed": true
+    },
+    {
+      "name": "inventory-mismatch/original_path_only: A remains active after invalid evidence",
+      "passed": true
+    },
+    {
+      "name": "inventory-mismatch/original_path_only: A availability cost",
+      "passed": true
+    },
+    {
+      "name": "inventory-mismatch/original_path_only: B before",
+      "passed": true
+    },
+    {
+      "name": "inventory-mismatch/original_path_only: B after",
+      "passed": true
+    },
+    {
+      "name": "inventory-mismatch/original_path_only: public notice",
+      "passed": true
+    },
+    {
+      "name": "inventory-mismatch/original_path_only: reject extra_instruction",
+      "passed": true
+    },
+    {
+      "name": "inventory-mismatch/original_path_only: reject wrong_target",
+      "passed": true
+    },
+    {
+      "name": "inventory-mismatch/original_path_only: reject lesson_action",
+      "passed": true
+    },
+    {
+      "name": "inventory-mismatch/original_path_only: reject lesson_applicability",
+      "passed": true
+    },
+    {
+      "name": "inventory-mismatch/original_path_only: reject lesson_provenance",
+      "passed": true
+    },
+    {
+      "name": "inventory-mismatch/original_path_only: reject lesson_target",
+      "passed": true
+    },
+    {
+      "name": "inventory-mismatch/mechanism_aware: separate process IDs",
+      "passed": true
+    },
+    {
+      "name": "inventory-mismatch/mechanism_aware: misuse before",
+      "passed": true
+    },
+    {
+      "name": "inventory-mismatch/mechanism_aware: actual after response",
+      "passed": true
+    },
+    {
+      "name": "inventory-mismatch/mechanism_aware: A remains active after invalid evidence",
+      "passed": true
+    },
+    {
+      "name": "inventory-mismatch/mechanism_aware: A availability cost",
+      "passed": true
+    },
+    {
+      "name": "inventory-mismatch/mechanism_aware: B before",
+      "passed": true
+    },
+    {
+      "name": "inventory-mismatch/mechanism_aware: B after",
+      "passed": true
+    },
+    {
+      "name": "inventory-mismatch/mechanism_aware: public notice",
+      "passed": true
+    },
+    {
+      "name": "inventory-mismatch/mechanism_aware: reject extra_instruction",
+      "passed": true
+    },
+    {
+      "name": "inventory-mismatch/mechanism_aware: reject wrong_target",
+      "passed": true
+    },
+    {
+      "name": "inventory-mismatch/mechanism_aware: reject lesson_action",
+      "passed": true
+    },
+    {
+      "name": "inventory-mismatch/mechanism_aware: reject lesson_applicability",
+      "passed": true
+    },
+    {
+      "name": "inventory-mismatch/mechanism_aware: reject lesson_provenance",
+      "passed": true
+    },
+    {
+      "name": "inventory-mismatch/mechanism_aware: reject lesson_target",
+      "passed": true
+    },
+    {
+      "name": "unsupported-shape/original_path_only: separate process IDs",
+      "passed": true
+    },
+    {
+      "name": "unsupported-shape/original_path_only: misuse before",
+      "passed": true
+    },
+    {
+      "name": "unsupported-shape/original_path_only: actual after response",
+      "passed": true
+    },
+    {
+      "name": "unsupported-shape/original_path_only: A remains active after invalid evidence",
+      "passed": true
+    },
+    {
+      "name": "unsupported-shape/original_path_only: A availability cost",
+      "passed": true
+    },
+    {
+      "name": "unsupported-shape/original_path_only: B before",
+      "passed": true
+    },
+    {
+      "name": "unsupported-shape/original_path_only: B after",
+      "passed": true
+    },
+    {
+      "name": "unsupported-shape/original_path_only: public notice",
+      "passed": true
+    },
+    {
+      "name": "unsupported-shape/original_path_only: reject extra_instruction",
+      "passed": true
+    },
+    {
+      "name": "unsupported-shape/original_path_only: reject wrong_target",
+      "passed": true
+    },
+    {
+      "name": "unsupported-shape/original_path_only: reject lesson_action",
+      "passed": true
+    },
+    {
+      "name": "unsupported-shape/original_path_only: reject lesson_applicability",
+      "passed": true
+    },
+    {
+      "name": "unsupported-shape/original_path_only: reject lesson_provenance",
+      "passed": true
+    },
+    {
+      "name": "unsupported-shape/original_path_only: reject lesson_target",
+      "passed": true
+    },
+    {
+      "name": "unsupported-shape/mechanism_aware: separate process IDs",
+      "passed": true
+    },
+    {
+      "name": "unsupported-shape/mechanism_aware: misuse before",
+      "passed": true
+    },
+    {
+      "name": "unsupported-shape/mechanism_aware: actual after response",
+      "passed": true
+    },
+    {
+      "name": "unsupported-shape/mechanism_aware: A remains active after invalid evidence",
+      "passed": true
+    },
+    {
+      "name": "unsupported-shape/mechanism_aware: A availability cost",
+      "passed": true
+    },
+    {
+      "name": "unsupported-shape/mechanism_aware: B before",
+      "passed": true
+    },
+    {
+      "name": "unsupported-shape/mechanism_aware: B after",
+      "passed": true
+    },
+    {
+      "name": "unsupported-shape/mechanism_aware: public notice",
+      "passed": true
+    },
+    {
+      "name": "unsupported-shape/mechanism_aware: reject extra_instruction",
+      "passed": true
+    },
+    {
+      "name": "unsupported-shape/mechanism_aware: reject wrong_target",
+      "passed": true
+    },
+    {
+      "name": "unsupported-shape/mechanism_aware: reject lesson_action",
+      "passed": true
+    },
+    {
+      "name": "unsupported-shape/mechanism_aware: reject lesson_applicability",
+      "passed": true
+    },
+    {
+      "name": "unsupported-shape/mechanism_aware: reject lesson_provenance",
+      "passed": true
+    },
+    {
+      "name": "unsupported-shape/mechanism_aware: reject lesson_target",
+      "passed": true
+    }
+  ]
+}

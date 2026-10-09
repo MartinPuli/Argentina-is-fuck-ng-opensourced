@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "review_date": "2026-10-09",
+  "narrative_file": "REVOCATION-AND-RECOVERY-RESEARCH.md",
+  "fulltext_review_count": 1,
+  "records": [
+    {
+      "id": "RRR-01",
+      "title": "Authorization Revocation for Long-Running AI Agents: Root-Scoped Quiescence under Delegation and Asynchronous Execution",
+      "authors": [
+        "Genliang Zhu",
+        "Chu Wang"
+      ],
+      "first_publication_date": "2026-09-18",
+      "first_publication_date_status": "arXiv v1",
+      "version": "arXiv:2609.21284v1",
+      "version_date": "2026-09-18",
+      "version_timestamp": "2026-09-18T03:52:46Z",
+      "latest_arxiv_version_observed": "v1",
+      "venue": null,
+      "status": "preprint; peer-reviewed venue not verified",
+      "url": "https://arxiv.org/abs/2609.21284v1",
+      "fulltext_url": "https://arxiv.org/html/2609.21284v1",
+      "pdf_url": "https://arxiv.org/pdf/2609.21284v1",
+      "reading_depth": "relevant full-text methods, assumptions, results and limitations excerpts; proof appendix not independently audited",
+      "counts_as_review": true,
+      "locators": {
+        "first_date_and_version": [
+          "arXiv Submission history"
+        ],
+        "trust_assumptions": [
+          "§3.2–3.4, Table 2",
+          "§10.2–10.3, Table 7"
+        ],
+        "method": [
+          "§4.4–4.6",
+          "§5.1–5.7",
+          "§6.1–6.2"
+        ],
+        "measured_baselines": [
+          "§7.2–7.3, Table 5",
+          "§8.1, Table 6"
+        ],
+        "metrics_and_denominators": [
+          "§7.4–7.5",
+          "§8, Table 6"
+        ],
+        "checker_independence": [
+          "§7.2",
+          "§8.3–8.4"
+        ],
+        "authentication_gap_in_artifact": [
+          "§6.6"
+        ],
+        "provider_scope": [
+          "§6.1–6.3",
+          "§8.4"
+        ],
+        "pre_barrier_acceptance": [
+          "§3.1",
+          "§5.3",
+          "§8.2"
+        ],
+        "recovery_and_availability_limits": [
+          "§10.1",
+          "§10.5"
+        ]
+      },
+      "narrative_anchor": "rrr-01",
+      "source_derived_prose_budget_limit": 180,
+      "within_primary_window": true,
+      "window_basis": "first preprint",
+      "proposed_test_labels": [
+        "queued_write_after_revocation",
+        "barrier_commit_race",
+        "stale_authority_after_restart",
+        "independent_authority_preservation",
+        "missing_receipt_indeterminate"
+      ],
+      "reproduced_by_us": false,
+      "code_executed": false,
+      "remote_provider_evaluated": false,
+      "production_defense_evidence": false,
+      "source_derived_narrative_words": 170
+    }
+  ]
+}

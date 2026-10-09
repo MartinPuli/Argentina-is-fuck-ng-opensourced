@@ -6,7 +6,7 @@
     "2026-10-09"
   ],
   "exhaustive": false,
-  "scope": "Original discovery used metadata/abstract triage. Later October 9 reviews cover 8 queued candidates at targeted full-text depth; linked evidence records contain findings. No reproductions.",
+  "scope": "Original discovery used metadata/abstract triage. Later October 9 reviews cover 11 queued candidates at targeted full-text depth; linked evidence records contain findings. No reproductions.",
   "parsed_additional_title_entries": 986,
   "additional_keyword_matches": 175,
   "count_unit": "Within-source normalized title entries; NOT globally deduplicated papers or papers read",
@@ -373,8 +373,8 @@
       "title": "SoK: Reshaping Research on Network Intrusion Detection Systems",
       "canonical_primary_url": "https://arxiv.org/abs/2604.17556",
       "discovery_source": "asiaccs26c2",
-      "reading_status": "abstract_screened",
-      "fulltext_read": false,
+      "reading_status": "fulltext_targeted",
+      "fulltext_read": true,
       "first_preprint_date": "2026-04-19",
       "first_publication_date": null,
       "version": "arXiv:2604.17556v1",
@@ -383,9 +383,14 @@
       "venue_date": "2026-06-01",
       "date_classification": "first_preprint_in_window",
       "priority_reason_inference": "Evaluate analyst reports and realistic traffic rather than sample accuracy.",
-      "next_step": "Read methods, evaluation unit, threat model and limitations before adopting any numerical claim.",
+      "next_step": "Full appendices where unread, independent reproduction and wider citation review remain; see linked targeted review for findings.",
       "public_fulltext_link": "https://arxiv.org/html/2604.17556v1",
-      "absent_from_original_27_title_check": true
+      "absent_from_original_27_title_check": true,
+      "initial_discovery_status": "abstract_screened",
+      "initial_fulltext_read": false,
+      "review_file": "detection-response-evaluation.json",
+      "review_record": "DRE-03",
+      "reviewed_on": "2026-10-09"
     },
     {
       "id": "AD10",
@@ -447,7 +452,10 @@
       "priority_reason_inference": "Inspect extension packages as another credential-exposure surface.",
       "next_step": "Read methods, evaluation unit, threat model and limitations before adopting any numerical claim.",
       "notes": "Canonical primary metadata currently verified at official index only. A publisher DOI lead 10.1145/3779208.3785378 returned HTTP 403; no publisher content or full text read.",
-      "absent_from_original_27_title_check": true
+      "absent_from_original_27_title_check": true,
+      "access_review_file": "permission-credential-surfaces.json",
+      "access_review_record": "PCS-02",
+      "access_status": "Primary metadata checked; accessible full text not retrieved. A different substitute does not complete this queued paper."
     },
     {
       "id": "AD13",
@@ -486,34 +494,43 @@
       "priority_reason_inference": "Check effective privileges beyond explicitly assigned permissions.",
       "next_step": "Read methods, evaluation unit, threat model and limitations before adopting any numerical claim.",
       "notes": "DOI is supplied directly by the official accepted-paper JSON. Full text and earliest public date not reviewed.",
-      "absent_from_original_27_title_check": true
+      "absent_from_original_27_title_check": true,
+      "access_review_file": "permission-credential-surfaces.json",
+      "access_review_record": "PCS-01",
+      "access_status": "Primary metadata checked; accessible full text not retrieved. A different substitute does not complete this queued paper."
     },
     {
       "id": "AD15",
       "title": "Can IOCs impose cost? The effects of publishing threat intelligence on adversary behavior",
       "canonical_primary_url": "https://dl.acm.org/doi/10.1145/3719027.3765026",
       "discovery_source": "ccs25data",
-      "reading_status": "index_only",
-      "fulltext_read": false,
+      "reading_status": "fulltext_targeted",
+      "fulltext_read": true,
       "first_preprint_date": null,
       "first_publication_date": null,
-      "version": null,
+      "version": "TU Delft accepted author manuscript with appendices; unnumbered; 22 PDF pages including cover",
       "version_date": null,
       "venue": "CCS 2025",
       "venue_date": "2025-10-13",
       "date_classification": "venue_in_window_first_date_unresolved",
       "priority_reason_inference": "Examine whether shared indicators change adversary behavior.",
-      "next_step": "Read methods, evaluation unit, threat model and limitations before adopting any numerical claim.",
+      "next_step": "Full appendices where unread, independent reproduction and wider citation review remain; see linked targeted review for findings.",
       "notes": "DOI is supplied directly by the official accepted-paper JSON. Full text and earliest public date not reviewed.",
-      "absent_from_original_27_title_check": true
+      "absent_from_original_27_title_check": true,
+      "initial_discovery_status": "index_only",
+      "initial_fulltext_read": false,
+      "review_file": "threat-report-verification.json",
+      "review_record": "TRV03",
+      "reviewed_on": "2026-10-09",
+      "public_fulltext_link": "https://pure.tudelft.nl/ws/portalfiles/portal/256014744/Bouwman_et_al._2025_Can_IOCs_Impose_Cost_The_Effects_of_Publishing_Threat_-_full_version_with_appendices.pdf"
     },
     {
       "id": "AD16",
       "title": "Effective and Efficient Threat Hunting with Small Language Models",
       "canonical_primary_url": "https://arxiv.org/abs/2512.06660",
       "discovery_source": "raid26csv",
-      "reading_status": "abstract_screened",
-      "fulltext_read": false,
+      "reading_status": "fulltext_targeted",
+      "fulltext_read": true,
       "first_preprint_date": "2025-12-07",
       "first_publication_date": null,
       "version": "arXiv:2512.06660v3",
@@ -522,9 +539,14 @@
       "venue_date": "2026-10-11",
       "date_classification": "first_preprint_in_window",
       "priority_reason_inference": "Distinguish query syntax/schema validity from successful threat detection.",
-      "next_step": "Read methods, evaluation unit, threat model and limitations before adopting any numerical claim.",
+      "next_step": "Full appendices where unread, independent reproduction and wider citation review remain; see linked targeted review for findings.",
       "public_fulltext_link": "https://arxiv.org/html/2512.06660v3",
-      "absent_from_original_27_title_check": true
+      "absent_from_original_27_title_check": true,
+      "initial_discovery_status": "abstract_screened",
+      "initial_fulltext_read": false,
+      "review_file": "permission-credential-surfaces.json",
+      "review_record": "PCS-03",
+      "reviewed_on": "2026-10-09"
     },
     {
       "id": "AD17",
@@ -570,15 +592,60 @@
     }
   ],
   "candidate_count": 18,
-  "fulltext_read_count": 8,
+  "fulltext_read_count": 11,
   "reproduced_count": 0,
   "remaining": [
     "Resolve public full text and first dates of index-only entries.",
-    "Read candidate methods, tables, limitations and appendices before promoting evidence status.",
-    "Reconcile DOI/preprint/title aliases across these indexes and previous 1378 entries.",
+    "Read the seven remaining queued papers; continue unread appendices and independently reproduce selected results.",
+    "Resolve DOI/preprint/title aliases beyond the conservative exact-identifier/title grouping in corpus-reconciliation.json.",
     "Complete untriaged venues, workshops, journals and preprints through cutoff.",
     "Distinguish early preprints, new deposit of old work, revisions, acceptance, presentation and formal publication."
   ],
   "safety": "Public publication metadata and papers only; no leaked data, active indicators, credential access, malware execution or protected conference downloads.",
-  "fulltext_read_definition": "Relevant full-text methods, results and limitations, not complete appendices or reproduction."
+  "fulltext_read_definition": "Relevant full-text methods, results and limitations, not complete appendices or reproduction.",
+  "queue_checkpoint": {
+    "date": "2026-10-09",
+    "targeted_fulltext_ids": [
+      "AD01",
+      "AD02",
+      "AD03",
+      "AD04",
+      "AD05",
+      "AD07",
+      "AD08",
+      "AD09",
+      "AD11",
+      "AD15",
+      "AD16"
+    ],
+    "unread_or_abstract_screened_ids": [
+      "AD06",
+      "AD10",
+      "AD12",
+      "AD13",
+      "AD14",
+      "AD17",
+      "AD18"
+    ],
+    "substitute_does_not_complete_original": [
+      "AD12",
+      "AD14",
+      "AD18"
+    ]
+  },
+  "corpus_reconciliation": {
+    "records": "corpus-reconciliation.json",
+    "report": "CORPUS-RECONCILIATION.md",
+    "historical_index_entries": 2364,
+    "conservative_index_candidate_groups": 2362,
+    "global_doi_resolution_completed": false,
+    "arxiv_identifier_parser_correction": {
+      "historical_field": "sources[arxiv_oct26].unique_abs_ids",
+      "historical_value": 0,
+      "recovered_from_same_hash_snapshot": 405,
+      "reason": "Accept whitespace around href assignments; no new index snapshot or changed title count."
+    },
+    "snapshot_note": "Original source snapshots remain unchanged. Current matched-review totals are stored only in the generated catalog; queue updates require regeneration.",
+    "snapshot_reference": "Read generated_at_utc and review_file_snapshots in corpus-reconciliation.json for the precise checkpoint."
+  }
 }

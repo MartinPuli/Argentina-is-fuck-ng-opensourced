@@ -1,0 +1,10 @@
+# Revocation and recovery research
+
+Review cutoff: 2026-10-09. One new relevant full-text review, checked against existing review records and the corpus by title and arXiv identifier. Metadata and section locators: [revocation-recovery-research.json](revocation-recovery-research.json). No author code was executed; the findings below are reported evidence, not reproduced results.
+
+<a id="rrr-01"></a>
+## RRR-01 — Authorization Revocation for Long-Running AI Agents: Root-Scoped Quiescence under Delegation and Asynchronous Execution
+
+Genliang Zhu and Chu Wang. First and reviewed version: arXiv:2609.21284v1, 2026-09-18. Preprint; no peer-reviewed venue verified. [Version history](https://arxiv.org/abs/2609.21284), [versioned full text](https://arxiv.org/html/2609.21284v1).
+
+The protocol combines durable authorization epochs, action-time barriers, complete carrier/channel accounting and explicit transfer to independently sufficient authority. The authors' local ledger harness matches 17/17 registered cases; a separately implemented checker agrees on 17/17 traces and rejects 44/44 rehashed semantic mutations. Cancellation-only accepts late effects in 2/2 cases; revocation without a sink barrier accepts 1/1; barriers reject 2/2, plus one restart and one stale-process case. Effects are inert records, not remote-service operations. Artifact hashes do not authenticate providers. The checker validates serialized evidence, not independently observed external behavior. Guarantees assume complete mediation, trustworthy adapters/sinks and durable state. Uncovered paths and compromised gateways are excluded. Actions accepted before each local barrier may still settle; revocation neither undoes them nor proves business recovery. Missing evidence remains indeterminate. Proposed tests: queue a write before revocation, race the barrier, restart with cached authority, preserve separately authorized work, and require observed sink rejection before declaring containment. [Methods §§3–6; results §§7–8, Tables 5–6; limits §10](https://arxiv.org/html/2609.21284v1).

@@ -1,15 +1,29 @@
 {
   "schema_version": 1,
   "reviewed_at": "2026-10-09",
-  "window": {"start": "2025-10-09", "end": "2026-10-09"},
+  "window": {
+    "start": "2025-10-09",
+    "end": "2026-10-09"
+  },
   "scope": "Selected public-paper review; no replication or production validation.",
-  "counts": {"fulltext_targeted": 2, "unavailable_fulltext": 1, "reproduced": 0},
+  "counts": {
+    "fulltext_targeted": 3,
+    "unavailable_fulltext": 1,
+    "reproduced": 0
+  },
   "source_summary_policy": "Paper-derived prose is concentrated here; MD project implications and acceptance cases are reviewer proposals, not paper results.",
   "records": [
     {
       "id": "AD08",
       "title": "Revealing the True Indicators: Understanding and Improving IoC Extraction From Threat Reports",
-      "authors": ["Evangelos Froudakis", "Athanasios Avgetidis", "Sean Tyler Frankum", "Roberto Perdisci", "Manos Antonakakis", "Angelos D. Keromytis"],
+      "authors": [
+        "Evangelos Froudakis",
+        "Athanasios Avgetidis",
+        "Sean Tyler Frankum",
+        "Roberto Perdisci",
+        "Manos Antonakakis",
+        "Angelos D. Keromytis"
+      ],
       "canonical_url": "https://doi.org/10.1109/ACSAC67867.2025.00052",
       "metadata_url": "https://www.acsac.org/2025/program/final/s253.html",
       "fulltext_url": "https://angelosk.github.io/Papers/2025/IoC_extraction_paper_CR.pdf",
@@ -26,7 +40,14 @@
       "reading_status": "fulltext_targeted",
       "fulltext_read": true,
       "counts_as_review": true,
-      "sections_read": ["3.2–3.3", "4.1–4.2", "5.1–5.3", "6", "Appendix A", "Appendix B/C tables"],
+      "sections_read": [
+        "3.2–3.3",
+        "4.1–4.2",
+        "5.1–5.3",
+        "6",
+        "Appendix A",
+        "Appendix B/C tables"
+      ],
       "method": "Regex candidates, contextual LLM labels, analyst review.",
       "evaluation": {
         "reports": 50,
@@ -42,15 +63,32 @@
         "abstract_labels": 1791,
         "denominator_caveat": "Abstract and body counts differ."
       },
-      "result": {"mean_annotation_time_reduction_percent": 43, "median_annotation_time_reduction_percent": 43, "unit": "Junior analyst time per report; UI logs."},
+      "result": {
+        "mean_annotation_time_reduction_percent": 43,
+        "median_annotation_time_reduction_percent": 43,
+        "unit": "Junior analyst time per report; UI logs."
+      },
       "limits": "Report-context labels do not authenticate incidents. Compromised-domain ambiguity remains; selected reports and six analysts limit transfer.",
-      "locators": ["Table 3", "5.1.1", "5.2.2", "5.3"],
+      "locators": [
+        "Table 3",
+        "5.1.1",
+        "5.2.2",
+        "5.3"
+      ],
       "author_code_executed": false
     },
     {
       "id": "AD18",
       "title": "Grounded in Knowledge, Guided by Reason: Automated Fake Cyber Threat Intelligence Detection via Knowledge-Augmented LLM Rationales",
-      "authors": ["Lingjia Guo", "Ziyi Yan", "Zhengwei Jiang", "Chunyan Ma", "Fangming Dong", "Zhao Tong", "Xixun Lin"],
+      "authors": [
+        "Lingjia Guo",
+        "Ziyi Yan",
+        "Zhengwei Jiang",
+        "Chunyan Ma",
+        "Fangming Dong",
+        "Zhao Tong",
+        "Xixun Lin"
+      ],
       "canonical_url": "https://raid2026.org/accepted.html",
       "metadata_url": "https://raid2026.org/data/accepted_papers.csv",
       "metadata_row_id": "557",
@@ -75,7 +113,11 @@
       "id": "TRV02",
       "substitutes_for": "AD18",
       "title": "False Alarms, Real Damage: Adversarial Attacks Using LLM-based Models on Text-based Cyber Threat Intelligence Systems",
-      "authors": ["Samaneh Shafee", "Alysson Bessani", "Pedro M. Ferreira"],
+      "authors": [
+        "Samaneh Shafee",
+        "Alysson Bessani",
+        "Pedro M. Ferreira"
+      ],
       "canonical_url": "https://arxiv.org/abs/2507.06252v2",
       "fulltext_url": "https://arxiv.org/html/2507.06252v2",
       "version_history_url": "https://arxiv.org/abs/2507.06252",
@@ -88,12 +130,22 @@
       "reading_status": "fulltext_targeted",
       "fulltext_read": true,
       "counts_as_review": true,
-      "sections_read": ["II", "V.A–B", "V.F–H", "VI", "VII"],
+      "sections_read": [
+        "II",
+        "V.A–B",
+        "V.F–H",
+        "VI",
+        "VII"
+      ],
       "method": "Synthetic deception against binary cybersecurity-relevance classifiers.",
       "evaluation": {
         "base_tweets": 31281,
         "base_security_related_tweets": 11074,
-        "base_tweet_years": [2016, 2017, 2018],
+        "base_tweet_years": [
+          2016,
+          2017,
+          2018
+        ],
         "tableV_model": "Dionisio et al. CNN",
         "synthetic_negatives_generated": 11074,
         "human_rejected": 1340,
@@ -108,8 +160,68 @@
         "denominator_caveat": "Table total and prose use generated counts; confusion counts sum to retained samples."
       },
       "limits": "Relevance is not authenticity. Reused reviewers assessed resemblance, not independent truth detection. Source authentication and freshness defenses remain unvalidated.",
-      "locators": ["V.A–B", "VI opening", "Table V", "VI.B", "VII: Human analysts; Defense scenario"],
+      "locators": [
+        "V.A–B",
+        "VI opening",
+        "Table V",
+        "VI.B",
+        "VII: Human analysts; Defense scenario"
+      ],
       "author_code_executed": false
+    },
+    {
+      "id": "TRV03",
+      "queue_id": "AD15",
+      "title": "Can IOCs Impose Cost? The Effects of Publishing Threat Intelligence on Adversary Behavior",
+      "authors": [
+        "Xander Bouwman",
+        "Aksel Ethembabaoglu",
+        "Bart Hermans",
+        "Carlos Gañán",
+        "Michel van Eeten"
+      ],
+      "canonical_url": "https://doi.org/10.1145/3719027.3765026",
+      "metadata_url": "https://research.tudelft.nl/en/publications/can-iocs-impose-cost-the-effects-of-publishing-threat-intelligenc/",
+      "fulltext_url": "https://pure.tudelft.nl/ws/portalfiles/portal/256014744/Bouwman_et_al._2025_Can_IOCs_Impose_Cost_The_Effects_of_Publishing_Threat_-_full_version_with_appendices.pdf",
+      "version": "TU Delft accepted author manuscript with appendices; unnumbered; 22 PDF pages including cover",
+      "version_date": null,
+      "first_publication_date": null,
+      "venue": "ACM CCS 2025",
+      "venue_start": "2025-10-13",
+      "venue_end": "2025-10-17",
+      "date_classification": "venue_in_window_first_public_date_unresolved",
+      "reading_status": "fulltext_targeted",
+      "fulltext_read": true,
+      "counts_as_review": true,
+      "sections_read": [
+        "3.1-3.5",
+        "4.2-4.3; Tables 1-4",
+        "5.1-5.2",
+        "7-8"
+      ],
+      "method": "Retrospective matching of two commercial feeds against government-network metadata; observational panel analysis.",
+      "measurement_period": [
+        "2023-09-13",
+        "2024-09-02"
+      ],
+      "evaluation": {
+        "window_days_before_publication": 50,
+        "window_days_after_publication": 50,
+        "sighted_indicators_in_window": 248261,
+        "indicators_with_postpublication_sightings": 47110,
+        "postpublication_share_percent": 19.0,
+        "unit": "Indicators observed on the studied networks, not verified intrusions or all published indicators."
+      },
+      "limits": "No incident ground truth or triage outcomes. False positives, partial network visibility, vendor imbalance and confounding limit interpretation; causality is not established. Dataset and code unavailable under confidentiality agreement.",
+      "implementation_inference": "Retain publication and observation dates; corroborate present applicability rather than automatically blocking historical indicators.",
+      "locators": [
+        "3.1-3.4 (collection, filtering, access)",
+        "4.2; Table 1 (denominator)",
+        "5.1 and 7 (causal limits)"
+      ],
+      "author_code_executed": false,
+      "reproduced_by_us": false,
+      "reviewed_at": "2026-10-09"
     }
   ]
 }

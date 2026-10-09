@@ -1,0 +1,327 @@
+{
+  "license": "CC-BY-4.0",
+  "source_sha256": {
+    "transfer.py": "21f18ea23fadefe76ee69d50e790996babd32570a9a82673872db93718d75b13",
+    "run_transfer.py": "7bde0a2c4a4598b3aa6baa5e4d85c4a4f50662032a1c5d7bc5ee37b4f4b3a548",
+    "lesson.json": "d11b36091b72d81aa4403c39ee22a7fdb409e9fa12778f5bc33de38109f55a9b",
+    "fixtures.json": "689747c97bea080e179d6512eca9d7ddc6fb690ee8f9da1ae8fb567be50a707e",
+    "PLAN.md": "91563a155a970169924c83a26192b9102a9c2d4168b1dde4ac0c5f16136913b2",
+    "../credential-exposure-response/services.py": "d480a355652b8fd653c8b9bb3800e00e9c99f4874922ea758bbb20f440d1fe9f",
+    "../credential-exposure-response/run_experiment.py": "d391853509c80f27837887fdeed66dedbb9e82daaf4a734f34626b196a506bbb"
+  },
+  "checks_passed": 129,
+  "source_metrics": {
+    "misuse": {
+      "requests": 2,
+      "completed": 1,
+      "record_transmissions": 1,
+      "after_records": 0,
+      "distinct_ids": [
+        "FICTIONAL-A1"
+      ]
+    },
+    "legitimate_A": {
+      "requests": 3,
+      "completed": 2,
+      "record_transmissions": 2,
+      "after_records": 0,
+      "distinct_ids": [
+        "FICTIONAL-A1"
+      ]
+    },
+    "legitimate_B": {
+      "requests": 2,
+      "completed": 2,
+      "record_transmissions": 6,
+      "after_records": 3,
+      "distinct_ids": [
+        "FICTIONAL-A1",
+        "FICTIONAL-A2",
+        "FICTIONAL-B1"
+      ]
+    }
+  },
+  "results": [
+    {
+      "case": "renamed-nested",
+      "mode": "original_path_only",
+      "metrics": {
+        "misuse": {
+          "requests": 2,
+          "completed": 2,
+          "record_transmissions": 2,
+          "after_records": 1,
+          "distinct_ids": [
+            "FICTIONAL-A1",
+            "FICTIONAL-A2"
+          ]
+        },
+        "legitimate_A": {
+          "requests": 3,
+          "completed": 3,
+          "record_transmissions": 3,
+          "after_records": 1,
+          "distinct_ids": [
+            "FICTIONAL-A1"
+          ]
+        },
+        "legitimate_B": {
+          "requests": 2,
+          "completed": 2,
+          "record_transmissions": 6,
+          "after_records": 3,
+          "distinct_ids": [
+            "FICTIONAL-A1",
+            "FICTIONAL-A2",
+            "FICTIONAL-B1"
+          ]
+        }
+      }
+    },
+    {
+      "case": "renamed-nested",
+      "mode": "mechanism_aware",
+      "metrics": {
+        "misuse": {
+          "requests": 2,
+          "completed": 1,
+          "record_transmissions": 1,
+          "after_records": 0,
+          "distinct_ids": [
+            "FICTIONAL-A1"
+          ]
+        },
+        "legitimate_A": {
+          "requests": 3,
+          "completed": 2,
+          "record_transmissions": 2,
+          "after_records": 0,
+          "distinct_ids": [
+            "FICTIONAL-A1"
+          ]
+        },
+        "legitimate_B": {
+          "requests": 2,
+          "completed": 2,
+          "record_transmissions": 6,
+          "after_records": 3,
+          "distinct_ids": [
+            "FICTIONAL-A1",
+            "FICTIONAL-A2",
+            "FICTIONAL-B1"
+          ]
+        }
+      }
+    },
+    {
+      "case": "public-metadata",
+      "mode": "original_path_only",
+      "metrics": {
+        "misuse": {
+          "requests": 2,
+          "completed": 0,
+          "record_transmissions": 0,
+          "after_records": 0,
+          "distinct_ids": []
+        },
+        "legitimate_A": {
+          "requests": 3,
+          "completed": 3,
+          "record_transmissions": 3,
+          "after_records": 1,
+          "distinct_ids": [
+            "FICTIONAL-A1"
+          ]
+        },
+        "legitimate_B": {
+          "requests": 2,
+          "completed": 2,
+          "record_transmissions": 6,
+          "after_records": 3,
+          "distinct_ids": [
+            "FICTIONAL-A1",
+            "FICTIONAL-A2",
+            "FICTIONAL-B1"
+          ]
+        }
+      }
+    },
+    {
+      "case": "public-metadata",
+      "mode": "mechanism_aware",
+      "metrics": {
+        "misuse": {
+          "requests": 2,
+          "completed": 0,
+          "record_transmissions": 0,
+          "after_records": 0,
+          "distinct_ids": []
+        },
+        "legitimate_A": {
+          "requests": 3,
+          "completed": 3,
+          "record_transmissions": 3,
+          "after_records": 1,
+          "distinct_ids": [
+            "FICTIONAL-A1"
+          ]
+        },
+        "legitimate_B": {
+          "requests": 2,
+          "completed": 2,
+          "record_transmissions": 6,
+          "after_records": 3,
+          "distinct_ids": [
+            "FICTIONAL-A1",
+            "FICTIONAL-A2",
+            "FICTIONAL-B1"
+          ]
+        }
+      }
+    },
+    {
+      "case": "inventory-mismatch",
+      "mode": "original_path_only",
+      "metrics": {
+        "misuse": {
+          "requests": 2,
+          "completed": 2,
+          "record_transmissions": 2,
+          "after_records": 1,
+          "distinct_ids": [
+            "FICTIONAL-A1",
+            "FICTIONAL-A2"
+          ]
+        },
+        "legitimate_A": {
+          "requests": 3,
+          "completed": 3,
+          "record_transmissions": 3,
+          "after_records": 1,
+          "distinct_ids": [
+            "FICTIONAL-A1"
+          ]
+        },
+        "legitimate_B": {
+          "requests": 2,
+          "completed": 2,
+          "record_transmissions": 6,
+          "after_records": 3,
+          "distinct_ids": [
+            "FICTIONAL-A1",
+            "FICTIONAL-A2",
+            "FICTIONAL-B1"
+          ]
+        }
+      }
+    },
+    {
+      "case": "inventory-mismatch",
+      "mode": "mechanism_aware",
+      "metrics": {
+        "misuse": {
+          "requests": 2,
+          "completed": 2,
+          "record_transmissions": 2,
+          "after_records": 1,
+          "distinct_ids": [
+            "FICTIONAL-A1",
+            "FICTIONAL-A2"
+          ]
+        },
+        "legitimate_A": {
+          "requests": 3,
+          "completed": 3,
+          "record_transmissions": 3,
+          "after_records": 1,
+          "distinct_ids": [
+            "FICTIONAL-A1"
+          ]
+        },
+        "legitimate_B": {
+          "requests": 2,
+          "completed": 2,
+          "record_transmissions": 6,
+          "after_records": 3,
+          "distinct_ids": [
+            "FICTIONAL-A1",
+            "FICTIONAL-A2",
+            "FICTIONAL-B1"
+          ]
+        }
+      }
+    },
+    {
+      "case": "unsupported-shape",
+      "mode": "original_path_only",
+      "metrics": {
+        "misuse": {
+          "requests": 2,
+          "completed": 2,
+          "record_transmissions": 2,
+          "after_records": 1,
+          "distinct_ids": [
+            "FICTIONAL-A1",
+            "FICTIONAL-A2"
+          ]
+        },
+        "legitimate_A": {
+          "requests": 3,
+          "completed": 3,
+          "record_transmissions": 3,
+          "after_records": 1,
+          "distinct_ids": [
+            "FICTIONAL-A1"
+          ]
+        },
+        "legitimate_B": {
+          "requests": 2,
+          "completed": 2,
+          "record_transmissions": 6,
+          "after_records": 3,
+          "distinct_ids": [
+            "FICTIONAL-A1",
+            "FICTIONAL-A2",
+            "FICTIONAL-B1"
+          ]
+        }
+      }
+    },
+    {
+      "case": "unsupported-shape",
+      "mode": "mechanism_aware",
+      "metrics": {
+        "misuse": {
+          "requests": 2,
+          "completed": 2,
+          "record_transmissions": 2,
+          "after_records": 1,
+          "distinct_ids": [
+            "FICTIONAL-A1",
+            "FICTIONAL-A2"
+          ]
+        },
+        "legitimate_A": {
+          "requests": 3,
+          "completed": 3,
+          "record_transmissions": 3,
+          "after_records": 1,
+          "distinct_ids": [
+            "FICTIONAL-A1"
+          ]
+        },
+        "legitimate_B": {
+          "requests": 2,
+          "completed": 2,
+          "record_transmissions": 6,
+          "after_records": 3,
+          "distinct_ids": [
+            "FICTIONAL-A1",
+            "FICTIONAL-A2",
+            "FICTIONAL-B1"
+          ]
+        }
+      }
+    }
+  ]
+}

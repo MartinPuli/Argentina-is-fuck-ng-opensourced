@@ -61,6 +61,10 @@ Show the same fictional service before and after containment, while an independe
 
 The future AI contribution is investigation and repair selection under those constraints. The current deterministic controls and synthetic experiments must remain labeled as such.
 
+The new [lesson-transfer component](../../experiments/lesson-transfer/README.md) demonstrates an authored check working across changed routes and JSON fields. Independent variants also expose format/inventory gaps and the legitimate-access cost of containment. It is evidence for a bounded test library, not autonomous learning from historical breaches. The next implementation should give each scan a coverage verdict: checked, unsupported or incomplete; silence must not become a claim that a service is safe.
+
+Test queued and in-flight work after revocation; current sequential runs do not establish that boundary. [Revocation research](REVOCATION-AND-RECOVERY-RESEARCH.md).
+
 ```mermaid
 flowchart LR
     P[Past incident evidence] --> L[Reviewed lesson and test]

@@ -1,0 +1,36 @@
+{
+  "license": "MIT",
+  "id": "SYNTHETIC-LESSON-001",
+  "version": 1,
+  "source": {
+    "kind": "owned_synthetic_source_observation",
+    "service": "source-service",
+    "route": "/fixture/exposed-credential",
+    "field": "credential",
+    "evidence_artifact": "results.json#/source_observation",
+    "historical_incident_claim": false
+  },
+  "mechanism": "unauthenticated_json_contains_current_service_bearer",
+  "applicability": {
+    "response_shape": "json_object",
+    "max_depth": 4,
+    "max_candidates": 32,
+    "current_active_generation_required": true,
+    "owner_enrollment_required": true
+  },
+  "review": {
+    "status": "approved",
+    "author": "Code-writing assistant; explicitly authored test fixture",
+    "owner": "Simulated owner-review precondition",
+    "basis": "The harness pins this exact lesson as preapproved. Actual institutional or human review and autonomous learning are not demonstrated."
+  },
+  "allowed_action": "revoke_current_identity",
+  "safe_test": {
+    "method": "GET",
+    "route_source": "owner_inventory_only",
+    "max_response_bytes": 65536,
+    "follow_redirects": false,
+    "probe_candidate_against_records": false,
+    "transmit_raw_credential": false
+  }
+}
