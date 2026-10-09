@@ -69,3 +69,7 @@ Read as: an operational document workspace for institutional reviewers, with qui
 Tokens: paper #ffffff, navigation #f0f8ff, selected #deeffb, primary control #c4e8f9, text #253d4b, secondary text #607583. Page titles 28–32px/300, sections 16px/400, controls and body 13px/400. No visible product name, logo, explanatory subtitles or decorative hero.
 
 Layout: slim text navigation → compact document header/actions → current counts → filter/search toolbar → file table. Main action is Upload PDF; row actions open the exact file within its purchase. The characteristic content is the document's current publication state, never an invented protection score. Later request narrows this pass to visual simplification and read-only workspace data; new correction workflows and recheck reports are deferred, with incoming teammate work retained.
+
+## Incoming team work preserved
+
+The main-branch merge includes sanitized public copies, removal evidence and a Guild verifier. The workspace counts and filters include the `cleaned` publication state. Original and cleaned previews stay distinct. Candidate verification now preserves current-rule and concurrent-review decisions; these checks do not prove universal redaction or model accuracy.

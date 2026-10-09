@@ -8,11 +8,11 @@ type Workspace = { counts: { total: number; published: number; review: number; b
 type Filter = 'all' | 'review' | 'private' | 'published' | 'stale';
 const filters: [Filter, string][] = [['all', 'All'], ['review', 'Review'], ['private', 'Private'], ['published', 'Published'], ['stale', 'Recheck']];
 const dateFormat = new Intl.DateTimeFormat('en', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-const available = (file: Document) => file.current && ['public', 'approved'].includes(file.decision);
+const available = (file: Document) => file.current && ['public', 'approved', 'cleaned'].includes(file.decision);
 function status(file: Document) {
   if (!file.current) return { text: 'Recheck', tone: 'recheck' };
   if (file.decision === 'hold') return { text: 'Review', tone: 'review' };
-  if (available(file)) return { text: 'Published', tone: 'published' };
+  if (available(file)) return { text: file.decision === 'cleaned' ? 'Published, cleaned' : 'Published', tone: 'published' };
   return { text: 'Private', tone: 'private' };
 }
 function WorkspaceApp() {

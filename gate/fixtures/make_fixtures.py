@@ -167,6 +167,17 @@ def main() -> None:
 
     xray_pdf(OUT / "radiografia_muñon.pdf")
 
+    text_pdf(OUT / "nota_pedido.pdf", "Nota de pedido - UGL XXIII Jujuy", [
+        "Compulsa abreviada 1042/2026",
+        f"Beneficiaria: Juana Ficticia Pérez - DNI {patient_dni} - CUIL {patient_cuil}",
+        "",
+        "Se solicita la adquisición de 1 (una) silla de ruedas motorizada plegable",
+        "con control por joystick, según especificación técnica adjunta.",
+        "Presupuesto de referencia: $ 4.900.000,00.",
+        "Lugar de entrega: sede de la UGL XXIII, Av. Belgrano 800, San Salvador de Jujuy.",
+        "Plazo de entrega: 15 días hábiles desde la notificación de la orden de compra.",
+    ])
+
     purchases = [
         {
             "office": "UGL XXIII Jujuy",
@@ -175,6 +186,7 @@ def main() -> None:
             "amount": 4850000,
             "files": [
                 "especificacion_tecnica_silla.pdf",
+                "nota_pedido.pdf",
                 "justificacion_medica.pdf",
                 "dni_escaneado.pdf",
                 "certificado_discapacidad.pdf",

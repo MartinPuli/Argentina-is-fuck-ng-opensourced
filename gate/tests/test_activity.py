@@ -32,12 +32,15 @@ def live(monkeypatch, tmp_path):
         monkeypatch.setenv(key, "")
     monkeypatch.setenv("GATE_STAFF_USERNAME", AUTH[0])
     monkeypatch.setenv("GATE_STAFF_PASSWORD", AUTH[1])
+    monkeypatch.setenv("GATE_OPEN_DEMO", "0")
     monkeypatch.setattr(dotenv, "load_dotenv", lambda *a, **kw: False)
     monkeypatch.setattr(store, "DB_PATH", tmp_path / "live.sqlite")
     module = importlib.import_module("gate.app")
     monkeypatch.setattr(module, "events", store.Events())
     monkeypatch.setattr(llm, "review", lambda _text: dict(SAFE))
     monkeypatch.setattr(module.agent, "configured", lambda: False)
+    # These tests isolate queue/policy outcomes; copy generation has its own tests.
+    monkeypatch.setattr(module.sanitize, "build", lambda *args, **kwargs: None)
     pool = ThreadPoolExecutor(max_workers=2)
     monkeypatch.setattr(module, "LIVE_EXECUTOR", pool)
     monkeypatch.setattr(module, "LIVE_CAPACITY", threading.BoundedSemaphore(32))
@@ -170,6 +173,30 @@ def test_live_rules_enforce_new_files_and_update_stale_activity(live):
     after = finished(live)
     assert after["counts"]["blocked"] == 1
     assert after["jobs"][0]["decision"] == "withheld"
+
+
+def test_verified_cleaned_copy_is_counted_and_still_requires_current_rules(live):
+    original = pdf("Fictional original. DNI: 31.846.275. Synthetic identity fixture.")
+    cleaned = pdf("Fictional public specification with no identity reference.")
+    # This verifies integration/byte selection, not sanitizer or provider accuracy.
+    candidate = SimpleNamespace(pdf=cleaned, text="Fictional public specification.", verified=True,
+                                manifest=[{"category": "synthetic test identifier"}])
+    live.monkeypatch.setattr(live.app.sanitize, "build", lambda *args, **kwargs: candidate)
+    live.monkeypatch.setattr(live.app.agent, "configured", lambda: True)
+    live.monkeypatch.setattr(live.app.agent, "verify", lambda *args, **kwargs:
+                            {"verdict": "PASS", "text": "Fictional test verdict", "url": "", "latency_ms": 0})
+    assert upload(live, original).status_code == 303
+    result = finished(live)
+    ident = result["jobs"][0]["attachment_id"]
+    assert result["jobs"][0]["decision"] == "cleaned"
+    assert result["counts"]["published"] == 1 and result["counts"]["blocked"] == 0
+    assert live.client.get(f"/public/file/{ident}").content == cleaned
+    assert live.client.get(f"/internal/file/{ident}").content == original
+    enable_rule()
+    result = live.client.get("/api/activity").json()
+    assert result["counts"]["published"] == 0 and result["counts"]["stale"] == 1
+    assert result["jobs"][0]["decision"] == "stale"
+    assert live.client.get(f"/public/file/{ident}").status_code == 404
 
 
 def test_rule_change_during_worker_keeps_completed_file_stale(live):

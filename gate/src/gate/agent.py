@@ -77,3 +77,33 @@ if __name__ == "__main__":
                            ["Clinical language without a direct identifier."],
                            [{"severity": "review", "label": "Clinical language", "rule": "health",
                              "evidence": "amputación"}]), indent=2, ensure_ascii=False))
+
+
+VERIFY_WAIT_SECONDS = 90
+
+
+def verify(text: str, manifest: list[dict]) -> dict:
+    """Second, independent agent on Guild: does the cleaned copy still point to a person?
+
+    It receives only the cleaned text, which is what would be published anyway.
+    Returns {"verdict": "PASS" | "FAIL" | "ERROR", "text", "url"}.
+    """
+    started = time.perf_counter()
+    removed = ", ".join(sorted({m["category"] for m in manifest})) or "nothing"
+    prompt = (f"Removed before publication: {removed}.\n"
+              f"Text of the cleaned public copy:\n---\n{text[:6000]}\n---")
+    try:
+        session = _guild("session", "create", "--workspace", os.environ["GUILD_WORKSPACE"],
+                         "--agent", os.getenv("GUILD_VERIFIER_AGENT", "nicopujia~pami-redaction-verifier"),
+                         "--prompt", prompt)
+        sid, reply = session["id"], ""
+        while not reply and time.perf_counter() - started < VERIFY_WAIT_SECONDS:
+            time.sleep(POLL_SECONDS)
+            reply = _reply(sid)
+        reply = reply.strip()
+        verdict = "PASS" if reply.upper().startswith("PASS") else "FAIL" if reply else "ERROR"
+        return {"verdict": verdict, "text": reply, "url": session.get("session_url", ""),
+                "latency_ms": (time.perf_counter() - started) * 1000}
+    except Exception as exc:
+        return {"verdict": "ERROR", "text": f"{type(exc).__name__}"[:100],
+                "latency_ms": (time.perf_counter() - started) * 1000}

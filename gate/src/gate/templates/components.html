@@ -1,5 +1,5 @@
 {% macro badge(decision) -%}
-<span class="badge b-{{ decision }}">{{ {'public':'Published', 'approved':'Reviewer approved', 'hold':'Needs review', 'withheld':'Kept internal'}.get(decision, decision) }}</span>
+<span class="badge b-{{ decision }}">{{ {'public':'Published', 'approved':'Reviewer approved', 'cleaned':'Published, cleaned', 'hold':'Needs review', 'withheld':'Kept internal'}.get(decision, decision) }}</span>
 {%- endmacro %}
 {% macro evidence(findings) -%}
 {% if findings %}<div class="table-wrap"><table class="evidence-table"><caption class="sr-only">Findings with masked evidence and policy references</caption><thead><tr><th scope="col">Finding</th><th scope="col">Masked evidence</th><th scope="col">Page</th><th scope="col">Policy reference</th></tr></thead><tbody>
@@ -10,4 +10,7 @@
 {% if ag and ag.text %}<section class="agent-brief"><div class="section-kicker">Guild review brief</div><p>{{ ag.text }}</p></section>
 {% elif ag and ag.error %}<div class="notice">The reviewer brief is unavailable. Review the original document and the recorded findings.</div>
 {% elif configured %}<div class="notice subtle">A reviewer brief may still be processing. Refresh this page to check its result.</div>{% endif %}
+{%- endmacro %}
+{% macro removed(a) -%}
+{% set man=a.manifest|fromjson or [] %}{% set v=a.verifier|fromjson %}<div class="clean-copy"><div class="clean-head"><h3>Removed</h3>{% if v %}<span class="badge b-{{ 'public' if v.verdict == 'PASS' else 'hold' }}">Verifier {{ v.verdict }}</span>{% if v.url|web_url %}<a class="text-link" href="{{ v.url|web_url }}" target="_blank" rel="noopener">Guild run ↗</a>{% endif %}{% endif %}</div>{% if man %}<ul class="removed-list">{% for r in man %}<li>{{ r.category }} <span class="separator">·</span> p. {{ r.page }} <span class="separator">·</span> <span class="mono">{{ r.masked }}</span></li>{% endfor %}</ul>{% endif %}</div>
 {%- endmacro %}

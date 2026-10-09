@@ -22,6 +22,7 @@ def workspace(monkeypatch, tmp_path):
         monkeypatch.setenv(key, "")
     monkeypatch.setenv("GATE_STAFF_USERNAME", AUTH[0])
     monkeypatch.setenv("GATE_STAFF_PASSWORD", AUTH[1])
+    monkeypatch.setenv("GATE_OPEN_DEMO", "0")
     store = importlib.import_module("gate.store")
     monkeypatch.setattr(store, "DB_PATH", tmp_path / "workspace.sqlite")
     app = importlib.import_module("gate.app")
@@ -83,18 +84,21 @@ def test_counts_follow_actual_current_rules_without_returning_document_bodies(wo
     approved = add_file(workspace, "approved", 2)
     held = add_file(workspace, "hold", 3)
     blocked = add_file(workspace, "withheld", 4)
+    cleaned = add_file(workspace, "cleaned", 5)
     before = workspace.client.get("/api/workspace", auth=AUTH).json()
-    assert before["counts"] == {"published": 2, "review": 1, "blocked": 1, "stale": 0, "total": 4}
+    assert before["counts"] == {"published": 3, "review": 1, "blocked": 1, "stale": 0, "total": 5}
+    assert before["files"][0]["decision"] == "cleaned" and before["files"][0]["current"] is True
     activate_rule(workspace)
     stale = workspace.client.get("/api/workspace", auth=AUTH).json()
-    assert stale["counts"] == {"published": 0, "review": 1, "blocked": 1, "stale": 4, "total": 4}
+    assert stale["counts"] == {"published": 0, "review": 1, "blocked": 1, "stale": 5, "total": 5}
     workspace.learning.record_check(approved, workspace.learning.revision())
     workspace.learning.record_check(held, workspace.learning.revision())
+    workspace.learning.record_check(cleaned, workspace.learning.revision())
     response = workspace.client.get("/api/workspace", auth=AUTH)
     result = response.json()
-    assert result["counts"] == {"published": 1, "review": 1, "blocked": 1, "stale": 2, "total": 4}
+    assert result["counts"] == {"published": 2, "review": 1, "blocked": 1, "stale": 2, "total": 5}
     current = {row["id"]: row["current"] for row in result["files"]}
-    assert current == {public: False, approved: True, held: True, blocked: False}
+    assert current == {public: False, approved: True, held: True, blocked: False, cleaned: True}
     assert all(set(row) == FILE_FIELDS for row in result["files"])
     assert PRIVATE_MARKER not in response.text
     assert all(row["office"] == "Fictional office" and row["procedure"] == "SYNTHETIC-2026"

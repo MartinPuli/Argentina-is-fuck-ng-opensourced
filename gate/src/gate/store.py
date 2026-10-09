@@ -36,6 +36,11 @@ def db() -> sqlite3.Connection:
     con = sqlite3.connect(DB_PATH)
     con.row_factory = sqlite3.Row
     con.executescript(SCHEMA)
+    for column in ("public_pdf blob", "manifest text", "verifier text"):  # cleaned public copy
+        try:
+            con.execute(f"alter table attachments add column {column}")
+        except sqlite3.OperationalError:
+            pass
     return con
 
 

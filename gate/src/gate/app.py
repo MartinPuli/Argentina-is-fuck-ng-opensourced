@@ -28,7 +28,7 @@ from fastapi.templating import Jinja2Templates
 load_dotenv(Path(__file__).resolve().parents[3] / ".env")
 load_dotenv(Path(__file__).resolve().parents[2] / ".env")
 
-from . import activity, agent, llm, learning  # noqa: E402
+from . import activity, agent, sanitize, llm, learning  # noqa: E402
 from .detect import Finding, scan  # noqa: E402
 from .policy import HOLD, PUBLIC, WITHHELD, decide, valid_image_analysis, valid_text_analysis  # noqa: E402
 from .rules import RULES  # noqa: E402
@@ -37,7 +37,7 @@ from .store import Events, db  # noqa: E402
 ROOT = Path(__file__).resolve().parents[2]
 FIXTURES = ROOT / "fixtures" / "pdfs"
 OFFICES = ["UGL XXIII Jujuy", "UGL XXX Chivilcoy", "UGL XIX Misiones", "UGL VI Capital Federal"]
-VISIBLE = ("public", "approved")
+VISIBLE = ("public", "approved", "cleaned")
 MAX_FILES = 8
 MAX_FILE_BYTES = 10 * 1024 * 1024
 MAX_UPLOAD_BYTES = 25 * 1024 * 1024
@@ -49,6 +49,7 @@ app.mount("/assets", StaticFiles(directory=Path(__file__).parent / "static", che
 templates = Jinja2Templates(directory=Path(__file__).parent / "templates")
 templates.env.filters["money"] = lambda v: f"$ {v:,.0f}".replace(",", ".")
 templates.env.filters["fromjson"] = lambda v: json.loads(v) if v else None
+templates.env.filters["web_url"] = lambda v: v if isinstance(v, str) and urlsplit(v).scheme in ("http", "https") else ""
 templates.env.globals["RULES"] = RULES
 events = Events()
 basic = HTTPBasic(auto_error=False)
@@ -61,7 +62,10 @@ STEP_AI = "AkashML AI"
 STEP_VISION = "AkashML vision"
 STEP_DECIDE = "Decide"
 STEP_BRIEF = "Guild agent note"
-LABEL = {"public": "Cleared for publication", "approved": "Approved", "hold": "Needs review", "withheld": "Blocked"}
+STEP_CLEAN = "Clean copy"
+STEP_VERIFY = "Guild verifier"
+LABEL = {"public": "Cleared for publication", "approved": "Approved", "hold": "Needs review", "withheld": "Blocked",
+         "cleaned": "Published cleaned copy"}
 
 
 def origin_of(value: str, *, origin_header: bool = False) -> tuple | None:
@@ -98,6 +102,8 @@ async def same_origin_posts(request: Request, call_next):
 
 
 def staff(creds: HTTPBasicCredentials | None = Depends(basic)) -> str:
+    if os.getenv("GATE_OPEN_DEMO") == "1":
+        return "reviewer"  # public hackathon demo: staff pages open, all data fictional
     password = os.getenv("GATE_STAFF_PASSWORD")
     if not password:
         raise HTTPException(503, "Staff access is disabled until GATE_STAFF_PASSWORD is configured.",
@@ -215,6 +221,8 @@ def gate_files(purchase: dict, files: list[tuple[str, bytes]]) -> None:
 def store_attachment(purchase: dict, filename: str, pdf: bytes, model, decision, reasons,
                      findings, latency, rules_revision=None, job: dict | None = None) -> int:
     """Store one checked file and log the decision."""
+    # Phrases the model wants removed carry raw personal data: used to redact, never stored.
+    phrases = model.pop("identifying_phrases", []) if isinstance(model, dict) else []
     with db() as con:
         cur = con.execute(
             "insert into attachments (purchase_id, filename, sha256, pdf, decision, reasons,"
@@ -224,14 +232,37 @@ def store_attachment(purchase: dict, filename: str, pdf: bytes, model, decision,
         )
         att_id = cur.lastrowid
     # A policy change during analysis leaves the file stale until explicitly rechecked.
+    checked_revision = rules_revision if rules_revision is not None else learning.revision()
     try:
-        learning.record_check(att_id, rules_revision if rules_revision is not None else learning.revision())
+        learning.record_check(att_id, checked_revision)
     except ValueError:
         pass
+    with db() as con:
+        verification_state = verifier_state(con, att_id)
     events.log("decision", purchase["office"], purchase["id"], att_id, filename, decision,
                sorted({f["kind"] for f in findings}), "gate", latency)
     if job is not None:
         activity.finish(job, attachment_id=att_id, decision=decision)
+    candidate = None
+    if decision != PUBLIC:
+        try:
+            candidate = sanitize.build(pdf, findings, phrases if isinstance(phrases, list) else [], decision)
+        except Exception:
+            candidate = None
+    if candidate is not None and candidate.verified:
+        with db() as con:
+            con.execute("update attachments set public_pdf=?, manifest=? where id=?",
+                        (candidate.pdf, json.dumps(candidate.manifest), att_id))
+        progress(job, STEP_CLEAN, "done", f"{len(candidate.manifest)} item(s) removed")
+        events.log("cleaned_copy", purchase["office"], purchase["id"], att_id, filename, decision,
+                   sorted({m["category"] for m in candidate.manifest}), "sanitizer", 0)
+        if agent.configured():
+            progress(job, STEP_VERIFY, "running")
+            threading.Thread(target=verify_in_background,
+                             args=(att_id, purchase, filename, candidate, decision, checked_revision,
+                                   verification_state, hashlib.sha256(candidate.pdf).hexdigest(), job),
+                             daemon=True).start()
+            return att_id
     if decision != PUBLIC and agent.configured():
         progress(job, STEP_BRIEF, "running")
         threading.Thread(target=brief_in_background, args=(att_id, purchase, filename, decision,
@@ -239,6 +270,67 @@ def store_attachment(purchase: dict, filename: str, pdf: bytes, model, decision,
     elif job is not None:
         activity.finish(job, done=True)
     return att_id
+
+
+def verifier_state(con, att_id: int) -> dict | None:
+    row = con.execute(
+        "select a.decision,a.findings,a.reasons,a.reviewed_by,a.reviewed_at,a.review_note,a.verifier,"
+        "c.revision,c.checked_at from attachments a left join learning_checks c on c.attachment_id=a.id "
+        "where a.id=?", (att_id,),
+    ).fetchone()
+    return dict(row) if row is not None else None
+
+
+def verify_in_background(att_id, purchase, filename, candidate, expected_decision, expected_revision,
+                         expected_state, expected_digest, job=None) -> None:
+    """Publish only the checked candidate, without replacing a newer staff/policy decision."""
+    try:
+        candidate_pdf = bytes(candidate.pdf)
+        active, candidate_revision = learning.snapshot()
+        if (candidate.verified is not True or candidate_revision != expected_revision
+                or hashlib.sha256(candidate_pdf).hexdigest() != expected_digest):
+            progress(job, STEP_VERIFY, "error", "Candidate or rules changed; publication remains restricted")
+            return
+        checked = scan(candidate_pdf)
+        found = list(checked.findings) + learning.apply(checked.pages, active)
+        complete = (bool(checked.pages) and not checked.coverage_issues
+                    and all(p.text.strip() and not p.coverage_issues and not p.has_images
+                            and not p.image and p.source == "text" for p in checked.pages))
+        if not complete or any(f.severity in {"block", "review"} for f in found):
+            progress(job, STEP_VERIFY, "error", "Candidate still needs review under the current rules")
+            if job is not None:
+                activity.finish(job, why="Current checks did not clear the candidate copy.")
+            return
+        # Use text extracted from the exact candidate bytes, not a cached text field.
+        result = agent.verify("\n\n".join(p.text for p in checked.pages), candidate.manifest)
+        new = "cleaned" if result["verdict"] == "PASS" else expected_decision
+        with db() as con:
+            con.execute("BEGIN IMMEDIATE")
+            state = verifier_state(con, att_id)
+            stored = con.execute("select public_pdf from attachments where id=?", (att_id,)).fetchone()
+            # Reuse the engine's revision calculation inside this same write transaction.
+            # This closes the gap between testing currentness and updating the decision.
+            if (state != expected_state or state is None or state["decision"] != expected_decision
+                    or state["reviewed_by"] is not None or state["revision"] != expected_revision
+                    or learning._snapshot(con)[1] != expected_revision
+                    or stored is None or stored["public_pdf"] != candidate_pdf):
+                progress(job, STEP_VERIFY, "error", "A newer decision or rule check takes precedence")
+                return
+            con.execute("update attachments set verifier=?, decision=? where id=?",
+                        (json.dumps(result), new, att_id))
+        events.log("verifier", purchase["office"], purchase["id"], att_id, filename, new,
+                   [result["verdict"].lower()], "guild-verifier", result.get("latency_ms", 0))
+        progress(job, STEP_VERIFY, "done" if result["verdict"] == "PASS" else "error",
+                 {"PASS": "Agrees: nothing identifies a person", "FAIL": result["text"][:80]}.get(result["verdict"], "Unavailable"))
+        if job is not None:
+            activity.finish(job, decision=new, agent_url=result.get("url", ""),
+                            why=("The checked cleaned copy was cleared for publication." if new == "cleaned"
+                                 else "The verifier did not clear the copy. Its existing restriction remains."))
+    except Exception:
+        progress(job, STEP_VERIFY, "error", "Verifier unavailable; file stays private")
+    finally:
+        if job is not None:
+            activity.finish(job, done=True)
 
 
 def brief_in_background(att_id, purchase, filename, decision, reasons, findings, job=None) -> None:
@@ -363,7 +455,8 @@ def api_activity(user: str = Depends(staff)):
     # A done job implies its row was committed before this database read.
     jobs = activity.snapshot()
     with db() as con:
-        rows = con.execute("select a.id,a.filename,a.decision,a.findings,a.agent,p.office,p.item,p.id as pid from attachments a "
+        rows = con.execute("select a.id,a.filename,a.decision,a.findings,a.agent,a.manifest,"
+                           "a.public_pdf is not null as has_clean,p.office,p.item,p.id as pid from attachments a "
                            "join purchases p on p.id=a.purchase_id order by a.id").fetchall()
     current = {row["id"]: learning.current(row["id"]) for row in rows}
     by_id = {row["id"]: row for row in rows}
@@ -384,7 +477,9 @@ def api_activity(user: str = Depends(staff)):
                             "item": row["item"], "pid": row["pid"],
                             "why": sorted({f["label"] for f in findings}), "risk": "",
                             "note": brief.get("text", ""), "agent_url": brief.get("url", ""),
-                            "current": is_current, "can_approve": is_current})
+                            "current": is_current, "can_approve": is_current,
+                            "has_clean": bool(row["has_clean"]),
+                            "removed": sorted({m["category"] for m in json.loads(row["manifest"] or "[]")})})
     for job in jobs:
         row = by_id.get(job["attachment_id"])
         job["current"] = current.get(job["attachment_id"], False)
@@ -513,7 +608,8 @@ def review_decide(att_id: int, action: str = Form(...), reviewer: str = Form("")
 def public_portal(request: Request):
     with db() as con:
         purchases = con.execute("select * from purchases order by id desc").fetchall()
-        atts = con.execute("select id, purchase_id, filename, decision from attachments").fetchall()
+        atts = con.execute("select id, purchase_id, filename, decision,"
+                           " public_pdf is not null as cleaned from attachments").fetchall()
     by_purchase: dict[int, dict] = {}
     for a in atts:
         slot = by_purchase.setdefault(a["purchase_id"], {"files": [], "kept": 0, "pending": 0})
@@ -530,10 +626,11 @@ def public_portal(request: Request):
 def public_file(att_id: int):
     """The enforcement point. Checked on every request, not at upload time only."""
     with db() as con:
-        row = con.execute("select filename, pdf, decision from attachments where id=?", (att_id,)).fetchone()
+        row = con.execute("select filename, pdf, public_pdf, decision from attachments where id=?", (att_id,)).fetchone()
     if not row or row["decision"] not in VISIBLE or not learning.current(att_id):
         raise HTTPException(404, headers={"Cache-Control": "no-store"})
-    return pdf_response(row["pdf"], row["filename"])
+    # When a cleaned copy exists, it is the only version that can ever be public.
+    return pdf_response(row["public_pdf"] or row["pdf"], row["filename"])
 
 
 @app.get("/internal/file/{att_id}")
@@ -543,6 +640,16 @@ def internal_file(att_id: int, user: str = Depends(staff)):
     if not row:
         raise HTTPException(404, headers={"Cache-Control": "no-store"})
     return pdf_response(row["pdf"], row["filename"])
+
+
+@app.get("/internal/clean/{att_id}")
+def internal_clean(att_id: int, user: str = Depends(staff)):
+    """Staff preview of the cleaned copy, whatever the decision."""
+    with db() as con:
+        row = con.execute("select filename, public_pdf from attachments where id=?", (att_id,)).fetchone()
+    if not row or not row["public_pdf"]:
+        raise HTTPException(404, headers={"Cache-Control": "no-store"})
+    return pdf_response(row["public_pdf"], row["filename"])
 
 
 @app.get("/dashboard")
@@ -680,7 +787,7 @@ def rescan_learning_rules(user: str = Depends(staff)):
             con.execute("BEGIN IMMEDIATE")
             current_row = con.execute("select decision from attachments where id=?", (attachment["id"],)).fetchone()
             # A concurrent review/recheck must never be overwritten with a weaker decision.
-            strictness = {"public": 0, "approved": 0, "hold": 1, "withheld": 2}
+            strictness = {"public": 0, "approved": 0, "cleaned": 0, "hold": 1, "withheld": 2}
             if strictness.get(current_row["decision"], 2) >= strictness.get(decision, 2):
                 decision = current_row["decision"]
             con.execute("update attachments set decision=?,findings=?,reasons=? where id=?",
