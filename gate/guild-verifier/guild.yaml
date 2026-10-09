@@ -1,0 +1,24 @@
+# Declare the tools available to "nicopujia~pami-redaction-verifier".
+#
+# Integrations expose third-party operations (REST or MCP) as tools:
+#
+# integrations:
+#   - name: guildai~slack
+#     version: "*"
+#     tools:
+#       - post_message
+#
+# Sub-agents let this agent delegate work to other published agents:
+#
+# sub_agents:
+#   - name: my-org~my-helper-agent
+#     version: "*"
+#
+# Platform builtins give the agent user-interaction tools. The `ui` service
+# provides ui_prompt (ask the user a question; pauses the run until they
+# answer) and ui_progress (post a status update without pausing). Omitting
+# `tools` opts into all of the service's builtins.
+
+integrations: []
+sub_agents: []
+builtins: []
