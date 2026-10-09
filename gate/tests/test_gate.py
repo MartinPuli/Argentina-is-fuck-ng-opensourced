@@ -227,7 +227,7 @@ def test_all_populated_screens_render_current_decisions(web):
     }, follow_redirects=False).status_code == 303
     expected_labels = {
         "/": ["Documents"],
-        "/office": ["Attachments", "Load synthetic files"],
+        "/office": ["Supporting attachments", "Load synthetic files"],
         purchase_url: ["Attachment decisions", "Reviewer approved", "Kept internal", "Needs review"],
         "/review": ["Decision reason", "Keep private", "Publish original", STAFF[0]],
         "/public": ["Published purchases", web.app.public_filename(clean["purchase_id"], clean["id"])],
