@@ -1,0 +1,21 @@
+{% extends "base.html" %}{% block title %}Guidelines{% endblock %}{% block body %}
+<div class="page-head"><h1>Guidelines</h1><a class="btn btn-secondary" href="/learning">Rules</a></div>
+<p class="small muted">Source review: {{ guidelines.reviewed_on }} · Operational summaries</p>
+<section class="panel">
+{% for id, source in guidelines.sources.items() %}
+<details class="findings-detail"><summary>{{ source.title }}</summary>
+<p>{{ source.locator }}</p><p class="small muted">{{ source.scope }}</p>
+<a href="{{ source.url }}" target="_blank" rel="noopener noreferrer">Official source ↗</a></details>
+{% endfor %}
+</section>
+<section class="section"><h2>Publication policies</h2>
+{% for id, rule in guidelines.policies.items() %}
+<details class="findings-detail"><summary>{{ rule.title }}</summary>
+<p class="small muted">{{ rule.kind }}</p><p>{{ rule.text }}</p>
+{% for source_id in rule.source_ids %}{% set source = guidelines.sources[source_id] %}
+<p><a href="{{ source.url }}" target="_blank" rel="noopener noreferrer">{{ source.title }} ↗</a> <span class="small muted">{{ source.locator }}</span></p>
+{% endfor %}</details>{% endfor %}
+</section>
+<p class="small muted">{{ guidelines.notice }}</p>
+<details class="findings-detail"><summary>Version</summary><p class="small" style="overflow-wrap:anywhere">{{ guidelines.digest }}</p><a href="/api/guidelines">View source pack</a></details>
+{% endblock %}

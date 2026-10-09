@@ -6,6 +6,8 @@
 
 ## Current product: a publication gate that gains reviewed checks
 
+**Guidelines/Senso update:** the [current integration guide](../../gate/SENSO.md) adds `/guidelines`, reviewed official-source summaries, public Google News lead discovery, real Senso guideline-pack ingestion/scoped retrieval and immutable per-proposal context receipts. This supersedes earlier statements that no Senso adapter exists. It does not add background monitoring, incident confirmation, automatic legal changes or model activation authority. Live evidence and offline PDF checks are recorded separately in [the verification report](../../gate/verification/SENSO-GUIDELINES-2026-10-09.md).
+
 The implemented local application checks procurement attachments, keeps uncertain/private files internal, records authenticated review and enforces both the publication decision and current learned-rule revision on downloads. The [application README](../../gate/README.md) and [demo](../../gate/DEMO.md) are the current delivery guide. Existing upload, OCR, review, public-portal and audit work remains part of that product.
 
 Incident learning adds a bounded sequence:

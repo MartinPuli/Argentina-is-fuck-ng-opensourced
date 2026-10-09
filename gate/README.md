@@ -1,5 +1,7 @@
 # ArgenSec Gate (Publication Gate)
 
+**Guidelines and learning:** [SENSO.md](SENSO.md) documents the official-source browser, real Senso context integration, public-news discovery and tested rule-approval workflow. Server setup requires `SENSO_API_KEY`, dependency sync and a process restart.
+
 ArgenSec Gate checks every PDF before PAMI, Argentina's national health insurer for retirees and pensioners (about 5 million members), publishes it on its public purchase site. In May 2026, [Chequeado found](https://chequeado.com/investigaciones/pami-expone-datos-medicos-y-documentos-sensibles-de-sus-afiliados-en-su-sitio-web/) medical histories, disability certificates and ID card copies on that site. Nothing checked the files first. This is that check.
 
 Live demo: [argensec.pujia.ar](https://argensec.pujia.ar). Video script: [DEMO.md](DEMO.md). Security review: [SEMGREP-REPORT.md](SEMGREP-REPORT.md) and [issue #2](https://github.com/MartinPuli/Argentina-is-fuck-ng-opensourced/issues/2).

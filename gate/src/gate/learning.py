@@ -164,15 +164,23 @@ def _required(con, rule_id: int) -> dict:
     return _record(row)
 
 
-def create_candidate(spec: dict, source: dict, actor: str, generator: str = "reviewed recipe") -> int:
+def create_candidate(spec: dict, source: dict, actor: str, generator: str = "reviewed recipe",
+                     context: dict | None = None) -> int:
     spec, source = validate_spec(spec), _source(source)
     actor, generator = _text(actor, "Actor", 200), _text(generator, "Generator", 100)
+    if context is not None:
+        from . import senso_context
+        # Initialize the receipt table before opening the candidate transaction.
+        with senso_context._db():
+            pass
     with _db() as con:
         row = con.execute(
             "insert into learning_rules(spec,source,digest,status,generator,created_by,created_at) "
             "values (?,?,?,'draft',?,?,?)",
             (_json(spec), _json(source), _digest(spec, source), generator, actor, store.now()),
         )
+        if context is not None:
+            senso_context.save_context(con, row.lastrowid, context)
         return row.lastrowid
 
 

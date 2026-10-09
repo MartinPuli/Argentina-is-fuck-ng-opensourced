@@ -10,7 +10,7 @@ import uvicorn
 parser = argparse.ArgumentParser()
 parser.add_argument('--port', type=int, required=True)
 args = parser.parse_args()
-for key in ('AKASHML_API_KEY', 'GUILD_WORKSPACE', 'GUILD_AGENT', 'GUILD_VERIFIER_AGENT', 'CLICKHOUSE_HOST'):
+for key in ('AKASHML_API_KEY', 'GUILD_WORKSPACE', 'GUILD_AGENT', 'GUILD_VERIFIER_AGENT', 'CLICKHOUSE_HOST', 'SENSO_API_KEY'):
     os.environ[key] = ''
 os.environ['GATE_OPEN_DEMO'] = '0'
 dotenv.load_dotenv = lambda *args, **kwargs: False

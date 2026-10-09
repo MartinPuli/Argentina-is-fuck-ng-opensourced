@@ -100,6 +100,10 @@
 </div>
 <div class="lr-export"><span>Export as a skill:</span><a class="btn btn-secondary" href="/learning/rules/{{ rule.id }}/bundle.zip">Download bundle</a><a href="/learning/rules/{{ rule.id }}/skill.md">SKILL.md</a><a href="/learning/rules/{{ rule.id }}/proposal.md">Proposal</a></div>
 <details class="lr-more"><summary>Source</summary><p><strong>{{ rule.source.title }}</strong></p><p>{{ rule.source.evidence_status }}</p><p>{{ rule.source.summary }}</p><p><a href="{{ rule.source.url }}" target="_blank" rel="noopener noreferrer">Read the original ↗</a></p></details>
+{% if context %}<details class="lr-more"><summary>Senso context used</summary>
+<p>{{ context.authority }}</p><p class="lr-digest">Guideline version {{ context.guideline_digest }}</p>
+<a href="/guidelines">Official sources and local policies</a>
+{% for passage in context.passages %}<article><p>{{ passage.text }}</p><p class="lr-digest">Content {{ passage.content_id }} · Version {{ passage.version_id }}</p></article>{% endfor %}</details>{% endif %}
 <details class="lr-more"><summary>Test files</summary><div class="lr-ex">{% for example in rule.spec.tests %}<article><strong>{{ example.name }}</strong> <span class="chip {{ 'review' if example.should_match else 'pass' }}">{{ 'Should flag' if example.should_match else 'Should ignore' }}</span><p>{{ example.text }}</p><a href="/learning/rules/{{ rule.id }}/example/{{ loop.index0 }}.pdf" target="_blank" rel="noopener">Open PDF ↗</a></article>{% endfor %}</div></details>
 <details class="lr-more"><summary>Why and what next</summary><p>{{ rule.spec.rationale }}</p>{% if rule.spec.improvements %}<ol>{% for item in rule.spec.improvements %}<li>{{ item }}</li>{% endfor %}</ol>{% endif %}<p>Made by: {{ rule.generator }}</p><p class="lr-digest">Version {{ rule.digest }}</p></details>
 </div>

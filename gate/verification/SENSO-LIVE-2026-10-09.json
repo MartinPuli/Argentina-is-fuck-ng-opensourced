@@ -1,0 +1,69 @@
+{
+  "provider": "Senso",
+  "guideline_digest": "67744fa4f3bf1cf5bec6aed19577de59b4bfb6ff94fa9bad1e55fdb5c1adf52c",
+  "retrieved_at": 1791585562.66752,
+  "official_sources": {
+    "access": {
+      "title": "Ley 27.275 — Access to public information",
+      "url": "https://www.argentina.gob.ar/normativa/nacional/ley-27275-265949/texto",
+      "locator": "Articles 1, 8(c–d, h–i), 12 and 32(g)",
+      "scope": "National framework; confirm institution-specific applicability."
+    },
+    "privacy": {
+      "title": "Ley 25.326 — Personal data protection",
+      "url": "https://www.argentina.gob.ar/normativa/nacional/64790/actualizacion",
+      "locator": "Articles 1–2, 4–5, 7–11",
+      "scope": "Personal data, including legal persons where applicable; health data is sensitive."
+    },
+    "patient": {
+      "title": "Ley 26.529 — Patient rights",
+      "url": "https://www.argentina.gob.ar/normativa/nacional/160432/actualizacion",
+      "locator": "Articles 2(c–d) and 4",
+      "scope": "Patient privacy, clinical confidentiality and disclosure authorization."
+    },
+    "aaip": {
+      "title": "AAIP — Caja de herramientas: acceso a la información pública",
+      "url": "https://www.argentina.gob.ar/sites/default/files/aaip_caja_de_herramientas_archivos.pdf",
+      "locator": "PDF page 31 and Annex II, anonymization recommendations",
+      "scope": "Regulator guidance on dissociation and preventing reidentification; not a statute."
+    }
+  },
+  "passages": [
+    {
+      "text": "olicy based on official sources\", \"source\": \"Ley 27.275, arts. 1, 8(i), 12; Ley 25.326, arts. 4–5, 9–11\", \"source_ids\": [ \"access\", \"privacy\" ], \"text\": \"The law permits withholding personal information that cannot be dissociated, subject to lawful-disclosure conditions. This gate uses a stricter default: keep private-person DNI, CUIL, affiliate numbers, birth dates and home addresses out of public attachments unless an authorized review establishes a",
+      "content_id": "f004d3cc-cd24-49a1-b3a0-2d98200b9ee9",
+      "version_id": "7dc2c38e-e168-41f4-a376-110985c8a529",
+      "node_id": "e3aef2f0-99cd-4240-8a3c-79f8691666bf",
+      "title": "Publication Gate guidelines 67744fa4f3bf"
+    },
+    {
+      "text": "birth dates and home addresses out of public attachments unless an authorized review establishes a publication basis.\", \"title\": \"Personal identifiers require a publication basis\", \"url\": \"https://www.argentina.gob.ar/normativa/nacional/ley-27275-265949/texto\" }, \"reidentification\": { \"kind\": \"Operational policy based on official sources\", \"source\": \"AAIP, Caja de herramientas, anonymization section and Annex II\", \"source_ids\": [ \"aaip\",",
+      "content_id": "f004d3cc-cd24-49a1-b3a0-2d98200b9ee9",
+      "version_id": "7dc2c38e-e168-41f4-a376-110985c8a529",
+      "node_id": "e3aef2f0-99cd-4240-8a3c-79f8691666bf",
+      "title": "Publication Gate guidelines 67744fa4f3bf"
+    },
+    {
+      "text": "ll require assessment.\", \"title\": \"Preserve legitimate procurement information\", \"url\": \"https://www.argentina.gob.ar/normativa/nacional/ley-27275-265949/texto\" }, \"health\": { \"kind\": \"Operational policy based on official sources\", \"source\": \"Ley 25.326, arts. 2, 7–10; Ley 26.529, arts. 2(c–d), 4\", \"source_ids\": [ \"privacy\", \"patient\" ], \"text\": \"Health information is sensitive personal data.",
+      "content_id": "f004d3cc-cd24-49a1-b3a0-2d98200b9ee9",
+      "version_id": "7dc2c38e-e168-41f4-a376-110985c8a529",
+      "node_id": "e3aef2f0-99cd-4240-8a3c-79f8691666bf",
+      "title": "Publication Gate guidelines 67744fa4f3bf"
+    },
+    {
+      "text": ": { \"aaip\": { \"locator\": \"PDF page 31 and Annex II, anonymization recommendations\", \"scope\": \"Regulator guidance on dissociation and preventing reidentification; not a statute.\", \"title\": \"AAIP — Caja de herramientas: acceso a la información pública\", \"url\": \"https://www.argentina.gob.ar/sites/default/files/aaip_caja_de_herramientas_archivos.pdf\" }, \"access\": { \"locator\": \"Articles 1, 8(c–d, h–i), 12 and 32(g)\", \"scope\": \"National",
+      "content_id": "f004d3cc-cd24-49a1-b3a0-2d98200b9ee9",
+      "version_id": "7dc2c38e-e168-41f4-a376-110985c8a529",
+      "node_id": "e3aef2f0-99cd-4240-8a3c-79f8691666bf",
+      "title": "Publication Gate guidelines 67744fa4f3bf"
+    },
+    {
+      "text": "\"access\", \"privacy\" ], \"text\": \"Procurement transparency includes objectives, amounts and suppliers. A company CUIT alone is not a private-person CUIL finding. This is not blanket permission to publish corporate records: confidential commercial information, personal data, sole-trader details and other exceptions still require assessment.\", \"title\": \"Preserve legitimate procurement information\", \"url\":",
+      "content_id": "f004d3cc-cd24-49a1-b3a0-2d98200b9ee9",
+      "version_id": "7dc2c38e-e168-41f4-a376-110985c8a529",
+      "node_id": "e3aef2f0-99cd-4240-8a3c-79f8691666bf",
+      "title": "Publication Gate guidelines 67744fa4f3bf"
+    }
+  ],
+  "authority": "Untrusted retrieved context; local reviewed policy and official sources prevail."
+}

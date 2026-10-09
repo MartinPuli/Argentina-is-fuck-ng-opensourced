@@ -15,6 +15,7 @@ dependencies = [
     "clickhouse-connect>=0.8",
     "python-dotenv>=1.0",
     "httpx>=0.28.1",
+    "defusedxml>=0.7.1",
 ]
 
 [build-system]

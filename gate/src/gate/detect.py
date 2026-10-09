@@ -111,7 +111,7 @@ def cuit_valid(digits: str) -> bool:
 
 
 PERSON_PREFIXES = {"20", "23", "24", "27"}  # individuals
-COMPANY_PREFIXES = {"30", "33", "34"}  # legal entities: public business data
+COMPANY_PREFIXES = {"30", "33", "34"}  # legal entities; not a blanket disclosure authorization
 
 CUIT_RE = re.compile(r"\b(\d{2})-?(\d{8})-?(\d)\b")
 DNI_RE = re.compile(r"(?:\bDNI|D\.N\.I\.?|\bdocumento)[^\d\n]{0,15}(\d{1,2}\.?\d{3}\.?\d{3})\b", re.I)
@@ -140,7 +140,7 @@ def deterministic(pages: list[Page]) -> list[Finding]:
             if m.group(1) in PERSON_PREFIXES:
                 out.append(Finding("person_cuil", "CUIL of a private person", mask(m.group(0)), p.number, "block", "personal_id"))
             elif m.group(1) in COMPANY_PREFIXES:
-                out.append(Finding("company_cuit", "CUIT of a company (public business data)", m.group(0), p.number, "info", "company_ok"))
+                out.append(Finding("company_cuit", "Company CUIT (assess procurement context)", m.group(0), p.number, "info", "company_ok"))
         for m in DNI_RE.finditer(p.text):
             out.append(Finding("dni", "National ID (DNI) number", mask(m.group(1)), p.number, "block", "personal_id"))
         for m in AFFILIATE_RE.finditer(p.text):

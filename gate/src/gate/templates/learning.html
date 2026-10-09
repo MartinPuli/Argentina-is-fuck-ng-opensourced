@@ -58,7 +58,13 @@
 .lx .chip,.lx-tests.ok,.lx-tests.bad{border-radius:3px}.lx .chip.rule-draft{color:var(--muted);background:#f1f6fa;border-color:var(--line)}
 </style>
 <div class="lx">
-<div class="lx-head"><div><h1>Rules</h1></div><a class="btn btn-secondary" href="#new-source">New rule</a></div>
+<div class="lx-head"><div><h1>Rules</h1></div><div class="acts"><a class="btn btn-secondary" href="/guidelines">Guidelines</a><a class="btn btn-secondary" href="#new-source">New rule</a></div></div>
+<details class="findings-detail"><summary>Senso · {{ senso.state|replace('_', ' ')|capitalize }}</summary>
+{% if not senso.configured %}<p>Set SENSO_API_KEY on the server to connect the guideline library.</p>
+{% else %}<p>Only the reviewed public guideline pack is synced. Uploaded PDFs stay outside this library.</p>
+<form method="post" action="/learning/senso/{{ 'refresh' if senso.content_id else 'sync' }}" data-async data-loading="Connecting…"><button class="btn-secondary" type="submit">{{ 'Refresh status' if senso.content_id else 'Sync guidelines' }}</button><div class="form-message" role="status" aria-live="polite" hidden></div></form>
+{% if senso.content_id %}<p class="small muted">Content {{ senso.content_id }} · {{ senso.detail }}</p>{% endif %}{% endif %}
+</details>
 {% if pending_count %}<section class="lx-banner"><h2>The rules changed. Check existing files too.</h2><form method="post" action="/learning/rescan" data-async data-loading="Rechecking…"><button type="submit">Recheck {{ pending_count }} file{{ '' if pending_count == 1 else 's' }}</button><div class="form-message" role="status" aria-live="polite" hidden></div></form></section>{% endif %}
 {% if rules %}
 <ul class="lx-list">
@@ -74,14 +80,19 @@
 {% else %}<div class="empty-state"><h2>No rules yet.</h2><a class="text-link" href="#new-source">Choose a source below</a></div>{% endif %}
 <section id="new-source" class="lx-section"><h2>Create a rule from a source</h2>
 <div class="lx-list">{% for case in cases %}<div class="lx-src"><div><strong>{{ case.title }}</strong><details class="lx-more"><summary>{{ case.evidence_status }} · Context</summary><p class="small muted">{{ case.summary }}</p><p class="small muted">Proposed check: {{ case.mechanism }}</p></details></div><a class="text-link" href="{{ case.url }}" target="_blank" rel="noopener noreferrer">Source ↗</a>{% if case_rules[case.id] %}<a class="btn btn-secondary" href="/learning/rules/{{ case_rules[case.id] }}">View rule</a>{% else %}<form method="post" action="/learning/from-case/{{ case.id }}" data-async data-loading="Drafting…"><button class="btn-secondary" type="submit">Create rule</button><div class="form-message" role="status" aria-live="polite" hidden></div></form>{% endif %}</div>{% endfor %}</div>
-<details class="lx-more"><summary>Add source</summary>
+<section id="news-leads" class="lx-section"><div class="lx-head"><h2>Public reporting</h2>
+<form method="post" action="/learning/discover" data-async data-loading="Searching…"><button type="submit" class="btn-secondary">Find recent reports</button><div class="form-message" role="status" aria-live="polite" hidden></div></form></div>
+{% if leads %}<div class="lx-list">{% for lead in leads %}<div class="lx-src"><div><strong>{{ lead.title }}</strong><p class="small muted">{{ lead.publisher }} · {{ lead.published_at[:10] }} · Unverified lead</p></div><a href="{{ lead.url }}" target="_blank" rel="noopener noreferrer">Report ↗</a><a class="btn btn-secondary" href="/learning?lead={{ lead.id }}#source-form">Use source</a></div>{% endfor %}</div>{% else %}<p class="small muted">No reports collected yet.</p>{% endif %}
+<p class="small muted">Google News headlines from the last 30 days. Multiple articles may describe one incident. Discovery does not change rules.</p></section>
+<details class="lx-more" id="source-form" {% if source_prefill %}open{% endif %}><summary>Add source</summary>
 <form class="panel lx-form" method="post" action="/learning/propose" data-async data-loading="Drafting a rule…">
 {% if not llm_on %}<div class="notice">AkashML is not configured.</div>{% endif %}
 <p class="lx-warn">No personal data. The link is saved, not opened.</p>
-<div class="field"><label for="source-title">What leaked, and where?</label><input id="source-title" name="title" minlength="3" maxlength="160" required></div>
-<div class="field"><label for="source-url">Source link</label><input id="source-url" name="url" type="url" maxlength="1000" required placeholder="https://…"></div>
+<div class="field"><label for="source-title">What leaked, and where?</label><input id="source-title" name="title" minlength="3" maxlength="160" required value="{{ source_prefill.title if source_prefill else '' }}"></div>
+<div class="field"><label for="source-url">Source link</label><input id="source-url" name="url" type="url" maxlength="1000" required placeholder="https://…" value="{{ source_prefill.url if source_prefill else '' }}"></div>
 <div class="field"><label for="source-status">How sure is it?</label><select id="source-status" name="evidence_status"><option value="reported">Reported in the press</option><option value="acknowledged">Admitted by the institution</option><option value="alleged">Alleged</option><option value="unknown">Unclear</option></select></div>
-<div class="field"><label for="source-summary">What happened (no personal data)</label><textarea id="source-summary" name="summary" rows="4" minlength="30" maxlength="5800" required></textarea></div>
+<div class="field"><label for="source-summary">What happened (no personal data)</label><textarea id="source-summary" name="summary" rows="4" minlength="30" maxlength="5800" required>{{ source_prefill.summary if source_prefill else '' }}</textarea></div>
+<div class="field"><label for="use-senso"><input id="use-senso" type="checkbox" name="use_senso" value="true" {% if senso.ready %}checked{% else %}disabled{% endif %}> Use cited Senso guideline context</label></div>
 <button type="submit" {% if not llm_on %}disabled{% endif %}>Propose rule</button><div class="form-message" role="status" aria-live="polite" hidden></div>
 </form></details>
 </section>

@@ -29,10 +29,10 @@ from fastapi.templating import Jinja2Templates
 load_dotenv(Path(__file__).resolve().parents[3] / ".env")
 load_dotenv(Path(__file__).resolve().parents[2] / ".env")
 
-from . import activity, agent, sanitize, llm, learning, pi_context  # noqa: E402
+from . import activity, agent, sanitize, llm, learning, pi_context, senso_context, incident_discovery  # noqa: E402
 from .detect import Finding, scan  # noqa: E402
 from .policy import HOLD, PUBLIC, WITHHELD, decide, valid_image_analysis, valid_text_analysis  # noqa: E402
-from .rules import RULES  # noqa: E402
+from .rules import RULES, model_guidelines  # noqa: E402
 from .store import Events, db  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -951,6 +951,40 @@ def api_rules():
     return RULES
 
 
+@app.get("/guidelines")
+def guidelines(request: Request):
+    return page(request, "guidelines.html", guidelines=model_guidelines())
+
+
+@app.get("/api/guidelines")
+def api_guidelines():
+    return model_guidelines()
+
+
+@app.get("/api/senso/status")
+def api_senso_status(user: str = Depends(staff)):
+    return JSONResponse(senso_context.status(), headers={"Cache-Control": "no-store"})
+
+
+@app.post("/learning/senso/sync")
+def sync_senso(user: str = Depends(staff)):
+    try:
+        senso_context.sync()
+    except ValueError as exc:
+        raise HTTPException(502, str(exc)) from None
+    events.log("senso_guidelines_synced", "Learning library", 0, actor=user)
+    return RedirectResponse("/learning", status_code=303)
+
+
+@app.post("/learning/senso/refresh")
+def refresh_senso(user: str = Depends(staff)):
+    try:
+        senso_context.refresh()
+    except ValueError as exc:
+        raise HTTPException(502, str(exc)) from None
+    return RedirectResponse("/learning", status_code=303)
+
+
 @app.get("/api/pi/status")
 def api_pi_status(user: str = Depends(staff)):
     # Pi Security is not connected; this reports why and what access is needed.
@@ -967,6 +1001,9 @@ def learning_rule(rule_id: int) -> dict:
     rule = learning.get_rule(rule_id)
     if not rule:
         raise HTTPException(404, "Rule not found.")
+    context = senso_context.rule_context(rule_id)
+    if context:
+        rule["context"] = context
     return rule
 
 
@@ -985,11 +1022,23 @@ def case_rules(rules: list[dict]) -> dict:
 
 
 @app.get("/learning")
-def learning_home(request: Request, user: str = Depends(staff)):
+def learning_home(request: Request, lead: str = "", user: str = Depends(staff)):
     rules = learning.list_rules()
+    selected = incident_discovery.get_lead(lead) if lead else None
     return page(request, "learning.html", cases=CASES, rules=rules, case_rules=case_rules(rules),
                 active_count=sum(r["status"] == "active" for r in rules),
-                pending_count=learning.pending_count(), user=user)
+                pending_count=learning.pending_count(), senso=senso_context.status(), user=user,
+                leads=incident_discovery.list_leads(), source_prefill=incident_discovery.source_prefill(selected) if selected else None)
+
+
+@app.post("/learning/discover")
+def discover_incidents(user: str = Depends(staff)):
+    try:
+        incident_discovery.discover()
+    except ValueError as exc:
+        raise HTTPException(502, str(exc)) from None
+    events.log("incident_reporting_discovered", "Learning library", 0, actor=user)
+    return RedirectResponse("/learning#news-leads", status_code=303)
 
 
 @app.post("/learning/from-case/{case_id}")
@@ -1015,14 +1064,16 @@ def learn_from_report(title: str = Form(..., min_length=3, max_length=160),
                       url: str = Form(..., max_length=1000),
                       evidence_status: str = Form(..., max_length=80),
                       summary: str = Form(..., min_length=30, max_length=5800),
+                      use_senso: bool = Form(False),
                       user: str = Depends(staff)):
     if evidence_status not in {"reported", "acknowledged", "alleged", "unknown"}:
         raise HTTPException(400, "Choose a valid source evidence status.")
     source = {"title": title, "url": url, "evidence_status": UNVERIFIED,
               "summary": f"Submitter describes evidence as: {evidence_status}.\n\n{summary}"}
     try:
-        spec, generator = propose(source)
-        ident = learning.create_candidate(spec, source, user, generator=generator)
+        context = senso_context.retrieve(title) if use_senso else None
+        spec, generator = propose(source, context=context) if context else propose(source)
+        ident = learning.create_candidate(spec, source, user, generator=generator, context=context)
     except ValueError as exc:
         raise HTTPException(400, str(exc)) from None
     events.log("rule_proposed", "Learning library", 0, actor=user)
@@ -1032,7 +1083,7 @@ def learn_from_report(title: str = Form(..., min_length=3, max_length=160),
 @app.get("/learning/rules/{rule_id}")
 def learning_detail(request: Request, rule_id: int, user: str = Depends(staff)):
     return page(request, "learning_rule.html", rule=learning_rule(rule_id),
-                pending_count=learning.pending_count(), user=user)
+                pending_count=learning.pending_count(), context=senso_context.rule_context(rule_id), user=user)
 
 
 @app.post("/learning/rules/{rule_id}/test")
