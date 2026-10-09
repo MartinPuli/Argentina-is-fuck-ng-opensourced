@@ -520,7 +520,9 @@ def queue_live(purchase: dict, item: str, files: list[tuple[str, bytes]], actor:
 
 @app.get("/live")
 def live_view(request: Request, user: str = Depends(staff)):
-    return page(request, "live.html", offices=OFFICES, user=user)
+    history = events.history()  # once per page load, never from the /api/activity poll
+    total = (history or {}).get("total") or None
+    return page(request, "live.html", offices=OFFICES, user=user, history_total=total)
 
 
 @app.post("/live/upload")

@@ -14,7 +14,7 @@
 <nav>
 {% for href, label in [('/', 'Documents'), ('/live', 'Activity'), ('/office', 'Upload'), ('/review', 'Review'), ('/learning', 'Rules'), ('/exposures', 'Exposures'), ('/dashboard', 'Audit')] %}
 {% set selected = request.url.path == href or (href != '/' and request.url.path.startswith(href + '/')) or (href == '/' and request.url.path.startswith('/purchase/')) %}
-<a href="{{ href }}" class="nav-link {{ 'nav-divider ' if href == '/learning' else '' }}{{ 'active' if selected else '' }}" {% if selected %}aria-current="page"{% endif %}>{{ label }}</a>
+<a href="{{ href }}" class="nav-link {{ 'nav-divider ' if href == '/learning' else '' }}{{ 'active' if selected else '' }}" {% if selected %}aria-current="page"{% endif %}>{{ label }}{% if href == "/review" %}<span class="nav-count" data-review-count hidden></span>{% endif %}</a>
 {% endfor %}
 </nav>
 <a class="sidebar-public" href="/public" target="_blank" rel="noopener">Public records <span aria-hidden="true">↗</span></a>
