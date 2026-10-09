@@ -4,14 +4,14 @@
 
 ArgenSec Gate checks every PDF before PAMI publishes it on its public purchase site. Clean files are published. When patient details can be removed, a cleaned copy is published instead. Everything else stays private until a person decides. All documents are fictional.
 
-**Try it:** open [argensec.pujia.ar/live](https://argensec.pujia.ar/live) and press **Send 8 fictional office files**. Watch each check run, then open the review cards, the [public portal](https://argensec.pujia.ar/public) and the [audit dashboard](https://argensec.pujia.ar/dashboard).
+**Try it:** open [Activity](https://argensec.pujia.ar/live) and choose **Test data > Load synthetic files**. Watch each check run, then open the **Review** cards, the [Public](https://argensec.pujia.ar/public) page and the [Audit](https://argensec.pujia.ar/dashboard) page.
 
 - **ClickHouse:** stores every decision, plus 1,000,000 clearly labeled simulated events with live queries and measured query time.
 - **AkashML:** an open text model finds re-identification risk and the exact phrases to remove. A vision model reads scanned pages.
 - **Guild.ai:** runs the agent procedure. Three clearance levels, then a public agent and a public reviewer that loop until the cleaned copy passes.
 - **Semgrep:** reviewed the AI-written code. Findings and fixes are in [issue #2](https://github.com/MartinPuli/Argentina-is-fuck-ng-opensourced/issues/2).
 
-Details: [gate/README.md](gate/README.md) · Video script: [gate/DEMO.md](gate/DEMO.md) · Submission: [gate/SUBMISSION.md](gate/SUBMISSION.md). Also built: rules learned from documented incidents (`/learning`) and an [Argentina exposure comparison](docs/research/EXPOSURE-RANKING-NOTES.md).
+Details: [gate/README.md](gate/README.md) · Video script: [gate/DEMO.md](gate/DEMO.md) · Submission: [gate/SUBMISSION.md](gate/SUBMISSION.md). Also built: rules learned from documented incidents (**Rules**, `/learning`) and an [Argentina exposure comparison](docs/research/EXPOSURE-RANKING-NOTES.md).
 
 ## Argentina government data leaks
 
