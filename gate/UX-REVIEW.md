@@ -59,7 +59,16 @@ Web app; mobile store rules do not apply. Push reviewed changes to main. Confirm
 Use subtle existing color feedback only. Respect reduced motion. Precision, stable row alignment and readable status take priority over decoration.
 
 ## 7. Open questions for the user
-Deployment mechanism/restart access for argensec.pujia.ar is not in the repository. Asked while implementation proceeds; source work and local verification do not depend on the answer.
+The user requested local verification and pushing to main. The hosted deployment is outside this delivery; Git push alone does not restart its backend.
 
 ## Observed on the deployed site
 On October 9, browser requests returned JSON 404 for `/assets/workspace.js`, `/assets/workspace.css` and `/api/workspace`. `/live` remained reachable. This is consistent with templates updated while an older Python process remains running; it does not establish the hosting root cause. Also found simulated audit HTML duplicated inside the Jinja title block; move that content exclusively into the body.
+
+## Verification completed
+
+- Frontend TypeScript check and production build passed.
+- 256 application tests passed, including server-rendered metadata, current-rule status, real asset responses and the audit title regression.
+- Inspected the local Documents and Review pages at 1440px; inspected Documents at 390px. Filenames and status remain visible without page overflow.
+- Disabled JavaScript in a separate browser: the server-rendered document list, counts and navigation remain usable.
+- Wrote a review draft on Activity and refreshed the feed: text survived and one review remained open.
+- Integrated the team's content-versioned asset URLs. No hosted restart or Pi execution is claimed by these checks.
