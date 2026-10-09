@@ -73,7 +73,7 @@ def seed(web):
     response = web.client.post("/demo/seed", follow_redirects=False)
     assert response.status_code == 303
     with web.store.db() as con:
-        rows = con.execute("select id, filename, decision from attachments order by id").fetchall()
+        rows = con.execute("select id, purchase_id, filename, decision from attachments order by id").fetchall()
     assert {row["filename"]: row["decision"] for row in rows} == EXPECTED_OFFLINE
     return rows, response.headers["location"]
 
@@ -156,7 +156,9 @@ def test_public_portal_never_serves_withheld_or_held_files(web):
     assert saved["review_note"] == note
     portal = web.anonymous.get("/public").text
     for row in rows:
-        assert (row["filename"] in portal) == (row["id"] == clean["id"])
+        assert row["filename"] not in portal
+        assert (f'href="/public/file/{row["id"]}"' in portal) == (row["id"] == clean["id"])
+    assert web.app.public_filename(clean["purchase_id"], clean["id"]) in portal
 
     blocked = next(row for row in rows if row["decision"] == "withheld")
     rejected = web.client.post(f"/review/{blocked['id']}", data={
@@ -228,7 +230,7 @@ def test_all_populated_screens_render_current_decisions(web):
         "/office": ["Supporting attachments", "Load synthetic files"],
         purchase_url: ["Attachment decisions", "Reviewer approved", "Kept internal", "Needs review"],
         "/review": ["Decision reason", "Needs review", "Recent reviewer decisions", STAFF[0]],
-        "/public": ["Published purchases", clean["filename"]],
+        "/public": ["Published purchases", web.app.public_filename(clean["purchase_id"], clean["id"])],
         "/dashboard": ["Decisions by office", "Human review history", STAFF[0]],
     }
     for route, labels in expected_labels.items():

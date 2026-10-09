@@ -219,7 +219,27 @@ def test_pdf_responses_have_safe_utf8_filename_and_no_store(boundary, route):
     header = response.headers["content-disposition"]
     assert "\r" not in header and "\n" not in header
     assert "../" not in header and "private" not in header
-    assert unquote(header.split("filename*=UTF-8''", 1)[1]) == 'estudio muñón "x".pdf'
+    expected = 'estudio muñón "x".pdf' if route == "internal" else f"compra-1-adjunto-{ident}.pdf"
+    assert unquote(header.split("filename*=UTF-8''", 1)[1]) == expected
+
+
+@pytest.mark.parametrize("decision", ["public", "cleaned"])
+def test_public_side_never_shows_original_filename(boundary, decision):
+    client, app_module, store = boundary
+    ident, content = store_file(app_module, decision=decision, filename="historia_juana_perez.pdf")
+    if decision == "cleaned":
+        with store.db() as con:
+            con.execute("update attachments set public_pdf=? where id=?", (content, ident))
+    page = client.get("/public", auth=None)
+    assert page.status_code == 200
+    assert f"/public/file/{ident}" in page.text
+    assert f"compra-1-adjunto-{ident}.pdf" in page.text
+    response = client.get(f"/public/file/{ident}", auth=None)
+    assert response.status_code == 200
+    for text in (page.text, response.headers["content-disposition"]):
+        assert "juana" not in text.lower() and "perez" not in text.lower()
+        assert "historia" not in text.lower()
+    assert "historia_juana_perez.pdf" in client.get(f"/purchase/1", auth=AUTH).text
 
 
 def test_public_denial_is_not_cacheable(boundary):
