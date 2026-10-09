@@ -33,3 +33,7 @@ Keep the approved fictional technical specification from the first walkthrough a
 With AkashML configured, **Bring a new report** accepts a sanitized summary and source URL through `/learning/propose`. The URL is stored rather than fetched or independently verified. The submission remains labeled unverified; the model produces a candidate requiring the same tests and authenticated activation. Do not paste real leaked records, identifiers or credentials. Offline, use the authored cases and show the clear unavailable-model state.
 
 The current walkthrough does not verify the event's three-sponsor requirement. A separate observed run must record the intended AkashML result, Guild brief/session completion and ClickHouse write/query, or another approved substantive sponsor combination. Neither configuration nor mocked tests establish those integrations. Open `/exposures` for the sourced comparison. It separates companies from public bodies and does not invent an ordinal ranking from incomparable or unverified quantities.
+
+## Team live view
+
+Open `/live` and press **Send 8 fictional office files**. Observe the actual queued checks and review cards; without configured model/OCR services, incomplete cases remain private for review. This view preserves the team’s live flow while the detailed office/review pages remain available.

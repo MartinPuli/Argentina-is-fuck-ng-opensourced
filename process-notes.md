@@ -123,3 +123,5 @@
 - Added the requested exposure comparison with explicit counting units, source dates and evidence labels. The bounded research found no independently verified company total supporting a factual national leaderboard. No breach datasets or victim records were collected.
 - Pushed `d65f441` on `codex/incident-learning` after 192 local tests passed. Fetched concurrent teammate changes, including the live activity workspace and architecture document, for integration without overwriting them.
 - Local verification does not establish deployment or actual Akash/Guild/ClickHouse execution. The larger research goal remains incomplete.
+
+- Integrated teammate main through `07451f3`: retained its architecture document and shortened Guild prompt; adapted its latest simple live flow at `/live` with the hardened processing/learning path. Preserved the detailed staff pages and existing tests rather than removing their controls. Final local suite before merge: 214 passed; fictional browser demo completed with provider gaps shown as private/review states.
