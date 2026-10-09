@@ -1,11 +1,5 @@
-{% extends "base.html" %}{% block title %}PAMI · Compras{% endblock %}
-{% block header %}<header class="public"><a class="brand" href="/public">PAMI · Buscador de compras <span class="tag">PÚBLICO</span></a><a href="/">Staff side</a></header>{% endblock %}
-{% block body %}<p class="fict">Portal ficticio para la demo. Fictional portal for the demo.</p>
-<h1>Compras de Unidades de Gestión Local</h1>
-<table><tr><th>Procedimiento</th><th>UGL</th><th>Ítem</th><th>Monto</th><th>Documentos</th></tr>
-{% for p in purchases %}{% set s = by_purchase.get(p.id, {'files': [], 'kept': 0, 'pending': 0}) %}
-<tr><td>{{ p.procedure }}</td><td>{{ p.office }}</td><td>{{ p.item }}</td><td>{{ p.amount|money }}</td>
-<td>{% for f in s.files %}<div><a href="/public/file/{{ f.id }}" target="_blank">{{ f.filename }}</a></div>{% endfor %}
-{% if s.kept %}<div class="muted" style="font-size:13px">{{ s.kept }} documento(s) con datos personales o de salud: no se publican (Ley 25.326)</div>{% endif %}
-{% if s.pending %}<div class="muted" style="font-size:13px">{{ s.pending }} en revisión</div>{% endif %}</td></tr>
-{% else %}<tr><td colspan="5" class="muted">Sin compras publicadas.</td></tr>{% endfor %}</table>{% endblock %}
+{% extends "base.html" %}{% block title %}Public procurement{% endblock %}{% block body %}
+<div class="public-intro"><span class="demo-label">Fictional procurement portal</span><h1>Public records.<br>Personal information protected.</h1><p>Explore purchase details and attachments approved for publication. Supporting private files are not available here.</p></div>
+<div class="section-heading inline-heading"><h2>Published purchases <span class="muted">{{ purchases|length }}</span></h2><label class="search-field"><span class="sr-only">Filter public purchases</span><input type="search" placeholder="Search office, item or procedure" data-filter="public-purchase"></label></div>
+<div class="public-purchases">{% for p in purchases %}{% set s=by_purchase.get(p.id, {'files':[], 'kept':0, 'pending':0}) %}<article class="public-purchase panel" data-filter-item="public-purchase"><div class="public-purchase-heading"><div><div class="section-kicker">{{ p.office }}</div><h2>{{ p.item }}</h2><p class="muted">{{ p.procedure }}</p></div><div class="purchase-amount"><strong>{{ p.amount|money }}</strong><span>ARS · Purchase amount</span></div></div><div class="public-documents"><h3>Public attachments</h3>{% for f in s.files %}<a class="public-file" href="/public/file/{{ f.id }}" target="_blank" rel="noopener"><span class="doc-icon" aria-hidden="true">PDF</span><span>{{ f.filename }}</span><span class="file-open" aria-hidden="true">↗</span></a>{% else %}<p class="muted">No attachments have been released for this purchase.</p>{% endfor %}</div>{% if s.kept or s.pending %}<div class="privacy-note">{{ s.kept }} kept internal{% if s.pending %} · {{ s.pending }} awaiting review{% endif %}. Only permitted attachments can be downloaded.</div>{% endif %}</article>{% else %}<div class="empty-state"><h2>No purchases published yet.</h2><p>Public purchase details appear here after a staff submission.</p><a class="text-link" href="/">Return to the demo →</a></div>{% endfor %}</div><div class="empty-state filter-empty" hidden><h2>No purchases match your search.</h2><p>Try a different office, item or procedure reference.</p></div>
+{% endblock %}

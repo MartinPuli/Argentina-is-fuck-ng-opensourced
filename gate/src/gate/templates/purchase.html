@@ -1,15 +1,11 @@
-{% extends "base.html" %}{% block body %}
-<p class="muted">{{ purchase.office }} · {{ purchase.procedure }}</p>
-<h1>{{ purchase.item }} <span class="muted" style="font-weight:400">· {{ purchase.amount|money }}</span></h1>
-<p><a class="btn btn-ghost" href="/public">See it on the public portal ↗</a></p>
-{% for a in atts %}{% set fs = a.findings|fromjson %}{% set m = a.model|fromjson %}{% set ag = a.agent|fromjson %}
-<div class="card">
-<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span class="badge b-{{ a.decision }}">{{ a.decision }}</span>
-<b class="mono">{{ a.filename }}</b><a class="muted" href="/internal/file/{{ a.id }}" target="_blank">open internal copy</a></div>
-<p>{{ (a.reasons|fromjson)|join(' ') }}</p>
-{% if fs %}<table><tr><th>Finding</th><th>Evidence (masked)</th><th>Page</th><th>Rule</th></tr>
-{% for f in fs %}<tr><td class="sev-{{ f.severity }}">{{ f.label }}</td><td class="mono">{{ f.evidence }}</td><td>{{ f.page or '' }}</td><td>{{ RULES[f.rule].source }}</td></tr>{% endfor %}</table>{% endif %}
-{% if m and not m.error %}<p class="muted" style="font-size:13px">Model ({{ m.model }}): re-identification risk <b>{{ m.reidentification_risk }}</b>. {{ (m.reasons or [])|join(' ') }}</p>
-{% elif m and m.error %}<p class="muted" style="font-size:13px">Model unavailable, deterministic checks only.</p>{% endif %}
-{% if ag and ag.text %}<div class="rule"><b>Guild agent brief:</b> {{ ag.text }}</div>{% endif %}
-</div>{% endfor %}{% endblock %}
+{% extends "base.html" %}{% from "components.html" import badge, evidence, brief with context %}{% block title %}Purchase decisions{% endblock %}{% block body %}
+<a class="back-link" href="/office">← Office workspace</a><div class="page-heading heading-with-action"><div><div class="section-kicker">{{ purchase.office }}</div><h1>{{ purchase.item }}</h1><p>{{ purchase.procedure }} <span class="separator">·</span> {{ purchase.amount|money }} ARS</p></div><a class="btn btn-secondary" href="/public">View public result ↗</a></div>
+{% set counts = namespace(public=0, hold=0, withheld=0) %}{% for a in atts %}{% if a.decision in ('public','approved') and a.id not in stale_ids %}{% set counts.public=counts.public+1 %}{% elif a.decision == 'hold' or a.id in stale_ids %}{% set counts.hold=counts.hold+1 %}{% else %}{% set counts.withheld=counts.withheld+1 %}{% endif %}{% endfor %}
+<div class="decision-summary"><div><strong>{{ atts|length }}</strong><span>Attachments checked</span></div><div><strong class="text-public">{{ counts.public }}</strong><span>Publicly available</span></div><div><strong class="text-hold">{{ counts.hold }}</strong><span>Waiting for review</span></div><div><strong class="text-withheld">{{ counts.withheld }}</strong><span>Kept internal</span></div></div>
+<div class="section-heading inline-heading"><h2>Attachment decisions</h2>{% if stale_ids %}<a class="text-link" href="/learning">Recheck updated rules →</a>{% endif %}{% if counts.hold %}<a class="text-link" href="/review">Review {{ counts.hold }} held {{ 'file' if counts.hold == 1 else 'files' }} →</a>{% endif %}</div>
+{% for a in atts %}{% set fs=a.findings|fromjson %}{% set m=a.model|fromjson %}{% set ag=a.agent|fromjson %}
+<article class="panel attachment-panel"><div class="attachment-heading"><span class="doc-icon" aria-hidden="true">PDF</span><div class="attachment-name"><h3>{{ a.filename }}</h3><span class="file-fingerprint">File {{ a.id }} · SHA-256 {{ a.sha256[:12] }}…</span></div>{% if a.id in stale_ids %}<span class="badge b-hold">Recheck required</span>{% else %}{{ badge(a.decision) }}{% endif %}</div><p class="decision-reason">{{ (a.reasons|fromjson)|join(' ') }}</p>{{ evidence(fs) }}
+<div class="attachment-actions"><a class="text-link" href="/internal/file/{{ a.id }}" target="_blank" rel="noopener">Open internal original ↗</a>{% if a.decision in ('public','approved') and a.id not in stale_ids %}<a class="text-link" href="/public/file/{{ a.id }}" target="_blank" rel="noopener">Open public copy ↗</a>{% else %}<span class="small muted">Public download is blocked</span>{% endif %}</div>
+{% if m and not m.error %}<details class="analysis-detail"><summary>Context analysis</summary><p>Re-identification risk: <strong>{{ m.reidentification_risk }}</strong>. {{ (m.reasons or [])|join(' ') }}</p>{% if m.model %}<span class="small muted">Model: {{ m.model }}</span>{% endif %}</details>{% else %}<div class="notice subtle">Context analysis was unavailable. Files without a blocking finding require a reviewer before publication.</div>{% endif %}{{ brief(ag, agent_on and a.decision not in ('public','approved')) }}</article>
+{% else %}<div class="empty-state"><h2>No attachments in this purchase</h2><p>Return to the office workspace to submit a complete purchase.</p><a class="btn" href="/office">New purchase</a></div>{% endfor %}
+{% endblock %}

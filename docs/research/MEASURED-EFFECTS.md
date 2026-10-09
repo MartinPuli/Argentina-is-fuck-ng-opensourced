@@ -47,7 +47,7 @@ The six additional runs checked **122 HTTP read responses**. Every independent a
 
 The observed benefit is the effect of **explicit access control and credential revocation under the declared conditions**. No LLM participated. The simple volume cutoff's poor result is specific to its chosen threshold and this workload, not evidence that every anomaly detector fails. A future agent must show additional value over these ordinary controls.
 
-Time advances through logical ticks, not elapsed seconds. The experiment establishes neither detection speed nor real-world time to containment. Requests finish sequentially, so concurrent or already-running exports remain untested. The data and control endpoints share a process and memory; the evaluator runs as the same operating-system user. This does not prove isolation from a compromised host.
+Time advances through logical ticks, not elapsed seconds. The experiment establishes neither detection speed nor real-world time to containment. In this original reference-defense experiment, requests finish sequentially, so concurrent or already-running exports were not tested. The separate in-flight experiment below now tests one explicitly paused stream and one queued operation. The original data and control endpoints share a process and memory; the evaluator runs as the same operating-system user. This does not prove isolation from a compromised host.
 
 In the original reference-defense experiment, no code repair, deployment, evidence corroboration, cryptographic log protection, sponsor calls, automatic lesson promotion, publication checking or third-party export control was exercised. The malicious log string was only stored; because no model interpreted it, this is not a prompt-injection robustness result.
 
@@ -97,3 +97,28 @@ The [publication regression experiment](../../experiments/publication-regression
 An independently specified fixture then checked 36 actual HTTP responses and passed 52 byte-level assertions. Its approved release preserved four public responses and exposed no private marker. A deliberate false “public” classification still leaked private bytes. Thus exact artifact checking works only within its classification assumptions; it does not establish automatic understanding of medical documents.
 
 All traffic was loopback, records were fictional, and no sandbox escape, government host, AI repair, sponsor integration or public deployment was tested. See the linked protocol and persisted observations for denominators and limitations.
+
+
+## In-flight streams and queued results after revocation
+
+The [in-flight revocation experiment](../../experiments/inflight-revocation/README.md) tests a narrower question left open by the sequential experiments: can an operation admitted before revocation still release records afterward? It compares admission-only authorization with checking the admitted credential generation at every protected output line. Both modes enforce the same initial record permissions and receive the same declared workload with fresh synthetic credentials.
+
+The independent HTTP client first receives one stream record and confirms that the server is paused. A separate controller obtains the gateway's revocation acknowledgment. Only after the client receives that ACK does it release the remaining stream and an already accepted queued job. Explicit events establish this order; no sleep-based timing or detection-latency estimate is used. The generation check, protected write/flush and gateway ACK share a lock. The queued-result capability identifies the original admission context, so completing the old job is not silently treated as a newly authenticated ordinary read.
+
+| Actual client observation | Admission-only check | Per-output generation check |
+|---|---:|---:|
+| Stream records received before ACK | 1 | 1 |
+| Protected NDJSON bytes received before ACK | 96 | 96 |
+| Remaining stream records received after ACK | 2 | 0 |
+| Queued records received after ACK | 2 | 0 |
+| Total protected record transmissions after ACK | 4 | 0 |
+| Protected NDJSON bytes received after ACK | 385 | 0 |
+| All stream/job response body bytes after ACK | 425 | 114 |
+| Ordinary legitimate A requests completed | 1/2 | 1/2 |
+| Ordinary legitimate B requests completed | 2/2 | 2/2 |
+
+The stricter mode's 114 later bytes are denial markers, not protected records; zero protected bytes does not mean zero traffic. Protected-byte counts include each complete UTF-8 NDJSON record line and its envelope/newline, excluding HTTP headers and transport overhead. B's two batches delivered six record transmissions in either mode. Revocation also denies the later legitimate A request, and may interrupt legitimate work already using that credential. It cannot distinguish legitimate and malicious callers sharing a credential.
+
+The saved main run passed **77 declared assertions across two modes**. Measurements come from actual response bodies and exact fictional record content, with response hashes, event order, source/workload hashes and distinct gateway/controller/client process IDs recorded. **Independent altered-case variants have not been run for this experiment.** Its byte-level client measurements are distinct from a separately authored independent test suite; the main assertions alone are the current validation evidence. [Main observations](../../experiments/inflight-revocation/results.json) · [Declared protocol](../../experiments/inflight-revocation/protocol.json) · [Runner](../../experiments/inflight-revocation/run_experiment.py).
+
+One record was already received before revocation and cannot be retracted. The barriers drain the declared prefix before ACK; this is not a guarantee that previously buffered network/proxy bytes cannot arrive afterward in a deployed service. Separate check/write operations, bypass paths or an untrusted gateway would invalidate the local boundary. A write already holding the lock can delay revocation and briefly contend with B; eventual completion is measured, not latency. State is in memory, processes share an OS user, and no restart durability, host-compromise protection, detector, recovery, model or sponsor integration is tested. This experiment is motivated by [RRR-01's action-time barrier discussion](REVOCATION-AND-RECOVERY-RESEARCH.md#rrr-01), not a reproduction of that paper or proof of its complete protocol.

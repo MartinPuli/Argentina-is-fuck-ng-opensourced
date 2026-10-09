@@ -1,0 +1,555 @@
+{
+  "experiment": "inflight-revocation",
+  "license": "CC BY 4.0 (results); MIT (code/fixtures)",
+  "created_at_utc": "2026-10-09T20:47:28.284346+00:00",
+  "python": "3.9.6",
+  "source_hashes": {
+    "gateway.py": "ce3837514511e43cd3880463ba236c4a357633a058ce5e7a13b5b9a6f6c8edc0",
+    "run_experiment.py": "6d3bf6f787b1d368d2912ef3be2bc76516c9b64f7fbfae88966edd991868ed33",
+    "protocol.json": "718ffd45f8a97f16a821d27ecc90a295d0f91016ec276e257e678d797f153a86",
+    "PLAN.md": "3161911727566936c51fceb6fd40380cb246716558d8a1d46d1432d3f1317afb"
+  },
+  "protocol_file_sha256": "718ffd45f8a97f16a821d27ecc90a295d0f91016ec276e257e678d797f153a86",
+  "assertions_passed": 77,
+  "runs": [
+    {
+      "mode": "entry_only",
+      "case_id": "fictional-stream-and-queue-v1",
+      "workload_sha256": "4a0360e6145111d2c5a456b49a3d3289fea02e3fd2b1cc11f42b4889e7fd104d",
+      "events": [
+        {
+          "order": 1,
+          "event": "legitimate_a_before",
+          "http_status": 200
+        },
+        {
+          "order": 2,
+          "event": "legitimate_b_before",
+          "http_status": 200
+        },
+        {
+          "order": 3,
+          "event": "queue_accepted_before_revocation",
+          "http_status": 202,
+          "state": "accepted_waiting"
+        },
+        {
+          "order": 4,
+          "event": "stream_prefix_received",
+          "bytes": 96
+        },
+        {
+          "order": 5,
+          "event": "server_pause_confirmed"
+        },
+        {
+          "order": 6,
+          "event": "controller_ack_received",
+          "http_status": 200
+        },
+        {
+          "order": 7,
+          "event": "stream_release_after_ack"
+        },
+        {
+          "order": 8,
+          "event": "job_release_after_ack"
+        },
+        {
+          "order": 9,
+          "event": "stream_suffix_received",
+          "bytes": 211
+        },
+        {
+          "order": 10,
+          "event": "queued_result_received",
+          "http_status": 200,
+          "bytes": 214
+        },
+        {
+          "order": 11,
+          "event": "legitimate_a_after",
+          "http_status": 401
+        },
+        {
+          "order": 12,
+          "event": "legitimate_b_after",
+          "http_status": 200
+        },
+        {
+          "order": 13,
+          "event": "duplicate_revoke_observed",
+          "http_status": 409
+        }
+      ],
+      "observations": {
+        "legitimate_a_before": {
+          "http_status": 200,
+          "body_bytes": 116,
+          "body_sha256": "2a06211ec973eaf34e4572c860412fbe501fda7d01fd3524aab74669f2939459",
+          "record_ids": [
+            "FICTIONAL-A-01"
+          ],
+          "protected_line_bytes": 96,
+          "record_bodies": [
+            {
+              "id": "FICTIONAL-A-01",
+              "owner": "A",
+              "value": "synthetic record alpha"
+            }
+          ],
+          "markers": [
+            {
+              "type": "complete"
+            }
+          ],
+          "record_count": 1
+        },
+        "legitimate_b_before": {
+          "http_status": 200,
+          "body_bytes": 340,
+          "body_sha256": "77b1620051baa06fadb73d6f60d70403d9e5efd669cb0e6b26228e70fbc49d39",
+          "record_ids": [
+            "FICTIONAL-B-01",
+            "FICTIONAL-B-02",
+            "FICTIONAL-B-03"
+          ],
+          "protected_line_bytes": 320,
+          "record_bodies": [
+            {
+              "id": "FICTIONAL-B-01",
+              "owner": "B",
+              "value": "independent legitimate batch one"
+            },
+            {
+              "id": "FICTIONAL-B-02",
+              "owner": "B",
+              "value": "independent legitimate batch two"
+            },
+            {
+              "id": "FICTIONAL-B-03",
+              "owner": "B",
+              "value": "independent legitimate batch three"
+            }
+          ],
+          "markers": [
+            {
+              "type": "complete"
+            }
+          ],
+          "record_count": 3
+        },
+        "stream_before_ack": {
+          "http_status": 200,
+          "body_bytes": 96,
+          "body_sha256": "7ae445912ad32f8bea9b97404432f35e89976c9c8f95497f3c7ae2e818b0cf35",
+          "record_ids": [
+            "FICTIONAL-A-01"
+          ],
+          "protected_line_bytes": 96,
+          "record_bodies": [
+            {
+              "id": "FICTIONAL-A-01",
+              "owner": "A",
+              "value": "synthetic record alpha"
+            }
+          ],
+          "markers": [],
+          "record_count": 1
+        },
+        "stream_after_ack": {
+          "http_status": 200,
+          "body_bytes": 211,
+          "body_sha256": "6350a9b3f840e6986d6b4c14666264621e250293655ab48ffeafe0a296d9ad78",
+          "record_ids": [
+            "FICTIONAL-A-02",
+            "FICTIONAL-A-03"
+          ],
+          "protected_line_bytes": 191,
+          "record_bodies": [
+            {
+              "id": "FICTIONAL-A-02",
+              "owner": "A",
+              "value": "synthetic record beta"
+            },
+            {
+              "id": "FICTIONAL-A-03",
+              "owner": "A",
+              "value": "synthetic record gamma"
+            }
+          ],
+          "markers": [
+            {
+              "type": "complete"
+            }
+          ],
+          "record_count": 2
+        },
+        "queued_after_ack": {
+          "http_status": 200,
+          "body_bytes": 214,
+          "body_sha256": "5850d29704a2982aecf4b9cac85723f75c9c429644b96b26ff76c4554df6ef74",
+          "record_ids": [
+            "FICTIONAL-A-04",
+            "FICTIONAL-A-05"
+          ],
+          "protected_line_bytes": 194,
+          "record_bodies": [
+            {
+              "id": "FICTIONAL-A-04",
+              "owner": "A",
+              "value": "synthetic record delta"
+            },
+            {
+              "id": "FICTIONAL-A-05",
+              "owner": "A",
+              "value": "synthetic record epsilon"
+            }
+          ],
+          "markers": [
+            {
+              "type": "complete"
+            }
+          ],
+          "record_count": 2
+        },
+        "legitimate_a_after": {
+          "http_status": 401,
+          "body_bytes": 26,
+          "body_sha256": "23530f79939f7833451e84bd8b170a50c424fd5dd1f2303f891039e339468cfe",
+          "record_ids": [],
+          "protected_line_bytes": 0,
+          "record_bodies": [],
+          "markers": [],
+          "record_count": 0
+        },
+        "legitimate_b_after": {
+          "http_status": 200,
+          "body_bytes": 340,
+          "body_sha256": "77b1620051baa06fadb73d6f60d70403d9e5efd669cb0e6b26228e70fbc49d39",
+          "record_ids": [
+            "FICTIONAL-B-01",
+            "FICTIONAL-B-02",
+            "FICTIONAL-B-03"
+          ],
+          "protected_line_bytes": 320,
+          "record_bodies": [
+            {
+              "id": "FICTIONAL-B-01",
+              "owner": "B",
+              "value": "independent legitimate batch one"
+            },
+            {
+              "id": "FICTIONAL-B-02",
+              "owner": "B",
+              "value": "independent legitimate batch two"
+            },
+            {
+              "id": "FICTIONAL-B-03",
+              "owner": "B",
+              "value": "independent legitimate batch three"
+            }
+          ],
+          "markers": [
+            {
+              "type": "complete"
+            }
+          ],
+          "record_count": 3
+        }
+      },
+      "client_pid": 95125,
+      "service_pids": {
+        "gateway": 95139,
+        "controller": 95140
+      },
+      "revocation_ack": {
+        "controller_pid": 95140,
+        "gateway_ack": {
+          "boundary_sequence": 5,
+          "gateway_pid": 95139,
+          "generation": 2,
+          "identity": "A",
+          "revoked": true
+        }
+      },
+      "duplicate_revoke_status": 409,
+      "metrics": {
+        "stream_records_received_before_ack": 1,
+        "stream_protected_line_bytes_before_ack": 96,
+        "stream_records_received_after_ack": 2,
+        "queued_records_received_after_ack": 2,
+        "admitted_operation_records_after_ack": 4,
+        "admitted_operation_protected_line_bytes_after_ack": 385,
+        "admitted_operation_all_body_bytes_after_ack": 425,
+        "legitimate_a_requests_succeeded": 1,
+        "legitimate_a_requests_attempted": 2,
+        "legitimate_b_requests_succeeded": 2,
+        "legitimate_b_requests_attempted": 2,
+        "legitimate_b_record_transmissions": 6
+      },
+      "all_child_processes_stopped": true
+    },
+    {
+      "mode": "output_generation",
+      "case_id": "fictional-stream-and-queue-v1",
+      "workload_sha256": "4a0360e6145111d2c5a456b49a3d3289fea02e3fd2b1cc11f42b4889e7fd104d",
+      "events": [
+        {
+          "order": 1,
+          "event": "legitimate_a_before",
+          "http_status": 200
+        },
+        {
+          "order": 2,
+          "event": "legitimate_b_before",
+          "http_status": 200
+        },
+        {
+          "order": 3,
+          "event": "queue_accepted_before_revocation",
+          "http_status": 202,
+          "state": "accepted_waiting"
+        },
+        {
+          "order": 4,
+          "event": "stream_prefix_received",
+          "bytes": 96
+        },
+        {
+          "order": 5,
+          "event": "server_pause_confirmed"
+        },
+        {
+          "order": 6,
+          "event": "controller_ack_received",
+          "http_status": 200
+        },
+        {
+          "order": 7,
+          "event": "stream_release_after_ack"
+        },
+        {
+          "order": 8,
+          "event": "job_release_after_ack"
+        },
+        {
+          "order": 9,
+          "event": "stream_suffix_received",
+          "bytes": 57
+        },
+        {
+          "order": 10,
+          "event": "queued_result_received",
+          "http_status": 200,
+          "bytes": 57
+        },
+        {
+          "order": 11,
+          "event": "legitimate_a_after",
+          "http_status": 401
+        },
+        {
+          "order": 12,
+          "event": "legitimate_b_after",
+          "http_status": 200
+        },
+        {
+          "order": 13,
+          "event": "duplicate_revoke_observed",
+          "http_status": 409
+        }
+      ],
+      "observations": {
+        "legitimate_a_before": {
+          "http_status": 200,
+          "body_bytes": 116,
+          "body_sha256": "2a06211ec973eaf34e4572c860412fbe501fda7d01fd3524aab74669f2939459",
+          "record_ids": [
+            "FICTIONAL-A-01"
+          ],
+          "protected_line_bytes": 96,
+          "record_bodies": [
+            {
+              "id": "FICTIONAL-A-01",
+              "owner": "A",
+              "value": "synthetic record alpha"
+            }
+          ],
+          "markers": [
+            {
+              "type": "complete"
+            }
+          ],
+          "record_count": 1
+        },
+        "legitimate_b_before": {
+          "http_status": 200,
+          "body_bytes": 340,
+          "body_sha256": "77b1620051baa06fadb73d6f60d70403d9e5efd669cb0e6b26228e70fbc49d39",
+          "record_ids": [
+            "FICTIONAL-B-01",
+            "FICTIONAL-B-02",
+            "FICTIONAL-B-03"
+          ],
+          "protected_line_bytes": 320,
+          "record_bodies": [
+            {
+              "id": "FICTIONAL-B-01",
+              "owner": "B",
+              "value": "independent legitimate batch one"
+            },
+            {
+              "id": "FICTIONAL-B-02",
+              "owner": "B",
+              "value": "independent legitimate batch two"
+            },
+            {
+              "id": "FICTIONAL-B-03",
+              "owner": "B",
+              "value": "independent legitimate batch three"
+            }
+          ],
+          "markers": [
+            {
+              "type": "complete"
+            }
+          ],
+          "record_count": 3
+        },
+        "stream_before_ack": {
+          "http_status": 200,
+          "body_bytes": 96,
+          "body_sha256": "7ae445912ad32f8bea9b97404432f35e89976c9c8f95497f3c7ae2e818b0cf35",
+          "record_ids": [
+            "FICTIONAL-A-01"
+          ],
+          "protected_line_bytes": 96,
+          "record_bodies": [
+            {
+              "id": "FICTIONAL-A-01",
+              "owner": "A",
+              "value": "synthetic record alpha"
+            }
+          ],
+          "markers": [],
+          "record_count": 1
+        },
+        "stream_after_ack": {
+          "http_status": 200,
+          "body_bytes": 57,
+          "body_sha256": "885bc463bb6f448a1d989295f47dd1167346f2a8dea9f3347426793032203bec",
+          "record_ids": [],
+          "protected_line_bytes": 0,
+          "record_bodies": [],
+          "markers": [
+            {
+              "reason": "admitted_generation_revoked",
+              "type": "denied"
+            }
+          ],
+          "record_count": 0
+        },
+        "queued_after_ack": {
+          "http_status": 200,
+          "body_bytes": 57,
+          "body_sha256": "885bc463bb6f448a1d989295f47dd1167346f2a8dea9f3347426793032203bec",
+          "record_ids": [],
+          "protected_line_bytes": 0,
+          "record_bodies": [],
+          "markers": [
+            {
+              "reason": "admitted_generation_revoked",
+              "type": "denied"
+            }
+          ],
+          "record_count": 0
+        },
+        "legitimate_a_after": {
+          "http_status": 401,
+          "body_bytes": 26,
+          "body_sha256": "23530f79939f7833451e84bd8b170a50c424fd5dd1f2303f891039e339468cfe",
+          "record_ids": [],
+          "protected_line_bytes": 0,
+          "record_bodies": [],
+          "markers": [],
+          "record_count": 0
+        },
+        "legitimate_b_after": {
+          "http_status": 200,
+          "body_bytes": 340,
+          "body_sha256": "77b1620051baa06fadb73d6f60d70403d9e5efd669cb0e6b26228e70fbc49d39",
+          "record_ids": [
+            "FICTIONAL-B-01",
+            "FICTIONAL-B-02",
+            "FICTIONAL-B-03"
+          ],
+          "protected_line_bytes": 320,
+          "record_bodies": [
+            {
+              "id": "FICTIONAL-B-01",
+              "owner": "B",
+              "value": "independent legitimate batch one"
+            },
+            {
+              "id": "FICTIONAL-B-02",
+              "owner": "B",
+              "value": "independent legitimate batch two"
+            },
+            {
+              "id": "FICTIONAL-B-03",
+              "owner": "B",
+              "value": "independent legitimate batch three"
+            }
+          ],
+          "markers": [
+            {
+              "type": "complete"
+            }
+          ],
+          "record_count": 3
+        }
+      },
+      "client_pid": 95125,
+      "service_pids": {
+        "gateway": 95141,
+        "controller": 95142
+      },
+      "revocation_ack": {
+        "controller_pid": 95142,
+        "gateway_ack": {
+          "boundary_sequence": 5,
+          "gateway_pid": 95141,
+          "generation": 2,
+          "identity": "A",
+          "revoked": true
+        }
+      },
+      "duplicate_revoke_status": 409,
+      "metrics": {
+        "stream_records_received_before_ack": 1,
+        "stream_protected_line_bytes_before_ack": 96,
+        "stream_records_received_after_ack": 0,
+        "queued_records_received_after_ack": 0,
+        "admitted_operation_records_after_ack": 0,
+        "admitted_operation_protected_line_bytes_after_ack": 0,
+        "admitted_operation_all_body_bytes_after_ack": 114,
+        "legitimate_a_requests_succeeded": 1,
+        "legitimate_a_requests_attempted": 2,
+        "legitimate_b_requests_succeeded": 2,
+        "legitimate_b_requests_attempted": 2,
+        "legitimate_b_record_transmissions": 6
+      },
+      "all_child_processes_stopped": true
+    }
+  ],
+  "claims": {
+    "actual_loopback_http": true,
+    "deterministic_barrier_ordering": true,
+    "paper_reproduction": false,
+    "detection_evaluated": false,
+    "sandbox_security_evaluated": false,
+    "durable_revocation_evaluated": false,
+    "latency_measured": false
+  }
+}

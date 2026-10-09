@@ -107,3 +107,10 @@
 - Fetched origin. Main remained b42bfa2; the new publication-gate branch was inspected separately. Saved a review of fail-open staff access, mixed-content PDF coverage and unavailable context analysis, without altering teammate code or claiming branch tests were executed.
 - No sponsor credentials were used. No LLM integration, public defense deployment, cross-institution policy rollout, production-host protection or hackathon submission was completed. Goal remains active.
 - Publication checks: 51 JSON files parse; 248 authored local Markdown links resolve; all experiment and corpus input/source hashes match; the catalog partitions every entry exactly once; no matches in the limited credential-pattern scan. Corrected the link validator to understand angle-bracket paths containing spaces; the initial failure was a validator parsing issue, not a missing source file.
+
+
+## 2026-10-09 — User-requested Spanish pitch
+
+- Re-read the product proposal and hackathon guide to explain the intended system in ordinary Spanish. No formal curriculum command was invoked.
+- Centered the pitch on containing confirmed credential misuse, rehearsing a repair and independently checking recovery while a separately authorized service continues.
+- Kept the planned sponsor integrations and full autonomous workflow distinct from existing local component experiments; no claim of universal leak prevention or completed deployment.

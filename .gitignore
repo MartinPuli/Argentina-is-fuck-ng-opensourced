@@ -11,3 +11,7 @@ node_modules/
 __pycache__/
 # Local research cache: third-party source text is not redistributed.
 competitor-profiles/raw/
+
+# Local browser verification artifacts
+.playwright-cli/
+/output/playwright/

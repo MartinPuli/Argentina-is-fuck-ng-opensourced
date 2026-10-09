@@ -6,7 +6,7 @@
     "2026-10-09"
   ],
   "exhaustive": false,
-  "scope": "Original discovery used metadata/abstract triage. Later October 9 reviews cover 11 queued candidates at targeted full-text depth; linked evidence records contain findings. No reproductions.",
+  "scope": "Original discovery used metadata/abstract triage. Later October 9 reviews cover 14 queued candidates at targeted full-text depth; linked evidence records contain findings. Four candidates remain unread. No reproductions.",
   "parsed_additional_title_entries": 986,
   "additional_keyword_matches": 175,
   "count_unit": "Within-source normalized title entries; NOT globally deduplicated papers or papers read",
@@ -305,20 +305,25 @@
       "title": "R+R: From Claims to Crashes: A Systematic Re-evaluation of Graph-Based Network Intrusion Detection Systems",
       "canonical_primary_url": "https://www.acsac.org/2025/program/final/s147.html",
       "discovery_source": "acsac25",
-      "reading_status": "abstract_screened",
-      "fulltext_read": false,
+      "reading_status": "fulltext_targeted",
+      "fulltext_read": true,
       "first_preprint_date": null,
       "first_publication_date": null,
-      "version": null,
+      "version": "unnumbered author-hosted manuscript",
       "version_date": null,
       "venue": "ACSAC 2025",
       "venue_date": "2025-12-10",
       "date_classification": "venue_in_window_first_date_unresolved",
       "priority_reason_inference": "Audit reproducibility and enterprise generalization of detection metrics.",
-      "next_step": "Read methods, evaluation unit, threat model and limitations before adopting any numerical claim.",
-      "notes": "Official session abstract and author-PDF search excerpt differ on the count of public datasets; resolve versions during full-text review. No performance metric adopted here.",
+      "next_step": "Unread appendices, independent reproduction and wider citation review remain; see linked targeted review for findings and version limits.",
+      "notes": "The targeted review records an unresolved program/manuscript dataset discrepancy. PDF creation metadata is not a first-publication date. This is distinct from DRE-01.",
       "public_fulltext_link": "https://dartlab.org/assets/pdf/rr-gids.pdf",
-      "absent_from_original_27_title_check": true
+      "absent_from_original_27_title_check": true,
+      "initial_discovery_status": "abstract_screened",
+      "initial_fulltext_read": false,
+      "reviewed_on": "2026-10-09",
+      "review_file": "detection-reproducibility-research.json",
+      "review_record": "DRR-01"
     },
     {
       "id": "AD07",
@@ -397,19 +402,24 @@
       "title": "SoK: Systematization, Detection, and Hunting of Windows Malware Persistence Techniques",
       "canonical_primary_url": "https://www.eurecom.fr/en/publication/8692",
       "discovery_source": "asiaccs26c2",
-      "reading_status": "abstract_screened",
-      "fulltext_read": false,
+      "reading_status": "fulltext_targeted",
+      "fulltext_read": true,
       "first_preprint_date": null,
       "first_publication_date": null,
-      "version": null,
+      "version": "EURECOM-hosted conference PDF; no revision identifier",
       "version_date": null,
       "venue": "AsiaCCS 2026",
       "venue_date": "2026-06-01",
       "date_classification": "venue_in_window_first_date_unresolved",
       "priority_reason_inference": "Map host telemetry coverage to persistence and non-persistence.",
-      "next_step": "Read methods, evaluation unit, threat model and limitations before adopting any numerical claim.",
+      "next_step": "Unread appendices, independent reproduction and wider citation review remain; see linked targeted review for findings and version limits.",
       "public_fulltext_link": "https://www.eurecom.fr/publication/8692/download/sec-publi-8692.pdf",
-      "absent_from_original_27_title_check": true
+      "absent_from_original_27_title_check": true,
+      "initial_discovery_status": "abstract_screened",
+      "initial_fulltext_read": false,
+      "reviewed_on": "2026-10-09",
+      "review_file": "host-persistence-provenance.json",
+      "review_record": "HPP-01"
     },
     {
       "id": "AD11",
@@ -462,8 +472,8 @@
       "title": "Slot: Provenance-Driven APT Detection through Graph Reinforcement Learning",
       "canonical_primary_url": "https://arxiv.org/abs/2410.17910",
       "discovery_source": "ccs25data",
-      "reading_status": "abstract_screened",
-      "fulltext_read": false,
+      "reading_status": "fulltext_targeted",
+      "fulltext_read": true,
       "first_preprint_date": "2024-10-23",
       "first_publication_date": null,
       "version": "arXiv:2410.17910v4",
@@ -472,10 +482,15 @@
       "venue_date": "2025-10-13",
       "date_classification": "earlier_work_later_venue_in_window",
       "priority_reason_inference": "Compare provenance baselines against emerging detection methods.",
-      "next_step": "Read methods, evaluation unit, threat model and limitations before adopting any numerical claim.",
+      "next_step": "Unread appendices, independent reproduction and wider citation review remain; see linked targeted review for findings and version limits.",
       "notes": "Earlier foundation: first preprint and latest arXiv revision precede window; later CCS publication milestone falls inside window.",
       "public_fulltext_link": "https://arxiv.org/html/2410.17910v4",
-      "absent_from_original_27_title_check": true
+      "absent_from_original_27_title_check": true,
+      "initial_discovery_status": "abstract_screened",
+      "initial_fulltext_read": false,
+      "reviewed_on": "2026-10-09",
+      "review_file": "host-persistence-provenance.json",
+      "review_record": "HPP-02"
     },
     {
       "id": "AD14",
@@ -563,9 +578,13 @@
       "venue_date": "2026-10-11",
       "date_classification": "accepted_metadata_only_publication_date_unresolved",
       "priority_reason_inference": "Compare simpler provenance models before adding agent complexity.",
-      "next_step": "Read methods, evaluation unit, threat model and limitations before adopting any numerical claim.",
+      "next_step": "Locate accessible primary full text and verify publication/version before any methods or performance claims. CredLeakBench is a separate addition.",
       "notes": "Public CSV row 90 verifies title. Public paper URL and first date unresolved; do not count as a newly published paper in-window.",
-      "absent_from_original_27_title_check": true
+      "absent_from_original_27_title_check": true,
+      "access_status": "Public full text not located in bounded official-index, author-list and preprint searches; attendee access is not public access.",
+      "access_review_file": "detection-reproducibility-research.json",
+      "access_review_record": "DRR-02",
+      "substituted_by_another_review": false
     },
     {
       "id": "AD18",
@@ -592,11 +611,11 @@
     }
   ],
   "candidate_count": 18,
-  "fulltext_read_count": 11,
+  "fulltext_read_count": 14,
   "reproduced_count": 0,
   "remaining": [
     "Resolve public full text and first dates of index-only entries.",
-    "Read the seven remaining queued papers; continue unread appendices and independently reproduce selected results.",
+    "Read the four remaining queued papers; continue unread appendices and independently reproduce selected results.",
     "Resolve DOI/preprint/title aliases beyond the conservative exact-identifier/title grouping in corpus-reconciliation.json.",
     "Complete untriaged venues, workshops, journals and preprints through cutoff.",
     "Distinguish early preprints, new deposit of old work, revisions, acceptance, presentation and formal publication."
@@ -611,18 +630,18 @@
       "AD03",
       "AD04",
       "AD05",
+      "AD06",
       "AD07",
       "AD08",
       "AD09",
+      "AD10",
       "AD11",
+      "AD13",
       "AD15",
       "AD16"
     ],
     "unread_or_abstract_screened_ids": [
-      "AD06",
-      "AD10",
       "AD12",
-      "AD13",
       "AD14",
       "AD17",
       "AD18"
@@ -630,6 +649,12 @@
     "substitute_does_not_complete_original": [
       "AD12",
       "AD14",
+      "AD18"
+    ],
+    "separate_review_does_not_complete_original": [
+      "AD12",
+      "AD14",
+      "AD17",
       "AD18"
     ]
   },

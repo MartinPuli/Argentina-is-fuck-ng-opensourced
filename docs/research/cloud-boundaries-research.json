@@ -1,0 +1,108 @@
+{
+  "schema_version": 1,
+  "review_date": "2026-10-09",
+  "fulltext_review_count": 2,
+  "records": [
+    {
+      "id": "CBR-01",
+      "title": "Mapping the Cloud: A Mixed-Methods Study of Cloud Security and Privacy Configuration Challenges",
+      "authors": [
+        "Sumair Ijaz Hashmi",
+        "Shafay Kashif",
+        "Lea Gröber",
+        "Katharina Krombholz",
+        "Mobin Javed"
+      ],
+      "doi": "10.14722/ndss.2026.241302",
+      "url": "https://www.ndss-symposium.org/ndss-paper/mapping-the-cloud-a-mixed-methods-study-of-cloud-security-and-privacy-configuration-challenges/",
+      "fulltext_url": "https://www.ndss-symposium.org/wp-content/uploads/2026-f1302-paper.pdf",
+      "version": "Unnumbered venue PDF",
+      "venue": "NDSS 2026",
+      "venue_dates": [
+        "2026-02-23",
+        "2026-02-27"
+      ],
+      "first_publication_date": null,
+      "first_publication_date_status": "unresolved; venue milestone only",
+      "locators": {
+        "methods": [
+          "III-A",
+          "III-B",
+          "III-C"
+        ],
+        "samples_and_denominators": [
+          "III-C",
+          "III-D",
+          "IV opening"
+        ],
+        "limitations": [
+          "III-E",
+          "III-D upper-bound mapping"
+        ],
+        "findings": [
+          "IV-A",
+          "IV-B"
+        ],
+        "implications": [
+          "V"
+        ]
+      },
+      "narrative_anchor": "cbr-01",
+      "narrative_words": 126,
+      "counts_as_review": true,
+      "reading_depth": "Relevant full-text methods, results, assumptions and limitations; not exhaustive appendices",
+      "window_basis": "Venue milestone in window; first public date unresolved",
+      "reproduced_by_us": false,
+      "code_executed": false,
+      "narrative_file": "CLOUD-BOUNDARIES-RESEARCH.md"
+    },
+    {
+      "id": "CBR-02",
+      "title": "IOValve: Leakage-Free I/O Sandbox for Large-Scale Untrusted Data Processing",
+      "authors": [
+        "Sangho Lee",
+        "Jules Drean",
+        "Yue Tan",
+        "Marcus Peinado"
+      ],
+      "doi": "10.1145/3719027.3765121",
+      "url": "https://doi.org/10.1145/3719027.3765121",
+      "fulltext_url": "https://www.microsoft.com/en-us/research/wp-content/uploads/2025/08/iovalve-ccs25.pdf",
+      "version": "Unnumbered author institution PDF with CCS 2025 citation",
+      "venue": "ACM CCS 2025",
+      "venue_dates": [
+        "2025-10-13",
+        "2025-10-17"
+      ],
+      "first_publication_date": null,
+      "first_publication_date_status": "unresolved; URL directory not publication evidence",
+      "locators": {
+        "threat_model": [
+          "3.1",
+          "3.2"
+        ],
+        "method": [
+          "4.1",
+          "4.2"
+        ],
+        "evaluation": [
+          "6.1",
+          "6.2",
+          "6.3 Figure 4",
+          "6.4 Figure 6"
+        ],
+        "limitations": [
+          "7"
+        ]
+      },
+      "narrative_anchor": "cbr-02",
+      "narrative_words": 132,
+      "counts_as_review": true,
+      "reading_depth": "Relevant full-text methods, results, assumptions and limitations; not exhaustive appendices",
+      "window_basis": "Venue milestone in window; first public date unresolved",
+      "reproduced_by_us": false,
+      "code_executed": false,
+      "narrative_file": "CLOUD-BOUNDARIES-RESEARCH.md"
+    }
+  ]
+}

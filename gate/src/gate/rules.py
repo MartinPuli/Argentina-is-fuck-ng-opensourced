@@ -54,3 +54,11 @@ RULES = {
         "url": "",
     },
 }
+
+
+RULES["learned"] = {
+    "title": "Incident-derived publication check",
+    "text": "A reviewed source led to a tested, approved phrase-group check. Its finding can restrict publication; it cannot release another rule's restriction.",
+    "source": "Learning library: approved incident-derived rule",
+    "url": "/learning",
+}

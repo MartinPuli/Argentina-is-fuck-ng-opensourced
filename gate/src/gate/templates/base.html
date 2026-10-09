@@ -1,28 +1,34 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>{% block title %}Publication Gate{% endblock %}</title>
-<style>
-:root{--ink:#14181f;--muted:#5b6472;--line:#dde2ea;--bg:#f6f7f9;--card:#fff;--pub:#0f7b46;--hold:#b26a00;--wh:#b42318;--accent:#1d4ed8;--int:#1f2937}
-*{box-sizing:border-box}body{margin:0;font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif;color:var(--ink);background:var(--bg)}
-header{background:var(--int);color:#fff;padding:12px 20px;display:flex;gap:18px;align-items:center;flex-wrap:wrap}
-header.public{background:#0b4f8a}header a{color:#fff;text-decoration:none;opacity:.85}header a:hover{opacity:1}
-header .brand{font-weight:700;opacity:1;margin-right:auto}.tag{font-size:11px;padding:2px 7px;border-radius:99px;background:#ffffff26;letter-spacing:.04em}
-main{max-width:1060px;margin:0 auto;padding:24px 16px 60px}h1{font-size:24px;margin:4px 0 6px}h2{font-size:18px;margin:26px 0 10px}
-.muted{color:var(--muted)}.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin:12px 0}
-.badge{display:inline-block;font-size:12px;font-weight:700;padding:2px 9px;border-radius:99px;color:#fff;text-transform:uppercase;letter-spacing:.03em}
-.b-public,.b-approved{background:var(--pub)}.b-hold{background:var(--hold)}.b-withheld{background:var(--wh)}
-table{width:100%;border-collapse:collapse}td,th{padding:7px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{font-size:12px;color:var(--muted);text-transform:uppercase}
-code,.mono{font-family:ui-monospace,Menlo,monospace;font-size:13px}.sev-block{color:var(--wh);font-weight:600}.sev-review{color:var(--hold);font-weight:600}.sev-info{color:var(--pub)}
-button,.btn{font:inherit;border:0;border-radius:8px;padding:8px 14px;background:var(--accent);color:#fff;cursor:pointer;text-decoration:none;display:inline-block}
-.btn-green{background:var(--pub)}.btn-red{background:var(--wh)}.btn-ghost{background:#e8ecf3;color:var(--ink)}
-input,select,textarea{font:inherit;padding:7px 9px;border:1px solid var(--line);border-radius:7px;width:100%}label{display:block;margin:10px 0 4px;font-weight:600;font-size:13px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.stat{font-size:30px;font-weight:700}
-.rule{font-size:13px;border-left:3px solid var(--line);padding-left:10px;margin:6px 0}.status{font-size:12px;color:#cbd5e1}
-.fict{background:#fff4d6;border:1px solid #f3d68a;padding:8px 12px;border-radius:8px;font-size:13px}
-</style></head><body>
-{% block header %}
-<header><a class="brand" href="/">PAMI · Publication Gate <span class="tag">INTERNAL</span></a>
-<a href="/office">Office upload</a><a href="/review">Review queue</a><a href="/dashboard">Audit dashboard</a><a href="/public">Public portal ↗</a>
-<span class="status">model: {{ 'AkashML' if llm_on else 'off' }} · agent: {{ 'Guild' if agent_on else 'off' }} · log: {{ events_backend }}</span></header>
-{% endblock %}
-<main>{% block body %}{% endblock %}</main></body></html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 40 40%27%3E%3Crect width=%2740%27 height=%2740%27 rx=%279%27 fill=%27%23126a58%27/%3E%3Ctext x=%278%27 y=%2727%27 font-family=%27sans-serif%27 font-size=%2723%27 fill=%27white%27%3Epg%3C/text%3E%3C/svg%3E"><meta name="color-scheme" content="light"><title>{% block title %}Overview{% endblock %} · Publication Gate</title>
+<style>{% include "ui.css" %}</style></head>
+{% set is_public = request.url.path.startswith('/public') %}
+<body class="{{ 'public-view' if is_public else 'staff-view' }}">
+<a class="skip-link" href="#content">Skip to content</a>
+{% if not is_public %}
+<aside class="sidebar" aria-label="Workspace navigation">
+<a class="brand" href="/"><span class="brand-mark" aria-hidden="true">pg</span><span>Publication<span class="brand-sub">Gate</span></span></a>
+<div class="workspace-label">Defense workspace</div>
+<nav>
+{% for href, label, symbol in [('/', 'Overview', '◫'), ('/office', 'New purchase', '+'), ('/review', 'Review queue', '≡'), ('/learning', 'Learning library', '◇'), ('/dashboard', 'Audit trail', '⌁')] %}
+<a href="{{ href }}" class="nav-link {{ 'active' if (request.url.path == href or (href == '/learning' and request.url.path.startswith('/learning/'))) else '' }}" {% if (request.url.path == href or (href == '/learning' and request.url.path.startswith('/learning/'))) %}aria-current="page"{% endif %}><span class="nav-symbol" aria-hidden="true">{{ symbol }}</span>{{ label }}</a>
+{% endfor %}
+</nav>
+<a class="portal-link" href="/public"><span>Public portal</span><span aria-hidden="true">↗</span></a>
+<div class="sidebar-bottom"><div class="integration-heading">Workspace setup</div>
+<div class="integration"><span>AkashML</span><span class="connection {{ 'configured' if llm_on else '' }}">{{ 'Configured' if llm_on else 'Not configured' }}</span></div>
+<div class="integration"><span>Guild</span><span class="connection {{ 'configured' if agent_on else '' }}">{{ 'Configured' if agent_on else 'Not configured' }}</span></div>
+<div class="integration"><span>Audit storage</span><span>{{ 'ClickHouse' if events_backend == 'ClickHouse' else 'Local' }}</span></div>
+<p>Configuration is shown here. Individual case results confirm execution.</p></div>
+</aside>
+{% else %}
+<header class="public-header"><a class="brand" href="/public"><span class="brand-mark" aria-hidden="true">pg</span><span>Public procurement</span></a><a class="text-link" href="/">Staff workspace ↗</a></header>
+{% endif %}
+<div class="app-shell">
+{% if not is_public %}<header class="topbar"><span>Publication Gate <span class="crumb" aria-hidden="true">/</span> <span class="topbar-label">{{ self.title() }}</span></span><span class="demo-label">Fictional demo</span></header>{% endif %}
+<main id="content" tabindex="-1">{% block body %}{% endblock %}</main>
+<footer class="page-footer"><span>Fictional records. No government system is connected.</span><a href="https://github.com/MartinPuli/Argentina-is-fuck-ng-opensourced" target="_blank" rel="noopener noreferrer">Open-source project ↗</a></footer>
+</div>
+<script>{% include "ui.js" %}</script>
+</body></html>
