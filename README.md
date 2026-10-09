@@ -1,5 +1,13 @@
 # Argentina-is-fuck-ng-opensourced
 
+## Hackathon build: ArgenSec Gate
+
+**Live demo:** https://argensec.pujia.ar · **Code:** [gate/](gate/README.md)
+
+In 2026, PAMI published retirees' medical histories, disability certificates and ID copies as attachments on its public purchasing site. ArgenSec Gate is an agent that checks every attachment before it goes public. It publishes clean files, blocks files with personal or health data, and sends gray cases to a person with a written note. You can watch it work step by step on the live page.
+
+Built with AkashML (text and image checks), Guild.ai (reviewer agent), ClickHouse (audit log) and Semgrep (found and fixed a CSRF hole in our own AI-written code). Demo data is fictional.
+
 ## Argentina government data leaks
 
 Plain-English research on prominent Argentine government and government-linked data exposures, their causes, and their consequences for people, the economy and public institutions.

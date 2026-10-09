@@ -1,11 +1,80 @@
 {% extends "base.html" %}{% block body %}
-<p class="fict">Demo with fictional data. Every patient, number and diagnosis is invented. No real government system is connected.</p>
-<h1>Private attachments never reach the public portal</h1>
-<p class="muted">In 2026, PAMI's local offices published patients' medical histories, disability certificates and ID copies as attachments to public purchase records (Chequeado, May 2026). The gate sits between the internal file and the public portal. Every attachment is checked before release, and checked again on every public request.</p>
-<div class="grid">
-<div class="card"><b>1 · Office uploads</b><p class="muted">A local office submits a purchase with its attachments, as it does today.</p><a class="btn" href="/office">Upload a purchase</a></div>
-<div class="card"><b>2 · Gate decides</b><p class="muted">Deterministic checks for DNI, CUIL and affiliate numbers. OCR for scans. An open model on AkashML reads context. Each decision cites the rule.</p>
-<form method="post" action="/demo/seed"><button>Run the PAMI demo case</button></form></div>
-<div class="card"><b>3 · A person decides the gray cases</b><p class="muted">Held files wait for a named reviewer, with a brief from the Guild agent.</p><a class="btn" href="/review">Review queue</a></div>
-<div class="card"><b>4 · Public sees only what passed</b><p class="muted">Purchase data stays transparent. Medical evidence stays inside.</p><a class="btn" href="/public">Public portal</a></div>
-</div>{% endblock %}
+<style>
+.top{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:18px}
+.counts{display:flex;gap:10px;margin-right:auto;flex-wrap:wrap}
+.count{border-radius:var(--r);padding:8px 14px;font-weight:700;font-size:15px}
+.count b{font-size:22px;margin-right:6px}
+.cols{display:grid;grid-template-columns:3fr 2fr;gap:18px}@media(max-width:860px){.cols{grid-template-columns:1fr}}
+.job{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;margin-bottom:10px}
+.job.live{border-color:#93c5fd;box-shadow:0 0 0 3px #dbeafe}
+.jobhead{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.jobhead .mono{font-weight:600}
+.steps{list-style:none;margin:8px 0 0;padding:0}.steps li{display:flex;gap:8px;padding:2px 0;font-size:14px}
+.ico{width:18px;text-align:center;flex:none}.st-waiting{color:#9ca3af}.st-skipped{color:#9ca3af}.st-error{color:var(--blk)}
+.spin{display:inline-block;width:12px;height:12px;border:2px solid #93c5fd;border-top-color:var(--accent);border-radius:50%;animation:s .8s linear infinite;vertical-align:-1px}
+@keyframes s{to{transform:rotate(360deg)}}
+.detail{color:var(--muted)}
+.wait{background:var(--card);border:1px solid #fcd34d;border-radius:var(--r);padding:12px 14px;margin-bottom:10px}
+.wait .why{font-size:13px;color:var(--wait);margin:4px 0}.note{font-size:14px;margin:8px 0;padding-left:10px;border-left:3px solid var(--line)}
+.wait form{display:flex;gap:8px;margin-top:8px}
+.empty{color:var(--muted);padding:18px;text-align:center;border:1px dashed var(--line);border-radius:var(--r)}
+details summary{cursor:pointer}details form{display:grid;gap:8px;margin-top:10px}
+</style>
+
+<div class="top">
+  <div class="counts" id="counts"></div>
+  <form method="post" action="/demo/seed"><button>▶ Simulate office uploads</button></form>
+  <details class="card"><summary><b>Upload PDF</b></summary>
+    <form method="post" action="/office" enctype="multipart/form-data">
+      <select name="office">{% for o in offices %}<option>{{ o }}</option>{% endfor %}</select>
+      <input name="item" placeholder="What is being bought" required>
+      <input type="hidden" name="procedure" value="Compulsa abreviada 1100/2026"><input type="hidden" name="amount" value="1000000">
+      <input name="files" type="file" accept="application/pdf" multiple required>
+      <button>Check and publish</button>
+    </form></details>
+</div>
+
+<div class="cols">
+  <section><h2>What the agent is doing</h2><div id="jobs"><div class="empty">Loading…</div></div></section>
+  <section><h2>Needs your decision</h2><div id="waiting"><div class="empty">Loading…</div></div></section>
+</div>
+
+<script>
+const LABEL = {public:"Published", approved:"Published", hold:"Needs you", withheld:"Blocked", error:"Error"};
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const icon = st => st === "running" ? '<span class="spin"></span>' : ({done:"✓", waiting:"○", skipped:"–", error:"✕"}[st] || "");
+
+function render(d) {
+  const c = d.counts;
+  document.getElementById("counts").innerHTML =
+    `<span class="count b-public"><b>${c.published}</b>Published</span>` +
+    `<span class="count b-hold"><b>${c.waiting}</b>Needs you</span>` +
+    `<span class="count b-withheld"><b>${c.blocked}</b>Blocked</span>`;
+
+  document.getElementById("jobs").innerHTML = d.jobs.length ? d.jobs.map(j => `
+    <div class="job ${j.done ? "" : "live"}">
+      <div class="jobhead">${j.decision ? `<span class="badge b-${j.decision}">${LABEL[j.decision]}</span>` : '<span class="spin"></span>'}
+        <span class="mono">${esc(j.file)}</span><span class="muted">${esc(j.office)} · ${esc(j.item)}</span>
+        ${j.attachment_id ? `<a class="muted" href="/purchase/${j.purchase_id}">details</a>` : ""}</div>
+      <ul class="steps">${j.steps.map(s => `<li class="st-${s.status}"><span class="ico">${icon(s.status)}</span>
+        <span>${esc(s.name)}</span>${s.detail ? `<span class="detail">· ${esc(s.detail)}</span>` : ""}</li>`).join("")}</ul>
+    </div>`).join("") : '<div class="empty">Idle. Press “Simulate office uploads” to watch it work.</div>';
+
+  document.getElementById("waiting").innerHTML = d.waiting.length ? d.waiting.map(w => `
+    <div class="wait"><div class="jobhead"><span class="mono">${esc(w.file)}</span><a class="muted" href="/internal/file/${w.id}" target="_blank">open</a></div>
+      <div class="muted" style="font-size:13px">${esc(w.office)} · ${esc(w.item)}</div>
+      <div class="why">${w.why.map(esc).join(" · ")}</div>
+      ${w.note ? `<div class="note"><b>Agent:</b> ${esc(w.note)}</div>` : '<div class="note muted"><span class="spin"></span> Agent is writing a note…</div>'}
+      <form method="post" action="/review/${w.id}"><input type="hidden" name="reviewer" value="{{ user }}">
+        <button class="btn-green" name="action" value="approve">Publish</button>
+        <button class="btn-red" name="action" value="reject">Keep private</button></form>
+    </div>`).join("") : '<div class="empty">Nothing waiting.</div>';
+}
+
+async function poll() {
+  try { render(await (await fetch("/api/activity")).json()); }
+  catch (e) { document.getElementById("jobs").innerHTML = '<div class="empty">Connection lost. Retrying…</div>'; }
+  setTimeout(poll, 1200);
+}
+poll();
+</script>
+{% endblock %}

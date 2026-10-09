@@ -1,15 +1,13 @@
 {% extends "base.html" %}{% block body %}
-<p class="muted">{{ purchase.office }} · {{ purchase.procedure }}</p>
+<p class="muted" style="margin:0">{{ purchase.office }} · {{ purchase.procedure }}</p>
 <h1>{{ purchase.item }} <span class="muted" style="font-weight:400">· {{ purchase.amount|money }}</span></h1>
-<p><a class="btn btn-ghost" href="/public">See it on the public portal ↗</a></p>
-{% for a in atts %}{% set fs = a.findings|fromjson %}{% set m = a.model|fromjson %}{% set ag = a.agent|fromjson %}
-<div class="card">
-<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span class="badge b-{{ a.decision }}">{{ a.decision }}</span>
-<b class="mono">{{ a.filename }}</b><a class="muted" href="/internal/file/{{ a.id }}" target="_blank">open internal copy</a></div>
-<p>{{ (a.reasons|fromjson)|join(' ') }}</p>
-{% if fs %}<table><tr><th>Finding</th><th>Evidence (masked)</th><th>Page</th><th>Rule</th></tr>
-{% for f in fs %}<tr><td class="sev-{{ f.severity }}">{{ f.label }}</td><td class="mono">{{ f.evidence }}</td><td>{{ f.page or '' }}</td><td>{{ RULES[f.rule].source }}</td></tr>{% endfor %}</table>{% endif %}
-{% if m and not m.error %}<p class="muted" style="font-size:13px">Model ({{ m.model }}): re-identification risk <b>{{ m.reidentification_risk }}</b>. {{ (m.reasons or [])|join(' ') }}</p>
-{% elif m and m.error %}<p class="muted" style="font-size:13px">Model unavailable, deterministic checks only.</p>{% endif %}
-{% if ag and ag.text %}<div class="rule"><b>Guild agent brief:</b> {{ ag.text }}</div>{% endif %}
+<p><a href="/">← Live</a></p>
+{% set label = {"public": "Published", "approved": "Published", "hold": "Needs you", "withheld": "Blocked"} %}
+{% for a in atts %}{% set fs = a.findings|fromjson %}{% set ag = a.agent|fromjson %}
+<div class="card" style="margin-bottom:10px">
+  <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span class="badge b-{{ a.decision }}">{{ label[a.decision] }}</span>
+    <b class="mono">{{ a.filename }}</b><a class="muted" href="/internal/file/{{ a.id }}" target="_blank">open</a></div>
+  {% set shown = fs|rejectattr("severity", "equalto", "info")|list %}
+  {% if shown %}<table style="margin-top:8px">{% for f in shown %}<tr><td>{{ f.label }}</td><td class="mono">{{ f.evidence }}</td><td class="muted">{{ RULES[f.rule].source }}</td></tr>{% endfor %}</table>{% endif %}
+  {% if ag and ag.text %}<p style="margin:8px 0 0;padding-left:10px;border-left:3px solid var(--line)"><b>Agent:</b> {{ ag.text }}</p>{% endif %}
 </div>{% endfor %}{% endblock %}

@@ -68,7 +68,17 @@ def test_public_portal_never_serves_withheld_or_held_files():
 
     client = TestClient(app, headers={"origin": "http://testserver"})
     assert client.post("/demo/seed", follow_redirects=False).status_code == 303
+    import time
+
+    from gate import activity
     from gate.store import db
+
+    deadline = time.time() + 60  # checks run in the background
+    while not all(j["done"] for j in activity.snapshot()) and time.time() < deadline:
+        time.sleep(0.2)
+    live = client.get("/api/activity").json()
+    assert live["counts"] == {"published": 3, "waiting": 2, "blocked": 3}
+    assert all(j["decision"] for j in live["jobs"])
 
     with db() as con:
         rows = con.execute("select id, filename, decision from attachments").fetchall()

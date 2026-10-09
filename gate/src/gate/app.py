@@ -1,6 +1,6 @@
-"""Web app: a fictional PAMI with an internal side and a public side.
+"""Web app: a staff side and a public side.
 
-Internal (staff password): offices upload purchases, reviewers clear held files.
+Staff: live view of the agent, decisions waiting for a person, upload, audit log.
 Public: the purchasing portal. It serves an attachment only if the gate cleared it.
 """
 
@@ -23,7 +23,7 @@ from fastapi.templating import Jinja2Templates
 load_dotenv(Path(__file__).resolve().parents[3] / ".env")
 load_dotenv(Path(__file__).resolve().parents[2] / ".env")
 
-from . import agent, llm  # noqa: E402
+from . import activity, agent, llm  # noqa: E402
 from .detect import scan  # noqa: E402
 from .policy import PUBLIC, WITHHELD, decide  # noqa: E402
 from .rules import RULES  # noqa: E402
@@ -74,26 +74,76 @@ def page(request: Request, name: str, **ctx) -> Response:
     return templates.TemplateResponse(request, name, ctx)
 
 
-def evaluate(pdf: bytes) -> tuple:
+STEP_READ = "Read file"
+STEP_SCAN = "Find IDs and health data"
+STEP_AI = "AI context check · AkashML"
+STEP_VISION = "AI image check · AkashML"
+STEP_DECIDE = "Decide"
+STEP_BRIEF = "Note for reviewer · Guild agent"
+LABEL = {"public": "Published", "approved": "Published", "hold": "Needs you", "withheld": "Blocked"}
+
+
+def evaluate(pdf: bytes, job: dict) -> tuple:
     started = time.perf_counter()
+    activity.step(job, STEP_READ, "running")
     result = scan(pdf)
-    model = llm.review("\n\n".join(p.text for p in result.pages))
-    images = [llm.review_image(p.image) if p.image else None for p in result.pages]
+    pages = len(result.pages)
+    activity.step(job, STEP_READ, "done", f"{pages} page{'s' * (pages != 1)}" + (", scanned (OCR)" if result.ocr_used else ""))
+    hits = sorted({f.label for f in result.findings if f.severity != "info"})
+    activity.step(job, STEP_SCAN, "done", ", ".join(hits) if hits else "nothing found")
+
+    if llm.configured():
+        activity.step(job, STEP_AI, "running")
+        model = llm.review("\n\n".join(p.text for p in result.pages))
+        risk = (model or {}).get("reidentification_risk")
+        activity.step(job, STEP_AI, "error" if "error" in (model or {}) else "done",
+                      "unavailable" if "error" in (model or {}) else f"risk: {risk}")
+    else:
+        model = None
+        activity.step(job, STEP_AI, "skipped", "off")
+
+    images = []
+    if any(p.image for p in result.pages) and llm.configured():
+        activity.step(job, STEP_VISION, "running")
+        images = [llm.review_image(p.image) if p.image else None for p in result.pages]
+        kinds = [str(i.get("kind", "")) for i in images if i and "error" not in i]
+        activity.step(job, STEP_VISION, "done", "; ".join(kinds)[:140] or "unavailable")
+
     decision, reasons, findings = decide(result, model, images)
+    activity.step(job, STEP_DECIDE, "done", LABEL[decision])
     return model, decision, reasons, findings, (time.perf_counter() - started) * 1000
 
 
-def gate_files(purchase: dict, files: list[tuple[str, bytes]]) -> None:
-    """Check all attachments of a purchase in parallel, then store them in order."""
-    with ThreadPoolExecutor(max_workers=8) as pool:
-        results = list(pool.map(lambda f: evaluate(f[1]), files))
-    for (filename, pdf), evaluated in zip(files, results):
-        store_attachment(purchase, filename, pdf, *evaluated)
+def plan_steps(pdf_is_scan: bool = True) -> list[str]:
+    return [STEP_READ, STEP_SCAN, STEP_AI, STEP_DECIDE]
 
 
-def store_attachment(purchase: dict, filename: str, pdf: bytes, model, decision, reasons,
-                     findings, latency) -> int:
-    """Store one checked file and log the decision."""
+def gate_files(purchase: dict, item: str, files: list[tuple[str, bytes]]) -> None:
+    """Queue every attachment in the live view, then check them in the background."""
+    jobs = [activity.start(purchase, item, name, plan_steps()) for name, _ in files]
+
+    def run() -> None:
+        with ThreadPoolExecutor(max_workers=8) as pool:
+            results = list(pool.map(lambda pair: safe_evaluate(*pair), zip([f[1] for f in files], jobs)))
+        for (filename, pdf), job, evaluated in zip(files, jobs, results):
+            if evaluated:
+                store_attachment(purchase, filename, pdf, job, *evaluated)
+
+    threading.Thread(target=run, daemon=True).start()
+
+
+def safe_evaluate(pdf: bytes, job: dict):
+    try:
+        return evaluate(pdf, job)
+    except Exception as exc:  # show the failure instead of hanging the live view
+        activity.step(job, STEP_DECIDE, "error", f"{type(exc).__name__}")
+        activity.finish(job, done=True, decision="error")
+        return None
+
+
+def store_attachment(purchase: dict, filename: str, pdf: bytes, job: dict, model, decision,
+                     reasons, findings, latency) -> int:
+    """Store one checked file, log the decision, ask the Guild agent for a note."""
     with db() as con:
         cur = con.execute(
             "insert into attachments (purchase_id, filename, sha256, pdf, decision, reasons,"
@@ -104,18 +154,25 @@ def store_attachment(purchase: dict, filename: str, pdf: bytes, model, decision,
         att_id = cur.lastrowid
     events.log("decision", purchase["office"], purchase["id"], att_id, filename, decision,
                sorted({f["kind"] for f in findings}), "gate", latency)
+    activity.finish(job, attachment_id=att_id, decision=decision)
     if decision != PUBLIC and agent.configured():
+        activity.step(job, STEP_BRIEF, "running")
         threading.Thread(target=brief_in_background, args=(att_id, purchase, filename, decision,
-                                                           reasons, findings), daemon=True).start()
+                                                           reasons, findings, job), daemon=True).start()
+    else:
+        activity.finish(job, done=True)
     return att_id
 
 
-def brief_in_background(att_id, purchase, filename, decision, reasons, findings) -> None:
+def brief_in_background(att_id, purchase, filename, decision, reasons, findings, job) -> None:
     brief = agent.brief(purchase, filename, decision, reasons, findings)
     with db() as con:
         con.execute("update attachments set agent=? where id=?", (json.dumps(brief), att_id))
     events.log("agent_brief", purchase["office"], purchase["id"], att_id, filename, decision,
                [], "guild-agent", brief.get("latency_ms", 0))
+    activity.step(job, STEP_BRIEF, "error" if "error" in brief else "done",
+                  "unavailable" if "error" in brief else "ready")
+    activity.finish(job, done=True)
 
 
 def create_purchase(office: str, procedure: str, item: str, amount: float) -> dict:
@@ -129,13 +186,13 @@ def create_purchase(office: str, procedure: str, item: str, amount: float) -> di
 
 
 @app.get("/")
-def home(request: Request):
-    return page(request, "home.html")
+def home(request: Request, user: str = Depends(staff)):
+    return page(request, "home.html", offices=OFFICES, user=user)
 
 
 @app.get("/office")
-def office_form(request: Request, user: str = Depends(staff)):
-    return page(request, "office.html", offices=OFFICES)
+def office_form():
+    return RedirectResponse("/", status_code=303)
 
 
 @app.post("/office")
@@ -144,18 +201,16 @@ async def office_submit(office: str = Form(...), procedure: str = Form(...), ite
                         user: str = Depends(staff)):
     purchase = create_purchase(office, procedure, item, amount)
     uploads = [(f.filename or "adjunto.pdf", await f.read()) for f in files]
-    gate_files(purchase, [u for u in uploads if u[1]])
-    return RedirectResponse(f"/purchase/{purchase['id']}", status_code=303)
+    gate_files(purchase, item, [u for u in uploads if u[1]])
+    return RedirectResponse("/", status_code=303)
 
 
 @app.post("/demo/seed")
 def demo_seed(user: str = Depends(staff)):
-    first = None
     for p in json.loads((FIXTURES / "purchases.json").read_text()):
         purchase = create_purchase(p["office"], p["procedure"], p["item"], p["amount"])
-        first = first or purchase["id"]
-        gate_files(purchase, [(name, (FIXTURES / name).read_bytes()) for name in p["files"]])
-    return RedirectResponse(f"/purchase/{first}", status_code=303)
+        gate_files(purchase, p["item"], [(name, (FIXTURES / name).read_bytes()) for name in p["files"]])
+    return RedirectResponse("/", status_code=303)
 
 
 @app.get("/purchase/{pid}")
@@ -169,19 +224,33 @@ def purchase_view(request: Request, pid: int, user: str = Depends(staff)):
 
 
 @app.get("/review")
-def review_queue(request: Request, user: str = Depends(staff)):
+def review_queue():
+    return RedirectResponse("/", status_code=303)
+
+
+@app.get("/api/activity")
+def api_activity(user: str = Depends(staff)):
+    """Everything the live view needs, in one poll."""
     with db() as con:
-        held = con.execute(
-            "select a.*, p.office, p.procedure, p.item from attachments a join purchases p "
-            "on p.id=a.purchase_id where a.decision='hold' order by a.id").fetchall()
-        done = con.execute(
-            "select a.*, p.office from attachments a join purchases p on p.id=a.purchase_id "
-            "where a.reviewed_by is not null order by a.reviewed_at desc limit 10").fetchall()
-    return page(request, "review.html", held=held, done=done, user=user)
+        counts = dict(con.execute("select decision, count(*) from attachments group by decision").fetchall())
+        waiting = con.execute(
+            "select a.id, a.filename, a.findings, a.agent, p.office, p.item, p.id as pid "
+            "from attachments a join purchases p on p.id=a.purchase_id "
+            "where a.decision='hold' order by a.id").fetchall()
+    return {
+        "jobs": activity.snapshot(),
+        "counts": {"published": counts.get("public", 0) + counts.get("approved", 0),
+                   "waiting": counts.get("hold", 0), "blocked": counts.get("withheld", 0)},
+        "waiting": [{
+            "id": w["id"], "file": w["filename"], "office": w["office"], "item": w["item"], "pid": w["pid"],
+            "why": sorted({f["label"] for f in json.loads(w["findings"] or "[]")}),
+            "note": (json.loads(w["agent"]) or {}).get("text", "") if w["agent"] else "",
+        } for w in waiting],
+    }
 
 
 @app.post("/review/{att_id}")
-def review_decide(att_id: int, action: str = Form(...), reviewer: str = Form(...),
+def review_decide(att_id: int, action: str = Form(...), reviewer: str = Form("staff"),
                   note: str = Form(""), user: str = Depends(staff)):
     if action not in ("approve", "reject") or not reviewer.strip():
         raise HTTPException(400, "reviewer name and a valid action are required")
@@ -196,7 +265,7 @@ def review_decide(att_id: int, action: str = Form(...), reviewer: str = Form(...
     waited = (time.time() - row["created_at"]) * 1000
     events.log("approved" if new == "approved" else "rejected", row["office"], row["purchase_id"],
                att_id, row["filename"], new, [], reviewer.strip(), waited)
-    return RedirectResponse("/review", status_code=303)
+    return RedirectResponse("/", status_code=303)
 
 
 @app.get("/public")
