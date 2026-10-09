@@ -494,7 +494,7 @@ This section records a later decision. Earlier sections stay as written for hist
 - Agents may publish only content that passed every required check.
 - Uncertainty resolves to automatic restriction, never publication. The file is stored as `withheld` with an `autopilot_restricted` finding.
 - People audit afterward and can override. The Review page stays.
-- Not yet built: the override. The Review page acts only on `hold` files, and an automatic restriction is stored as `withheld`, so no person can release it from the app today. See 13.4.
+- The override is implemented and tested (commit `9184c78`, [test_override.py](gate/tests/test_override.py)). The Review page lists automatic restrictions under "Restricted automatically". A person can release one with a written reason, or confirm it stays private. Release is refused for any file with a deterministic block or checked under old rules.
 
 ### 13.3 Invariants
 

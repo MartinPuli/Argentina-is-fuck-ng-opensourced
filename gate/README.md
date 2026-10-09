@@ -115,7 +115,7 @@ Without a text model, files that have no deterministic block are **held**, inclu
 - At startup, unreviewed holds are settled the same way.
 - Activating or retiring a learned rule rechecks stored files automatically. The recheck only restricts.
 - `/live` shows "Finished without a person: X of Y". `/public` shows how many attachments were held back automatically.
-- People audit afterward through the audit log (`autopilot` events) and the purchase pages. The Review page lists and acts on `hold` files only. In this mode it stays mostly empty, and an automatic restriction cannot be released from the app yet.
+- People audit afterward through the audit log (`autopilot` events) and the purchase pages. The Review page also lists automatic restrictions under "Restricted automatically". A person can release one with a written reason, or confirm it stays private. Files with a deterministic block, or checked under old rules, cannot be released. Implemented and tested in [test_override.py](tests/test_override.py).
 
 The rationale is in [§13 of the architecture decisions](<../PAMI Privacy Gate MVP Architecture Decisions.md>). Tests are in [test_autonomy.py](tests/test_autonomy.py).
 
