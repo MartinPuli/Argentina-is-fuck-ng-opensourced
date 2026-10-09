@@ -1,0 +1,12 @@
+{% extends "base.html" %}{% block body %}
+<h1>Audit dashboard</h1><p class="muted">Every upload, decision and approval is an event in {{ s.backend }}. {{ s.total }} events so far.</p>
+<div class="grid"><div class="card"><div class="muted">Median gate time</div><div class="stat">{{ s.latency[0] }} ms</div><div class="muted">max {{ s.latency[1] }} ms · {{ s.latency[2] }} files</div></div>
+{% set ns = namespace(p=0,h=0,w=0) %}{% for o in s.by_office %}{% set ns.p = ns.p + o[1] %}{% set ns.h = ns.h + o[2] %}{% set ns.w = ns.w + o[3] %}{% endfor %}
+<div class="card"><div class="muted">Published</div><div class="stat" style="color:var(--pub)">{{ ns.p }}</div></div>
+<div class="card"><div class="muted">Held for a person</div><div class="stat" style="color:var(--hold)">{{ ns.h }}</div></div>
+<div class="card"><div class="muted">Kept internal</div><div class="stat" style="color:var(--wh)">{{ ns.w }}</div></div></div>
+<h2>By office</h2><table><tr><th>Office</th><th>Published</th><th>Held</th><th>Kept internal</th></tr>
+{% for o in s.by_office %}<tr><td>{{ o[0] }}</td><td>{{ o[1] }}</td><td>{{ o[2] }}</td><td>{{ o[3] }}</td></tr>{% endfor %}</table>
+<h2>What the gate catches</h2><table><tr><th>Finding</th><th>Files</th></tr>{% for k in s.kinds %}<tr><td class="mono">{{ k[0] }}</td><td>{{ k[1] }}</td></tr>{% endfor %}</table>
+<h2>Human decisions</h2><table><tr><th>Reviewer</th><th>Result</th><th>File</th><th>When (UTC)</th></tr>{% for r in s.reviews %}<tr><td>{{ r[0] }}</td><td>{{ r[1] }}</td><td class="mono">{{ r[2] }}</td><td>{{ r[3] }}</td></tr>{% endfor %}</table>
+{% endblock %}

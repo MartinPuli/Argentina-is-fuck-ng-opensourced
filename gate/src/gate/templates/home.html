@@ -1,0 +1,11 @@
+{% extends "base.html" %}{% block body %}
+<p class="fict">Demo with fictional data. Every patient, number and diagnosis is invented. No real government system is connected.</p>
+<h1>Private attachments never reach the public portal</h1>
+<p class="muted">In 2026, PAMI's local offices published patients' medical histories, disability certificates and ID copies as attachments to public purchase records (Chequeado, May 2026). The gate sits between the internal file and the public portal. Every attachment is checked before release, and checked again on every public request.</p>
+<div class="grid">
+<div class="card"><b>1 · Office uploads</b><p class="muted">A local office submits a purchase with its attachments, as it does today.</p><a class="btn" href="/office">Upload a purchase</a></div>
+<div class="card"><b>2 · Gate decides</b><p class="muted">Deterministic checks for DNI, CUIL and affiliate numbers. OCR for scans. An open model on AkashML reads context. Each decision cites the rule.</p>
+<form method="post" action="/demo/seed"><button>Run the PAMI demo case</button></form></div>
+<div class="card"><b>3 · A person decides the gray cases</b><p class="muted">Held files wait for a named reviewer, with a brief from the Guild agent.</p><a class="btn" href="/review">Review queue</a></div>
+<div class="card"><b>4 · Public sees only what passed</b><p class="muted">Purchase data stays transparent. Medical evidence stays inside.</p><a class="btn" href="/public">Public portal</a></div>
+</div>{% endblock %}
