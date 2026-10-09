@@ -1,21 +1,107 @@
 {% extends "base.html" %}{% block title %}Live activity{% endblock %}{% block body %}
 <style>
-.live-flow{display:grid;grid-template-columns:1fr 1.25fr 1.15fr;gap:18px;margin:28px 0 36px}.live-node{padding:24px}.live-node h2{font-size:18px;margin-bottom:10px}.live-node p{font-size:12px;color:var(--muted);margin-bottom:0}.live-node .step-number{margin-bottom:14px}.live-node.is-busy{border-color:var(--accent)}.live-outcomes{display:grid;gap:10px;margin:0}.live-outcomes div{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:12px}.live-outcomes dt,.live-outcomes dd{margin:0}.live-outcomes dd{font-size:20px;font-weight:400;font-variant-numeric:tabular-nums}.live-columns{display:grid;grid-template-columns:1.15fr 1fr;gap:26px;align-items:start}.live-list{display:grid;gap:14px}.live-job{padding:20px}.live-job .attachment-heading{align-items:flex-start}.live-job h3,.live-review h3{font-size:14px;overflow-wrap:anywhere;margin:0 0 5px}.live-job p,.live-review p{font-size:12px;margin:10px 0;color:var(--muted);overflow-wrap:anywhere}.live-job-links{display:flex;gap:14px;flex-wrap:wrap;font-size:11px;margin-top:12px}.live-steps{display:flex;gap:7px;flex-wrap:wrap;list-style:none;padding:0;margin:14px 0 0}.live-step{font-size:10px;padding:5px 8px;border:1px solid var(--line);border-radius:5px;background:var(--page);color:var(--muted)}.live-step.running{color:var(--accent);background:var(--accent-soft);border-color:var(--line)}.live-step.done{color:var(--public);background:var(--accent-soft)}.live-step.error{color:var(--withheld);background:var(--withheld-soft)}.live-review{padding:22px;border-top:1px solid var(--line)}.live-review .review-actions{margin-top:12px}.live-review .notice{font-size:11px;margin:12px 0}.live-review .field{margin-top:16px}.live-review textarea{min-height:84px}.live-state{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--muted);margin-top:12px;min-height:20px}.live-state-mark{width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0}.live-state-mark.working{background:var(--accent)}.live-tools{margin-top:36px;padding:24px}.live-tools>summary{font-size:15px;font-weight:400;cursor:pointer}.live-tools form{margin-top:24px}.live-submit-status{margin-top:12px;font-size:12px}.live-status-row{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:22px}.live-status-row p{margin:0;font-size:11px;color:var(--muted)}.live-retry{font-size:11px;padding:6px 12px}.live-recheck-link{display:inline-block;font-size:12px;margin:4px 0 10px}.live-error{color:var(--withheld)}.live-review [hidden],.live-job [hidden]{display:none}.live-note{white-space:pre-wrap}.live-reviewer{font-size:11px;color:var(--muted);margin:14px 0 0}.live-static-links{display:flex;gap:18px;flex-wrap:wrap;margin-top:24px;font-size:12px}
-@media(max-width:1080px){.live-flow{grid-template-columns:1fr 1fr}.live-flow>.live-node:last-child{grid-column:1/-1}.live-outcomes{grid-template-columns:repeat(3,1fr)}.live-columns{grid-template-columns:1fr}}@media(max-width:620px){.live-flow{grid-template-columns:1fr;gap:12px}.live-flow>.live-node:last-child{grid-column:auto}.live-outcomes{grid-template-columns:1fr}.live-node,.live-job,.live-review,.live-tools{padding:18px}.live-status-row{align-items:flex-start}.live-review .review-actions{flex-wrap:wrap}}
-.live-outcomes{grid-template-columns:repeat(3,1fr);padding:20px 0;margin:12px 0 20px;border-block:1px solid var(--line)}.live-outcomes dd{font-weight:300}.live-columns .section-heading{margin-bottom:16px}.live-columns .section-heading p{display:none}.live-columns .live-review h3,.live-job h3{font-weight:400}.live-outcomes div{justify-content:flex-start;gap:20px}.live-job{border-radius:4px}.live-tools{border-radius:4px}.live-status-row{margin-top:16px}
+.lv{--lv-ok:#1f7a4d;--lv-ok-soft:#ecf8f1;--lv-bad:var(--withheld,#aa4646);--lv-bad-soft:var(--withheld-soft,#fff4f4);--lv-warn:var(--hold,#805a21);--lv-warn-soft:var(--hold-soft,#fffaf0);--lv-run:var(--accent,#1677b5);--lv-run-soft:var(--accent-soft,#edf8ff);--lv-line:var(--line,#dce8f0);--lv-muted:var(--muted,#647b8e);--lv-ink:var(--ink,#243747);--lv-card:var(--surface,#fff)}
+.lv [hidden]{display:none!important}
+.lv-head{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+.lv-head h1{margin:0}
+.lv-tools{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.lv-tools form{margin:0}
+.lv-tools button,.lv-tools .btn{font-size:12px;padding:7px 12px}
+.lv-msg{font-size:12px;color:var(--lv-muted);margin:-8px 0 16px}
+.lv-msg.error{color:var(--lv-bad)}
+.lv-status{display:flex;align-items:center;justify-content:flex-start;text-align:left;gap:12px;padding:16px 20px;border:1px solid var(--lv-line);border-radius:10px;background:var(--lv-card);margin-bottom:14px}
+.lv-status.busy{border-color:var(--lv-run);background:var(--lv-run-soft)}
+.lv-status.down{border-color:var(--lv-bad);background:var(--lv-bad-soft)}
+.lv-status strong{font-size:18px;font-weight:500;color:var(--lv-ink)}
+.lv-status .lv-when{font-size:12px;color:var(--lv-muted);margin-left:auto}
+.lv-pulse{width:12px;height:12px;border-radius:50%;background:#9db0bd;flex-shrink:0}
+.lv-status.busy .lv-pulse{background:var(--lv-run);animation:lv-ping 1.2s ease-out infinite}
+.lv-status.down .lv-pulse{background:var(--lv-bad)}
+@keyframes lv-ping{0%{box-shadow:0 0 0 0 rgba(22,119,181,.55)}100%{box-shadow:0 0 0 12px rgba(22,119,181,0)}}
+.lv-counts{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:24px}
+.lv-count{border:1px solid var(--lv-line);border-top:4px solid var(--lv-line);border-radius:10px;padding:12px 16px;background:var(--lv-card);display:flex;align-items:baseline;gap:10px}
+.lv-count b{font-size:26px;font-weight:500;font-variant-numeric:tabular-nums;line-height:1}
+.lv-count small{font-size:12px;color:var(--lv-muted)}
+.lv-count.run{border-top-color:var(--lv-run)}.lv-count.run b{color:var(--lv-run)}.lv-count.ok{border-top-color:var(--c-published,#15803d)}.lv-count.ok b{color:var(--c-published,#15803d)}.lv-count.warn{border-top-color:var(--c-review,#b45309)}.lv-count.warn b{color:var(--c-review,#b45309)}.lv-count.bad{border-top-color:var(--c-blocked,#b91c1c)}.lv-count.bad b{color:var(--c-blocked,#b91c1c)}
+.lv-list{display:grid;gap:8px}
+.lv-row{border:1px solid var(--lv-line);border-radius:10px;background:var(--lv-card);overflow:hidden}
+.lv-main{display:grid;grid-template-columns:150px minmax(180px,1fr) minmax(0,2.2fr) auto;gap:14px;align-items:center;padding:12px 16px}
+.lv-name{font-size:14px;color:var(--lv-ink);overflow-wrap:anywhere;line-height:1.3}
+.lv-why{font-size:12px;color:var(--lv-muted);margin-top:2px;line-height:1.35}
+.lv-links{display:flex;gap:12px;font-size:12px;white-space:nowrap;align-items:center}
+.lv-links button{font-size:12px;padding:5px 10px}
+.lv-badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:6px 12px;border-radius:999px;white-space:nowrap;justify-self:start;color:#fff}
+.lv-badge.ok{background:var(--c-published,#15803d)}
+.lv-badge.clean{background:var(--c-cleaned,#0f766e)}
+.lv-badge.warn{background:var(--c-review,#b45309)}
+.lv-badge.bad{background:var(--c-blocked,#b91c1c)}
+.lv-badge.run{background:var(--lv-run)}
+.lv-flow{display:flex;flex-wrap:wrap;align-items:center;gap:4px;list-style:none;margin:0;padding:0}
+.lv-step{--k:#0e5f94;display:inline-flex;align-items:center;gap:5px;font-size:11px;line-height:1;padding:5px 8px;border-radius:999px;white-space:nowrap;cursor:default;font-weight:500;background:color-mix(in srgb,var(--k) 11%,#fff);color:var(--k);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--k) 28%,#fff)}
+.lv-step.k-akash{--k:var(--c-akash,#c2410c)}
+.lv-step.k-guild{--k:var(--c-guild,#6d28d9)}
+.lv-step.k-pass{--k:var(--c-published,#15803d)}
+.lv-step i{font-style:normal;font-weight:700;font-size:10px}
+.lv-step.error{--k:var(--c-blocked,#b91c1c)}
+.lv-step.skipped{opacity:.5;font-weight:400}
+.lv-step.waiting{background:#fff;color:#7d93a3;box-shadow:inset 0 0 0 1px var(--lv-line);font-weight:400}
+.lv-step.running{background:var(--k);color:#fff;box-shadow:0 0 0 0 color-mix(in srgb,var(--k) 50%,transparent);animation:lv-glow 1.4s ease-out infinite}
+@keyframes lv-glow{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--k) 55%,transparent)}100%{box-shadow:0 0 0 9px color-mix(in srgb,var(--k) 0%,transparent)}}
+.lv-arrow{color:var(--c-guild,#6d28d9);opacity:.6;font-size:11px}
+.lv-guild{display:inline-flex;align-items:center;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--c-guild,#6d28d9);margin:0 2px 0 8px;padding-left:10px;border-left:2px solid color-mix(in srgb,var(--c-guild,#6d28d9) 30%,#fff);height:22px}
+.lv-guild.lv-checks{color:var(--lv-muted)}
+.lv-spin{width:9px;height:9px;border:2px solid rgba(255,255,255,.45);border-top-color:#fff;border-radius:50%;animation:lv-rot .8s linear infinite;display:inline-block}
+@keyframes lv-rot{to{transform:rotate(360deg)}}
+.lv-row{border-left:4px solid var(--lv-line)}
+.lv-row.o-ok{border-left-color:var(--c-published,#15803d)}.lv-row.o-clean{border-left-color:var(--c-cleaned,#0f766e)}.lv-row.o-warn{border-left-color:var(--c-review,#b45309)}.lv-row.o-bad{border-left-color:var(--c-blocked,#b91c1c)}
+.lv-ch{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:20px;padding:10px 14px;border-radius:10px;background:#fffbe6;border:1px solid #f2dc7a;font-size:12px;color:#4a3f00}
+.lv-ch b{font-weight:600}
+.lv-ch-mark{width:14px;height:14px;border-radius:3px;background:var(--c-clickhouse,#facc15);box-shadow:inset 0 0 0 1px rgba(0,0,0,.15);flex-shrink:0}
+.lv-ch a{margin-left:auto;color:#4a3f00;font-weight:500}
+.lv-ch small{color:#6b5d00}
+.lv-row.live{border-color:var(--lv-run);box-shadow:0 0 0 3px var(--lv-run-soft)}
+.lv-row.live .lv-main{grid-template-columns:150px minmax(0,1fr) auto;grid-template-areas:"badge file links" "flow flow flow";padding:18px 20px;row-gap:16px}
+.lv-row.live .lv-badge{grid-area:badge}.lv-row.live .lv-file{grid-area:file}.lv-row.live .lv-links{grid-area:links}.lv-row.live .lv-flows{grid-area:flow;display:grid;gap:10px}.lv-row.live .lv-flow{gap:6px}.lv-row.live .lv-guild{margin-left:0;padding-left:0;border-left:0;min-width:110px}
+.lv-row.live .lv-name{font-size:17px}
+.lv-row.live .lv-why{font-size:14px;color:var(--lv-run);font-weight:500;margin-top:4px}
+.lv-row.live .lv-step{font-size:13px;padding:8px 12px}
+.lv-row.live .lv-step i{font-size:12px}
+.lv-row.live .lv-arrow{font-size:14px}
+.lv-row.live .lv-guild{font-size:11px;height:30px}
+.lv-review{border-top:1px solid var(--lv-line);background:#fbfdff;padding:14px 16px;display:grid;gap:10px;font-size:12px}
+.lv-review p{margin:0;color:var(--lv-muted);overflow-wrap:anywhere}
+.lv-review .lv-review-links{display:flex;gap:14px;flex-wrap:wrap}
+.lv-review textarea{width:100%;min-height:60px;font-size:13px}
+.lv-review .review-actions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;margin:0}
+.lv-review .notice{margin:0;font-size:12px}
+.lv-empty{border:1px dashed var(--lv-line);border-radius:10px;padding:40px 20px;text-align:center;color:var(--lv-muted)}
+.lv-empty h2{font-size:18px;color:var(--lv-ink);margin:0 0 6px}
+.lv-empty p{margin:0 0 16px;font-size:13px}
+.lv-sub{font-size:13px;color:var(--lv-muted);margin:24px 0 8px;font-weight:400}
+@media(max-width:1100px){.lv-main{grid-template-columns:140px minmax(0,1fr) auto;grid-template-areas:"badge file links" "flow flow flow"}.lv-main .lv-badge{grid-area:badge}.lv-main .lv-file{grid-area:file}.lv-main .lv-links{grid-area:links}.lv-main .lv-flows{grid-area:flow}}
+@media(max-width:640px){.lv-counts{grid-template-columns:repeat(2,1fr)}.lv-count b{font-size:22px}.lv-main,.lv-row.live .lv-main{grid-template-columns:1fr auto;grid-template-areas:"badge links" "file file" "flow flow";gap:10px;padding:12px 14px}.lv-row.live .lv-step{font-size:12px;padding:7px 10px}.lv-status{padding:12px 14px;flex-wrap:wrap}.lv-status strong{font-size:16px}.lv-status .lv-when{margin-left:24px;width:100%}.lv-guild{flex-basis:100%;border-left:0;padding-left:0;margin:4px 0 0;height:auto}}
+@media(prefers-reduced-motion:reduce){.lv-step.running,.lv-spin,.lv-status.busy .lv-pulse{animation:none}}
 </style>
-<div id="live-workspace" data-agent-configured="{{ 'true' if agent_on else 'false' }}">
-<div class="page-heading heading-with-action"><h1>Activity</h1><a class="btn" href="/office">Upload PDF</a></div><details class="test-data-tools"><summary>Test data</summary><div class="actions"><form method="post" action="/live/demo/seed" data-live-form><button type="submit">Load synthetic files</button><div class="form-message live-submit-status" role="status" aria-live="polite" hidden></div></form><form method="post" action="/live/reset" onsubmit="return confirm('Clear all uploaded files and purchases? Rules and audit history will stay.')"><button type="submit" class="btn-secondary">Clear workspace</button></form></div></details>
-<div class="live-state" id="live-gate-node"><span class="live-state-mark" id="live-state-mark" aria-hidden="true"></span><span id="live-busy">Loading…</span></div>
-<dl class="live-outcomes"><div><dt>Published</dt><dd id="live-count-published">—</dd></div><div><dt>Private</dt><dd id="live-count-blocked">—</dd></div><div><dt>Review</dt><dd id="live-count-waiting">—</dd></div></dl><p id="live-stale-count" class="small muted"></p>
-<div class="live-status-row"><p id="live-connection" role="status" aria-live="polite">Connecting to this workspace’s activity feed…</p><button type="button" class="btn-secondary live-retry" id="live-refresh">Refresh now</button></div>
-<div class="live-columns"><section aria-labelledby="live-jobs-heading"><div class="section-heading"><h2 id="live-jobs-heading">Files</h2></div><div id="live-jobs" class="live-list" aria-busy="true"><div class="empty-state compact"><h3>Loading file activity…</h3></div></div></section>
-<section aria-labelledby="live-waiting-heading"><div class="section-heading"><h2 id="live-waiting-heading">Review</h2></div><p class="live-reviewer">Reviewing as <strong>{{ user }}</strong>.</p><div id="live-waiting" class="live-list" aria-busy="true"><div class="empty-state compact"><h3>Loading review requests…</h3></div></div></section></div>
-<details class="panel live-tools"><summary>Upload PDF</summary><form method="post" action="/live/upload" enctype="multipart/form-data" data-live-form>
-<p class="field-hint">Purchase details are public. Do not include patient information.</p><div class="form-grid"><div class="field span-two"><label for="live-office">Local office</label><select id="live-office" name="office" required>{% for office in offices %}<option>{{ office }}</option>{% endfor %}</select></div><div class="field"><label for="live-procedure">Procedure reference</label><input id="live-procedure" name="procedure" placeholder="Procedure reference" required maxlength="160"></div><div class="field"><label for="live-amount">Amount in ARS</label><input id="live-amount" name="amount" type="number" min="0" step="0.01"  required></div><div class="field span-two"><label for="live-item">Item being purchased</label><input id="live-item" name="item" placeholder="Equipment specification" required maxlength="240"></div></div>
-<div class="upload-area"><label for="live-files">Supporting attachments</label><input id="live-files" name="files" type="file" accept="application/pdf,.pdf" multiple required aria-describedby="live-file-limits live-file-selection"><div id="live-file-selection" class="file-selection" aria-live="polite">No files selected</div><small id="live-file-limits">Up to 8 PDFs · 10 MB per file · 25 MB total · 50 pages per file</small></div><div class="form-footer"><button type="submit">Check files</button></div><div class="form-message live-submit-status" role="status" aria-live="polite" hidden></div></form></details>
-<div class="live-static-links"><a href="/review">Review queue</a><a href="/learning">Rules</a><a href="/public" target="_blank" rel="noopener">Public records</a></div>
-<noscript><div class="notice">Live updates require JavaScript. Use the upload forms and follow progress in the <a href="/review">review queue</a> and <a href="/dashboard">audit trail</a>.</div></noscript>
+<div class="lv" id="live-workspace" data-agent-configured="{{ 'true' if agent_on else 'false' }}">
+<div class="lv-head"><h1>Activity</h1>
+<div class="lv-tools">
+<form method="post" action="/live/demo/seed" data-live-form data-busy-text="Loading demo files…" data-done-text="Demo files queued. Watch the agents below."><button type="submit" class="btn-secondary">Load demo files</button></form>
+<form method="post" action="/live/reset" data-live-form data-confirm="Clear all uploaded files and purchases? Rules and audit history stay." data-busy-text="Clearing…" data-done-text="Workspace cleared."><button type="submit" class="btn-secondary">Reset</button></form>
+<a class="btn" href="/office">Upload PDF</a>
+</div></div>
+<div class="lv-msg" id="live-msg" role="status" aria-live="polite" hidden></div>
+<div class="lv-status" id="live-status"><span class="lv-pulse" aria-hidden="true"></span><strong id="live-busy">Connecting…</strong><span class="lv-when" id="live-connection"></span></div>
+<div class="lv-counts">
+<div class="lv-count run"><b id="live-count-processing">–</b><small>Checking</small></div>
+<div class="lv-count ok"><b id="live-count-published">–</b><small>Published</small></div>
+<div class="lv-count warn"><b id="live-count-waiting">–</b><small>Needs review</small></div>
+<div class="lv-count bad"><b id="live-count-blocked">–</b><small>Kept internal</small></div>
+</div>
+<div id="live-jobs" class="lv-list" aria-live="off" aria-busy="true"></div>
+<h2 class="lv-sub" id="live-other-heading" hidden>Older files waiting for review</h2>
+<div id="live-waiting" class="lv-list"></div>
+{% if history_total %}<div class="lv-ch" title="Simulated telemetry: a synthetic PAMI-scale event history stored in ClickHouse."><span class="lv-ch-mark" aria-hidden="true"></span><b>ClickHouse</b><span>{{ "{:,}".format(history_total.value) }} PAMI-scale events · counted in {{ history_total.ms }} ms</span><small>(simulated history)</small><a href="/dashboard">See history →</a></div>{% endif %}
+<noscript><div class="notice">Live updates need JavaScript. Use the <a href="/review">review queue</a> instead.</div></noscript>
 </div>
 <script>
 (() => {
@@ -23,16 +109,20 @@
   const workspace = document.getElementById('live-workspace');
   const jobsElement = document.getElementById('live-jobs');
   const waitingElement = document.getElementById('live-waiting');
+  const otherHeading = document.getElementById('live-other-heading');
+  const statusElement = document.getElementById('live-status');
   const connectionElement = document.getElementById('live-connection');
+  const messageElement = document.getElementById('live-msg');
   const reviews = new Map();
-  let jobsSignature = null;
-  let pollInFlight = false;
-  let stopped = false;
-  let timer = null;
-  let authBlocked = false;
-  const labels = {public: 'Published', approved: 'Reviewer approved', cleaned: 'Published, cleaned', hold: 'Needs review', withheld: 'Kept internal', stale: 'Recheck needed', error: 'Check failed'};
-  const badgeClasses = {public: 'b-public', approved: 'b-approved', cleaned: 'b-public', hold: 'b-hold', withheld: 'b-withheld', stale: 'b-hold', error: 'b-withheld'};
-  const stepStates = new Set(['running', 'done', 'error', 'pending', 'skipped']);
+  let signature = null;
+  let pollInFlight = false, stopped = false, timer = null, authBlocked = false;
+  const outcome = {
+    public: ['Published', 'ok'], approved: ['Published', 'ok'], cleaned: ['Published, cleaned', 'clean'],
+    hold: ['Needs review', 'warn'], stale: ['Recheck needed', 'warn'],
+    withheld: ['Kept internal', 'bad'], error: ['Check failed', 'bad'],
+  };
+  const states = new Set(['running', 'done', 'error', 'waiting', 'skipped']);
+  const icons = {done: '✓', error: '✕', skipped: '–', waiting: '○'};
   const text = value => value == null ? '' : String(value);
   const numericId = value => /^\d+$/.test(text(value)) && Number(value) > 0 ? text(value) : null;
   const count = value => Number.isSafeInteger(value) && value >= 0 ? value : 0;
@@ -55,15 +145,80 @@
     if (external) { node.target = '_blank'; node.rel = 'noopener noreferrer'; }
     return node;
   }
-  function empty(title, message) {
-    const box = element('div', 'empty-state compact');
-    box.append(element('h3', '', title), element('p', '', message));
+  // Short chip label and plain "what is happening now" sentence for each pipeline step.
+  function describe(step) {
+    const name = text(step.name), detail = text(step.detail);
+    const round = (name.match(/round (\d+)/) || [])[1];
+    if (name.startsWith('Public agent')) return {label: 'Public agent' + (detail ? ' · ' + detail.replace(/ item\(s\)/, '') : ''), now: 'Public agent is choosing what to remove (round ' + round + ')', agent: true};
+    if (name.startsWith('Public reviewer')) return {label: step.status === 'done' ? 'Reviewer PASS' : step.status === 'error' ? 'Reviewer FAIL' : 'Reviewer checking', now: 'Public reviewer is checking the cleaned copy (round ' + round + ')', agent: true};
+    const table = {
+      'Read': ['Read', 'Reading the PDF'],
+      'Find IDs': ['Find IDs', 'Looking for DNI, CUIL and other IDs'],
+      'Learned rules': ['Rules', 'Applying learned rules'],
+      'AkashML AI': ['AkashML text', 'AkashML text model is reading the content'],
+      'AkashML vision': ['AkashML vision', 'AkashML vision model is checking page images'],
+      'Decide': ['Decide', 'Deciding what happens to this file'],
+      'Clean copy': ['Clean copy', 'Building a cleaned copy'],
+      'Guild orchestrator': ['Orchestrator', 'Guild orchestrator is sorting clinical, procurement and public info'],
+      'Guild verifier': [step.status === 'done' ? 'Verifier PASS' : step.status === 'error' ? 'Verifier FAIL' : 'Verifier', 'Guild verifier is checking the cleaned copy'],
+      'Guild agent note': ['Agent note', 'Guild agent is writing a note for the reviewer'],
+      'Clearance levels': ['Clearance', 'Guild clearance agents are starting'],
+    };
+    const [label, now] = table[name] || [name, name];
+    return {label, now, agent: name.startsWith('Guild') || name === 'Clearance levels'};
+  }
+  function chip(step, info) {
+    const state = states.has(step.status) ? step.status : 'waiting';
+    const name = text(step.name);
+    const verdictPass = /^(Public reviewer|Guild verifier)/.test(name) && state === 'done';
+    const kind = verdictPass ? 'k-pass' : name.startsWith('AkashML') ? 'k-akash' : info.agent ? 'k-guild' : 'k-local';
+    const node = element('li', 'lv-step ' + state + ' ' + kind);
+    if (state === 'running') node.append(element('span', 'lv-spin'));
+    else node.append(element('i', '', icons[state]));
+    node.append(document.createTextNode(info.label));
+    node.title = text(step.name) + (step.detail ? ': ' + text(step.detail) : '');
+    return node;
+  }
+  function flow(steps, compact) {
+    const box = element('div', 'lv-flows');
+    const list = element('ol', 'lv-flow');
+    const checks = [], guild = [];
+    for (const step of steps) (/^(Guild|Public |Clearance)/.test(text(step.name)) ? guild : checks).push(step);
+    if (compact) {
+      // Finished rows: fold the plain checks into one chip; keep the AI model chips.
+      const local = checks.filter(s => !text(s.name).startsWith('AkashML'));
+      const failed = local.filter(s => s.status === 'error').length;
+      const summary = chip({name: 'Checks', status: failed ? 'error' : 'done', detail: ''}, {label: failed ? 'Checks · ' + failed + ' failed' : 'Checks'});
+      summary.title = local.map(s => text(s.name) + ': ' + (text(s.detail) || text(s.status))).join('\n');
+      list.append(summary);
+      for (const step of checks) if (text(step.name).startsWith('AkashML') && step.status !== 'skipped') list.append(chip(step, describe(step)));
+    } else {
+      list.append(element('li', 'lv-guild lv-checks', 'Checks'));
+      for (const step of checks) list.append(chip(step, describe(step)));
+    }
+    box.append(list);
+    // The reviewer rounds already show the clearance outcome; keep its chip only when no round ran.
+    const rounds = guild.some(s => /^Public reviewer/.test(text(s.name)));
+    const shown = guild.filter(s => !(rounds && s.name === 'Clearance levels'));
+    if (shown.length) {
+      const agents = compact ? list : element('ol', 'lv-flow');
+      agents.append(element('li', 'lv-guild', 'Guild agents'));
+      shown.forEach((step, index) => {
+        if (index) agents.append(element('li', 'lv-arrow', '→'));
+        agents.append(chip(step, describe(step)));
+      });
+      if (!compact) box.append(agents);
+    }
     return box;
   }
   async function errorMessage(response) {
     if (response.status === 401) return 'Your staff session needs authentication. Reload this page to sign in.';
     let message = 'The request was not confirmed. Check the connection and try again.';
-    try { const body = await response.json(); if (typeof body.detail === 'string') message = body.detail; } catch (_) { /* Keep bounded, readable fallback. */ }
+    try {
+      const body = await response.text();
+      try { const json = JSON.parse(body); if (typeof json.detail === 'string') message = json.detail; }
+      catch (_) { if (body.trim() && body.length < 300 && !body.includes('<')) message = body.trim(); }
+    } catch (_) { /* Keep the fallback. */ }
     return message;
   }
   function attachForm(form, approval = false) {
@@ -71,139 +226,161 @@
       event.preventDefault();
       if (form.dataset.busy === 'true' || !form.reportValidity()) return;
       const button = event.submitter;
+      if (form.dataset.confirm && !window.confirm(form.dataset.confirm)) return;
       if (approval && button?.value === 'approve' && !window.confirm('Publish this exact file? Confirm that you inspected every page and recorded why it is appropriate for public access.')) return;
       const body = new FormData(form);
       if (button?.name) body.append(button.name, button.value);
       const controls = Array.from(form.querySelectorAll('button'));
       const priorDisabled = controls.map(control => control.disabled);
-      const message = form.querySelector('.form-message');
+      const message = approval ? form.querySelector('.form-message') : messageElement;
       form.dataset.busy = 'true'; form.setAttribute('aria-busy', 'true');
       controls.forEach(control => { control.disabled = true; });
-      message.hidden = false; message.className = 'form-message loading'; message.setAttribute('role', 'status');
-      message.textContent = approval ? 'Recording your decision…' : 'Validating and queueing the files…';
+      message.hidden = false; message.className = approval ? 'form-message loading' : 'lv-msg';
+      message.textContent = approval ? 'Recording your decision…' : form.dataset.busyText || 'Working…';
       try {
         const response = await fetch(form.action, {method: 'POST', body, credentials: 'same-origin', cache: 'no-store'});
         if (!response.ok) throw new Error(await errorMessage(response));
-        message.className = 'form-message';
-        message.textContent = approval ? 'Decision recorded. Refreshing the queue…' : 'Files accepted. Their checks will appear in the activity feed.';
+        message.textContent = approval ? 'Decision recorded.' : form.dataset.doneText || 'Done.';
         authBlocked = false;
         await poll();
       } catch (error) {
-        message.className = 'form-message error';
+        message.className = approval ? 'form-message error' : 'lv-msg error';
         message.textContent = error.message || 'Connection failed. The action was not confirmed.';
-        message.setAttribute('role', 'alert');
       } finally {
         form.dataset.busy = 'false'; form.removeAttribute('aria-busy');
         controls.forEach((control, index) => { control.disabled = priorDisabled[index] || control.dataset.policyDisabled === 'true'; });
       }
     });
   }
-  function renderJobs(jobs) {
-    const signature = JSON.stringify(jobs);
-    if (signature === jobsSignature) return;
-    jobsSignature = signature;
-    const nodes = jobs.map(job => {
-      const card = element('article', 'panel live-job');
-      const heading = element('div', 'attachment-heading');
-      const name = element('div', 'attachment-name');
-      name.append(element('h3', '', job.file || 'PDF attachment'), element('span', 'small muted', job.office));
-      const decision = Object.hasOwn(labels, job.decision) ? job.decision : null;
-      heading.append(name, element('span', 'badge ' + (badgeClasses[decision] || 'b-hold'), decision ? labels[decision] : job.done ? 'Check finished' : 'Checking'));
-      const steps = element('ul', 'live-steps');
-      for (const step of Array.isArray(job.steps) ? job.steps : []) {
-        const state = stepStates.has(step.status) ? step.status : 'pending';
-        const agentic = /^(Guild orchestrator|Public |Clearance)/.test(text(step.name));
-        const item = element('li', 'live-step ' + state, text(step.name) + ' · ' + (agentic && step.detail ? text(step.detail) : state));
-        item.title = text(step.detail); steps.append(item);
-      }
-      card.append(heading);
-      // The agentic clearance procedure stays visible after it finishes: rounds and verdicts.
-      if (!job.done) card.append(steps);
-      else if ((job.steps || []).some(s => /^Public reviewer/.test(text(s.name)))) {
-        steps.replaceChildren(...[...steps.children].filter(li => /^(Guild orchestrator|Public |Clearance)/.test(li.textContent)));
-        card.append(steps);
-      }
-      if (job.why) card.append(element('p', '', job.why));
-      if (job.stale) card.append(element('p', 'live-error', 'An earlier decision is no longer current. Recheck this file before public access.'));
-      const links = element('div', 'live-job-links');
-      const purchaseId = numericId(job.purchase_id);
-      if (purchaseId) links.append(link('Purchase details →', '/purchase/' + purchaseId));
-      const agentUrl = safeExternal(job.agent_url);
-      if (agentUrl) links.append(link('Guild run ↗', agentUrl, true));
-      if (job.stale) links.append(link('Recheck rules →', '/learning'));
-      card.append(links); return card;
-    });
-    jobsElement.replaceChildren(...(nodes.length ? nodes : [empty('No files in the activity feed yet.', 'Upload a PDF to start.')]));
-  }
-  function reviewCard(id) {
-    const card = element('article', 'panel live-review');
-    const heading = element('h3');
-    const metadata = element('p');
+  function reviewPanel(id) {
+    const panel = element('div', 'lv-review'); panel.hidden = true;
     const reason = element('p');
-    const original = link('Inspect original PDF ↗', '/internal/file/' + id, true);
-    const note = element('p', 'live-note');
-    const agentLink = link('Guild run ↗', '#', true); agentLink.hidden = true;
-    const clean = element('div', 'clean-note'); clean.hidden = true;
-    const cleanText = element('span', '', 'Approve publishes the cleaned copy.');
-    clean.append(cleanText, link('Cleaned preview ↗', '/internal/clean/' + id, true));
-    const warning = element('div', 'notice');
-    const recheck = link('Recheck current rules →', '/learning'); recheck.classList.add('live-recheck-link');
+    const note = element('p');
+    const links = element('div', 'lv-review-links');
+    links.append(link('Open original PDF ↗', '/internal/file/' + id, true));
+    const cleanLink = link('Cleaned copy ↗', '/internal/clean/' + id, true); cleanLink.hidden = true;
+    const agentLink = link('Guild note ↗', '#', true); agentLink.hidden = true;
+    links.append(cleanLink, agentLink);
+    const warning = element('div', 'notice', 'The rules changed. Recheck this file on the Rules page before approving.');
     const form = element('form'); form.method = 'post'; form.action = '/review/' + id;
-    const field = element('div', 'field');
-    const label = element('label', '', 'Decision reason'); label.htmlFor = 'live-note-' + id;
+    form.style.display = 'grid'; form.style.gap = '8px';
+    const label = element('label', 'visually-hidden', 'Decision reason'); label.htmlFor = 'live-note-' + id;
     const input = element('textarea'); input.id = label.htmlFor; input.name = 'note'; input.rows = 2; input.required = true; input.maxLength = 2000;
-    input.placeholder = 'Describe what you inspected and why this decision is appropriate.';
-    field.append(label, input);
+    input.placeholder = 'Why is this decision right? (required)';
     const actions = element('div', 'review-actions');
     const reject = element('button', 'btn-secondary', 'Keep internal'); reject.type = 'submit'; reject.name = 'action'; reject.value = 'reject';
-    const approve = element('button', '', 'Approve publication ↗'); approve.type = 'submit'; approve.name = 'action'; approve.value = 'approve';
+    const approve = element('button', '', 'Approve publication'); approve.type = 'submit'; approve.name = 'action'; approve.value = 'approve';
     actions.append(reject, approve);
     const message = element('div', 'form-message'); message.hidden = true; message.setAttribute('role', 'status'); message.setAttribute('aria-live', 'polite');
-    form.append(field, actions, message); attachForm(form, true);
-    card.append(heading, metadata, reason, original, clean, note, agentLink, warning, recheck, form);
-    return {card, heading, metadata, reason, note, agentLink, warning, recheck, form, approve, clean, cleanText};
+    form.append(label, input, actions, message); attachForm(form, true);
+    panel.append(reason, note, links, warning, form);
+    const toggle = element('button', 'btn-secondary', 'Review'); toggle.type = 'button';
+    toggle.setAttribute('aria-expanded', 'false');
+    toggle.addEventListener('click', () => {
+      panel.hidden = !panel.hidden; toggle.setAttribute('aria-expanded', String(!panel.hidden));
+      toggle.textContent = panel.hidden ? 'Review' : 'Close';
+      if (!panel.hidden) input.focus();
+    });
+    return {panel, toggle, reason, note, cleanLink, agentLink, warning, form, approve};
   }
-  function renderWaiting(waiting) {
-    const seen = new Set();
-    for (const item of waiting) {
-      const id = numericId(item.id); if (!id) continue;
-      seen.add(id);
-      let view = reviews.get(id);
-      if (!view) { view = reviewCard(id); reviews.set(id, view); waitingElement.append(view.card); }
-      view.heading.textContent = text(item.file);
-      view.metadata.textContent = text(item.office) + ' · ' + text(item.item);
-      view.reason.textContent = Array.isArray(item.why) ? item.why.map(text).join(' ') : text(item.why);
-      view.note.textContent = item.note ? 'Reviewer brief: ' + text(item.note) : workspace.dataset.agentConfigured === 'true' ? 'No completed reviewer brief is available yet. Inspect the original and findings.' : 'Guild is not configured. Inspect the original document and findings.';
-      view.clean.hidden = item.has_clean !== true;
-      const removed = Array.isArray(item.removed) ? item.removed.map(text).filter(Boolean) : [];
-      view.cleanText.textContent = 'Approve publishes the cleaned copy' + (removed.length ? ' (without ' + removed.join(', ') + ').' : '.');
-      const url = safeExternal(item.agent_url); view.agentLink.hidden = !url;
-      if (url) view.agentLink.href = url;
-      const current = item.current === true;
-      view.warning.hidden = current; view.recheck.hidden = current;
-      view.warning.textContent = 'The rules changed. Recheck this file before approving publication.';
-      view.approve.dataset.policyDisabled = item.can_approve === true ? 'false' : 'true';
-      if (view.form.dataset.busy !== 'true') view.approve.disabled = item.can_approve !== true;
-    }
-    for (const [id, view] of reviews) if (!seen.has(id)) { view.card.remove(); reviews.delete(id); }
-    const existingEmpty = waitingElement.querySelector('.empty-state');
-    if (seen.size && existingEmpty) existingEmpty.remove();
-    if (!seen.size) waitingElement.replaceChildren(empty('Nothing is waiting for your decision.', 'A clear queue does not certify that every document is safe.'));
+  function updateReview(view, item) {
+    const why = Array.isArray(item.why) ? item.why.map(text).filter(Boolean).join(' · ') : text(item.why);
+    view.reason.textContent = why ? 'Flagged: ' + why : '';
+    view.note.textContent = item.note ? 'Guild note: ' + text(item.note) : '';
+    view.note.hidden = !item.note;
+    view.cleanLink.hidden = item.has_clean !== true;
+    const removed = Array.isArray(item.removed) ? item.removed.map(text).filter(Boolean) : [];
+    view.cleanLink.textContent = removed.length ? 'Cleaned copy, without ' + removed.join(', ') + ' ↗' : 'Cleaned copy ↗';
+    view.approve.textContent = item.has_clean === true ? 'Publish cleaned copy' : 'Approve publication';
+    const url = safeExternal(item.agent_url); view.agentLink.hidden = !url; if (url) view.agentLink.href = url;
+    view.warning.hidden = item.current === true;
+    view.approve.dataset.policyDisabled = item.can_approve === true ? 'false' : 'true';
+    if (view.form.dataset.busy !== 'true') view.approve.disabled = item.can_approve !== true;
+  }
+  function row(job, waiting) {
+    const running = !job.done;
+    const kind = Object.hasOwn(outcome, job.decision) && !running ? outcome[job.decision] : null;
+    const card = element('article', 'lv-row' + (running ? ' live' : kind ? ' o-' + kind[1] : ''));
+    const main = element('div', 'lv-main');
+    const badge = element('span', 'lv-badge ' + (running ? 'run' : kind ? kind[1] : 'warn'));
+    if (running) badge.append(element('span', 'lv-spin'));
+    badge.append(document.createTextNode(running ? 'Checking' : kind ? kind[0] : 'Finished'));
+    const file = element('div', 'lv-file');
+    const name = element('div', 'lv-name', job.file || 'PDF attachment'); name.title = text(job.office) + (job.item ? ' · ' + text(job.item) : '');
+    const steps = Array.isArray(job.steps) ? job.steps : [];
+    const current = steps.filter(s => s.status === 'running').pop();
+    const next = steps.find(s => s.status === 'waiting');
+    const why = running ? (current ? describe(current).now + '…' : next ? 'Up next: ' + describe(next).label : 'Finishing…')
+      : job.stale ? 'Rules changed since this decision. Recheck before publishing.' : text(job.why);
+    file.append(name);
+    if (why) file.append(element('div', 'lv-why', why));
+    const links = element('div', 'lv-links');
+    const purchaseId = numericId(job.purchase_id);
+    if (purchaseId) links.append(link('Purchase', '/purchase/' + purchaseId));
+    const agentUrl = safeExternal(job.agent_url);
+    if (agentUrl) links.append(link('Guild run ↗', agentUrl, true));
+    main.append(badge, file, flow(steps, !running), links);
+    card.append(main);
+    if (waiting && !running) attachReview(card, links, waiting);
+    return card;
+  }
+  function attachReview(card, links, item) {
+    const id = numericId(item.id);
+    let view = reviews.get(id);
+    if (!view) { view = reviewPanel(id); reviews.set(id, view); }
+    updateReview(view, item);
+    links.append(view.toggle); card.append(view.panel);
+  }
+  function emptyState() {
+    const box = element('div', 'lv-empty');
+    box.append(element('h2', '', 'No files yet'), element('p', '', 'Load the demo files and watch each one go through the checks and the Guild agents.'));
+    const button = element('button', '', 'Load demo files'); button.type = 'button';
+    button.addEventListener('click', () => document.querySelector('form[action="/live/demo/seed"]').requestSubmit());
+    box.append(button); return box;
   }
   function render(data) {
     if (!data || !Array.isArray(data.jobs) || !Array.isArray(data.waiting) || !data.counts) throw new Error('The activity feed returned an unexpected response.');
     const counts = data.counts;
-    for (const name of ['published', 'blocked', 'waiting']) document.getElementById('live-count-' + name).textContent = count(counts[name]);
-    const running = count(counts.processing);
-    document.getElementById('live-busy').textContent = running ? 'Checking ' + running + (running === 1 ? ' file' : ' files') + '…' : 'No file checks are currently running.';
-    document.getElementById('live-gate-node').classList.toggle('is-busy', running > 0);
-    document.getElementById('live-state-mark').classList.toggle('working', running > 0);
-    const stale = count(counts.stale);
-    document.getElementById('live-stale-count').textContent = stale ? stale + (stale === 1 ? ' file needs' : ' files need') + ' the current rules checked before public access.' : 'No stored files are awaiting a rules recheck.';
-    renderJobs(data.jobs); renderWaiting(data.waiting);
-    jobsElement.setAttribute('aria-busy', 'false'); waitingElement.setAttribute('aria-busy', 'false');
-    connectionElement.textContent = 'Activity updated at ' + new Date().toLocaleTimeString() + '. Counts show current stored publication status.';
-    connectionElement.classList.remove('live-error');
+    for (const name of ['processing', 'published', 'waiting', 'blocked']) document.getElementById('live-count-' + name).textContent = count(counts[name]);
+    const running = data.jobs.filter(job => !job.done);
+    const busy = running.length > 0;
+    statusElement.classList.toggle('busy', busy); statusElement.classList.remove('down');
+    const now = running.find(job => (job.steps || []).some(s => s.status === 'running'));
+    let headline;
+    if (busy) headline = 'Agent is working on ' + running.length + (running.length === 1 ? ' file' : ' files') + (now ? ': ' + text(now.file) : '');
+    else if (data.jobs.length) headline = 'Agent is idle. All ' + data.jobs.length + (data.jobs.length === 1 ? ' file' : ' files') + ' checked.';
+    else headline = 'Agent is idle.';
+    document.getElementById('live-busy').textContent = headline;
+    connectionElement.textContent = 'Live · updated ' + new Date().toLocaleTimeString();
+    const waitingById = new Map(data.waiting.map(item => [numericId(item.id), item]));
+    const sig = JSON.stringify([data.jobs, data.waiting]);
+    if (sig === signature) return;
+    signature = sig;
+    // Keep an open review form untouched while the person is typing in it.
+    if (document.activeElement && document.activeElement.closest && document.activeElement.closest('.lv-review')) { signature = null; return; }
+    const ordered = [...running, ...data.jobs.filter(job => job.done)];
+    const used = new Set();
+    const rows = ordered.map(job => {
+      const id = numericId(job.attachment_id);
+      const item = id ? waitingById.get(id) : null;
+      if (item) used.add(id);
+      return row(job, item);
+    });
+    jobsElement.replaceChildren(...(rows.length || data.waiting.length ? rows : [emptyState()]));
+    const others = data.waiting.filter(item => numericId(item.id) && !used.has(numericId(item.id))).map(item => {
+      const card = element('article', 'lv-row o-warn');
+      const main = element('div', 'lv-main');
+      const file = element('div', 'lv-file');
+      file.append(element('div', 'lv-name', item.file), element('div', 'lv-why', text(item.office) + ' · ' + text(item.item)));
+      const links = element('div', 'lv-links');
+      const pid = numericId(item.pid); if (pid) links.append(link('Purchase', '/purchase/' + pid));
+      main.append(element('span', 'lv-badge warn', 'Needs review'), file, element('div'), links);
+      card.append(main); attachReview(card, links, item); return card;
+    });
+    for (const id of [...reviews.keys()]) if (!waitingById.has(id)) reviews.delete(id);
+    waitingElement.replaceChildren(...others);
+    otherHeading.hidden = !others.length;
+    jobsElement.setAttribute('aria-busy', 'false');
   }
   async function poll() {
     if (pollInFlight || stopped || document.hidden || authBlocked) return;
@@ -215,18 +392,14 @@
       if (!response.ok) { if (response.status === 401) authBlocked = true; throw new Error(await errorMessage(response)); }
       render(await response.json());
     } catch (error) {
-      connectionElement.textContent = error.message || 'Activity is unavailable. The last displayed results may be stale; retrying.';
-      connectionElement.classList.add('live-error');
-      jobsElement.setAttribute('aria-busy', 'false'); waitingElement.setAttribute('aria-busy', 'false');
+      statusElement.classList.add('down'); statusElement.classList.remove('busy');
+      document.getElementById('live-busy').textContent = 'Lost connection to the activity feed';
+      connectionElement.textContent = error.name === 'AbortError' ? 'Retrying…' : (error.message || 'Retrying…');
+      jobsElement.setAttribute('aria-busy', 'false');
     } finally { clearTimeout(timeout); pollInFlight = false; }
   }
   function schedule() { clearTimeout(timer); if (!stopped) timer = setTimeout(async () => { await poll(); schedule(); }, 1500); }
   document.querySelectorAll('[data-live-form]').forEach(form => attachForm(form));
-  document.getElementById('live-refresh').addEventListener('click', () => { authBlocked = false; poll(); });
-  document.getElementById('live-files').addEventListener('change', event => {
-    const files = Array.from(event.target.files || []);
-    document.getElementById('live-file-selection').textContent = files.length ? files.map(file => file.name).join(' · ') : 'No files selected';
-  });
   document.addEventListener('visibilitychange', () => { if (!document.hidden) poll(); });
   window.addEventListener('pagehide', () => { stopped = true; clearTimeout(timer); });
   poll(); schedule();
