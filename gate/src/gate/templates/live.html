@@ -114,11 +114,17 @@
       const steps = element('ul', 'live-steps');
       for (const step of Array.isArray(job.steps) ? job.steps : []) {
         const state = stepStates.has(step.status) ? step.status : 'pending';
-        const item = element('li', 'live-step ' + state, text(step.name) + ' · ' + state);
+        const agentic = /^(Guild orchestrator|Public |Clearance)/.test(text(step.name));
+        const item = element('li', 'live-step ' + state, text(step.name) + ' · ' + (agentic && step.detail ? text(step.detail) : state));
         item.title = text(step.detail); steps.append(item);
       }
       card.append(heading);
+      // The agentic clearance procedure stays visible after it finishes: rounds and verdicts.
       if (!job.done) card.append(steps);
+      else if ((job.steps || []).some(s => /^Public reviewer/.test(text(s.name)))) {
+        steps.replaceChildren(...[...steps.children].filter(li => /^(Guild orchestrator|Public |Clearance)/.test(li.textContent)));
+        card.append(steps);
+      }
       if (job.why) card.append(element('p', '', job.why));
       if (job.stale) card.append(element('p', 'live-error', 'An earlier decision is no longer current. Recheck this file before public access.'));
       const links = element('div', 'live-job-links');

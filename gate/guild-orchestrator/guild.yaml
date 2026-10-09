@@ -1,0 +1,9 @@
+# Clearance orchestrator. Classifies information by level; can delegate the
+# public level to the public agent and its review to the verifier.
+integrations: []
+sub_agents:
+  - name: nicopujia~pami-public-agent
+    version: "*"
+  - name: nicopujia~pami-redaction-verifier
+    version: "*"
+builtins: []
