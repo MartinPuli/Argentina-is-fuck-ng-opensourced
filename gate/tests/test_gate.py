@@ -6,6 +6,7 @@ Successful synthetic OCR/vision coverage is tested separately in test_coverage.p
 """
 
 import importlib
+import json
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -234,3 +235,66 @@ def test_all_populated_screens_render_current_decisions(web):
         assert response.status_code == 200, route
         for label in labels:
             assert label in response.text, (route, label)
+
+
+def add_attachment(web, decision, public_pdf=None, manifest=None, verifier=None):
+    """Insert one fictional row directly, as if the sanitizer had already run."""
+    purchase = web.app.create_purchase("Synthetic office", "DEMO-CLEAN", "Cleaned copy test", 0)
+    original = (PDFS / "nota_pedido.pdf").read_bytes()
+    with web.store.db() as con:
+        att_id = con.execute(
+            "insert into attachments (purchase_id, filename, sha256, pdf, decision, reasons, findings,"
+            " model, created_at, public_pdf, manifest, verifier) values (?,?,?,?,?,?,?,?,?,?,?,?)",
+            (purchase["id"], "nota_pedido.pdf", "0" * 64, original, decision, "[]", "[]", "null", 0.0,
+             public_pdf, json.dumps(manifest) if manifest is not None else None,
+             json.dumps(verifier) if verifier is not None else None)).lastrowid
+    web.app.learning.record_check(att_id, web.app.learning.revision())
+    return att_id, original
+
+
+CLEANED = b"%PDF-1.4 fictional cleaned copy"
+MANIFEST = [{"page": 1, "category": "DNI", "masked": "31.***.275"}]
+
+
+def test_internal_clean_preview_is_staff_only_and_404_without_a_copy(web):
+    plain, _ = add_attachment(web, "hold")
+    assert web.client.get(f"/internal/clean/{plain}").status_code == 404
+    assert web.client.get("/internal/clean/999999").status_code == 404
+    cleaned, _ = add_attachment(web, "hold", CLEANED, MANIFEST)
+    assert web.anonymous.get(f"/internal/clean/{cleaned}").status_code == 401
+    response = web.client.get(f"/internal/clean/{cleaned}")
+    assert response.status_code == 200
+    assert response.content == CLEANED
+    assert response.headers["cache-control"] == "no-store"
+    assert web.anonymous.get(f"/public/file/{cleaned}").status_code == 404  # held stays private
+
+
+def test_public_file_serves_only_the_cleaned_copy(web):
+    att_id, original = add_attachment(web, "cleaned", CLEANED, MANIFEST,
+                                      {"verdict": "PASS", "text": "ok", "url": "javascript:alert(1)"})
+    response = web.anonymous.get(f"/public/file/{att_id}")
+    assert response.status_code == 200
+    assert response.content == CLEANED and response.content != original
+    assert "versión pública" in web.anonymous.get("/public").text
+    with web.store.db() as con:
+        pid = con.execute("select purchase_id from attachments where id=?", (att_id,)).fetchone()[0]
+    page = web.client.get(f"/purchase/{pid}").text
+    for label in ("Removed", "31.***.275", "Verifier PASS", f"/public/file/{att_id}", "Original (internal)"):
+        assert label in page, label
+    assert "javascript:" not in page  # verifier links must be web URLs
+
+
+def test_activity_and_review_say_approval_publishes_the_cleaned_copy(web):
+    plain, _ = add_attachment(web, "hold")
+    cleaned, _ = add_attachment(web, "hold", CLEANED, MANIFEST + [
+        {"page": 2, "category": "CUIL", "masked": "20-3*******-5"}])
+    waiting = {item["id"]: item for item in web.client.get("/api/activity").json()["waiting"]}
+    assert waiting[plain]["has_clean"] is False and waiting[plain]["removed"] == []
+    assert waiting[cleaned]["has_clean"] is True and waiting[cleaned]["removed"] == ["CUIL", "DNI"]
+    review = web.client.get("/review").text
+    assert review.count("Approve publishes the cleaned copy") == 1
+    assert f"/internal/clean/{cleaned}" in review
+    approved = web.client.post(f"/review/{cleaned}", data={
+        "action": "approve", "note": "Inspected the cleaned fictional copy."}, follow_redirects=False)
+    assert approved.status_code == 303
+    assert web.anonymous.get(f"/public/file/{cleaned}").content == CLEANED

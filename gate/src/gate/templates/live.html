@@ -139,6 +139,9 @@
     const original = link('Inspect original PDF ↗', '/internal/file/' + id, true);
     const note = element('p', 'live-note');
     const agentLink = link('Guild run ↗', '#', true); agentLink.hidden = true;
+    const clean = element('div', 'clean-note'); clean.hidden = true;
+    const cleanText = element('span', '', 'Approve publishes the cleaned copy.');
+    clean.append(cleanText, link('Cleaned preview ↗', '/internal/clean/' + id, true));
     const warning = element('div', 'notice');
     const recheck = link('Recheck current rules →', '/learning'); recheck.classList.add('live-recheck-link');
     const form = element('form'); form.method = 'post'; form.action = '/review/' + id;
@@ -153,8 +156,8 @@
     actions.append(reject, approve);
     const message = element('div', 'form-message'); message.hidden = true; message.setAttribute('role', 'status'); message.setAttribute('aria-live', 'polite');
     form.append(field, actions, message); attachForm(form, true);
-    card.append(heading, metadata, reason, original, note, agentLink, warning, recheck, form);
-    return {card, heading, metadata, reason, note, agentLink, warning, recheck, form, approve};
+    card.append(heading, metadata, reason, original, clean, note, agentLink, warning, recheck, form);
+    return {card, heading, metadata, reason, note, agentLink, warning, recheck, form, approve, clean, cleanText};
   }
   function renderWaiting(waiting) {
     const seen = new Set();
@@ -167,6 +170,9 @@
       view.metadata.textContent = text(item.office) + ' · ' + text(item.item);
       view.reason.textContent = Array.isArray(item.why) ? item.why.map(text).join(' ') : text(item.why);
       view.note.textContent = item.note ? 'Reviewer brief: ' + text(item.note) : workspace.dataset.agentConfigured === 'true' ? 'No completed reviewer brief is available yet. Inspect the original and findings.' : 'Guild is not configured. Inspect the original document and findings.';
+      view.clean.hidden = item.has_clean !== true;
+      const removed = Array.isArray(item.removed) ? item.removed.map(text).filter(Boolean) : [];
+      view.cleanText.textContent = 'Approve publishes the cleaned copy' + (removed.length ? ' (without ' + removed.join(', ') + ').' : '.');
       const url = safeExternal(item.agent_url); view.agentLink.hidden = !url;
       if (url) view.agentLink.href = url;
       const current = item.current === true;

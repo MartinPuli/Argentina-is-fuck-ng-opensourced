@@ -11,3 +11,6 @@
 {% elif ag and ag.error %}<div class="notice">The reviewer brief is unavailable. Review the original document and the recorded findings.</div>
 {% elif configured %}<div class="notice subtle">A reviewer brief may still be processing. Refresh this page to check its result.</div>{% endif %}
 {%- endmacro %}
+{% macro removed(a) -%}
+{% set man=a.manifest|fromjson or [] %}{% set v=a.verifier|fromjson %}<div class="clean-copy"><div class="clean-head"><span class="section-kicker">Removed</span>{% if v %}<span class="badge b-{{ 'public' if v.verdict == 'PASS' else 'hold' }}">Verifier {{ v.verdict }}</span>{% if v.url|web_url %}<a class="text-link" href="{{ v.url|web_url }}" target="_blank" rel="noopener">Guild run ↗</a>{% endif %}{% endif %}</div>{% if man %}<ul class="removed-list">{% for r in man %}<li>{{ r.category }} <span class="separator">·</span> p. {{ r.page }} <span class="separator">·</span> <span class="mono">{{ r.masked }}</span></li>{% endfor %}</ul>{% endif %}</div>
+{%- endmacro %}

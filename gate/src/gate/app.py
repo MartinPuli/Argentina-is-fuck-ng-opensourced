@@ -47,6 +47,7 @@ app = FastAPI(title="Publication Gate")
 templates = Jinja2Templates(directory=Path(__file__).parent / "templates")
 templates.env.filters["money"] = lambda v: f"$ {v:,.0f}".replace(",", ".")
 templates.env.filters["fromjson"] = lambda v: json.loads(v) if v else None
+templates.env.filters["web_url"] = lambda v: v if isinstance(v, str) and urlsplit(v).scheme in ("http", "https") else ""
 templates.env.globals["RULES"] = RULES
 events = Events()
 basic = HTTPBasic(auto_error=False)
@@ -409,7 +410,8 @@ def api_activity(user: str = Depends(staff)):
     # A done job implies its row was committed before this database read.
     jobs = activity.snapshot()
     with db() as con:
-        rows = con.execute("select a.id,a.filename,a.decision,a.findings,a.agent,p.office,p.item,p.id as pid from attachments a "
+        rows = con.execute("select a.id,a.filename,a.decision,a.findings,a.agent,a.manifest,"
+                           "a.public_pdf is not null as has_clean,p.office,p.item,p.id as pid from attachments a "
                            "join purchases p on p.id=a.purchase_id order by a.id").fetchall()
     current = {row["id"]: learning.current(row["id"]) for row in rows}
     by_id = {row["id"]: row for row in rows}
@@ -430,7 +432,9 @@ def api_activity(user: str = Depends(staff)):
                             "item": row["item"], "pid": row["pid"],
                             "why": sorted({f["label"] for f in findings}), "risk": "",
                             "note": brief.get("text", ""), "agent_url": brief.get("url", ""),
-                            "current": is_current, "can_approve": is_current})
+                            "current": is_current, "can_approve": is_current,
+                            "has_clean": bool(row["has_clean"]),
+                            "removed": sorted({m["category"] for m in json.loads(row["manifest"] or "[]")})})
     for job in jobs:
         row = by_id.get(job["attachment_id"])
         job["current"] = current.get(job["attachment_id"], False)
@@ -537,7 +541,8 @@ def review_decide(att_id: int, action: str = Form(...), reviewer: str = Form("")
 def public_portal(request: Request):
     with db() as con:
         purchases = con.execute("select * from purchases order by id desc").fetchall()
-        atts = con.execute("select id, purchase_id, filename, decision from attachments").fetchall()
+        atts = con.execute("select id, purchase_id, filename, decision,"
+                           " public_pdf is not null as cleaned from attachments").fetchall()
     by_purchase: dict[int, dict] = {}
     for a in atts:
         slot = by_purchase.setdefault(a["purchase_id"], {"files": [], "kept": 0, "pending": 0})
@@ -568,6 +573,16 @@ def internal_file(att_id: int, user: str = Depends(staff)):
     if not row:
         raise HTTPException(404, headers={"Cache-Control": "no-store"})
     return pdf_response(row["pdf"], row["filename"])
+
+
+@app.get("/internal/clean/{att_id}")
+def internal_clean(att_id: int, user: str = Depends(staff)):
+    """Staff preview of the cleaned copy, whatever the decision."""
+    with db() as con:
+        row = con.execute("select filename, public_pdf from attachments where id=?", (att_id,)).fetchone()
+    if not row or not row["public_pdf"]:
+        raise HTTPException(404, headers={"Cache-Control": "no-store"})
+    return pdf_response(row["public_pdf"], row["filename"])
 
 
 @app.get("/dashboard")
