@@ -2,7 +2,7 @@
 @import "@heroui/styles";
 
 .hero-workspace {
-  --accent: #a9dcf4; --accent-foreground: #143b51; --accent-soft: #e9f6fd;
+  --accent: var(--c-primary, #1F6FB2); --accent-foreground: #fff; --accent-soft: #e9f6fd;
   --accent-soft-foreground: #244e65; --background: #fff; --foreground: #253d4b;
   --surface: #fff; --surface-foreground: #253d4b; --field-background: #fff;
   --field-foreground: #253d4b; --field-placeholder: #6d818d; --border: #dfe9ef;
@@ -19,7 +19,7 @@
 .hero-workspace .button--ghost { border-color: transparent; background: transparent; }
 .hero-workspace .button--ghost:hover,.hero-workspace .button--secondary:hover { background: #f0f8fc; }
 .hero-workspace .button[data-disabled] { cursor: default; opacity: .55; }
-.hero-workspace .button:focus-visible,.hero-workspace a:focus-visible { outline: 2px solid #2786b4; outline-offset: 3px; }
+.hero-workspace .button:focus-visible,.hero-workspace a:focus-visible { outline: 2px solid var(--c-primary, #1F6FB2); outline-offset: 3px; }
 .hero-workspace .workspace-totals { display: grid; grid-template-columns: repeat(4, 1fr); border-block: 1px solid #e2ebf0; padding: 24px 0; margin-bottom: 34px; }
 .hero-workspace .workspace-totals>div { display: flex; align-items: baseline; gap: 14px; padding-left: 26px; border-right: 1px solid #e2ebf0; }
 .hero-workspace .workspace-totals>div:first-child { padding-left: 0; }.hero-workspace .workspace-totals>div:last-child { border: 0; }
