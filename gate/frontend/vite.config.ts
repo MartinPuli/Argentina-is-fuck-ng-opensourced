@@ -1,8 +1,9 @@
 import { defineConfig } from 'vite';
 import tailwindcss from '@tailwindcss/vite';
+import { flatGradients } from './flat-gradients.mjs';
 
 export default defineConfig({
-  plugins: [tailwindcss()],
+  plugins: [tailwindcss(), flatGradients()],
   define: { 'process.env.NODE_ENV': JSON.stringify('production') },
   build: {
     outDir: '../src/gate/static', emptyOutDir: true, cssCodeSplit: false,

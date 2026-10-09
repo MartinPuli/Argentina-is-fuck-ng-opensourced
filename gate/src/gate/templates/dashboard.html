@@ -1,4 +1,4 @@
-{% extends "base.html" %}{% from "components.html" import badge with context %}{% block title %}Audit{% endblock %}{% block body %}
+{% extends "base.html" %}{% from "components.html" import badge with context %}{% block title %}History{% endblock %}{% block body %}
 <style>
 .ch{--ch-yellow:var(--c-clickhouse,#facc15);--ch-red:var(--c-blocked,#dc2626);--ch-amber:var(--c-review,#f59e0b);margin-bottom:28px}
 .ch-top{display:flex;align-items:center;justify-content:space-between;gap:10px 16px;flex-wrap:wrap;margin-bottom:16px}
@@ -67,7 +67,7 @@
 .ch-hero>div,.ch-card{border:1px solid var(--line);background:#fff}.ch-hero strong,.ch-big strong{font-weight:300;color:var(--ink);font-size:36px}.ch-hero strong small,.ch-card h2,.ch-bars b,.lv summary,.lv-stats b,.lv h3{font-weight:400}.ch-ms{background:var(--accent-soft);color:var(--muted);font-weight:400;border-radius:3px}.ch-ms:before{content:none}.ch-sim{font-weight:400;border-radius:3px}.ch-card{--c:#9ac9e4}.ch-bar.risk>span{background:#d5a6ac}.ch-cols i{background:#a8d7ee}
 </style>
 <section class="ch" aria-label="ClickHouse history">
-<div class="ch-top"><h1>Audit</h1><a class="ch-back text-link" href="/live">← Activity</a>{% if h %}<span class="ch-sim">Simulated telemetry, not real PAMI data</span>{% endif %}</div>
+<div class="ch-top"><h1>History</h1><a class="ch-back text-link" href="/live">← Activity</a>{% if h %}<span class="ch-sim">Simulated telemetry, not real PAMI data</span>{% endif %}</div>
 {% if h %}
 {% set qms=[h.total.ms, h.by_office.ms, h.kinds.ms, h.monthly.ms, h.policy.ms] %}
 {% set kmax=h.kinds.rows|map(attribute=1)|max if h.kinds.rows else 1 %}
