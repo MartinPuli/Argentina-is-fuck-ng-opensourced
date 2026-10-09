@@ -18,3 +18,7 @@ Read [the event brief](docs/EVENT-BRIEF.md), [the defense proposal](docs/researc
 - Keep the controller's authority separate from the repair worker and verifier. Test actual outcomes and legitimate-service availability.
 - Record what is proposed, locally measured, integrated and deployed separately. Do not claim that a paper's benchmark is this product's prevention rate.
 - Inspect changes and run checks appropriate to them before pushing; never overwrite unrelated collaborator work.
+
+## PDF browser verification
+
+The user selected [tester-army/e2e](https://github.com/tester-army/e2e) for end-to-end testing. Use [gate/e2e](gate/e2e/README.md) for upload, review and publication regressions. It starts a disposable authenticated local app and uses only fictional PDFs. Keep live provider evidence separate from these offline browser results, and retain failed-run traces when investigating a regression.

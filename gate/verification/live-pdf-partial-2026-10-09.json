@@ -1,0 +1,426 @@
+{
+  "status": "partial_historical_receipt",
+  "note": "Captured before the shared workspace was reset. This is not a complete or current passing run. Later note and bed cleanup was observed separately; the prosthesis run was not confirmed complete.",
+  "files": [
+    {
+      "purchase_id": 5,
+      "attachment_id": 15,
+      "file": "cotizacion_proveedor.pdf",
+      "done": true,
+      "decision": "public",
+      "steps": [
+        {
+          "name": "Read",
+          "status": "done",
+          "detail": "1 page(s) read"
+        },
+        {
+          "name": "Find IDs",
+          "status": "done",
+          "detail": "1 initial finding(s)"
+        },
+        {
+          "name": "Learned rules",
+          "status": "done",
+          "detail": "0 active rule(s); 0 finding(s)"
+        },
+        {
+          "name": "AkashML AI",
+          "status": "done",
+          "detail": "Analysis returned"
+        },
+        {
+          "name": "AkashML vision",
+          "status": "skipped",
+          "detail": ""
+        },
+        {
+          "name": "Decide",
+          "status": "done",
+          "detail": "Cleared for publication"
+        }
+      ],
+      "agent_url": null
+    },
+    {
+      "purchase_id": 5,
+      "attachment_id": 14,
+      "file": "especificacion_cama.pdf",
+      "done": false,
+      "decision": "hold",
+      "steps": [
+        {
+          "name": "Read",
+          "status": "done",
+          "detail": "1 page(s) read"
+        },
+        {
+          "name": "Find IDs",
+          "status": "done",
+          "detail": "0 initial finding(s)"
+        },
+        {
+          "name": "Learned rules",
+          "status": "done",
+          "detail": "0 active rule(s); 0 finding(s)"
+        },
+        {
+          "name": "AkashML AI",
+          "status": "done",
+          "detail": "Analysis returned"
+        },
+        {
+          "name": "AkashML vision",
+          "status": "skipped",
+          "detail": ""
+        },
+        {
+          "name": "Decide",
+          "status": "done",
+          "detail": "Needs review"
+        },
+        {
+          "name": "Clearance levels",
+          "status": "running",
+          "detail": ""
+        },
+        {
+          "name": "Guild orchestrator",
+          "status": "running",
+          "detail": ""
+        }
+      ],
+      "agent_url": null
+    },
+    {
+      "purchase_id": 5,
+      "attachment_id": 18,
+      "file": "especificacion_protesis.pdf",
+      "done": false,
+      "decision": "hold",
+      "steps": [
+        {
+          "name": "Read",
+          "status": "done",
+          "detail": "1 page(s) read"
+        },
+        {
+          "name": "Find IDs",
+          "status": "done",
+          "detail": "1 initial finding(s)"
+        },
+        {
+          "name": "Learned rules",
+          "status": "done",
+          "detail": "0 active rule(s); 0 finding(s)"
+        },
+        {
+          "name": "AkashML AI",
+          "status": "done",
+          "detail": "Analysis returned"
+        },
+        {
+          "name": "AkashML vision",
+          "status": "skipped",
+          "detail": ""
+        },
+        {
+          "name": "Decide",
+          "status": "done",
+          "detail": "Needs review"
+        },
+        {
+          "name": "Clearance levels",
+          "status": "running",
+          "detail": ""
+        },
+        {
+          "name": "Guild orchestrator",
+          "status": "running",
+          "detail": ""
+        }
+      ],
+      "agent_url": null
+    },
+    {
+      "purchase_id": 5,
+      "attachment_id": 13,
+      "file": "radiografia_mu\u00f1on.pdf",
+      "done": true,
+      "decision": "hold",
+      "steps": [
+        {
+          "name": "Read",
+          "status": "done",
+          "detail": "1 page(s) read"
+        },
+        {
+          "name": "Find IDs",
+          "status": "done",
+          "detail": "0 initial finding(s)"
+        },
+        {
+          "name": "Learned rules",
+          "status": "done",
+          "detail": "0 active rule(s); 0 finding(s)"
+        },
+        {
+          "name": "AkashML AI",
+          "status": "done",
+          "detail": "Analysis returned"
+        },
+        {
+          "name": "AkashML vision",
+          "status": "done",
+          "detail": "Analysis returned"
+        },
+        {
+          "name": "Decide",
+          "status": "done",
+          "detail": "Needs review"
+        },
+        {
+          "name": "Guild agent note",
+          "status": "done",
+          "detail": "Ready"
+        }
+      ],
+      "agent_url": "https://app.guild.ai/sessions/01a122b0-20ff-351a-0000-942a76b7f193"
+    },
+    {
+      "purchase_id": 5,
+      "attachment_id": 17,
+      "file": "certificado_discapacidad.pdf",
+      "done": false,
+      "decision": "withheld",
+      "steps": [
+        {
+          "name": "Read",
+          "status": "done",
+          "detail": "1 page(s) read"
+        },
+        {
+          "name": "Find IDs",
+          "status": "done",
+          "detail": "4 initial finding(s)"
+        },
+        {
+          "name": "Learned rules",
+          "status": "done",
+          "detail": "0 active rule(s); 0 finding(s)"
+        },
+        {
+          "name": "AkashML AI",
+          "status": "done",
+          "detail": "Analysis returned"
+        },
+        {
+          "name": "AkashML vision",
+          "status": "done",
+          "detail": "Analysis returned"
+        },
+        {
+          "name": "Decide",
+          "status": "done",
+          "detail": "Blocked"
+        },
+        {
+          "name": "Guild agent note",
+          "status": "running",
+          "detail": ""
+        }
+      ],
+      "agent_url": null
+    },
+    {
+      "purchase_id": 5,
+      "attachment_id": 16,
+      "file": "dni_escaneado.pdf",
+      "done": false,
+      "decision": "withheld",
+      "steps": [
+        {
+          "name": "Read",
+          "status": "done",
+          "detail": "1 page(s) read"
+        },
+        {
+          "name": "Find IDs",
+          "status": "done",
+          "detail": "3 initial finding(s)"
+        },
+        {
+          "name": "Learned rules",
+          "status": "done",
+          "detail": "0 active rule(s); 0 finding(s)"
+        },
+        {
+          "name": "AkashML AI",
+          "status": "done",
+          "detail": "Analysis returned"
+        },
+        {
+          "name": "AkashML vision",
+          "status": "done",
+          "detail": "Analysis returned"
+        },
+        {
+          "name": "Decide",
+          "status": "done",
+          "detail": "Blocked"
+        },
+        {
+          "name": "Guild agent note",
+          "status": "running",
+          "detail": ""
+        }
+      ],
+      "agent_url": null
+    },
+    {
+      "purchase_id": 4,
+      "attachment_id": 12,
+      "file": "justificacion_medica.pdf",
+      "done": true,
+      "decision": "withheld",
+      "steps": [
+        {
+          "name": "Read",
+          "status": "done",
+          "detail": "1 page(s) read"
+        },
+        {
+          "name": "Find IDs",
+          "status": "done",
+          "detail": "6 initial finding(s)"
+        },
+        {
+          "name": "Learned rules",
+          "status": "done",
+          "detail": "0 active rule(s); 0 finding(s)"
+        },
+        {
+          "name": "AkashML AI",
+          "status": "done",
+          "detail": "Analysis returned"
+        },
+        {
+          "name": "AkashML vision",
+          "status": "skipped",
+          "detail": ""
+        },
+        {
+          "name": "Decide",
+          "status": "done",
+          "detail": "Blocked"
+        },
+        {
+          "name": "Guild agent note",
+          "status": "done",
+          "detail": "Ready"
+        }
+      ],
+      "agent_url": "https://app.guild.ai/sessions/01a122af-a932-351a-0000-0dd626529889"
+    },
+    {
+      "purchase_id": 4,
+      "attachment_id": 10,
+      "file": "especificacion_tecnica_silla.pdf",
+      "done": true,
+      "decision": "public",
+      "steps": [
+        {
+          "name": "Read",
+          "status": "done",
+          "detail": "1 page(s) read"
+        },
+        {
+          "name": "Find IDs",
+          "status": "done",
+          "detail": "0 initial finding(s)"
+        },
+        {
+          "name": "Learned rules",
+          "status": "done",
+          "detail": "0 active rule(s); 0 finding(s)"
+        },
+        {
+          "name": "AkashML AI",
+          "status": "done",
+          "detail": "Analysis returned"
+        },
+        {
+          "name": "AkashML vision",
+          "status": "skipped",
+          "detail": ""
+        },
+        {
+          "name": "Decide",
+          "status": "done",
+          "detail": "Cleared for publication"
+        }
+      ],
+      "agent_url": null
+    },
+    {
+      "purchase_id": 4,
+      "attachment_id": 11,
+      "file": "nota_pedido.pdf",
+      "done": false,
+      "decision": "withheld",
+      "steps": [
+        {
+          "name": "Read",
+          "status": "done",
+          "detail": "1 page(s) read"
+        },
+        {
+          "name": "Find IDs",
+          "status": "done",
+          "detail": "2 initial finding(s)"
+        },
+        {
+          "name": "Learned rules",
+          "status": "done",
+          "detail": "0 active rule(s); 0 finding(s)"
+        },
+        {
+          "name": "AkashML AI",
+          "status": "done",
+          "detail": "Analysis returned"
+        },
+        {
+          "name": "AkashML vision",
+          "status": "skipped",
+          "detail": ""
+        },
+        {
+          "name": "Decide",
+          "status": "done",
+          "detail": "Blocked"
+        },
+        {
+          "name": "Clearance levels",
+          "status": "running",
+          "detail": ""
+        },
+        {
+          "name": "Guild orchestrator",
+          "status": "done",
+          "detail": "3 clinical \u00b7 0 procurement \u00b7 5 public"
+        },
+        {
+          "name": "Public agent \u00b7 round 1",
+          "status": "done",
+          "detail": "3 item(s) to remove"
+        },
+        {
+          "name": "Public reviewer \u00b7 round 1",
+          "status": "running",
+          "detail": ""
+        }
+      ],
+      "agent_url": null
+    }
+  ]
+}

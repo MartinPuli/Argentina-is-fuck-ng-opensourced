@@ -169,3 +169,7 @@ Application code, templates, static assets and fictional fixtures are available 
 ## Security memory
 
 [Pi implementation plan](../docs/research/PI-IMPLEMENTATION-PLAN.md): proposed integration for turning incident evidence into tested PDF rules, code fixes and credential-response workflows. Pi access and execution are not yet verified.
+
+## PDF verification
+
+Run the [tester-army/e2e browser suite](e2e/README.md) to check actual uploads and publication from both review screens. See the [executed results and integration limits](verification/PDF-VERIFICATION-2026-10-09.md).

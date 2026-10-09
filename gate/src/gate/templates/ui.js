@@ -29,7 +29,8 @@
     message.className = 'form-message loading';
     message.textContent = form.dataset.loading || 'Saving…';
     try {
-      const response = await fetch(form.action, { method: 'POST', body: data, credentials: 'same-origin' });
+      // A control named "action" shadows HTMLFormElement.action.
+      const response = await fetch(form.getAttribute('action'), { method: 'POST', body: data, credentials: 'same-origin' });
       if (!response.ok) {
         let text = response.status === 401 ? 'Sign in through the office workspace, then try again.' : 'The request could not be completed. Please try again.';
         try { const body = await response.json(); if (typeof body.detail === 'string') text = body.detail; } catch (_) { /* Keep the readable fallback for non-JSON errors. */ }

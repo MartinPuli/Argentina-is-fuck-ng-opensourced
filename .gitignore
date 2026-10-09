@@ -18,3 +18,4 @@ competitor-profiles/raw/
 
 # Frontend dependencies; compiled workspace assets are committed.
 gate/frontend/node_modules/
+gate/e2e/.e2e/

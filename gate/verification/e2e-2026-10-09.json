@@ -1,0 +1,129 @@
+{
+  "id": "01a122b8-5649-7b08-9571-ff8027daa73f",
+  "runner": {
+    "name": "e2e",
+    "version": "0.19.0"
+  },
+  "status": "passed",
+  "exitCode": 0,
+  "startedAt": "2026-10-09T22:11:08.787Z",
+  "finishedAt": "2026-10-09T22:11:16.110Z",
+  "summary": {
+    "discovered": 11,
+    "selected": 11,
+    "executed": 11,
+    "passed": 11,
+    "failed": 0,
+    "interrupted": 0,
+    "flaky": 0,
+    "skipped": 0
+  },
+  "mode": "Disposable local app, actual Chromium, no provider mocks or sponsor calls",
+  "tests": [
+    {
+      "title": [
+        "PDF stays private before review: certificado_discapacidad.pdf"
+      ],
+      "status": "passed"
+    },
+    {
+      "title": [
+        "PDF stays private before review: cotizacion_proveedor.pdf"
+      ],
+      "status": "passed"
+    },
+    {
+      "title": [
+        "PDF stays private before review: dni_escaneado.pdf"
+      ],
+      "status": "passed"
+    },
+    {
+      "title": [
+        "PDF stays private before review: especificacion_cama.pdf"
+      ],
+      "status": "passed"
+    },
+    {
+      "title": [
+        "PDF stays private before review: especificacion_protesis.pdf"
+      ],
+      "status": "passed"
+    },
+    {
+      "title": [
+        "PDF stays private before review: especificacion_tecnica_silla.pdf"
+      ],
+      "status": "passed"
+    },
+    {
+      "title": [
+        "PDF stays private before review: justificacion_medica.pdf"
+      ],
+      "status": "passed"
+    },
+    {
+      "title": [
+        "PDF stays private before review: nota_pedido.pdf"
+      ],
+      "status": "passed"
+    },
+    {
+      "title": [
+        "PDF stays private before review: radiografia_mu\u00f1on.pdf"
+      ],
+      "status": "passed"
+    },
+    {
+      "title": [
+        "an inspected benign PDF publishes with exact bytes via /review"
+      ],
+      "status": "passed"
+    },
+    {
+      "title": [
+        "an inspected benign PDF publishes with exact bytes via /live"
+      ],
+      "status": "passed"
+    }
+  ],
+  "fixtures": [
+    {
+      "file": "certificado_discapacidad.pdf",
+      "sha256": "58cddeebf1f21bbfcfa5414368fec0e8e1aaa1c2802abff7849cf95c59dabcb6"
+    },
+    {
+      "file": "cotizacion_proveedor.pdf",
+      "sha256": "89afa99feecce0484a1f34aed4ae316c8e1c765c14090c24150531eea4ac0bfe"
+    },
+    {
+      "file": "dni_escaneado.pdf",
+      "sha256": "ad5e1c3f0707b5439d1e7d709faa9f3d2fc1a261514c347691a466dd8361a1d3"
+    },
+    {
+      "file": "especificacion_cama.pdf",
+      "sha256": "857bcf0c5af9cd19012155aaf8cc8f22e8bb6e0762c5fd85af28b5d1a48ffcd6"
+    },
+    {
+      "file": "especificacion_protesis.pdf",
+      "sha256": "7e564c44a559affec22621158aafe7af05cd421b2f958981b003f2589abc0e6c"
+    },
+    {
+      "file": "especificacion_tecnica_silla.pdf",
+      "sha256": "30007a0c0dd8dce3e52332ade331522cf5088917cd2a8b5348b95841fff223c1"
+    },
+    {
+      "file": "justificacion_medica.pdf",
+      "sha256": "2c168b12ee52946f371528b84e7a8a8f6a26035509c1117b7a46f1cdb7823248"
+    },
+    {
+      "file": "nota_pedido.pdf",
+      "sha256": "f61b2b28fcffe7560d7558187ed0d0d81b96f223bd0d7a9d76491e1f345c823c"
+    },
+    {
+      "file": "radiografia_mu\u00f1on.pdf",
+      "sha256": "72679c8f4d7dfd7a69e192e39162464e29339029e8c582f66f80dbd372cf61e7"
+    }
+  ],
+  "base_commit": "e0a03e9"
+}
