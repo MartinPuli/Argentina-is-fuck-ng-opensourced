@@ -8,10 +8,10 @@
 <a class="skip-link" href="#content">Skip to content</a>
 {% if not is_public %}
 <aside class="sidebar" aria-label="Workspace navigation">
-<a class="brand" href="/"><span class="brand-mark" aria-hidden="true">pg</span><span>Publication<span class="brand-sub">Gate</span></span></a>
+<a class="brand" href="/"><span class="brand-mark" aria-hidden="true">ag</span><span>ArgenSec<span class="brand-sub">Publication Gate</span></span></a>
 <div class="workspace-label">Defense workspace</div>
 <nav>
-{% for href, label, symbol in [('/', 'Overview', '◫'), ('/office', 'New purchase', '+'), ('/review', 'Review queue', '≡'), ('/learning', 'Learning library', '◇'), ('/dashboard', 'Audit trail', '⌁')] %}
+{% for href, label, symbol in [('/', 'Overview', '◫'), ('/live', 'Live activity', '◉'), ('/office', 'New purchase', '+'), ('/review', 'Review queue', '≡'), ('/learning', 'Learning library', '◇'), ('/exposures', 'Argentina exposures', '↗'), ('/dashboard', 'Audit trail', '⌁')] %}
 <a href="{{ href }}" class="nav-link {{ 'active' if (request.url.path == href or (href == '/learning' and request.url.path.startswith('/learning/'))) else '' }}" {% if (request.url.path == href or (href == '/learning' and request.url.path.startswith('/learning/'))) %}aria-current="page"{% endif %}><span class="nav-symbol" aria-hidden="true">{{ symbol }}</span>{{ label }}</a>
 {% endfor %}
 </nav>

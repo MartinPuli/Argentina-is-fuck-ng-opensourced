@@ -70,3 +70,7 @@ Reuse named CSS durations and loading feedback, honor reduced motion. Show only 
 
 ## 7. Open questions for the user
 None needed: the user explicitly selected the team product and requested incident learning, new PDF checks, reusable skills and improvement proposals. Implement these within the existing prototype.
+
+## Integrated team activity and evidence comparison
+
+Keep the team's live processing view at `/live` while retaining detailed upload/review screens. The background worker must use the same authenticated submission, PDF limits, learning revision and fail-closed decision path; in-memory activity is a demo limitation. The staff-only `/exposures` screen presents sourced cases by organization type and original counting unit. An unknown quantity is never zero, and unverified volumes cannot create a factual national leaderboard. These are additions to the current phase, not replacements for the team product.

@@ -13,6 +13,10 @@ You may share and adapt the licensed material, including commercially, under tho
 
 Credit **MartinPuli, _Argentina Government Data Leaks_**, link to the repository and this license, and identify the research snapshot or revision used.
 
+## Application software
+
+The Publication Gate application source, templates and executable fictional fixtures in `gate/` use its [MIT license](gate/LICENSE-MIT). Original research and documentation retain CC BY 4.0 unless explicitly stated otherwise.
+
 ## Reference experiment software
 
 Python source and executable JSON fixtures in `experiments/reference-defense/` are licensed under that directory's [MIT license](experiments/reference-defense/LICENSE-MIT). Documentation and generated results remain under CC BY 4.0. The software grant does not relicense external works or other repository material.

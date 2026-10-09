@@ -5,6 +5,7 @@ Public: the purchasing portal. It serves an attachment only if the gate cleared 
 """
 
 import hashlib
+import io
 import json
 import os
 import re
@@ -19,16 +20,16 @@ from urllib.parse import quote, urlsplit
 import pymupdf
 from dotenv import load_dotenv
 from fastapi import Depends, FastAPI, File, Form, HTTPException, Request, UploadFile
-from fastapi.responses import PlainTextResponse, RedirectResponse, Response
+from fastapi.responses import JSONResponse, PlainTextResponse, RedirectResponse, Response
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from fastapi.templating import Jinja2Templates
 
 load_dotenv(Path(__file__).resolve().parents[3] / ".env")
 load_dotenv(Path(__file__).resolve().parents[2] / ".env")
 
-from . import agent, llm, learning  # noqa: E402
+from . import activity, agent, llm, learning  # noqa: E402
 from .detect import Finding, scan  # noqa: E402
-from .policy import PUBLIC, WITHHELD, decide  # noqa: E402
+from .policy import HOLD, PUBLIC, WITHHELD, decide, valid_image_analysis, valid_text_analysis  # noqa: E402
 from .rules import RULES  # noqa: E402
 from .store import Events, db  # noqa: E402
 
@@ -49,6 +50,16 @@ templates.env.filters["fromjson"] = lambda v: json.loads(v) if v else None
 templates.env.globals["RULES"] = RULES
 events = Events()
 basic = HTTPBasic(auto_error=False)
+LIVE_EXECUTOR = ThreadPoolExecutor(max_workers=4, thread_name_prefix="gate-live")
+LIVE_CAPACITY = threading.BoundedSemaphore(32)
+STEP_READ = "Read"
+STEP_SCAN = "Find IDs"
+STEP_LEARN = "Learned rules"
+STEP_AI = "AkashML AI"
+STEP_VISION = "AkashML vision"
+STEP_DECIDE = "Decide"
+STEP_BRIEF = "Guild agent note"
+LABEL = {"public": "Cleared for publication", "approved": "Approved", "hold": "Needs review", "withheld": "Blocked"}
 
 
 def origin_of(value: str, *, origin_header: bool = False) -> tuple | None:
@@ -157,14 +168,37 @@ def page(request: Request, name: str, **ctx) -> Response:
     return templates.TemplateResponse(request, name, ctx)
 
 
-def evaluate(pdf: bytes) -> tuple:
+def progress(job: dict | None, name: str, status: str, detail: str = "") -> None:
+    if job is not None:
+        activity.step(job, name, status, detail)
+
+
+def evaluate(pdf: bytes, job: dict | None = None) -> tuple:
     started = time.perf_counter()
     active, rules_revision = learning.snapshot()
+    progress(job, STEP_READ, "running")
     result = scan(pdf)
+    progress(job, STEP_READ, "done", f"{len(result.pages)} page(s) read")
+    progress(job, STEP_SCAN, "done", f"{len(result.findings)} initial finding(s)")
+    before = len(result.findings)
     result.findings.extend(learning.apply(result.pages, active))
+    progress(job, STEP_LEARN, "done", f"{len(active)} active rule(s); {len(result.findings) - before} finding(s)")
+    progress(job, STEP_AI, "running")
     model = llm.review("\n\n".join(p.text for p in result.pages))
+    progress(job, STEP_AI, "done" if valid_text_analysis(model) else "error",
+             "Analysis returned" if valid_text_analysis(model) else "Required text analysis unavailable or incomplete")
+    progress(job, STEP_VISION, "running" if any(p.image for p in result.pages) else "skipped")
     images = [llm.review_image(p.image) if p.image else None for p in result.pages]
+    if any(p.image for p in result.pages):
+        valid = all(valid_image_analysis(images[i]) for i, p in enumerate(result.pages) if p.image)
+        progress(job, STEP_VISION, "done" if valid else "error",
+                 "Analysis returned" if valid else "Required image analysis unavailable or incomplete")
     decision, reasons, findings = decide(result, model, images)
+    progress(job, STEP_DECIDE, "done", LABEL[decision])
+    if job is not None:
+        activity.finish(job, why={PUBLIC: "Current checks found no reason to restrict publication.",
+                                  HOLD: "A person must review this attachment before publication.",
+                                  WITHHELD: "A blocking finding keeps this attachment private."}[decision])
     return model, decision, reasons, findings, (time.perf_counter() - started) * 1000, rules_revision
 
 
@@ -177,7 +211,7 @@ def gate_files(purchase: dict, files: list[tuple[str, bytes]]) -> None:
 
 
 def store_attachment(purchase: dict, filename: str, pdf: bytes, model, decision, reasons,
-                     findings, latency, rules_revision=None) -> int:
+                     findings, latency, rules_revision=None, job: dict | None = None) -> int:
     """Store one checked file and log the decision."""
     with db() as con:
         cur = con.execute(
@@ -194,28 +228,182 @@ def store_attachment(purchase: dict, filename: str, pdf: bytes, model, decision,
         pass
     events.log("decision", purchase["office"], purchase["id"], att_id, filename, decision,
                sorted({f["kind"] for f in findings}), "gate", latency)
+    if job is not None:
+        activity.finish(job, attachment_id=att_id, decision=decision)
     if decision != PUBLIC and agent.configured():
+        progress(job, STEP_BRIEF, "running")
         threading.Thread(target=brief_in_background, args=(att_id, purchase, filename, decision,
-                                                           reasons, findings), daemon=True).start()
+                                                           reasons, findings, job), daemon=True).start()
+    elif job is not None:
+        activity.finish(job, done=True)
     return att_id
 
 
-def brief_in_background(att_id, purchase, filename, decision, reasons, findings) -> None:
-    brief = agent.brief(purchase, filename, decision, reasons, findings)
-    with db() as con:
-        con.execute("update attachments set agent=? where id=?", (json.dumps(brief), att_id))
-    events.log("agent_brief", purchase["office"], purchase["id"], att_id, filename, decision,
-               [], "guild-agent", brief.get("latency_ms", 0))
+def brief_in_background(att_id, purchase, filename, decision, reasons, findings, job=None) -> None:
+    try:
+        brief = agent.brief(purchase, filename, decision, reasons, findings)
+        with db() as con:
+            con.execute("update attachments set agent=? where id=?", (json.dumps(brief), att_id))
+        events.log("agent_brief", purchase["office"], purchase["id"], att_id, filename, decision,
+                   [], "guild-agent", brief.get("latency_ms", 0))
+        progress(job, STEP_BRIEF, "error" if "error" in brief else "done",
+                 "Unavailable" if "error" in brief else "Ready")
+        if job is not None:
+            activity.finish(job, agent_url=brief.get("url", ""))
+    except Exception:
+        progress(job, STEP_BRIEF, "error", "Agent note unavailable; publication decision unchanged")
+    finally:
+        if job is not None:
+            activity.finish(job, done=True)
 
 
-def create_purchase(office: str, procedure: str, item: str, amount: float) -> dict:
+def create_purchase(office: str, procedure: str, item: str, amount: float, actor: str = "office") -> dict:
     with db() as con:
         cur = con.execute(
             "insert into purchases (office, procedure, item, amount, created_at) values (?,?,?,?,?)",
             (office, procedure, item, amount, time.time()))
         purchase = {"id": cur.lastrowid, "office": office}
-    events.log("submitted", office, purchase["id"], actor="office")
+    events.log("submitted", office, purchase["id"], actor=actor)
     return purchase
+
+
+def reserve_live(count: int) -> None:
+    """Bound queued PDF memory as well as concurrent processing."""
+    acquired = 0
+    for _ in range(count):
+        if not LIVE_CAPACITY.acquire(blocking=False):
+            for _ in range(acquired):
+                LIVE_CAPACITY.release()
+            raise HTTPException(503, "The live queue is full. Wait for current checks to finish and retry.")
+        acquired += 1
+
+
+def process_live(purchase: dict, filename: str, pdf: bytes, job: dict) -> None:
+    try:
+        try:
+            evaluated = evaluate(pdf, job)
+        except Exception:
+            # An unexpected worker failure must not erase a block found before it failed.
+            # Ordinary missing providers are handled by decide() as HOLD, not here.
+            progress(job, STEP_DECIDE, "error", "Processing failed; file remains private")
+            activity.finish(job, why="Processing failed. Inspect the private file and submit it again.")
+            evaluated = (None, WITHHELD, ["Processing failed. The attachment remains private."],
+                         [{"kind": "processing_failed", "label": "Document processing failed",
+                           "evidence": "", "page": 0, "severity": "block", "rule": "unreadable"}],
+                         0, "")
+        store_attachment(purchase, filename, pdf, *evaluated, job=job)
+    except Exception:
+        # Storage/audit errors are not converted into an assumed safe verdict.
+        progress(job, STEP_DECIDE, "error", "Could not complete the check; inspect the purchase")
+        activity.finish(job, done=True, decision="error", why="The check did not complete.")
+    finally:
+        LIVE_CAPACITY.release()
+
+
+def queue_live(purchase: dict, item: str, files: list[tuple[str, bytes]], actor: str) -> None:
+    """Submit an already validated batch with capacity reserved by its caller."""
+    for filename, pdf in files:
+        job = activity.start(purchase, item, filename,
+                             [STEP_READ, STEP_SCAN, STEP_LEARN, STEP_AI, STEP_VISION, STEP_DECIDE])
+        activity.finish(job, actor=actor)
+        try:
+            LIVE_EXECUTOR.submit(process_live, purchase, filename, pdf, job)
+        except Exception:
+            LIVE_CAPACITY.release()
+            progress(job, STEP_DECIDE, "error", "Could not queue this attachment; submit it again")
+            activity.finish(job, done=True, decision="error", why="The attachment was not processed.")
+
+
+@app.get("/live")
+def live_view(request: Request, user: str = Depends(staff)):
+    return page(request, "live.html", offices=OFFICES, user=user)
+
+
+@app.post("/live/upload")
+async def live_upload(office: str = Form(...), procedure: str = Form(...), item: str = Form(...),
+                      amount: float = Form(...), files: list[UploadFile] = File(...),
+                      user: str = Depends(staff)):
+    uploads = await validated_uploads(files)
+    reserve_live(len(uploads))
+    try:
+        purchase = create_purchase(office, procedure, item, amount, actor=user)
+    except Exception:
+        for _ in uploads:
+            LIVE_CAPACITY.release()
+        raise
+    queue_live(purchase, item, uploads, user)
+    return RedirectResponse("/live", status_code=303)
+
+
+@app.post("/live/demo/seed")
+async def live_demo_seed(user: str = Depends(staff)):
+    prepared = []
+    for spec in json.loads((FIXTURES / "purchases.json").read_text()):
+        files = [UploadFile(io.BytesIO((FIXTURES / name).read_bytes()), filename=name) for name in spec["files"]]
+        prepared.append((spec, await validated_uploads(files)))
+    count = sum(len(files) for _, files in prepared)
+    reserve_live(count)
+    remaining = count
+    try:
+        for spec, uploads in prepared:
+            purchase = create_purchase(spec["office"], spec["procedure"], spec["item"], spec["amount"], actor=user)
+            queue_live(purchase, spec["item"], uploads, user)
+            remaining -= len(uploads)
+    finally:
+        for _ in range(remaining):
+            LIVE_CAPACITY.release()
+    return RedirectResponse("/live", status_code=303)
+
+
+@app.get("/api/activity")
+def api_activity(user: str = Depends(staff)):
+    """Staff-only progress; only current publication decisions count as published."""
+    # A done job implies its row was committed before this database read.
+    jobs = activity.snapshot()
+    with db() as con:
+        rows = con.execute("select a.id,a.filename,a.decision,a.findings,a.agent,p.office,p.item,p.id as pid from attachments a "
+                           "join purchases p on p.id=a.purchase_id order by a.id").fetchall()
+    current = {row["id"]: learning.current(row["id"]) for row in rows}
+    by_id = {row["id"]: row for row in rows}
+    counts = {"published": 0, "waiting": 0, "blocked": 0, "stale": 0, "processing": 0}
+    waiting = []
+    for row in rows:
+        is_current = current[row["id"]]
+        counts["stale"] += not is_current
+        if row["decision"] in VISIBLE and is_current:
+            counts["published"] += 1
+        elif row["decision"] == WITHHELD:
+            counts["blocked"] += 1
+        elif row["decision"] == HOLD:
+            counts["waiting"] += 1
+            findings = json.loads(row["findings"] or "[]")
+            brief = json.loads(row["agent"] or "null") or {}
+            waiting.append({"id": row["id"], "file": row["filename"], "office": row["office"],
+                            "item": row["item"], "pid": row["pid"],
+                            "why": sorted({f["label"] for f in findings}), "risk": "",
+                            "note": brief.get("text", ""), "agent_url": brief.get("url", ""),
+                            "current": is_current, "can_approve": is_current})
+    for job in jobs:
+        row = by_id.get(job["attachment_id"])
+        job["current"] = current.get(job["attachment_id"], False)
+        job["stale"] = row is not None and not job["current"]
+        job["recorded_decision"] = row["decision"] if row else job["decision"]
+        if row:
+            job["decision"] = "stale" if job["stale"] and row["decision"] in VISIBLE else row["decision"]
+            if job["stale"]:
+                job["why"] = "Recheck against the current rules before publication."
+        counts["processing"] += not job["done"]
+    return JSONResponse({"jobs": jobs, "counts": counts, "waiting": waiting},
+                        headers={"Cache-Control": "no-store"})
+
+
+@app.get("/exposures")
+def exposures(request: Request, user: str = Depends(staff)):
+    from .exposure_data import COMPARISON_NOTE, EXPOSURES, RESEARCH_WINDOW, REVIEWED_AT
+    return page(request, "exposures.html", user=user,
+                companies=[row for row in EXPOSURES if row["entity_type"] == "company"],
+                public_bodies=[row for row in EXPOSURES if row["entity_type"] == "public_body"],
+                research_window=RESEARCH_WINDOW, reviewed_at=REVIEWED_AT, comparison_note=COMPARISON_NOTE)
 
 
 @app.get("/")
@@ -233,7 +421,7 @@ async def office_submit(office: str = Form(...), procedure: str = Form(...), ite
                         amount: float = Form(...), files: list[UploadFile] = File(...),
                         user: str = Depends(staff)):
     uploads = await validated_uploads(files)
-    purchase = create_purchase(office, procedure, item, amount)
+    purchase = create_purchase(office, procedure, item, amount, actor=user)
     gate_files(purchase, uploads)
     return RedirectResponse(f"/purchase/{purchase['id']}", status_code=303)
 
@@ -242,7 +430,7 @@ async def office_submit(office: str = Form(...), procedure: str = Form(...), ite
 def demo_seed(user: str = Depends(staff)):
     first = None
     for p in json.loads((FIXTURES / "purchases.json").read_text()):
-        purchase = create_purchase(p["office"], p["procedure"], p["item"], p["amount"])
+        purchase = create_purchase(p["office"], p["procedure"], p["item"], p["amount"], actor=user)
         first = first or purchase["id"]
         gate_files(purchase, [(name, (FIXTURES / name).read_bytes()) for name in p["files"]])
     return RedirectResponse(f"/purchase/{first}", status_code=303)

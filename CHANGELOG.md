@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-10-09 — Team publication gate, incident learning and evidence comparison
+
+- Kept the team's PDF publication gate as the primary build, with a live activity workspace alongside detailed upload/review screens. The broader server-defense proposal remains future work.
+- Added sourced incident recipes, optional model-proposed rules, immutable version checks, positive/benign tests, reviewed activation, existing-file rechecks and downloadable skill/proposal bundles. Rule changes suspend stale public approvals; retirement does not automatically release held files.
+- Added a sourced Argentina comparison with two companies and five public bodies. Unknown counts, file estimates, disputed record claims and report dates remain separate. This sample does not establish a verified largest-company ranking.
+- Hardened staff access, request origin checks, upload bounds, mixed-content PDF coverage and incomplete-analysis handling. Local provider mocks and fictional PDFs are explicitly separated from live sponsor proof.
+- Added six targeted paper reviews beyond the previous checkpoint: 55 reviews in 16 evidence files, with four metadata-only exclusions. Reconciled corpus now has 35 matched groups and 2,327 unmatched groups. Added a 77-assertion in-flight revocation experiment; earlier downloaded data remains unrecoverable.
+- Changes were first pushed to `codex/incident-learning` while the team continued updating `main`. The branch's public deployment and a same-run three-sponsor demonstration remain unverified.
+
 ## 2026-10-09 - Transferred checks, reconciled corpus and teammate review
 
 - Added five targeted full-text reviews after the 44-record checkpoint, bringing the evidence to 49 reviewed records across 13 files. Three metadata-only inaccessible records remain excluded. Eleven of 18 prioritized discovery candidates are now reviewed.

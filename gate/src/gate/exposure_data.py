@@ -1,0 +1,141 @@
+"""Bounded public-source evidence, not a company culpability or victim ranking.
+
+No source is fetched by this module. Null quantities mean unknown, never zero.
+Report dates select this research window; they are not inferred intrusion dates.
+"""
+
+RESEARCH_WINDOW = {"start": "2025-10-09", "end": "2026-10-09"}
+REVIEWED_AT = "2026-10-09"
+COMPARISON_NOTE = (
+    "This bounded review found no independently verified company exposure total. "
+    "Compare only the same unit and evidence level; do not sum overlapping claims. "
+    "Public bodies and companies are separate. Unknown counts are not zero."
+)
+
+EXPOSURES = [
+    {
+        "name": "Work Management / SudamericaData",
+        "entity_type": "company",
+        "incident_date": None,
+        "report_date": "2025-12-19",
+        "date_note": "Public reporting in December 2025; original collection and extraction dates unresolved.",
+        "source_url": "https://www.infobae.com/politica/2025/12/19/denuncian-una-masiva-filtracion-de-datos-personales-de-ciudadanos-argentinos-en-la-dark-web/",
+        "source_title": "Infobae: alleged mass disclosure associated with Work Management",
+        "evidence_status": "alleged",
+        "quantity": None,
+        "unit": "unknown",
+        "quantity_status": "unknown",
+        "scope_argentina": "known",
+        "title": "Alleged combined collection; no defensible unique total",
+        "summary": "Infobae reported a claimed collection associated with Work Management, described as SudamericaData's successor. Government sources denied compromise of official sites.",
+        "limitations": "Claimed component counts may overlap and include older material. They do not establish unique people or fresh breaches at every named agency. AAIP's December 23 statement confirms an inquiry, not the alleged volume or company responsibility.",
+        "supporting_sources": [
+            {"url": "https://www.argentina.gob.ar/noticias/la-aaip-inicio-una-investigacion-de-oficio-ante-presunta-filtracion-masiva-de-datos", "title": "AAIP inquiry statement", "date": "2025-12-23"}
+        ],
+    },
+    {
+        "name": "Global Visum",
+        "entity_type": "company",
+        "incident_date": None,
+        "report_date": "2026-08-13",
+        "date_note": "Reported access in early February 2026; supplier notices on February 2 and 11; municipal response reported August 13.",
+        "source_url": "https://www.cadena3.com/noticia/sociedad/que-dijo-la-municipalidad-tras-el-hackeo-al-sistema-de-transporte_583247",
+        "source_title": "Cadena 3: Córdoba municipality responds on transport-system access",
+        "evidence_status": "acknowledged",
+        "quantity": 20000,
+        "unit": "files",
+        "quantity_status": "reported",
+        "scope_argentina": "known",
+        "title": "Approximately 20,000 identity-document photographs reported",
+        "summary": "Cadena 3 reports the researcher's approximate photograph count. The municipality said the supplier's vulnerability had been fixed after notification.",
+        "limitations": "Acknowledgement concerns the vulnerability and response. The photograph count is researcher-reported, not independently verified here; photographs are not unique people or a verified criminal exfiltration total. This is a supplier case, not proof of compromise across municipal infrastructure.",
+    },
+    {
+        "name": "IOMA",
+        "entity_type": "public_body",
+        "incident_date": None,
+        "report_date": "2026-03-31",
+        "date_note": "March 31 reporting reproduces IOMA's March 30 statement; intrusion date not established.",
+        "source_url": "https://www.lanacion.com.ar/sociedad/la-provincia-advirtio-un-hackeo-al-ioma-alerta-por-la-filtracion-de-padrones-de-afiliacion-y-nid31032026/",
+        "source_title": "La Nación: IOMA affiliation-register disclosure and official response",
+        "evidence_status": "acknowledged",
+        "quantity": None,
+        "unit": "unknown",
+        "quantity_status": "unknown",
+        "scope_argentina": "known",
+        "title": "Affiliation-register disclosure acknowledged",
+        "summary": "IOMA acknowledged disclosure of affiliation registers and reported protective measures. Its statement said sensitive information and service operations were unaffected.",
+        "limitations": "The institution did not verify the attacker-advertised volume. This record does not promote that claim into an affected-person count or establish the full technical scope.",
+        "supporting_sources": [
+            {"url": "https://www.ioma.gba.gob.ar/index.php/2026/03/30/alerta-por-la-filtracion-de-padrones-de-afiliacion-y-medidas-de-seguridad-adoptadas/", "title": "Official statement linked by La Nación; direct retrieval failed in this review", "date": "2026-03-30"}
+        ],
+    },
+    {
+        "name": "Supreme Court of Buenos Aires Province (SCBA)",
+        "entity_type": "public_body",
+        "incident_date": None,
+        "report_date": "2026-04-02",
+        "date_note": "Official statement April 2, updated April 8; original incident date unspecified.",
+        "source_url": "https://www.scba.gov.ar/institucional/nota.asp?id=58623&veradjuntos=no",
+        "source_title": "SCBA: Filtración de datos",
+        "evidence_status": "confirmed",
+        "quantity": None,
+        "unit": "unknown",
+        "quantity_status": "unknown",
+        "scope_argentina": "known",
+        "title": "Personnel-information repository disclosure confirmed",
+        "summary": "SCBA identified a disclosed repository concerning judicial personnel. Its April 8 update excluded several broader compromise claims, including passwords and judicial-management systems.",
+        "limitations": "No verified record or person count is published in the statement. Confirmation is limited to the specified repository; it does not substantiate unrelated attacker claims.",
+    },
+    {
+        "name": "PAMI",
+        "entity_type": "public_body",
+        "incident_date": None,
+        "report_date": "2026-05-21",
+        "date_note": "May 21 investigation reviewed January–February 2026 procurement cases; original upload dates not established here.",
+        "source_url": "https://chequeado.com/investigaciones/pami-expone-datos-medicos-y-documentos-sensibles-de-sus-afiliados-en-su-sitio-web/",
+        "source_title": "Chequeado: PAMI exposed medical documents on its website",
+        "evidence_status": "confirmed",
+        "quantity": None,
+        "unit": "unknown",
+        "quantity_status": "unknown",
+        "scope_argentina": "known",
+        "title": "Public procurement attachments exposed private medical information",
+        "summary": "Chequeado documented unrestricted medical attachments and obtained PAMI's acknowledgement. The investigation found at least 40 cases within a limited procurement sample.",
+        "limitations": "Forty sampled cases are not a total of files, unique people or all exposures. We leave the comparison quantity unknown rather than convert incompatible units. This was documented publication exposure, not evidence of a new network intrusion.",
+    },
+    {
+        "name": "Government of Río Negro",
+        "entity_type": "public_body",
+        "incident_date": None,
+        "report_date": "2026-06-24",
+        "date_note": "Official announcement June 24; extraction date not stated.",
+        "source_url": "https://rionegro.gov.ar/articulo/59894/el-gobierno-denuncio-filtracion-de-informacion-de-sus-sistemas-informaticos",
+        "source_title": "Río Negro: government reported disclosure from its information systems",
+        "evidence_status": "acknowledged",
+        "quantity": None,
+        "unit": "unknown",
+        "quantity_status": "unknown",
+        "scope_argentina": "known",
+        "title": "Officials' payslip information extracted",
+        "summary": "The province acknowledged extracted payslip information and an investigation into possible improper employee access. A computer was preserved for judicial examination.",
+        "limitations": "No volume is given. Suspected employee involvement is not an established final cause. The statement explicitly describes ALTEC as assisting the investigation, not the target of the judicial action.",
+    },
+    {
+        "name": "ANSES / SIPA",
+        "entity_type": "public_body",
+        "incident_date": None,
+        "report_date": "2026-09-20",
+        "date_note": "Claim circulated September 14; Chequeado published its verification and agency denial September 20.",
+        "source_url": "https://chequeado.com/nota/que-se-sabe-sobre-el-supuesto-hackeo-a-la-anses-y-como-cuidar-tus-datos/",
+        "source_title": "Chequeado: what is known about the alleged ANSES hack",
+        "evidence_status": "disputed",
+        "quantity": 38000000,
+        "unit": "records",
+        "quantity_status": "claimed",
+        "scope_argentina": "known",
+        "title": "38 million records claimed; agency denied a hack",
+        "summary": "Chequeado traced the figure to an unverified sale claim and obtained an ANSES denial. It found no public independent confirmation of extraction from ANSES.",
+        "limitations": "This is a disputed claim, not a confirmed disclosure or fresh intrusion. Records cannot be treated as unique people, added to earlier collections, or ranked beside independently established totals.",
+    },
+]
