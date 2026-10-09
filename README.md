@@ -1,4 +1,6 @@
-# Argentina Government Data Leaks
+# Argentina-is-fuck-ng-opensourced
+
+## Argentina government data leaks
 
 Plain-English research on prominent Argentine government and government-linked data exposures, their causes, and their consequences for people, the economy and public institutions.
 
