@@ -587,7 +587,7 @@ def internal_clean(att_id: int, user: str = Depends(staff)):
 
 @app.get("/dashboard")
 def dashboard(request: Request, user: str = Depends(staff)):
-    return page(request, "dashboard.html", s=events.stats())
+    return page(request, "dashboard.html", s=events.stats(), h=events.history())
 
 
 @app.get("/api/rules")
