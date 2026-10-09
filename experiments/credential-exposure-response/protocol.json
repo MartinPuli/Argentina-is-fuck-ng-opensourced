@@ -1,0 +1,24 @@
+{
+  "license": "MIT",
+  "schema_version": 1,
+  "scenario": "Fictional credential exposure, corroboration and recovery",
+  "bind": "127.0.0.1",
+  "enrolled_identity": "A",
+  "exposure_route": "/fixture/exposed-credential",
+  "modes": ["scope_only", "repair_only", "revoke_only", "combined"],
+  "permissions": {"A": ["owner-a"], "B": ["owner-a", "owner-b"]},
+  "records": [
+    {"id": "FICTIONAL-A01", "owner": "owner-a"},
+    {"id": "FICTIONAL-A02", "owner": "owner-a"},
+    {"id": "FICTIONAL-A03", "owner": "owner-a"},
+    {"id": "FICTIONAL-A04", "owner": "owner-a"},
+    {"id": "FICTIONAL-A05", "owner": "owner-a"},
+    {"id": "FICTIONAL-A06", "owner": "owner-a"},
+    {"id": "FICTIONAL-A07", "owner": "owner-a"},
+    {"id": "FICTIONAL-A08", "owner": "owner-a"},
+    {"id": "FICTIONAL-B01", "owner": "owner-b"},
+    {"id": "FICTIONAL-B02", "owner": "owner-b"},
+    {"id": "FICTIONAL-B03", "owner": "owner-b"},
+    {"id": "FICTIONAL-B04", "owner": "owner-b"}
+  ]
+}

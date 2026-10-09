@@ -17,6 +17,8 @@ Credit **MartinPuli, _Argentina Government Data Leaks_**, link to the repository
 
 Python source and executable JSON fixtures in `experiments/reference-defense/` are licensed under that directory's [MIT license](experiments/reference-defense/LICENSE-MIT). Documentation and generated results remain under CC BY 4.0. The software grant does not relicense external works or other repository material.
 
+The same separation applies to the [publication-regression code and fixtures](experiments/publication-regression/LICENSE-MIT) and [credential-exposure response code and fixtures](experiments/credential-exposure-response/LICENSE-MIT): MIT for their software and executable fixtures; CC BY 4.0 for original documentation and generated observations.
+
 ## Third-party material
 
 This license does not apply to linked news articles, government documents, third-party databases, trademarks, or other external works. Their rights and terms remain with their respective rights holders. References to an institution or source do not imply endorsement.

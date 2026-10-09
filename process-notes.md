@@ -83,3 +83,14 @@
 - The experiment uses temporary loopback services and fresh synthetic credentials. Data/control endpoints share a process, and no model reads the malicious telemetry; production isolation and LLM injection resistance are unproven.
 - Independent research review added deployed-asset/rebuild checks and separated evidence collection integrity from interpretation confidence. Source cleanup and credential revocation must be verified separately.
 - Added results, protocol, limitations, source hashes, documentation links and MIT licensing for experiment code. Sponsor integration, autonomous repair, public release and contest submission remain unperformed.
+
+
+## 2026-10-09 — Corroborated exposure and product assessment
+
+- Continued the active research/effects goal and answered the user's request for an honest assessment of the idea. Recommendation: a narrow continuous containment-and-recovery demonstration; broad government protection remains unsupported.
+- Rechecked Pi's official platform and public connector documentation. Its security-memory and repair capabilities overlap with the proposal. Optional context integration remains contingent on actual permitted access, not counted as implemented.
+- Read six more selected paper methods/results/limitations with dates and denominators: 44 targeted reviews in eleven ledgers, plus an explicitly excluded unavailable AD18 record. Preserved pre-window foundations and in-window revisions. No paper reproduced; the broad literature goal remains incomplete.
+- New component experiment follows the repository-local AppBuilder planning template, adapted to a Python backend. Plan preceded implementation. Distinct observer and controller independently observe a known synthetic exposure; a protected gateway applies scoped revocation.
+- Main run: 88 checks, with combined mode showing three records before response and zero after, B3/3 batches and A3/4 legitimate operations. Independent root-authored workloads changed routes, owners, record counts, Unicode IDs and ordering: 304 assertions over 120 read responses in eight runs.
+- Repeated the independent run after the final Bearer-prefix correction, so saved source hashes match tested files. Documented issue-before-provision recovery failure, same-OS-user trust, deterministic route removal, sequential requests and no general detector.
+- No AI repair, sandbox, three-sponsor integration, public defense deployment or contest submission has been completed. The formal hackathon curriculum remains uninvoked. This is another research/component-validation checkpoint, not completion of the overarching goal.

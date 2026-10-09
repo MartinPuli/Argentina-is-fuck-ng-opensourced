@@ -1,0 +1,3781 @@
+{
+  "license": "CC-BY-4.0",
+  "schema_version": 1,
+  "source_sha256": {
+    "services.py": "d480a355652b8fd653c8b9bb3800e00e9c99f4874922ea758bbb20f440d1fe9f",
+    "run_experiment.py": "d391853509c80f27837887fdeed66dedbb9e82daaf4a734f34626b196a506bbb",
+    "protocol.json": "cb74587c9d1a9016c0659478f5bc7978e371f9c1666a988b9e3484b11c95a0ad",
+    "workload.json": "ce1205b61bb42b5e649143e2de579b63298abffe4b41946670342c6fee34f386",
+    "PLAN.md": "1ccc197f1a338492886f1fd2f5e3dc9b3e73cb4de697878f75ad16889cbca0e6"
+  },
+  "protocol": {
+    "license": "MIT",
+    "schema_version": 1,
+    "scenario": "Fictional credential exposure, corroboration and recovery",
+    "bind": "127.0.0.1",
+    "enrolled_identity": "A",
+    "exposure_route": "/fixture/exposed-credential",
+    "modes": [
+      "scope_only",
+      "repair_only",
+      "revoke_only",
+      "combined"
+    ],
+    "permissions": {
+      "A": [
+        "owner-a"
+      ],
+      "B": [
+        "owner-a",
+        "owner-b"
+      ]
+    },
+    "records": [
+      {
+        "id": "FICTIONAL-A01",
+        "owner": "owner-a"
+      },
+      {
+        "id": "FICTIONAL-A02",
+        "owner": "owner-a"
+      },
+      {
+        "id": "FICTIONAL-A03",
+        "owner": "owner-a"
+      },
+      {
+        "id": "FICTIONAL-A04",
+        "owner": "owner-a"
+      },
+      {
+        "id": "FICTIONAL-A05",
+        "owner": "owner-a"
+      },
+      {
+        "id": "FICTIONAL-A06",
+        "owner": "owner-a"
+      },
+      {
+        "id": "FICTIONAL-A07",
+        "owner": "owner-a"
+      },
+      {
+        "id": "FICTIONAL-A08",
+        "owner": "owner-a"
+      },
+      {
+        "id": "FICTIONAL-B01",
+        "owner": "owner-b"
+      },
+      {
+        "id": "FICTIONAL-B02",
+        "owner": "owner-b"
+      },
+      {
+        "id": "FICTIONAL-B03",
+        "owner": "owner-b"
+      },
+      {
+        "id": "FICTIONAL-B04",
+        "owner": "owner-b"
+      }
+    ]
+  },
+  "workload": {
+    "license": "MIT",
+    "events": [
+      {
+        "id": "capture_initial",
+        "op": "capture",
+        "slot": "stolen_initial"
+      },
+      {
+        "id": "a_before",
+        "op": "read",
+        "via": "app",
+        "label": "legitimate_A",
+        "ids": [
+          "FICTIONAL-A01"
+        ]
+      },
+      {
+        "id": "b_before",
+        "op": "read",
+        "via": "gateway",
+        "credential": "B",
+        "label": "legitimate_B",
+        "ids": "all"
+      },
+      {
+        "id": "misuse_before_1",
+        "op": "read",
+        "via": "gateway",
+        "credential": "stolen_initial",
+        "label": "misuse",
+        "ids": [
+          "FICTIONAL-A02",
+          "FICTIONAL-A03"
+        ]
+      },
+      {
+        "id": "cross_owner_before",
+        "op": "read",
+        "via": "gateway",
+        "credential": "stolen_initial",
+        "label": "cross_owner",
+        "ids": [
+          "FICTIONAL-B01"
+        ]
+      },
+      {
+        "id": "false_claim",
+        "op": "claim",
+        "variant": "false_digest"
+      },
+      {
+        "id": "wrong_target",
+        "op": "claim",
+        "variant": "wrong_target"
+      },
+      {
+        "id": "wrong_origin",
+        "op": "claim",
+        "variant": "wrong_origin"
+      },
+      {
+        "id": "unauthenticated_claim",
+        "op": "claim",
+        "variant": "unauthenticated"
+      },
+      {
+        "id": "misuse_before_2",
+        "op": "read",
+        "via": "gateway",
+        "credential": "stolen_initial",
+        "label": "misuse",
+        "ids": [
+          "FICTIONAL-A04"
+        ]
+      },
+      {
+        "id": "observe_response",
+        "op": "observe"
+      },
+      {
+        "id": "misuse_after_response",
+        "op": "read",
+        "via": "gateway",
+        "credential": "stolen_initial",
+        "label": "misuse",
+        "ids": [
+          "FICTIONAL-A05"
+        ]
+      },
+      {
+        "id": "a_interrupted",
+        "op": "read",
+        "via": "app",
+        "label": "legitimate_A",
+        "ids": [
+          "FICTIONAL-A06"
+        ]
+      },
+      {
+        "id": "b_during",
+        "op": "read",
+        "via": "gateway",
+        "credential": "B",
+        "label": "legitimate_B",
+        "ids": "all"
+      },
+      {
+        "id": "duplicate_response",
+        "op": "replay",
+        "variant": "same"
+      },
+      {
+        "id": "conflicting_response",
+        "op": "replay",
+        "variant": "conflict"
+      },
+      {
+        "id": "replacement",
+        "op": "recover",
+        "expected_generation": 1
+      },
+      {
+        "id": "stale_generation",
+        "op": "replay",
+        "variant": "stale"
+      },
+      {
+        "id": "duplicate_after_replacement",
+        "op": "replay",
+        "variant": "same"
+      },
+      {
+        "id": "capture_replacement",
+        "op": "capture",
+        "slot": "stolen_replacement"
+      },
+      {
+        "id": "misuse_original_late",
+        "op": "read",
+        "via": "gateway",
+        "credential": "stolen_initial",
+        "label": "misuse",
+        "ids": [
+          "FICTIONAL-A07"
+        ]
+      },
+      {
+        "id": "misuse_replacement",
+        "op": "read",
+        "via": "gateway",
+        "credential": "stolen_replacement",
+        "label": "misuse",
+        "ids": [
+          "FICTIONAL-A08"
+        ]
+      },
+      {
+        "id": "a_recovered",
+        "op": "read",
+        "via": "app",
+        "label": "legitimate_A",
+        "ids": [
+          "FICTIONAL-A01",
+          "FICTIONAL-A02"
+        ]
+      },
+      {
+        "id": "b_recovered",
+        "op": "read",
+        "via": "gateway",
+        "credential": "B",
+        "label": "legitimate_B",
+        "ids": "all"
+      },
+      {
+        "id": "cross_owner_after",
+        "op": "read",
+        "via": "app",
+        "label": "cross_owner",
+        "ids": [
+          "FICTIONAL-B02"
+        ]
+      },
+      {
+        "id": "observe_after_recovery",
+        "op": "observe"
+      },
+      {
+        "id": "a_after_second_observation",
+        "op": "read",
+        "via": "app",
+        "label": "legitimate_A",
+        "ids": [
+          "FICTIONAL-A03"
+        ]
+      }
+    ]
+  },
+  "results": [
+    {
+      "mode": "scope_only",
+      "process_ids": {
+        "verifier": 89691,
+        "gateway": 89701,
+        "app": 89702,
+        "controller": 89703,
+        "observer": 89704
+      },
+      "endpoints": {
+        "gateway": "http://127.0.0.1:56474",
+        "app": "http://127.0.0.1:56475",
+        "controller": "http://127.0.0.1:56477"
+      },
+      "protocol_sha256": "493da6983d2fb643effd6a6fa2098ceb9babd431dc5bfd75c7e0f9554055a4df",
+      "workload_sha256": "4e86e519ad57570ef2fb9c2c9325aab261387c11feb7776b06388062b45158cc",
+      "transcript": [
+        {
+          "id": "capture_initial",
+          "op": "capture",
+          "response": {
+            "status": 200,
+            "body": {
+              "identity": "A",
+              "generation": 1,
+              "credential": "[REDACTED]"
+            },
+            "bytes": 90,
+            "body_sha256": "8e52d3ca96bb22aa7cfe99be28222a627cf1ba807eb84454fdf01adac58793a3"
+          },
+          "credential_acquired": true
+        },
+        {
+          "id": "a_before",
+          "op": "read",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A01",
+                  "owner": "owner-a"
+                }
+              ]
+            },
+            "bytes": 54,
+            "body_sha256": "128cd38c6aec97aa7c6f7a5d36d3ac755d6a1702dac14aca94accc453e28ece3"
+          },
+          "label": "legitimate_A",
+          "requested_ids": [
+            "FICTIONAL-A01"
+          ],
+          "credential_available": true,
+          "after_first_response": false
+        },
+        {
+          "id": "b_before",
+          "op": "read",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A01",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A02",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A03",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A04",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A05",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A06",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A07",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A08",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-B01",
+                  "owner": "owner-b"
+                },
+                {
+                  "id": "FICTIONAL-B02",
+                  "owner": "owner-b"
+                },
+                {
+                  "id": "FICTIONAL-B03",
+                  "owner": "owner-b"
+                },
+                {
+                  "id": "FICTIONAL-B04",
+                  "owner": "owner-b"
+                }
+              ]
+            },
+            "bytes": 505,
+            "body_sha256": "2d907e41f1a99623ab2147fc198fa8582a72908013417c11607db7e3434b4199"
+          },
+          "label": "legitimate_B",
+          "requested_ids": [
+            "FICTIONAL-A01",
+            "FICTIONAL-A02",
+            "FICTIONAL-A03",
+            "FICTIONAL-A04",
+            "FICTIONAL-A05",
+            "FICTIONAL-A06",
+            "FICTIONAL-A07",
+            "FICTIONAL-A08",
+            "FICTIONAL-B01",
+            "FICTIONAL-B02",
+            "FICTIONAL-B03",
+            "FICTIONAL-B04"
+          ],
+          "credential_available": true,
+          "after_first_response": false
+        },
+        {
+          "id": "misuse_before_1",
+          "op": "read",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A02",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A03",
+                  "owner": "owner-a"
+                }
+              ]
+            },
+            "bytes": 95,
+            "body_sha256": "388a72673c477fb3f91275e754977afe55e32247b463fedd3b0367c724d958e8"
+          },
+          "label": "misuse",
+          "requested_ids": [
+            "FICTIONAL-A02",
+            "FICTIONAL-A03"
+          ],
+          "credential_available": true,
+          "after_first_response": false
+        },
+        {
+          "id": "cross_owner_before",
+          "op": "read",
+          "response": {
+            "status": 403,
+            "body": {
+              "error": "owner_scope",
+              "records": []
+            },
+            "bytes": 36,
+            "body_sha256": "4dff2c74a1cf4d8f928c538babbbc01ff077910bf173151b854796a756140f0c"
+          },
+          "label": "cross_owner",
+          "requested_ids": [
+            "FICTIONAL-B01"
+          ],
+          "credential_available": true,
+          "after_first_response": false
+        },
+        {
+          "id": "false_claim",
+          "op": "claim",
+          "response": {
+            "status": 422,
+            "body": {
+              "error": "credential_mismatch"
+            },
+            "bytes": 31,
+            "body_sha256": "08d3349c38094d0ac40a2eea33cda19d7a38c9958a7d3d478406b5c8933b4192"
+          }
+        },
+        {
+          "id": "wrong_target",
+          "op": "claim",
+          "response": {
+            "status": 403,
+            "body": {
+              "error": "unenrolled_target_or_route"
+            },
+            "bytes": 38,
+            "body_sha256": "c9ff13ec2a42ccbe0ead783c20bd29dd77de2663d0c143b47726c4eb0788e31b"
+          }
+        },
+        {
+          "id": "wrong_origin",
+          "op": "claim",
+          "response": {
+            "status": 403,
+            "body": {
+              "error": "unenrolled_target_or_route"
+            },
+            "bytes": 38,
+            "body_sha256": "c9ff13ec2a42ccbe0ead783c20bd29dd77de2663d0c143b47726c4eb0788e31b"
+          }
+        },
+        {
+          "id": "unauthenticated_claim",
+          "op": "claim",
+          "response": {
+            "status": 401,
+            "body": {
+              "error": "controller_authentication"
+            },
+            "bytes": 37,
+            "body_sha256": "ff2461c97954525376b4bbc6975266a17a55deacaa5264c0422a320659bd9c55"
+          }
+        },
+        {
+          "id": "misuse_before_2",
+          "op": "read",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A04",
+                  "owner": "owner-a"
+                }
+              ]
+            },
+            "bytes": 54,
+            "body_sha256": "6ca4724ea5ae2f12a085ca402a0c3240a56e8942719bcb0878d6954472940f73"
+          },
+          "label": "misuse",
+          "requested_ids": [
+            "FICTIONAL-A04"
+          ],
+          "credential_available": true,
+          "after_first_response": false
+        },
+        {
+          "id": "observe_response",
+          "op": "observe",
+          "observation": {
+            "observation": {
+              "status": 200,
+              "body": {
+                "identity": "A",
+                "generation": 1,
+                "credential": "[REDACTED]"
+              },
+              "bytes": 90,
+              "body_sha256": "8e52d3ca96bb22aa7cfe99be28222a627cf1ba807eb84454fdf01adac58793a3"
+            },
+            "evidence": {
+              "observation_id": "observe_response",
+              "target": "A",
+              "origin": "http://127.0.0.1:56475",
+              "route": "/fixture/exposed-credential",
+              "generation": 1,
+              "fingerprint": "e8e26df739e1c3b86b23036322b04441c74df76dd59d7b86d0c5c049670c8b1e"
+            },
+            "controller": {
+              "status": 200,
+              "body": {
+                "corroborated": true,
+                "corroboration_http_status": 200,
+                "generation": 1,
+                "mode": "scope_only",
+                "steps": []
+              },
+              "bytes": 99,
+              "body_sha256": "146e55e7eacb499286fbeec0c9da1e95ea2ea81b162648944866e2424e67c036"
+            }
+          }
+        },
+        {
+          "id": "misuse_after_response",
+          "op": "read",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A05",
+                  "owner": "owner-a"
+                }
+              ]
+            },
+            "bytes": 54,
+            "body_sha256": "5d87a9459c2ecda7c919018a54e9104e229a7ab4a18ab372a0d8b48084e49245"
+          },
+          "label": "misuse",
+          "requested_ids": [
+            "FICTIONAL-A05"
+          ],
+          "credential_available": true,
+          "after_first_response": true
+        },
+        {
+          "id": "a_interrupted",
+          "op": "read",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A06",
+                  "owner": "owner-a"
+                }
+              ]
+            },
+            "bytes": 54,
+            "body_sha256": "4f17acafb5061fa37aba7c9fd581dcb95739f31254b937797f4c508931337593"
+          },
+          "label": "legitimate_A",
+          "requested_ids": [
+            "FICTIONAL-A06"
+          ],
+          "credential_available": true,
+          "after_first_response": true
+        },
+        {
+          "id": "b_during",
+          "op": "read",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A01",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A02",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A03",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A04",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A05",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A06",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A07",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A08",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-B01",
+                  "owner": "owner-b"
+                },
+                {
+                  "id": "FICTIONAL-B02",
+                  "owner": "owner-b"
+                },
+                {
+                  "id": "FICTIONAL-B03",
+                  "owner": "owner-b"
+                },
+                {
+                  "id": "FICTIONAL-B04",
+                  "owner": "owner-b"
+                }
+              ]
+            },
+            "bytes": 505,
+            "body_sha256": "2d907e41f1a99623ab2147fc198fa8582a72908013417c11607db7e3434b4199"
+          },
+          "label": "legitimate_B",
+          "requested_ids": [
+            "FICTIONAL-A01",
+            "FICTIONAL-A02",
+            "FICTIONAL-A03",
+            "FICTIONAL-A04",
+            "FICTIONAL-A05",
+            "FICTIONAL-A06",
+            "FICTIONAL-A07",
+            "FICTIONAL-A08",
+            "FICTIONAL-B01",
+            "FICTIONAL-B02",
+            "FICTIONAL-B03",
+            "FICTIONAL-B04"
+          ],
+          "credential_available": true,
+          "after_first_response": true
+        },
+        {
+          "id": "duplicate_response",
+          "op": "replay",
+          "response": {
+            "status": 200,
+            "body": {
+              "corroborated": true,
+              "corroboration_http_status": 200,
+              "duplicate": true,
+              "generation": 1,
+              "mode": "scope_only",
+              "steps": []
+            },
+            "bytes": 116,
+            "body_sha256": "729ca2988633025480e2c2d558bf6f21aca0d18b178431739d45134aa75ddabd"
+          }
+        },
+        {
+          "id": "conflicting_response",
+          "op": "replay",
+          "response": {
+            "status": 409,
+            "body": {
+              "error": "idempotency_conflict"
+            },
+            "bytes": 32,
+            "body_sha256": "aefd268d8b92f862ca7ae9b8e101607c368d727d995a7ecd84a077967c77dc2a"
+          }
+        },
+        {
+          "id": "replacement",
+          "op": "recover",
+          "response": {
+            "status": 200,
+            "body": {
+              "generation": 2,
+              "provisioned": true
+            },
+            "bytes": 35,
+            "body_sha256": "780988c3ff6d53f9e1cb6737508b7f1f262c588187ea0ff11a0c6c04880dbfd5"
+          }
+        },
+        {
+          "id": "stale_generation",
+          "op": "replay",
+          "response": {
+            "status": 409,
+            "body": {
+              "error": "stale_generation"
+            },
+            "bytes": 28,
+            "body_sha256": "4f4cce02ce0fb3ce4d8b3ac0a397720b2de8eb703192733d166fc1ff8415b945"
+          }
+        },
+        {
+          "id": "duplicate_after_replacement",
+          "op": "replay",
+          "response": {
+            "status": 200,
+            "body": {
+              "corroborated": true,
+              "corroboration_http_status": 200,
+              "duplicate": true,
+              "generation": 1,
+              "mode": "scope_only",
+              "steps": []
+            },
+            "bytes": 116,
+            "body_sha256": "729ca2988633025480e2c2d558bf6f21aca0d18b178431739d45134aa75ddabd"
+          }
+        },
+        {
+          "id": "capture_replacement",
+          "op": "capture",
+          "response": {
+            "status": 200,
+            "body": {
+              "identity": "A",
+              "generation": 2,
+              "credential": "[REDACTED]"
+            },
+            "bytes": 90,
+            "body_sha256": "71636ecdbab918ad917be90d08c004d11fc405c96867985254d0c05f62d11760"
+          },
+          "credential_acquired": true
+        },
+        {
+          "id": "misuse_original_late",
+          "op": "read",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A07",
+                  "owner": "owner-a"
+                }
+              ]
+            },
+            "bytes": 54,
+            "body_sha256": "ff6a901a2f20a0afadf2398337a25aed8f4955ff486178e360ccfb7c301ef350"
+          },
+          "label": "misuse",
+          "requested_ids": [
+            "FICTIONAL-A07"
+          ],
+          "credential_available": true,
+          "after_first_response": true
+        },
+        {
+          "id": "misuse_replacement",
+          "op": "read",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A08",
+                  "owner": "owner-a"
+                }
+              ]
+            },
+            "bytes": 54,
+            "body_sha256": "5d007f0eaccd76f53b2ff86f08ec6ae521dc0be39dff8a802e2fc69db1fa75fc"
+          },
+          "label": "misuse",
+          "requested_ids": [
+            "FICTIONAL-A08"
+          ],
+          "credential_available": true,
+          "after_first_response": true
+        },
+        {
+          "id": "a_recovered",
+          "op": "read",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A01",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A02",
+                  "owner": "owner-a"
+                }
+              ]
+            },
+            "bytes": 95,
+            "body_sha256": "428f70c5b816eef0c6b68da6e80aae1b745596c4bc864cf4c7ed6ab30e985051"
+          },
+          "label": "legitimate_A",
+          "requested_ids": [
+            "FICTIONAL-A01",
+            "FICTIONAL-A02"
+          ],
+          "credential_available": true,
+          "after_first_response": true
+        },
+        {
+          "id": "b_recovered",
+          "op": "read",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A01",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A02",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A03",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A04",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A05",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A06",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A07",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A08",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-B01",
+                  "owner": "owner-b"
+                },
+                {
+                  "id": "FICTIONAL-B02",
+                  "owner": "owner-b"
+                },
+                {
+                  "id": "FICTIONAL-B03",
+                  "owner": "owner-b"
+                },
+                {
+                  "id": "FICTIONAL-B04",
+                  "owner": "owner-b"
+                }
+              ]
+            },
+            "bytes": 505,
+            "body_sha256": "2d907e41f1a99623ab2147fc198fa8582a72908013417c11607db7e3434b4199"
+          },
+          "label": "legitimate_B",
+          "requested_ids": [
+            "FICTIONAL-A01",
+            "FICTIONAL-A02",
+            "FICTIONAL-A03",
+            "FICTIONAL-A04",
+            "FICTIONAL-A05",
+            "FICTIONAL-A06",
+            "FICTIONAL-A07",
+            "FICTIONAL-A08",
+            "FICTIONAL-B01",
+            "FICTIONAL-B02",
+            "FICTIONAL-B03",
+            "FICTIONAL-B04"
+          ],
+          "credential_available": true,
+          "after_first_response": true
+        },
+        {
+          "id": "cross_owner_after",
+          "op": "read",
+          "response": {
+            "status": 403,
+            "body": {
+              "error": "owner_scope",
+              "records": []
+            },
+            "bytes": 36,
+            "body_sha256": "4dff2c74a1cf4d8f928c538babbbc01ff077910bf173151b854796a756140f0c"
+          },
+          "label": "cross_owner",
+          "requested_ids": [
+            "FICTIONAL-B02"
+          ],
+          "credential_available": true,
+          "after_first_response": true
+        },
+        {
+          "id": "observe_after_recovery",
+          "op": "observe",
+          "observation": {
+            "observation": {
+              "status": 200,
+              "body": {
+                "identity": "A",
+                "generation": 2,
+                "credential": "[REDACTED]"
+              },
+              "bytes": 90,
+              "body_sha256": "71636ecdbab918ad917be90d08c004d11fc405c96867985254d0c05f62d11760"
+            },
+            "evidence": {
+              "observation_id": "observe_after_recovery",
+              "target": "A",
+              "origin": "http://127.0.0.1:56475",
+              "route": "/fixture/exposed-credential",
+              "generation": 2,
+              "fingerprint": "a8abbd71f5a25325805a4faa7a091213b7da5dc4d8fb8df0d847bdf627f9f1c7"
+            },
+            "controller": {
+              "status": 200,
+              "body": {
+                "corroborated": true,
+                "corroboration_http_status": 200,
+                "generation": 2,
+                "mode": "scope_only",
+                "steps": []
+              },
+              "bytes": 99,
+              "body_sha256": "64cf19f858f5ca5d47fadccdd30c650446d43a2006a6a6d79428666aad2e2872"
+            }
+          }
+        },
+        {
+          "id": "a_after_second_observation",
+          "op": "read",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A03",
+                  "owner": "owner-a"
+                }
+              ]
+            },
+            "bytes": 54,
+            "body_sha256": "9caa8fb1774612fe27df598afb4bb6d618fcaf45baffd591494eb858fa223b37"
+          },
+          "label": "legitimate_A",
+          "requested_ids": [
+            "FICTIONAL-A03"
+          ],
+          "credential_available": true,
+          "after_first_response": true
+        }
+      ],
+      "metrics": {
+        "legitimate_A": {
+          "requests": 4,
+          "completed": 4,
+          "denied": 0,
+          "record_transmissions": 5,
+          "distinct_ids": [
+            "FICTIONAL-A01",
+            "FICTIONAL-A02",
+            "FICTIONAL-A03",
+            "FICTIONAL-A06"
+          ],
+          "after_first_response_records": 4,
+          "distinct_record_count": 4
+        },
+        "legitimate_B": {
+          "requests": 3,
+          "completed": 3,
+          "denied": 0,
+          "record_transmissions": 36,
+          "distinct_ids": [
+            "FICTIONAL-A01",
+            "FICTIONAL-A02",
+            "FICTIONAL-A03",
+            "FICTIONAL-A04",
+            "FICTIONAL-A05",
+            "FICTIONAL-A06",
+            "FICTIONAL-A07",
+            "FICTIONAL-A08",
+            "FICTIONAL-B01",
+            "FICTIONAL-B02",
+            "FICTIONAL-B03",
+            "FICTIONAL-B04"
+          ],
+          "after_first_response_records": 24,
+          "distinct_record_count": 12
+        },
+        "misuse": {
+          "requests": 5,
+          "completed": 5,
+          "denied": 0,
+          "record_transmissions": 6,
+          "distinct_ids": [
+            "FICTIONAL-A02",
+            "FICTIONAL-A03",
+            "FICTIONAL-A04",
+            "FICTIONAL-A05",
+            "FICTIONAL-A07",
+            "FICTIONAL-A08"
+          ],
+          "after_first_response_records": 3,
+          "distinct_record_count": 6
+        },
+        "cross_owner": {
+          "requests": 2,
+          "completed": 0,
+          "denied": 2,
+          "record_transmissions": 0,
+          "distinct_ids": [],
+          "after_first_response_records": 0,
+          "distinct_record_count": 0
+        }
+      }
+    },
+    {
+      "mode": "repair_only",
+      "process_ids": {
+        "verifier": 89691,
+        "gateway": 89705,
+        "app": 89706,
+        "controller": 89707,
+        "observer": 89708
+      },
+      "endpoints": {
+        "gateway": "http://127.0.0.1:56521",
+        "app": "http://127.0.0.1:56522",
+        "controller": "http://127.0.0.1:56523"
+      },
+      "protocol_sha256": "493da6983d2fb643effd6a6fa2098ceb9babd431dc5bfd75c7e0f9554055a4df",
+      "workload_sha256": "4e86e519ad57570ef2fb9c2c9325aab261387c11feb7776b06388062b45158cc",
+      "transcript": [
+        {
+          "id": "capture_initial",
+          "op": "capture",
+          "response": {
+            "status": 200,
+            "body": {
+              "identity": "A",
+              "generation": 1,
+              "credential": "[REDACTED]"
+            },
+            "bytes": 90,
+            "body_sha256": "a080da27349482f401adb5082095ecccfff485b2a63f98c1cbcccd85fb3d33a6"
+          },
+          "credential_acquired": true
+        },
+        {
+          "id": "a_before",
+          "op": "read",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A01",
+                  "owner": "owner-a"
+                }
+              ]
+            },
+            "bytes": 54,
+            "body_sha256": "128cd38c6aec97aa7c6f7a5d36d3ac755d6a1702dac14aca94accc453e28ece3"
+          },
+          "label": "legitimate_A",
+          "requested_ids": [
+            "FICTIONAL-A01"
+          ],
+          "credential_available": true,
+          "after_first_response": false
+        },
+        {
+          "id": "b_before",
+          "op": "read",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A01",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A02",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A03",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A04",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A05",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A06",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A07",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A08",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-B01",
+                  "owner": "owner-b"
+                },
+                {
+                  "id": "FICTIONAL-B02",
+                  "owner": "owner-b"
+                },
+                {
+                  "id": "FICTIONAL-B03",
+                  "owner": "owner-b"
+                },
+                {
+                  "id": "FICTIONAL-B04",
+                  "owner": "owner-b"
+                }
+              ]
+            },
+            "bytes": 505,
+            "body_sha256": "2d907e41f1a99623ab2147fc198fa8582a72908013417c11607db7e3434b4199"
+          },
+          "label": "legitimate_B",
+          "requested_ids": [
+            "FICTIONAL-A01",
+            "FICTIONAL-A02",
+            "FICTIONAL-A03",
+            "FICTIONAL-A04",
+            "FICTIONAL-A05",
+            "FICTIONAL-A06",
+            "FICTIONAL-A07",
+            "FICTIONAL-A08",
+            "FICTIONAL-B01",
+            "FICTIONAL-B02",
+            "FICTIONAL-B03",
+            "FICTIONAL-B04"
+          ],
+          "credential_available": true,
+          "after_first_response": false
+        },
+        {
+          "id": "misuse_before_1",
+          "op": "read",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A02",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A03",
+                  "owner": "owner-a"
+                }
+              ]
+            },
+            "bytes": 95,
+            "body_sha256": "388a72673c477fb3f91275e754977afe55e32247b463fedd3b0367c724d958e8"
+          },
+          "label": "misuse",
+          "requested_ids": [
+            "FICTIONAL-A02",
+            "FICTIONAL-A03"
+          ],
+          "credential_available": true,
+          "after_first_response": false
+        },
+        {
+          "id": "cross_owner_before",
+          "op": "read",
+          "response": {
+            "status": 403,
+            "body": {
+              "error": "owner_scope",
+              "records": []
+            },
+            "bytes": 36,
+            "body_sha256": "4dff2c74a1cf4d8f928c538babbbc01ff077910bf173151b854796a756140f0c"
+          },
+          "label": "cross_owner",
+          "requested_ids": [
+            "FICTIONAL-B01"
+          ],
+          "credential_available": true,
+          "after_first_response": false
+        },
+        {
+          "id": "false_claim",
+          "op": "claim",
+          "response": {
+            "status": 422,
+            "body": {
+              "error": "credential_mismatch"
+            },
+            "bytes": 31,
+            "body_sha256": "08d3349c38094d0ac40a2eea33cda19d7a38c9958a7d3d478406b5c8933b4192"
+          }
+        },
+        {
+          "id": "wrong_target",
+          "op": "claim",
+          "response": {
+            "status": 403,
+            "body": {
+              "error": "unenrolled_target_or_route"
+            },
+            "bytes": 38,
+            "body_sha256": "c9ff13ec2a42ccbe0ead783c20bd29dd77de2663d0c143b47726c4eb0788e31b"
+          }
+        },
+        {
+          "id": "wrong_origin",
+          "op": "claim",
+          "response": {
+            "status": 403,
+            "body": {
+              "error": "unenrolled_target_or_route"
+            },
+            "bytes": 38,
+            "body_sha256": "c9ff13ec2a42ccbe0ead783c20bd29dd77de2663d0c143b47726c4eb0788e31b"
+          }
+        },
+        {
+          "id": "unauthenticated_claim",
+          "op": "claim",
+          "response": {
+            "status": 401,
+            "body": {
+              "error": "controller_authentication"
+            },
+            "bytes": 37,
+            "body_sha256": "ff2461c97954525376b4bbc6975266a17a55deacaa5264c0422a320659bd9c55"
+          }
+        },
+        {
+          "id": "misuse_before_2",
+          "op": "read",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A04",
+                  "owner": "owner-a"
+                }
+              ]
+            },
+            "bytes": 54,
+            "body_sha256": "6ca4724ea5ae2f12a085ca402a0c3240a56e8942719bcb0878d6954472940f73"
+          },
+          "label": "misuse",
+          "requested_ids": [
+            "FICTIONAL-A04"
+          ],
+          "credential_available": true,
+          "after_first_response": false
+        },
+        {
+          "id": "observe_response",
+          "op": "observe",
+          "observation": {
+            "observation": {
+              "status": 200,
+              "body": {
+                "identity": "A",
+                "generation": 1,
+                "credential": "[REDACTED]"
+              },
+              "bytes": 90,
+              "body_sha256": "a080da27349482f401adb5082095ecccfff485b2a63f98c1cbcccd85fb3d33a6"
+            },
+            "evidence": {
+              "observation_id": "observe_response",
+              "target": "A",
+              "origin": "http://127.0.0.1:56522",
+              "route": "/fixture/exposed-credential",
+              "generation": 1,
+              "fingerprint": "32f7505bbd9e133a69f8beec6c3c6d0c7959857b012d21b6a28c8334f9b7ee17"
+            },
+            "controller": {
+              "status": 200,
+              "body": {
+                "corroborated": true,
+                "corroboration_http_status": 200,
+                "generation": 1,
+                "mode": "repair_only",
+                "steps": [
+                  {
+                    "operation": "remove_exposure_route",
+                    "status": 200
+                  }
+                ]
+              },
+              "bytes": 150,
+              "body_sha256": "5d4b1ff5cd3a7ed586ede060733cb692ba1830b043f793d16fe129a266423e50"
+            }
+          }
+        },
+        {
+          "id": "misuse_after_response",
+          "op": "read",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A05",
+                  "owner": "owner-a"
+                }
+              ]
+            },
+            "bytes": 54,
+            "body_sha256": "5d87a9459c2ecda7c919018a54e9104e229a7ab4a18ab372a0d8b48084e49245"
+          },
+          "label": "misuse",
+          "requested_ids": [
+            "FICTIONAL-A05"
+          ],
+          "credential_available": true,
+          "after_first_response": true
+        },
+        {
+          "id": "a_interrupted",
+          "op": "read",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A06",
+                  "owner": "owner-a"
+                }
+              ]
+            },
+            "bytes": 54,
+            "body_sha256": "4f17acafb5061fa37aba7c9fd581dcb95739f31254b937797f4c508931337593"
+          },
+          "label": "legitimate_A",
+          "requested_ids": [
+            "FICTIONAL-A06"
+          ],
+          "credential_available": true,
+          "after_first_response": true
+        },
+        {
+          "id": "b_during",
+          "op": "read",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A01",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A02",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A03",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A04",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A05",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A06",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A07",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A08",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-B01",
+                  "owner": "owner-b"
+                },
+                {
+                  "id": "FICTIONAL-B02",
+                  "owner": "owner-b"
+                },
+                {
+                  "id": "FICTIONAL-B03",
+                  "owner": "owner-b"
+                },
+                {
+                  "id": "FICTIONAL-B04",
+                  "owner": "owner-b"
+                }
+              ]
+            },
+            "bytes": 505,
+            "body_sha256": "2d907e41f1a99623ab2147fc198fa8582a72908013417c11607db7e3434b4199"
+          },
+          "label": "legitimate_B",
+          "requested_ids": [
+            "FICTIONAL-A01",
+            "FICTIONAL-A02",
+            "FICTIONAL-A03",
+            "FICTIONAL-A04",
+            "FICTIONAL-A05",
+            "FICTIONAL-A06",
+            "FICTIONAL-A07",
+            "FICTIONAL-A08",
+            "FICTIONAL-B01",
+            "FICTIONAL-B02",
+            "FICTIONAL-B03",
+            "FICTIONAL-B04"
+          ],
+          "credential_available": true,
+          "after_first_response": true
+        },
+        {
+          "id": "duplicate_response",
+          "op": "replay",
+          "response": {
+            "status": 200,
+            "body": {
+              "corroborated": true,
+              "corroboration_http_status": 200,
+              "duplicate": true,
+              "generation": 1,
+              "mode": "repair_only",
+              "steps": [
+                {
+                  "operation": "remove_exposure_route",
+                  "status": 200
+                }
+              ]
+            },
+            "bytes": 167,
+            "body_sha256": "0b0f8fb35671541538ff3f5aaa1d3961eb0614f4074b0b17f4c0f10049db38fe"
+          }
+        },
+        {
+          "id": "conflicting_response",
+          "op": "replay",
+          "response": {
+            "status": 409,
+            "body": {
+              "error": "idempotency_conflict"
+            },
+            "bytes": 32,
+            "body_sha256": "aefd268d8b92f862ca7ae9b8e101607c368d727d995a7ecd84a077967c77dc2a"
+          }
+        },
+        {
+          "id": "replacement",
+          "op": "recover",
+          "response": {
+            "status": 200,
+            "body": {
+              "generation": 2,
+              "provisioned": true
+            },
+            "bytes": 35,
+            "body_sha256": "780988c3ff6d53f9e1cb6737508b7f1f262c588187ea0ff11a0c6c04880dbfd5"
+          }
+        },
+        {
+          "id": "stale_generation",
+          "op": "replay",
+          "response": {
+            "status": 409,
+            "body": {
+              "error": "stale_generation"
+            },
+            "bytes": 28,
+            "body_sha256": "4f4cce02ce0fb3ce4d8b3ac0a397720b2de8eb703192733d166fc1ff8415b945"
+          }
+        },
+        {
+          "id": "duplicate_after_replacement",
+          "op": "replay",
+          "response": {
+            "status": 200,
+            "body": {
+              "corroborated": true,
+              "corroboration_http_status": 200,
+              "duplicate": true,
+              "generation": 1,
+              "mode": "repair_only",
+              "steps": [
+                {
+                  "operation": "remove_exposure_route",
+                  "status": 200
+                }
+              ]
+            },
+            "bytes": 167,
+            "body_sha256": "0b0f8fb35671541538ff3f5aaa1d3961eb0614f4074b0b17f4c0f10049db38fe"
+          }
+        },
+        {
+          "id": "capture_replacement",
+          "op": "capture",
+          "response": {
+            "status": 404,
+            "body": {
+              "error": "route_removed"
+            },
+            "bytes": 25,
+            "body_sha256": "4dd8563bb97f38ac241ce5a913361e0d0e5f2542656f4347b0e598684507ff49"
+          },
+          "credential_acquired": false
+        },
+        {
+          "id": "misuse_original_late",
+          "op": "read",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A07",
+                  "owner": "owner-a"
+                }
+              ]
+            },
+            "bytes": 54,
+            "body_sha256": "ff6a901a2f20a0afadf2398337a25aed8f4955ff486178e360ccfb7c301ef350"
+          },
+          "label": "misuse",
+          "requested_ids": [
+            "FICTIONAL-A07"
+          ],
+          "credential_available": true,
+          "after_first_response": true
+        },
+        {
+          "id": "misuse_replacement",
+          "op": "read",
+          "response": {
+            "status": 401,
+            "body": {
+              "error": "credential_not_active",
+              "records": []
+            },
+            "bytes": 46,
+            "body_sha256": "6ed722d6947766a32ca2837c7ccab8a6a890deb254e0d8e452685809f83ad618"
+          },
+          "label": "misuse",
+          "requested_ids": [
+            "FICTIONAL-A08"
+          ],
+          "credential_available": false,
+          "after_first_response": true
+        },
+        {
+          "id": "a_recovered",
+          "op": "read",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A01",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A02",
+                  "owner": "owner-a"
+                }
+              ]
+            },
+            "bytes": 95,
+            "body_sha256": "428f70c5b816eef0c6b68da6e80aae1b745596c4bc864cf4c7ed6ab30e985051"
+          },
+          "label": "legitimate_A",
+          "requested_ids": [
+            "FICTIONAL-A01",
+            "FICTIONAL-A02"
+          ],
+          "credential_available": true,
+          "after_first_response": true
+        },
+        {
+          "id": "b_recovered",
+          "op": "read",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A01",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A02",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A03",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A04",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A05",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A06",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A07",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A08",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-B01",
+                  "owner": "owner-b"
+                },
+                {
+                  "id": "FICTIONAL-B02",
+                  "owner": "owner-b"
+                },
+                {
+                  "id": "FICTIONAL-B03",
+                  "owner": "owner-b"
+                },
+                {
+                  "id": "FICTIONAL-B04",
+                  "owner": "owner-b"
+                }
+              ]
+            },
+            "bytes": 505,
+            "body_sha256": "2d907e41f1a99623ab2147fc198fa8582a72908013417c11607db7e3434b4199"
+          },
+          "label": "legitimate_B",
+          "requested_ids": [
+            "FICTIONAL-A01",
+            "FICTIONAL-A02",
+            "FICTIONAL-A03",
+            "FICTIONAL-A04",
+            "FICTIONAL-A05",
+            "FICTIONAL-A06",
+            "FICTIONAL-A07",
+            "FICTIONAL-A08",
+            "FICTIONAL-B01",
+            "FICTIONAL-B02",
+            "FICTIONAL-B03",
+            "FICTIONAL-B04"
+          ],
+          "credential_available": true,
+          "after_first_response": true
+        },
+        {
+          "id": "cross_owner_after",
+          "op": "read",
+          "response": {
+            "status": 403,
+            "body": {
+              "error": "owner_scope",
+              "records": []
+            },
+            "bytes": 36,
+            "body_sha256": "4dff2c74a1cf4d8f928c538babbbc01ff077910bf173151b854796a756140f0c"
+          },
+          "label": "cross_owner",
+          "requested_ids": [
+            "FICTIONAL-B02"
+          ],
+          "credential_available": true,
+          "after_first_response": true
+        },
+        {
+          "id": "observe_after_recovery",
+          "op": "observe",
+          "observation": {
+            "observation": {
+              "status": 404,
+              "body": {
+                "error": "route_removed"
+              },
+              "bytes": 25,
+              "body_sha256": "4dd8563bb97f38ac241ce5a913361e0d0e5f2542656f4347b0e598684507ff49"
+            },
+            "evidence": null,
+            "controller": null
+          }
+        },
+        {
+          "id": "a_after_second_observation",
+          "op": "read",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A03",
+                  "owner": "owner-a"
+                }
+              ]
+            },
+            "bytes": 54,
+            "body_sha256": "9caa8fb1774612fe27df598afb4bb6d618fcaf45baffd591494eb858fa223b37"
+          },
+          "label": "legitimate_A",
+          "requested_ids": [
+            "FICTIONAL-A03"
+          ],
+          "credential_available": true,
+          "after_first_response": true
+        }
+      ],
+      "metrics": {
+        "legitimate_A": {
+          "requests": 4,
+          "completed": 4,
+          "denied": 0,
+          "record_transmissions": 5,
+          "distinct_ids": [
+            "FICTIONAL-A01",
+            "FICTIONAL-A02",
+            "FICTIONAL-A03",
+            "FICTIONAL-A06"
+          ],
+          "after_first_response_records": 4,
+          "distinct_record_count": 4
+        },
+        "legitimate_B": {
+          "requests": 3,
+          "completed": 3,
+          "denied": 0,
+          "record_transmissions": 36,
+          "distinct_ids": [
+            "FICTIONAL-A01",
+            "FICTIONAL-A02",
+            "FICTIONAL-A03",
+            "FICTIONAL-A04",
+            "FICTIONAL-A05",
+            "FICTIONAL-A06",
+            "FICTIONAL-A07",
+            "FICTIONAL-A08",
+            "FICTIONAL-B01",
+            "FICTIONAL-B02",
+            "FICTIONAL-B03",
+            "FICTIONAL-B04"
+          ],
+          "after_first_response_records": 24,
+          "distinct_record_count": 12
+        },
+        "misuse": {
+          "requests": 5,
+          "completed": 4,
+          "denied": 1,
+          "record_transmissions": 5,
+          "distinct_ids": [
+            "FICTIONAL-A02",
+            "FICTIONAL-A03",
+            "FICTIONAL-A04",
+            "FICTIONAL-A05",
+            "FICTIONAL-A07"
+          ],
+          "after_first_response_records": 2,
+          "distinct_record_count": 5
+        },
+        "cross_owner": {
+          "requests": 2,
+          "completed": 0,
+          "denied": 2,
+          "record_transmissions": 0,
+          "distinct_ids": [],
+          "after_first_response_records": 0,
+          "distinct_record_count": 0
+        }
+      }
+    },
+    {
+      "mode": "revoke_only",
+      "process_ids": {
+        "verifier": 89691,
+        "gateway": 89711,
+        "app": 89712,
+        "controller": 89713,
+        "observer": 89714
+      },
+      "endpoints": {
+        "gateway": "http://127.0.0.1:56566",
+        "app": "http://127.0.0.1:56567",
+        "controller": "http://127.0.0.1:56568"
+      },
+      "protocol_sha256": "493da6983d2fb643effd6a6fa2098ceb9babd431dc5bfd75c7e0f9554055a4df",
+      "workload_sha256": "4e86e519ad57570ef2fb9c2c9325aab261387c11feb7776b06388062b45158cc",
+      "transcript": [
+        {
+          "id": "capture_initial",
+          "op": "capture",
+          "response": {
+            "status": 200,
+            "body": {
+              "identity": "A",
+              "generation": 1,
+              "credential": "[REDACTED]"
+            },
+            "bytes": 90,
+            "body_sha256": "b611b937f1d343976329e15cb160f6ecaccfb57690b7e2cff4173ea7687ed819"
+          },
+          "credential_acquired": true
+        },
+        {
+          "id": "a_before",
+          "op": "read",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A01",
+                  "owner": "owner-a"
+                }
+              ]
+            },
+            "bytes": 54,
+            "body_sha256": "128cd38c6aec97aa7c6f7a5d36d3ac755d6a1702dac14aca94accc453e28ece3"
+          },
+          "label": "legitimate_A",
+          "requested_ids": [
+            "FICTIONAL-A01"
+          ],
+          "credential_available": true,
+          "after_first_response": false
+        },
+        {
+          "id": "b_before",
+          "op": "read",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A01",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A02",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A03",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A04",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A05",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A06",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A07",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A08",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-B01",
+                  "owner": "owner-b"
+                },
+                {
+                  "id": "FICTIONAL-B02",
+                  "owner": "owner-b"
+                },
+                {
+                  "id": "FICTIONAL-B03",
+                  "owner": "owner-b"
+                },
+                {
+                  "id": "FICTIONAL-B04",
+                  "owner": "owner-b"
+                }
+              ]
+            },
+            "bytes": 505,
+            "body_sha256": "2d907e41f1a99623ab2147fc198fa8582a72908013417c11607db7e3434b4199"
+          },
+          "label": "legitimate_B",
+          "requested_ids": [
+            "FICTIONAL-A01",
+            "FICTIONAL-A02",
+            "FICTIONAL-A03",
+            "FICTIONAL-A04",
+            "FICTIONAL-A05",
+            "FICTIONAL-A06",
+            "FICTIONAL-A07",
+            "FICTIONAL-A08",
+            "FICTIONAL-B01",
+            "FICTIONAL-B02",
+            "FICTIONAL-B03",
+            "FICTIONAL-B04"
+          ],
+          "credential_available": true,
+          "after_first_response": false
+        },
+        {
+          "id": "misuse_before_1",
+          "op": "read",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A02",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A03",
+                  "owner": "owner-a"
+                }
+              ]
+            },
+            "bytes": 95,
+            "body_sha256": "388a72673c477fb3f91275e754977afe55e32247b463fedd3b0367c724d958e8"
+          },
+          "label": "misuse",
+          "requested_ids": [
+            "FICTIONAL-A02",
+            "FICTIONAL-A03"
+          ],
+          "credential_available": true,
+          "after_first_response": false
+        },
+        {
+          "id": "cross_owner_before",
+          "op": "read",
+          "response": {
+            "status": 403,
+            "body": {
+              "error": "owner_scope",
+              "records": []
+            },
+            "bytes": 36,
+            "body_sha256": "4dff2c74a1cf4d8f928c538babbbc01ff077910bf173151b854796a756140f0c"
+          },
+          "label": "cross_owner",
+          "requested_ids": [
+            "FICTIONAL-B01"
+          ],
+          "credential_available": true,
+          "after_first_response": false
+        },
+        {
+          "id": "false_claim",
+          "op": "claim",
+          "response": {
+            "status": 422,
+            "body": {
+              "error": "credential_mismatch"
+            },
+            "bytes": 31,
+            "body_sha256": "08d3349c38094d0ac40a2eea33cda19d7a38c9958a7d3d478406b5c8933b4192"
+          }
+        },
+        {
+          "id": "wrong_target",
+          "op": "claim",
+          "response": {
+            "status": 403,
+            "body": {
+              "error": "unenrolled_target_or_route"
+            },
+            "bytes": 38,
+            "body_sha256": "c9ff13ec2a42ccbe0ead783c20bd29dd77de2663d0c143b47726c4eb0788e31b"
+          }
+        },
+        {
+          "id": "wrong_origin",
+          "op": "claim",
+          "response": {
+            "status": 403,
+            "body": {
+              "error": "unenrolled_target_or_route"
+            },
+            "bytes": 38,
+            "body_sha256": "c9ff13ec2a42ccbe0ead783c20bd29dd77de2663d0c143b47726c4eb0788e31b"
+          }
+        },
+        {
+          "id": "unauthenticated_claim",
+          "op": "claim",
+          "response": {
+            "status": 401,
+            "body": {
+              "error": "controller_authentication"
+            },
+            "bytes": 37,
+            "body_sha256": "ff2461c97954525376b4bbc6975266a17a55deacaa5264c0422a320659bd9c55"
+          }
+        },
+        {
+          "id": "misuse_before_2",
+          "op": "read",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A04",
+                  "owner": "owner-a"
+                }
+              ]
+            },
+            "bytes": 54,
+            "body_sha256": "6ca4724ea5ae2f12a085ca402a0c3240a56e8942719bcb0878d6954472940f73"
+          },
+          "label": "misuse",
+          "requested_ids": [
+            "FICTIONAL-A04"
+          ],
+          "credential_available": true,
+          "after_first_response": false
+        },
+        {
+          "id": "observe_response",
+          "op": "observe",
+          "observation": {
+            "observation": {
+              "status": 200,
+              "body": {
+                "identity": "A",
+                "generation": 1,
+                "credential": "[REDACTED]"
+              },
+              "bytes": 90,
+              "body_sha256": "b611b937f1d343976329e15cb160f6ecaccfb57690b7e2cff4173ea7687ed819"
+            },
+            "evidence": {
+              "observation_id": "observe_response",
+              "target": "A",
+              "origin": "http://127.0.0.1:56567",
+              "route": "/fixture/exposed-credential",
+              "generation": 1,
+              "fingerprint": "626b37a72bcae9a587d8122cdecfe0bc7c9a53ee7be6c5c642879e2b049422d3"
+            },
+            "controller": {
+              "status": 200,
+              "body": {
+                "corroborated": true,
+                "corroboration_http_status": 200,
+                "generation": 1,
+                "mode": "revoke_only",
+                "steps": [
+                  {
+                    "operation": "revoke",
+                    "status": 200
+                  }
+                ]
+              },
+              "bytes": 135,
+              "body_sha256": "75251b43be42af72c6f69d66ba7fbc6777a0a0f301e3d02971b7a4113806abfc"
+            }
+          }
+        },
+        {
+          "id": "misuse_after_response",
+          "op": "read",
+          "response": {
+            "status": 401,
+            "body": {
+              "error": "credential_not_active",
+              "records": []
+            },
+            "bytes": 46,
+            "body_sha256": "6ed722d6947766a32ca2837c7ccab8a6a890deb254e0d8e452685809f83ad618"
+          },
+          "label": "misuse",
+          "requested_ids": [
+            "FICTIONAL-A05"
+          ],
+          "credential_available": true,
+          "after_first_response": true
+        },
+        {
+          "id": "a_interrupted",
+          "op": "read",
+          "response": {
+            "status": 401,
+            "body": {
+              "error": "credential_not_active",
+              "records": []
+            },
+            "bytes": 46,
+            "body_sha256": "6ed722d6947766a32ca2837c7ccab8a6a890deb254e0d8e452685809f83ad618"
+          },
+          "label": "legitimate_A",
+          "requested_ids": [
+            "FICTIONAL-A06"
+          ],
+          "credential_available": true,
+          "after_first_response": true
+        },
+        {
+          "id": "b_during",
+          "op": "read",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A01",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A02",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A03",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A04",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A05",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A06",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A07",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A08",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-B01",
+                  "owner": "owner-b"
+                },
+                {
+                  "id": "FICTIONAL-B02",
+                  "owner": "owner-b"
+                },
+                {
+                  "id": "FICTIONAL-B03",
+                  "owner": "owner-b"
+                },
+                {
+                  "id": "FICTIONAL-B04",
+                  "owner": "owner-b"
+                }
+              ]
+            },
+            "bytes": 505,
+            "body_sha256": "2d907e41f1a99623ab2147fc198fa8582a72908013417c11607db7e3434b4199"
+          },
+          "label": "legitimate_B",
+          "requested_ids": [
+            "FICTIONAL-A01",
+            "FICTIONAL-A02",
+            "FICTIONAL-A03",
+            "FICTIONAL-A04",
+            "FICTIONAL-A05",
+            "FICTIONAL-A06",
+            "FICTIONAL-A07",
+            "FICTIONAL-A08",
+            "FICTIONAL-B01",
+            "FICTIONAL-B02",
+            "FICTIONAL-B03",
+            "FICTIONAL-B04"
+          ],
+          "credential_available": true,
+          "after_first_response": true
+        },
+        {
+          "id": "duplicate_response",
+          "op": "replay",
+          "response": {
+            "status": 200,
+            "body": {
+              "corroborated": true,
+              "corroboration_http_status": 200,
+              "duplicate": true,
+              "generation": 1,
+              "mode": "revoke_only",
+              "steps": [
+                {
+                  "operation": "revoke",
+                  "status": 200
+                }
+              ]
+            },
+            "bytes": 152,
+            "body_sha256": "f53bcfb46cd8f372bf3acd02a961d06a9e0efc5eb328081ded40d5584f957574"
+          }
+        },
+        {
+          "id": "conflicting_response",
+          "op": "replay",
+          "response": {
+            "status": 409,
+            "body": {
+              "error": "idempotency_conflict"
+            },
+            "bytes": 32,
+            "body_sha256": "aefd268d8b92f862ca7ae9b8e101607c368d727d995a7ecd84a077967c77dc2a"
+          }
+        },
+        {
+          "id": "replacement",
+          "op": "recover",
+          "response": {
+            "status": 200,
+            "body": {
+              "generation": 2,
+              "provisioned": true
+            },
+            "bytes": 35,
+            "body_sha256": "780988c3ff6d53f9e1cb6737508b7f1f262c588187ea0ff11a0c6c04880dbfd5"
+          }
+        },
+        {
+          "id": "stale_generation",
+          "op": "replay",
+          "response": {
+            "status": 409,
+            "body": {
+              "error": "stale_generation"
+            },
+            "bytes": 28,
+            "body_sha256": "4f4cce02ce0fb3ce4d8b3ac0a397720b2de8eb703192733d166fc1ff8415b945"
+          }
+        },
+        {
+          "id": "duplicate_after_replacement",
+          "op": "replay",
+          "response": {
+            "status": 200,
+            "body": {
+              "corroborated": true,
+              "corroboration_http_status": 200,
+              "duplicate": true,
+              "generation": 1,
+              "mode": "revoke_only",
+              "steps": [
+                {
+                  "operation": "revoke",
+                  "status": 200
+                }
+              ]
+            },
+            "bytes": 152,
+            "body_sha256": "f53bcfb46cd8f372bf3acd02a961d06a9e0efc5eb328081ded40d5584f957574"
+          }
+        },
+        {
+          "id": "capture_replacement",
+          "op": "capture",
+          "response": {
+            "status": 200,
+            "body": {
+              "identity": "A",
+              "generation": 2,
+              "credential": "[REDACTED]"
+            },
+            "bytes": 90,
+            "body_sha256": "d9604e23a734e30dcaa7a0e1ca9c6bc6fbe0bb07685f65eaa61f308e5c61dd0e"
+          },
+          "credential_acquired": true
+        },
+        {
+          "id": "misuse_original_late",
+          "op": "read",
+          "response": {
+            "status": 401,
+            "body": {
+              "error": "credential_not_active",
+              "records": []
+            },
+            "bytes": 46,
+            "body_sha256": "6ed722d6947766a32ca2837c7ccab8a6a890deb254e0d8e452685809f83ad618"
+          },
+          "label": "misuse",
+          "requested_ids": [
+            "FICTIONAL-A07"
+          ],
+          "credential_available": true,
+          "after_first_response": true
+        },
+        {
+          "id": "misuse_replacement",
+          "op": "read",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A08",
+                  "owner": "owner-a"
+                }
+              ]
+            },
+            "bytes": 54,
+            "body_sha256": "5d007f0eaccd76f53b2ff86f08ec6ae521dc0be39dff8a802e2fc69db1fa75fc"
+          },
+          "label": "misuse",
+          "requested_ids": [
+            "FICTIONAL-A08"
+          ],
+          "credential_available": true,
+          "after_first_response": true
+        },
+        {
+          "id": "a_recovered",
+          "op": "read",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A01",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A02",
+                  "owner": "owner-a"
+                }
+              ]
+            },
+            "bytes": 95,
+            "body_sha256": "428f70c5b816eef0c6b68da6e80aae1b745596c4bc864cf4c7ed6ab30e985051"
+          },
+          "label": "legitimate_A",
+          "requested_ids": [
+            "FICTIONAL-A01",
+            "FICTIONAL-A02"
+          ],
+          "credential_available": true,
+          "after_first_response": true
+        },
+        {
+          "id": "b_recovered",
+          "op": "read",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A01",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A02",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A03",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A04",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A05",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A06",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A07",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A08",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-B01",
+                  "owner": "owner-b"
+                },
+                {
+                  "id": "FICTIONAL-B02",
+                  "owner": "owner-b"
+                },
+                {
+                  "id": "FICTIONAL-B03",
+                  "owner": "owner-b"
+                },
+                {
+                  "id": "FICTIONAL-B04",
+                  "owner": "owner-b"
+                }
+              ]
+            },
+            "bytes": 505,
+            "body_sha256": "2d907e41f1a99623ab2147fc198fa8582a72908013417c11607db7e3434b4199"
+          },
+          "label": "legitimate_B",
+          "requested_ids": [
+            "FICTIONAL-A01",
+            "FICTIONAL-A02",
+            "FICTIONAL-A03",
+            "FICTIONAL-A04",
+            "FICTIONAL-A05",
+            "FICTIONAL-A06",
+            "FICTIONAL-A07",
+            "FICTIONAL-A08",
+            "FICTIONAL-B01",
+            "FICTIONAL-B02",
+            "FICTIONAL-B03",
+            "FICTIONAL-B04"
+          ],
+          "credential_available": true,
+          "after_first_response": true
+        },
+        {
+          "id": "cross_owner_after",
+          "op": "read",
+          "response": {
+            "status": 403,
+            "body": {
+              "error": "owner_scope",
+              "records": []
+            },
+            "bytes": 36,
+            "body_sha256": "4dff2c74a1cf4d8f928c538babbbc01ff077910bf173151b854796a756140f0c"
+          },
+          "label": "cross_owner",
+          "requested_ids": [
+            "FICTIONAL-B02"
+          ],
+          "credential_available": true,
+          "after_first_response": true
+        },
+        {
+          "id": "observe_after_recovery",
+          "op": "observe",
+          "observation": {
+            "observation": {
+              "status": 200,
+              "body": {
+                "identity": "A",
+                "generation": 2,
+                "credential": "[REDACTED]"
+              },
+              "bytes": 90,
+              "body_sha256": "d9604e23a734e30dcaa7a0e1ca9c6bc6fbe0bb07685f65eaa61f308e5c61dd0e"
+            },
+            "evidence": {
+              "observation_id": "observe_after_recovery",
+              "target": "A",
+              "origin": "http://127.0.0.1:56567",
+              "route": "/fixture/exposed-credential",
+              "generation": 2,
+              "fingerprint": "15a49100eaa470f8fd171c03ee04d676c2822ee9c347a6bdc9cf2ab283271f31"
+            },
+            "controller": {
+              "status": 200,
+              "body": {
+                "corroborated": true,
+                "corroboration_http_status": 200,
+                "generation": 2,
+                "mode": "revoke_only",
+                "steps": [
+                  {
+                    "operation": "revoke",
+                    "status": 200
+                  }
+                ]
+              },
+              "bytes": 135,
+              "body_sha256": "616d3d757ff5e2a23c6f44f239047d5d61ee16b81d3728ddfff311c18ffaf7f7"
+            }
+          }
+        },
+        {
+          "id": "a_after_second_observation",
+          "op": "read",
+          "response": {
+            "status": 401,
+            "body": {
+              "error": "credential_not_active",
+              "records": []
+            },
+            "bytes": 46,
+            "body_sha256": "6ed722d6947766a32ca2837c7ccab8a6a890deb254e0d8e452685809f83ad618"
+          },
+          "label": "legitimate_A",
+          "requested_ids": [
+            "FICTIONAL-A03"
+          ],
+          "credential_available": true,
+          "after_first_response": true
+        }
+      ],
+      "metrics": {
+        "legitimate_A": {
+          "requests": 4,
+          "completed": 2,
+          "denied": 2,
+          "record_transmissions": 3,
+          "distinct_ids": [
+            "FICTIONAL-A01",
+            "FICTIONAL-A02"
+          ],
+          "after_first_response_records": 2,
+          "distinct_record_count": 2
+        },
+        "legitimate_B": {
+          "requests": 3,
+          "completed": 3,
+          "denied": 0,
+          "record_transmissions": 36,
+          "distinct_ids": [
+            "FICTIONAL-A01",
+            "FICTIONAL-A02",
+            "FICTIONAL-A03",
+            "FICTIONAL-A04",
+            "FICTIONAL-A05",
+            "FICTIONAL-A06",
+            "FICTIONAL-A07",
+            "FICTIONAL-A08",
+            "FICTIONAL-B01",
+            "FICTIONAL-B02",
+            "FICTIONAL-B03",
+            "FICTIONAL-B04"
+          ],
+          "after_first_response_records": 24,
+          "distinct_record_count": 12
+        },
+        "misuse": {
+          "requests": 5,
+          "completed": 3,
+          "denied": 2,
+          "record_transmissions": 4,
+          "distinct_ids": [
+            "FICTIONAL-A02",
+            "FICTIONAL-A03",
+            "FICTIONAL-A04",
+            "FICTIONAL-A08"
+          ],
+          "after_first_response_records": 1,
+          "distinct_record_count": 4
+        },
+        "cross_owner": {
+          "requests": 2,
+          "completed": 0,
+          "denied": 2,
+          "record_transmissions": 0,
+          "distinct_ids": [],
+          "after_first_response_records": 0,
+          "distinct_record_count": 0
+        }
+      }
+    },
+    {
+      "mode": "combined",
+      "process_ids": {
+        "verifier": 89691,
+        "gateway": 89715,
+        "app": 89716,
+        "controller": 89717,
+        "observer": 89718
+      },
+      "endpoints": {
+        "gateway": "http://127.0.0.1:56614",
+        "app": "http://127.0.0.1:56615",
+        "controller": "http://127.0.0.1:56616"
+      },
+      "protocol_sha256": "493da6983d2fb643effd6a6fa2098ceb9babd431dc5bfd75c7e0f9554055a4df",
+      "workload_sha256": "4e86e519ad57570ef2fb9c2c9325aab261387c11feb7776b06388062b45158cc",
+      "transcript": [
+        {
+          "id": "capture_initial",
+          "op": "capture",
+          "response": {
+            "status": 200,
+            "body": {
+              "identity": "A",
+              "generation": 1,
+              "credential": "[REDACTED]"
+            },
+            "bytes": 90,
+            "body_sha256": "c3b6537b34dda2a5d78304692f5158bff9b7537e07f8defabb22f76cb177e0c7"
+          },
+          "credential_acquired": true
+        },
+        {
+          "id": "a_before",
+          "op": "read",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A01",
+                  "owner": "owner-a"
+                }
+              ]
+            },
+            "bytes": 54,
+            "body_sha256": "128cd38c6aec97aa7c6f7a5d36d3ac755d6a1702dac14aca94accc453e28ece3"
+          },
+          "label": "legitimate_A",
+          "requested_ids": [
+            "FICTIONAL-A01"
+          ],
+          "credential_available": true,
+          "after_first_response": false
+        },
+        {
+          "id": "b_before",
+          "op": "read",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A01",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A02",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A03",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A04",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A05",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A06",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A07",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A08",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-B01",
+                  "owner": "owner-b"
+                },
+                {
+                  "id": "FICTIONAL-B02",
+                  "owner": "owner-b"
+                },
+                {
+                  "id": "FICTIONAL-B03",
+                  "owner": "owner-b"
+                },
+                {
+                  "id": "FICTIONAL-B04",
+                  "owner": "owner-b"
+                }
+              ]
+            },
+            "bytes": 505,
+            "body_sha256": "2d907e41f1a99623ab2147fc198fa8582a72908013417c11607db7e3434b4199"
+          },
+          "label": "legitimate_B",
+          "requested_ids": [
+            "FICTIONAL-A01",
+            "FICTIONAL-A02",
+            "FICTIONAL-A03",
+            "FICTIONAL-A04",
+            "FICTIONAL-A05",
+            "FICTIONAL-A06",
+            "FICTIONAL-A07",
+            "FICTIONAL-A08",
+            "FICTIONAL-B01",
+            "FICTIONAL-B02",
+            "FICTIONAL-B03",
+            "FICTIONAL-B04"
+          ],
+          "credential_available": true,
+          "after_first_response": false
+        },
+        {
+          "id": "misuse_before_1",
+          "op": "read",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A02",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A03",
+                  "owner": "owner-a"
+                }
+              ]
+            },
+            "bytes": 95,
+            "body_sha256": "388a72673c477fb3f91275e754977afe55e32247b463fedd3b0367c724d958e8"
+          },
+          "label": "misuse",
+          "requested_ids": [
+            "FICTIONAL-A02",
+            "FICTIONAL-A03"
+          ],
+          "credential_available": true,
+          "after_first_response": false
+        },
+        {
+          "id": "cross_owner_before",
+          "op": "read",
+          "response": {
+            "status": 403,
+            "body": {
+              "error": "owner_scope",
+              "records": []
+            },
+            "bytes": 36,
+            "body_sha256": "4dff2c74a1cf4d8f928c538babbbc01ff077910bf173151b854796a756140f0c"
+          },
+          "label": "cross_owner",
+          "requested_ids": [
+            "FICTIONAL-B01"
+          ],
+          "credential_available": true,
+          "after_first_response": false
+        },
+        {
+          "id": "false_claim",
+          "op": "claim",
+          "response": {
+            "status": 422,
+            "body": {
+              "error": "credential_mismatch"
+            },
+            "bytes": 31,
+            "body_sha256": "08d3349c38094d0ac40a2eea33cda19d7a38c9958a7d3d478406b5c8933b4192"
+          }
+        },
+        {
+          "id": "wrong_target",
+          "op": "claim",
+          "response": {
+            "status": 403,
+            "body": {
+              "error": "unenrolled_target_or_route"
+            },
+            "bytes": 38,
+            "body_sha256": "c9ff13ec2a42ccbe0ead783c20bd29dd77de2663d0c143b47726c4eb0788e31b"
+          }
+        },
+        {
+          "id": "wrong_origin",
+          "op": "claim",
+          "response": {
+            "status": 403,
+            "body": {
+              "error": "unenrolled_target_or_route"
+            },
+            "bytes": 38,
+            "body_sha256": "c9ff13ec2a42ccbe0ead783c20bd29dd77de2663d0c143b47726c4eb0788e31b"
+          }
+        },
+        {
+          "id": "unauthenticated_claim",
+          "op": "claim",
+          "response": {
+            "status": 401,
+            "body": {
+              "error": "controller_authentication"
+            },
+            "bytes": 37,
+            "body_sha256": "ff2461c97954525376b4bbc6975266a17a55deacaa5264c0422a320659bd9c55"
+          }
+        },
+        {
+          "id": "misuse_before_2",
+          "op": "read",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A04",
+                  "owner": "owner-a"
+                }
+              ]
+            },
+            "bytes": 54,
+            "body_sha256": "6ca4724ea5ae2f12a085ca402a0c3240a56e8942719bcb0878d6954472940f73"
+          },
+          "label": "misuse",
+          "requested_ids": [
+            "FICTIONAL-A04"
+          ],
+          "credential_available": true,
+          "after_first_response": false
+        },
+        {
+          "id": "observe_response",
+          "op": "observe",
+          "observation": {
+            "observation": {
+              "status": 200,
+              "body": {
+                "identity": "A",
+                "generation": 1,
+                "credential": "[REDACTED]"
+              },
+              "bytes": 90,
+              "body_sha256": "c3b6537b34dda2a5d78304692f5158bff9b7537e07f8defabb22f76cb177e0c7"
+            },
+            "evidence": {
+              "observation_id": "observe_response",
+              "target": "A",
+              "origin": "http://127.0.0.1:56615",
+              "route": "/fixture/exposed-credential",
+              "generation": 1,
+              "fingerprint": "1a0ccc7b30193844e2cdbc7288c1eb51c8962a46edfa01ba8d7546c2c1a1fc98"
+            },
+            "controller": {
+              "status": 200,
+              "body": {
+                "corroborated": true,
+                "corroboration_http_status": 200,
+                "generation": 1,
+                "mode": "combined",
+                "steps": [
+                  {
+                    "operation": "revoke",
+                    "status": 200
+                  },
+                  {
+                    "operation": "remove_exposure_route",
+                    "status": 200
+                  }
+                ]
+              },
+              "bytes": 183,
+              "body_sha256": "fbec2c3b80234b137e3d0fa21325630e16eddb7bec0c6ca5dff9d3b0e57857ae"
+            }
+          }
+        },
+        {
+          "id": "misuse_after_response",
+          "op": "read",
+          "response": {
+            "status": 401,
+            "body": {
+              "error": "credential_not_active",
+              "records": []
+            },
+            "bytes": 46,
+            "body_sha256": "6ed722d6947766a32ca2837c7ccab8a6a890deb254e0d8e452685809f83ad618"
+          },
+          "label": "misuse",
+          "requested_ids": [
+            "FICTIONAL-A05"
+          ],
+          "credential_available": true,
+          "after_first_response": true
+        },
+        {
+          "id": "a_interrupted",
+          "op": "read",
+          "response": {
+            "status": 401,
+            "body": {
+              "error": "credential_not_active",
+              "records": []
+            },
+            "bytes": 46,
+            "body_sha256": "6ed722d6947766a32ca2837c7ccab8a6a890deb254e0d8e452685809f83ad618"
+          },
+          "label": "legitimate_A",
+          "requested_ids": [
+            "FICTIONAL-A06"
+          ],
+          "credential_available": true,
+          "after_first_response": true
+        },
+        {
+          "id": "b_during",
+          "op": "read",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A01",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A02",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A03",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A04",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A05",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A06",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A07",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A08",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-B01",
+                  "owner": "owner-b"
+                },
+                {
+                  "id": "FICTIONAL-B02",
+                  "owner": "owner-b"
+                },
+                {
+                  "id": "FICTIONAL-B03",
+                  "owner": "owner-b"
+                },
+                {
+                  "id": "FICTIONAL-B04",
+                  "owner": "owner-b"
+                }
+              ]
+            },
+            "bytes": 505,
+            "body_sha256": "2d907e41f1a99623ab2147fc198fa8582a72908013417c11607db7e3434b4199"
+          },
+          "label": "legitimate_B",
+          "requested_ids": [
+            "FICTIONAL-A01",
+            "FICTIONAL-A02",
+            "FICTIONAL-A03",
+            "FICTIONAL-A04",
+            "FICTIONAL-A05",
+            "FICTIONAL-A06",
+            "FICTIONAL-A07",
+            "FICTIONAL-A08",
+            "FICTIONAL-B01",
+            "FICTIONAL-B02",
+            "FICTIONAL-B03",
+            "FICTIONAL-B04"
+          ],
+          "credential_available": true,
+          "after_first_response": true
+        },
+        {
+          "id": "duplicate_response",
+          "op": "replay",
+          "response": {
+            "status": 200,
+            "body": {
+              "corroborated": true,
+              "corroboration_http_status": 200,
+              "duplicate": true,
+              "generation": 1,
+              "mode": "combined",
+              "steps": [
+                {
+                  "operation": "revoke",
+                  "status": 200
+                },
+                {
+                  "operation": "remove_exposure_route",
+                  "status": 200
+                }
+              ]
+            },
+            "bytes": 200,
+            "body_sha256": "7bb5db4867dbff2996cb1a323a65240f1983d8d3a53d8ca512e60c925a0a1ff3"
+          }
+        },
+        {
+          "id": "conflicting_response",
+          "op": "replay",
+          "response": {
+            "status": 409,
+            "body": {
+              "error": "idempotency_conflict"
+            },
+            "bytes": 32,
+            "body_sha256": "aefd268d8b92f862ca7ae9b8e101607c368d727d995a7ecd84a077967c77dc2a"
+          }
+        },
+        {
+          "id": "replacement",
+          "op": "recover",
+          "response": {
+            "status": 200,
+            "body": {
+              "generation": 2,
+              "provisioned": true
+            },
+            "bytes": 35,
+            "body_sha256": "780988c3ff6d53f9e1cb6737508b7f1f262c588187ea0ff11a0c6c04880dbfd5"
+          }
+        },
+        {
+          "id": "stale_generation",
+          "op": "replay",
+          "response": {
+            "status": 409,
+            "body": {
+              "error": "stale_generation"
+            },
+            "bytes": 28,
+            "body_sha256": "4f4cce02ce0fb3ce4d8b3ac0a397720b2de8eb703192733d166fc1ff8415b945"
+          }
+        },
+        {
+          "id": "duplicate_after_replacement",
+          "op": "replay",
+          "response": {
+            "status": 200,
+            "body": {
+              "corroborated": true,
+              "corroboration_http_status": 200,
+              "duplicate": true,
+              "generation": 1,
+              "mode": "combined",
+              "steps": [
+                {
+                  "operation": "revoke",
+                  "status": 200
+                },
+                {
+                  "operation": "remove_exposure_route",
+                  "status": 200
+                }
+              ]
+            },
+            "bytes": 200,
+            "body_sha256": "7bb5db4867dbff2996cb1a323a65240f1983d8d3a53d8ca512e60c925a0a1ff3"
+          }
+        },
+        {
+          "id": "capture_replacement",
+          "op": "capture",
+          "response": {
+            "status": 404,
+            "body": {
+              "error": "route_removed"
+            },
+            "bytes": 25,
+            "body_sha256": "4dd8563bb97f38ac241ce5a913361e0d0e5f2542656f4347b0e598684507ff49"
+          },
+          "credential_acquired": false
+        },
+        {
+          "id": "misuse_original_late",
+          "op": "read",
+          "response": {
+            "status": 401,
+            "body": {
+              "error": "credential_not_active",
+              "records": []
+            },
+            "bytes": 46,
+            "body_sha256": "6ed722d6947766a32ca2837c7ccab8a6a890deb254e0d8e452685809f83ad618"
+          },
+          "label": "misuse",
+          "requested_ids": [
+            "FICTIONAL-A07"
+          ],
+          "credential_available": true,
+          "after_first_response": true
+        },
+        {
+          "id": "misuse_replacement",
+          "op": "read",
+          "response": {
+            "status": 401,
+            "body": {
+              "error": "credential_not_active",
+              "records": []
+            },
+            "bytes": 46,
+            "body_sha256": "6ed722d6947766a32ca2837c7ccab8a6a890deb254e0d8e452685809f83ad618"
+          },
+          "label": "misuse",
+          "requested_ids": [
+            "FICTIONAL-A08"
+          ],
+          "credential_available": false,
+          "after_first_response": true
+        },
+        {
+          "id": "a_recovered",
+          "op": "read",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A01",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A02",
+                  "owner": "owner-a"
+                }
+              ]
+            },
+            "bytes": 95,
+            "body_sha256": "428f70c5b816eef0c6b68da6e80aae1b745596c4bc864cf4c7ed6ab30e985051"
+          },
+          "label": "legitimate_A",
+          "requested_ids": [
+            "FICTIONAL-A01",
+            "FICTIONAL-A02"
+          ],
+          "credential_available": true,
+          "after_first_response": true
+        },
+        {
+          "id": "b_recovered",
+          "op": "read",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A01",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A02",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A03",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A04",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A05",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A06",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A07",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-A08",
+                  "owner": "owner-a"
+                },
+                {
+                  "id": "FICTIONAL-B01",
+                  "owner": "owner-b"
+                },
+                {
+                  "id": "FICTIONAL-B02",
+                  "owner": "owner-b"
+                },
+                {
+                  "id": "FICTIONAL-B03",
+                  "owner": "owner-b"
+                },
+                {
+                  "id": "FICTIONAL-B04",
+                  "owner": "owner-b"
+                }
+              ]
+            },
+            "bytes": 505,
+            "body_sha256": "2d907e41f1a99623ab2147fc198fa8582a72908013417c11607db7e3434b4199"
+          },
+          "label": "legitimate_B",
+          "requested_ids": [
+            "FICTIONAL-A01",
+            "FICTIONAL-A02",
+            "FICTIONAL-A03",
+            "FICTIONAL-A04",
+            "FICTIONAL-A05",
+            "FICTIONAL-A06",
+            "FICTIONAL-A07",
+            "FICTIONAL-A08",
+            "FICTIONAL-B01",
+            "FICTIONAL-B02",
+            "FICTIONAL-B03",
+            "FICTIONAL-B04"
+          ],
+          "credential_available": true,
+          "after_first_response": true
+        },
+        {
+          "id": "cross_owner_after",
+          "op": "read",
+          "response": {
+            "status": 403,
+            "body": {
+              "error": "owner_scope",
+              "records": []
+            },
+            "bytes": 36,
+            "body_sha256": "4dff2c74a1cf4d8f928c538babbbc01ff077910bf173151b854796a756140f0c"
+          },
+          "label": "cross_owner",
+          "requested_ids": [
+            "FICTIONAL-B02"
+          ],
+          "credential_available": true,
+          "after_first_response": true
+        },
+        {
+          "id": "observe_after_recovery",
+          "op": "observe",
+          "observation": {
+            "observation": {
+              "status": 404,
+              "body": {
+                "error": "route_removed"
+              },
+              "bytes": 25,
+              "body_sha256": "4dd8563bb97f38ac241ce5a913361e0d0e5f2542656f4347b0e598684507ff49"
+            },
+            "evidence": null,
+            "controller": null
+          }
+        },
+        {
+          "id": "a_after_second_observation",
+          "op": "read",
+          "response": {
+            "status": 200,
+            "body": {
+              "records": [
+                {
+                  "id": "FICTIONAL-A03",
+                  "owner": "owner-a"
+                }
+              ]
+            },
+            "bytes": 54,
+            "body_sha256": "9caa8fb1774612fe27df598afb4bb6d618fcaf45baffd591494eb858fa223b37"
+          },
+          "label": "legitimate_A",
+          "requested_ids": [
+            "FICTIONAL-A03"
+          ],
+          "credential_available": true,
+          "after_first_response": true
+        }
+      ],
+      "metrics": {
+        "legitimate_A": {
+          "requests": 4,
+          "completed": 3,
+          "denied": 1,
+          "record_transmissions": 4,
+          "distinct_ids": [
+            "FICTIONAL-A01",
+            "FICTIONAL-A02",
+            "FICTIONAL-A03"
+          ],
+          "after_first_response_records": 3,
+          "distinct_record_count": 3
+        },
+        "legitimate_B": {
+          "requests": 3,
+          "completed": 3,
+          "denied": 0,
+          "record_transmissions": 36,
+          "distinct_ids": [
+            "FICTIONAL-A01",
+            "FICTIONAL-A02",
+            "FICTIONAL-A03",
+            "FICTIONAL-A04",
+            "FICTIONAL-A05",
+            "FICTIONAL-A06",
+            "FICTIONAL-A07",
+            "FICTIONAL-A08",
+            "FICTIONAL-B01",
+            "FICTIONAL-B02",
+            "FICTIONAL-B03",
+            "FICTIONAL-B04"
+          ],
+          "after_first_response_records": 24,
+          "distinct_record_count": 12
+        },
+        "misuse": {
+          "requests": 5,
+          "completed": 2,
+          "denied": 3,
+          "record_transmissions": 3,
+          "distinct_ids": [
+            "FICTIONAL-A02",
+            "FICTIONAL-A03",
+            "FICTIONAL-A04"
+          ],
+          "after_first_response_records": 0,
+          "distinct_record_count": 3
+        },
+        "cross_owner": {
+          "requests": 2,
+          "completed": 0,
+          "denied": 2,
+          "record_transmissions": 0,
+          "distinct_ids": [],
+          "after_first_response_records": 0,
+          "distinct_record_count": 0
+        }
+      }
+    }
+  ],
+  "checks": [
+    {
+      "name": "scope_only: distinct processes",
+      "passed": true
+    },
+    {
+      "name": "scope_only: actual misuse transmissions",
+      "passed": true
+    },
+    {
+      "name": "scope_only: actual post-response transmissions",
+      "passed": true
+    },
+    {
+      "name": "scope_only: A availability measured",
+      "passed": true
+    },
+    {
+      "name": "scope_only: B batch continuity",
+      "passed": true
+    },
+    {
+      "name": "scope_only: owner scope",
+      "passed": true
+    },
+    {
+      "name": "scope_only: false_claim",
+      "passed": true
+    },
+    {
+      "name": "scope_only: wrong_target",
+      "passed": true
+    },
+    {
+      "name": "scope_only: wrong_origin",
+      "passed": true
+    },
+    {
+      "name": "scope_only: unauthenticated_claim",
+      "passed": true
+    },
+    {
+      "name": "scope_only: conflicting_response",
+      "passed": true
+    },
+    {
+      "name": "scope_only: stale_generation",
+      "passed": true
+    },
+    {
+      "name": "scope_only: observer and controller read exposure",
+      "passed": true
+    },
+    {
+      "name": "scope_only: duplicate_response",
+      "passed": true
+    },
+    {
+      "name": "scope_only: duplicate_after_replacement",
+      "passed": true
+    },
+    {
+      "name": "scope_only: replacement provisioned",
+      "passed": true
+    },
+    {
+      "name": "scope_only: replacement works after stale/duplicate commands",
+      "passed": true
+    },
+    {
+      "name": "scope_only: exposure route repair",
+      "passed": true
+    },
+    {
+      "name": "scope_only: old credential state",
+      "passed": true
+    },
+    {
+      "name": "scope_only: stolen replacement counterexample",
+      "passed": true
+    },
+    {
+      "name": "scope_only: final A state measured",
+      "passed": true
+    },
+    {
+      "name": "repair_only: distinct processes",
+      "passed": true
+    },
+    {
+      "name": "repair_only: actual misuse transmissions",
+      "passed": true
+    },
+    {
+      "name": "repair_only: actual post-response transmissions",
+      "passed": true
+    },
+    {
+      "name": "repair_only: A availability measured",
+      "passed": true
+    },
+    {
+      "name": "repair_only: B batch continuity",
+      "passed": true
+    },
+    {
+      "name": "repair_only: owner scope",
+      "passed": true
+    },
+    {
+      "name": "repair_only: false_claim",
+      "passed": true
+    },
+    {
+      "name": "repair_only: wrong_target",
+      "passed": true
+    },
+    {
+      "name": "repair_only: wrong_origin",
+      "passed": true
+    },
+    {
+      "name": "repair_only: unauthenticated_claim",
+      "passed": true
+    },
+    {
+      "name": "repair_only: conflicting_response",
+      "passed": true
+    },
+    {
+      "name": "repair_only: stale_generation",
+      "passed": true
+    },
+    {
+      "name": "repair_only: observer and controller read exposure",
+      "passed": true
+    },
+    {
+      "name": "repair_only: duplicate_response",
+      "passed": true
+    },
+    {
+      "name": "repair_only: duplicate_after_replacement",
+      "passed": true
+    },
+    {
+      "name": "repair_only: replacement provisioned",
+      "passed": true
+    },
+    {
+      "name": "repair_only: replacement works after stale/duplicate commands",
+      "passed": true
+    },
+    {
+      "name": "repair_only: exposure route repair",
+      "passed": true
+    },
+    {
+      "name": "repair_only: old credential state",
+      "passed": true
+    },
+    {
+      "name": "repair_only: stolen replacement counterexample",
+      "passed": true
+    },
+    {
+      "name": "repair_only: final A state measured",
+      "passed": true
+    },
+    {
+      "name": "revoke_only: distinct processes",
+      "passed": true
+    },
+    {
+      "name": "revoke_only: actual misuse transmissions",
+      "passed": true
+    },
+    {
+      "name": "revoke_only: actual post-response transmissions",
+      "passed": true
+    },
+    {
+      "name": "revoke_only: A availability measured",
+      "passed": true
+    },
+    {
+      "name": "revoke_only: B batch continuity",
+      "passed": true
+    },
+    {
+      "name": "revoke_only: owner scope",
+      "passed": true
+    },
+    {
+      "name": "revoke_only: false_claim",
+      "passed": true
+    },
+    {
+      "name": "revoke_only: wrong_target",
+      "passed": true
+    },
+    {
+      "name": "revoke_only: wrong_origin",
+      "passed": true
+    },
+    {
+      "name": "revoke_only: unauthenticated_claim",
+      "passed": true
+    },
+    {
+      "name": "revoke_only: conflicting_response",
+      "passed": true
+    },
+    {
+      "name": "revoke_only: stale_generation",
+      "passed": true
+    },
+    {
+      "name": "revoke_only: observer and controller read exposure",
+      "passed": true
+    },
+    {
+      "name": "revoke_only: duplicate_response",
+      "passed": true
+    },
+    {
+      "name": "revoke_only: duplicate_after_replacement",
+      "passed": true
+    },
+    {
+      "name": "revoke_only: replacement provisioned",
+      "passed": true
+    },
+    {
+      "name": "revoke_only: replacement works after stale/duplicate commands",
+      "passed": true
+    },
+    {
+      "name": "revoke_only: exposure route repair",
+      "passed": true
+    },
+    {
+      "name": "revoke_only: old credential state",
+      "passed": true
+    },
+    {
+      "name": "revoke_only: stolen replacement counterexample",
+      "passed": true
+    },
+    {
+      "name": "revoke_only: final A state measured",
+      "passed": true
+    },
+    {
+      "name": "combined: distinct processes",
+      "passed": true
+    },
+    {
+      "name": "combined: actual misuse transmissions",
+      "passed": true
+    },
+    {
+      "name": "combined: actual post-response transmissions",
+      "passed": true
+    },
+    {
+      "name": "combined: A availability measured",
+      "passed": true
+    },
+    {
+      "name": "combined: B batch continuity",
+      "passed": true
+    },
+    {
+      "name": "combined: owner scope",
+      "passed": true
+    },
+    {
+      "name": "combined: false_claim",
+      "passed": true
+    },
+    {
+      "name": "combined: wrong_target",
+      "passed": true
+    },
+    {
+      "name": "combined: wrong_origin",
+      "passed": true
+    },
+    {
+      "name": "combined: unauthenticated_claim",
+      "passed": true
+    },
+    {
+      "name": "combined: conflicting_response",
+      "passed": true
+    },
+    {
+      "name": "combined: stale_generation",
+      "passed": true
+    },
+    {
+      "name": "combined: observer and controller read exposure",
+      "passed": true
+    },
+    {
+      "name": "combined: duplicate_response",
+      "passed": true
+    },
+    {
+      "name": "combined: duplicate_after_replacement",
+      "passed": true
+    },
+    {
+      "name": "combined: replacement provisioned",
+      "passed": true
+    },
+    {
+      "name": "combined: replacement works after stale/duplicate commands",
+      "passed": true
+    },
+    {
+      "name": "combined: exposure route repair",
+      "passed": true
+    },
+    {
+      "name": "combined: old credential state",
+      "passed": true
+    },
+    {
+      "name": "combined: stolen replacement counterexample",
+      "passed": true
+    },
+    {
+      "name": "combined: final A state measured",
+      "passed": true
+    },
+    {
+      "name": "refuse bind 0.0.0.0",
+      "passed": true
+    },
+    {
+      "name": "refuse bind ::1",
+      "passed": true
+    },
+    {
+      "name": "refuse bind localhost",
+      "passed": true
+    },
+    {
+      "name": "refuse bind 192.0.2.1",
+      "passed": true
+    }
+  ],
+  "timing": "Sequential requests; no detection or containment latency measured."
+}

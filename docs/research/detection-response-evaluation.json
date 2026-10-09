@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "review_date": "2026-10-09",
+  "narrative_file": "DETECTION-AND-RESPONSE-EVALUATION.md",
+  "fulltext_review_count": 2,
+  "records": [
+    {
+      "id": "DRE-01",
+      "title": "A First-Principles Evaluation of Graph-Based Network Intrusion Detection Systems",
+      "authors": [
+        "Rui Zhao",
+        "Wajih Ul Hassan"
+      ],
+      "first_publication_date": "2026-09-10",
+      "version_date": "2026-09-10",
+      "version": "arXiv:2609.12263v1",
+      "status": "preprint; author-reported CCS 2026 acceptance",
+      "venue": "ACM CCS 2026",
+      "conference_after_review_cutoff": true,
+      "url": "https://arxiv.org/abs/2609.12263v1",
+      "fulltext_url": "https://arxiv.org/html/2609.12263v1",
+      "pdf_url": "https://arxiv.org/pdf/2609.12263v1",
+      "doi": "10.1145/3830454.3846576",
+      "reading_depth": "Relevant full-text methods, evaluation definitions, results and limitations",
+      "locators": {
+        "methods": [
+          "§3; Table 1",
+          "§4 EG6"
+        ],
+        "results": [
+          "§4 EG9; Table 4",
+          "§5.2"
+        ],
+        "replay_definition": [
+          "§4 EG9",
+          "Appendices B and F.9"
+        ],
+        "limitations": [
+          "§6"
+        ]
+      },
+      "narrative_anchor": "dre-01",
+      "source_derived_prose_budget_limit": 130,
+      "within_primary_window": true,
+      "reproduced_by_us": false,
+      "code_executed": false,
+      "review_date": "2026-10-09"
+    },
+    {
+      "id": "DRE-02",
+      "title": "Incident Response Planning Using a Lightweight Large Language Model with Reduced Hallucination",
+      "authors": [
+        "Kim Hammar",
+        "Tansu Alpcan",
+        "Emil C. Lupu"
+      ],
+      "first_publication_date": "2025-08-07",
+      "version": "NDSS 2026 publisher PDF; not assumed identical to arXiv v1",
+      "version_date": null,
+      "venue": "NDSS 2026",
+      "status": "conference paper",
+      "url": "https://www.ndss-symposium.org/ndss-paper/incident-response-planning-using-a-lightweight-large-language-model-with-reduced-hallucination/",
+      "fulltext_url": "https://www.ndss-symposium.org/wp-content/uploads/2026-f358-paper.pdf",
+      "first_preprint_url": "https://arxiv.org/abs/2508.05188v1",
+      "doi": "10.14722/ndss.2026.240358",
+      "reading_depth": "Relevant full-text architecture, evaluation definition, results, limitations and hardware appendix",
+      "locators": {
+        "methods": [
+          "§IV",
+          "§V"
+        ],
+        "results_and_cost_definition": [
+          "§VII-A; Figure 12"
+        ],
+        "simulator_comparison": [
+          "§VII-B"
+        ],
+        "limitations_and_decision_support": [
+          "§VII-D"
+        ],
+        "hardware": [
+          "Appendix E"
+        ]
+      },
+      "review_gap": "Exact semantic-grading implementation not established; no plan-accuracy claim adopted",
+      "narrative_anchor": "dre-02",
+      "source_derived_prose_budget_limit": 130,
+      "first_preprint_within_primary_window": false,
+      "venue_publication_within_primary_window": true,
+      "reproduced_by_us": false,
+      "code_executed": false,
+      "review_date": "2026-10-09"
+    }
+  ]
+}

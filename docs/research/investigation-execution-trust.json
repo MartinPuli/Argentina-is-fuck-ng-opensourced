@@ -1,0 +1,141 @@
+{
+  "schema_version": 1,
+  "review_date": "2026-10-09",
+  "narrative_file": "INVESTIGATION-AND-EXECUTION-TRUST.md",
+  "fulltext_review_count": 2,
+  "records": [
+    {
+      "id": "IET-01",
+      "queue_id": "AD07",
+      "title": "Clouseau: A Hierarchical Multi-Agent Approach For Autonomous Attack Investigation",
+      "authors": [
+        "Abdullah Aldaihan",
+        "Fahad Alotaibi",
+        "Sergio Maffeis"
+      ],
+      "first_publication_date": null,
+      "first_publication_date_status": "not established",
+      "publication_date": "2025-12",
+      "publication_date_precision": "conference month",
+      "presentation_date": "2025-12-10",
+      "version": "Author-hosted ACSAC 2025 PDF; unnumbered",
+      "version_date": null,
+      "http_last_modified": "2025-10-24T07:47:51Z",
+      "http_last_modified_is_publication_date": false,
+      "retrieved_file_bytes": 749118,
+      "sha256": "aca95028e91e30c36b6e2767d8efd50602a63616b427c3df4a0b48eb6ad02194",
+      "venue": "IEEE ACSAC 2025",
+      "status": "conference paper",
+      "conference_window": {
+        "start": "2025-12-08",
+        "end": "2025-12-12"
+      },
+      "url": "https://www.acsac.org/2025/program/final/s234.html",
+      "fulltext_url": "https://www.doc.ic.ac.uk/~maffeis/papers/acsac25.pdf",
+      "doi": "10.1109/ACSAC67867.2025.00051",
+      "venue_date_url": "https://www.acsac.org/2025/program/final/",
+      "author_repository_url": "https://github.com/ICL-ml4csec/Clouseau",
+      "reading_depth": "relevant full-text methods, evaluation, assumptions, limitations and scoring appendix",
+      "locators": {
+        "methods": [
+          "§4.1–4.4 (PDF pp.4–6)"
+        ],
+        "trust_assumptions": [
+          "§4 Scope and Assumptions (pp.3–4)",
+          "§7 (pp.11–12)"
+        ],
+        "dataset_scope_and_labels": [
+          "§5.1.1–5.1.2 (pp.7–9)"
+        ],
+        "metrics_and_denominators": [
+          "§5.2.2–5.2.3 (pp.9–10)",
+          "Table 2 (p.10)",
+          "Table 4 (p.11)"
+        ],
+        "external_validation_vs_self_report": [
+          "§5.2.2–5.2.3",
+          "Appendix B (p.17)"
+        ],
+        "deployment_limits": [
+          "§7 (pp.11–12)"
+        ]
+      },
+      "narrative_anchor": "iet-01",
+      "source_derived_narrative_words": 107,
+      "source_derived_prose_budget_limit": 130,
+      "within_primary_window": true,
+      "window_basis": "2025 conference; exact first-online date unknown",
+      "publisher_fulltext_access": "unavailable",
+      "reproduced_by_us": false,
+      "code_executed": false,
+      "production_defense_evidence": false,
+      "review_date": "2026-10-09"
+    },
+    {
+      "id": "IET-02",
+      "queue_id": "AD11",
+      "title": "VET Your Agent: Towards Host-Independent Autonomy via Verifiable Execution Traces",
+      "authors": [
+        "Artem Grigor",
+        "Christian Schroeder de Witt",
+        "Simon Birnbach",
+        "Ivan Martinovic"
+      ],
+      "first_publication_date": "2025-12-17",
+      "version_date": "2025-12-17",
+      "version_timestamp": "2025-12-17T19:05:37Z",
+      "version": "arXiv:2512.15892v1",
+      "latest_arxiv_version_observed": "v1",
+      "venue": "ACM ASIACCS 2026",
+      "status": "conference-listed; reviewed version is earlier preprint",
+      "conference_window": {
+        "start": "2026-06-01",
+        "end": "2026-06-05"
+      },
+      "presentation_date": "2026-06-03",
+      "url": "https://arxiv.org/abs/2512.15892v1",
+      "fulltext_url": "https://arxiv.org/html/2512.15892v1",
+      "pdf_url": "https://arxiv.org/pdf/2512.15892v1",
+      "venue_url": "https://asiaccs2026.cse.iitkgp.ac.in/full-program/",
+      "publisher_url": "https://dl.acm.org/doi/10.1145/3779208.3786259",
+      "publisher_fulltext_access": "403; final-version equivalence not checked",
+      "reading_depth": "relevant full-text formal method, evaluation, case study, assumptions and limitations",
+      "locators": {
+        "methods": [
+          "§5.2–5.3",
+          "§7.2–7.5"
+        ],
+        "trust_assumptions": [
+          "§3.1–3.3",
+          "§7.2"
+        ],
+        "metrics_and_denominators": [
+          "§8 Figure 7 (10 runs for panel a)",
+          "§8 Table 5",
+          "§9 Selecting Proof Systems (20 runs per setting)"
+        ],
+        "external_validation_vs_self_report": [
+          "§5.2 Theorem 5.6",
+          "§7.3 Verifier algorithm",
+          "§9 Verifier"
+        ],
+        "deployment_limits": [
+          "§9",
+          "§10"
+        ],
+        "freshness_and_selection": [
+          "§3.2–3.3",
+          "§10"
+        ]
+      },
+      "narrative_anchor": "iet-02",
+      "source_derived_narrative_words": 103,
+      "source_derived_prose_budget_limit": 130,
+      "within_primary_window": true,
+      "reproduced_by_us": false,
+      "code_executed": false,
+      "production_defense_evidence": false,
+      "review_date": "2026-10-09"
+    }
+  ]
+}

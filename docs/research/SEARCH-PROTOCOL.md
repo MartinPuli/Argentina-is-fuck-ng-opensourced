@@ -32,7 +32,7 @@ Four public venue indexes were retrieved on October 9. A local parser extracted 
 
 Each reviewed paper must identify title, canonical primary link, version, dates, publication status, relevant sections, method, what the metric actually measures, important limitations and the resulting implementation decision. Numerical claims need their table/section, denominator, configuration and applicable uncertainty. A paper's claimed mechanism and our design inference must remain distinct.
 
-The current reviews use **targeted full-text reading**: relevant methods, evaluation definitions, results and limitations. They do not claim that all appendices were read or experiments reproduced. Read counts are the number of records in the individual evidence files, not search hits. Those files are:
+The current reviews use **targeted full-text reading**: relevant methods, evaluation definitions, results and limitations. They do not claim that all appendices were read or experiments reproduced. Read counts are the number of reviewed paper records in the evidence files, excluding records explicitly marked `counts_as_review: false`; they are not search hits. Those files are:
 
 - [Autonomous defense and repair](AUTONOMOUS-DEFENSE-PAPERS.md) / [records](defense-papers.json).
 - [Agent safety](AGENT-SAFETY-PAPERS.md) / [records](agent-safety-papers.json).
@@ -42,12 +42,15 @@ The current reviews use **targeted full-text reading**: relevant methods, evalua
 - [October agent reliability](OCTOBER-AGENT-RELIABILITY.md) / [records](october-agent-reliability.json).
 - [October artifact security](OCTOBER-ARTIFACT-SECURITY.md) / [records](october-artifact-security.json).
 - [Early exfiltration detection](EARLY-EXFILTRATION-DETECTION.md) / [records](early-exfiltration-detection.json).
+- [Investigation and execution trust](INVESTIGATION-AND-EXECUTION-TRUST.md) / [records](investigation-execution-trust.json).
+- [Threat-report verification](THREAT-REPORT-VERIFICATION.md) / [records](threat-report-verification.json).
+- [Detection and response evaluation](DETECTION-AND-RESPONSE-EVALUATION.md) / [records](detection-response-evaluation.json).
 
-This checkpoint contains **38 selected paper records** across eight files: the previous 32 plus two October agent-reliability, two artifact-security and two exfiltration-detection reviews. They include explicitly labeled earlier foundations and later publication milestones, so 38 does not mean 38 newly submitted papers inside the window. Reading-depth limitations appear in each file; none of these six additions was experimentally reproduced.
+This checkpoint contains **44 selected paper reviews** across eleven files: the previous 38 plus two investigation/execution-trust, two threat-report and two detection/response reviews. An additional AD18 record documents unavailable full text and is excluded from the 44. These reviews include explicitly labeled earlier foundations and later revisions/publication milestones; 44 does not mean 44 newly submitted papers inside the window. Titles were checked for duplicates within these reviewed records. Reading-depth limitations remain, and none of the six additions was experimentally reproduced.
 
 ## Additional discovery and implementation research
 
-The [additional discovery pass](ADDITIONAL-DISCOVERY.md) records 986 further title entries and 175 keyword matches across CCS 2025, RAID 2026, ACSAC 2025, AsiaCCS 2026 and an October arXiv snapshot. The original discovery pass prioritized 18 candidates without reading their full text. Five of those candidates (AD01–AD05) were subsequently reviewed; their current status and review links are now recorded. The separate insider-threat paper adds the sixth new review. These counts are not globally deduplicated and must not be added to paper-reading counts. RAID's event occurs after the cutoff; public acceptance metadata is distinguished from a paper's first publication.
+The [additional discovery pass](ADDITIONAL-DISCOVERY.md) records 986 further title entries and 175 keyword matches across CCS 2025, RAID 2026, ACSAC 2025, AsiaCCS 2026 and an October arXiv snapshot. The original discovery pass prioritized 18 candidates without reading their full text. Eight of those candidates (AD01–AD05, AD07–AD08 and AD11) were subsequently reviewed; their current status and review links are recorded. AD18 remains unread despite a separately reviewed accessible substitute. The insider-threat, GIDS-Eval and NDSS response-planning studies were also reviewed outside that queue. These counts are not globally deduplicated and must not be added to paper-reading counts. RAID's event occurs after the cutoff; public acceptance metadata is distinguished from a paper's first publication.
 
 The [country precedents](COUNTRY-PRECEDENTS.md), [competitor profiles](../../competitor-profiles/_summary.md) and [sandbox documentation review](SANDBOX-ARCHITECTURE.md) are implementation research. Government statements and vendor documentation are not additional academic papers or independent product benchmarks.
 

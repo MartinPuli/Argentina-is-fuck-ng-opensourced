@@ -1,0 +1,256 @@
+{
+  "license": "CC-BY-4.0",
+  "source_sha256": {
+    "services.py": "d480a355652b8fd653c8b9bb3800e00e9c99f4874922ea758bbb20f440d1fe9f",
+    "run_experiment.py": "d391853509c80f27837887fdeed66dedbb9e82daaf4a734f34626b196a506bbb",
+    "protocol.json": "cb74587c9d1a9016c0659478f5bc7978e371f9c1666a988b9e3484b11c95a0ad",
+    "workload.json": "ce1205b61bb42b5e649143e2de579b63298abffe4b41946670342c6fee34f386",
+    "PLAN.md": "1ccc197f1a338492886f1fd2f5e3dc9b3e73cb4de697878f75ad16889cbca0e6"
+  },
+  "checks_passed": 88,
+  "metrics": {
+    "scope_only": {
+      "legitimate_A": {
+        "requests": 4,
+        "completed": 4,
+        "denied": 0,
+        "record_transmissions": 5,
+        "distinct_ids": [
+          "FICTIONAL-A01",
+          "FICTIONAL-A02",
+          "FICTIONAL-A03",
+          "FICTIONAL-A06"
+        ],
+        "after_first_response_records": 4,
+        "distinct_record_count": 4
+      },
+      "legitimate_B": {
+        "requests": 3,
+        "completed": 3,
+        "denied": 0,
+        "record_transmissions": 36,
+        "distinct_ids": [
+          "FICTIONAL-A01",
+          "FICTIONAL-A02",
+          "FICTIONAL-A03",
+          "FICTIONAL-A04",
+          "FICTIONAL-A05",
+          "FICTIONAL-A06",
+          "FICTIONAL-A07",
+          "FICTIONAL-A08",
+          "FICTIONAL-B01",
+          "FICTIONAL-B02",
+          "FICTIONAL-B03",
+          "FICTIONAL-B04"
+        ],
+        "after_first_response_records": 24,
+        "distinct_record_count": 12
+      },
+      "misuse": {
+        "requests": 5,
+        "completed": 5,
+        "denied": 0,
+        "record_transmissions": 6,
+        "distinct_ids": [
+          "FICTIONAL-A02",
+          "FICTIONAL-A03",
+          "FICTIONAL-A04",
+          "FICTIONAL-A05",
+          "FICTIONAL-A07",
+          "FICTIONAL-A08"
+        ],
+        "after_first_response_records": 3,
+        "distinct_record_count": 6
+      },
+      "cross_owner": {
+        "requests": 2,
+        "completed": 0,
+        "denied": 2,
+        "record_transmissions": 0,
+        "distinct_ids": [],
+        "after_first_response_records": 0,
+        "distinct_record_count": 0
+      }
+    },
+    "repair_only": {
+      "legitimate_A": {
+        "requests": 4,
+        "completed": 4,
+        "denied": 0,
+        "record_transmissions": 5,
+        "distinct_ids": [
+          "FICTIONAL-A01",
+          "FICTIONAL-A02",
+          "FICTIONAL-A03",
+          "FICTIONAL-A06"
+        ],
+        "after_first_response_records": 4,
+        "distinct_record_count": 4
+      },
+      "legitimate_B": {
+        "requests": 3,
+        "completed": 3,
+        "denied": 0,
+        "record_transmissions": 36,
+        "distinct_ids": [
+          "FICTIONAL-A01",
+          "FICTIONAL-A02",
+          "FICTIONAL-A03",
+          "FICTIONAL-A04",
+          "FICTIONAL-A05",
+          "FICTIONAL-A06",
+          "FICTIONAL-A07",
+          "FICTIONAL-A08",
+          "FICTIONAL-B01",
+          "FICTIONAL-B02",
+          "FICTIONAL-B03",
+          "FICTIONAL-B04"
+        ],
+        "after_first_response_records": 24,
+        "distinct_record_count": 12
+      },
+      "misuse": {
+        "requests": 5,
+        "completed": 4,
+        "denied": 1,
+        "record_transmissions": 5,
+        "distinct_ids": [
+          "FICTIONAL-A02",
+          "FICTIONAL-A03",
+          "FICTIONAL-A04",
+          "FICTIONAL-A05",
+          "FICTIONAL-A07"
+        ],
+        "after_first_response_records": 2,
+        "distinct_record_count": 5
+      },
+      "cross_owner": {
+        "requests": 2,
+        "completed": 0,
+        "denied": 2,
+        "record_transmissions": 0,
+        "distinct_ids": [],
+        "after_first_response_records": 0,
+        "distinct_record_count": 0
+      }
+    },
+    "revoke_only": {
+      "legitimate_A": {
+        "requests": 4,
+        "completed": 2,
+        "denied": 2,
+        "record_transmissions": 3,
+        "distinct_ids": [
+          "FICTIONAL-A01",
+          "FICTIONAL-A02"
+        ],
+        "after_first_response_records": 2,
+        "distinct_record_count": 2
+      },
+      "legitimate_B": {
+        "requests": 3,
+        "completed": 3,
+        "denied": 0,
+        "record_transmissions": 36,
+        "distinct_ids": [
+          "FICTIONAL-A01",
+          "FICTIONAL-A02",
+          "FICTIONAL-A03",
+          "FICTIONAL-A04",
+          "FICTIONAL-A05",
+          "FICTIONAL-A06",
+          "FICTIONAL-A07",
+          "FICTIONAL-A08",
+          "FICTIONAL-B01",
+          "FICTIONAL-B02",
+          "FICTIONAL-B03",
+          "FICTIONAL-B04"
+        ],
+        "after_first_response_records": 24,
+        "distinct_record_count": 12
+      },
+      "misuse": {
+        "requests": 5,
+        "completed": 3,
+        "denied": 2,
+        "record_transmissions": 4,
+        "distinct_ids": [
+          "FICTIONAL-A02",
+          "FICTIONAL-A03",
+          "FICTIONAL-A04",
+          "FICTIONAL-A08"
+        ],
+        "after_first_response_records": 1,
+        "distinct_record_count": 4
+      },
+      "cross_owner": {
+        "requests": 2,
+        "completed": 0,
+        "denied": 2,
+        "record_transmissions": 0,
+        "distinct_ids": [],
+        "after_first_response_records": 0,
+        "distinct_record_count": 0
+      }
+    },
+    "combined": {
+      "legitimate_A": {
+        "requests": 4,
+        "completed": 3,
+        "denied": 1,
+        "record_transmissions": 4,
+        "distinct_ids": [
+          "FICTIONAL-A01",
+          "FICTIONAL-A02",
+          "FICTIONAL-A03"
+        ],
+        "after_first_response_records": 3,
+        "distinct_record_count": 3
+      },
+      "legitimate_B": {
+        "requests": 3,
+        "completed": 3,
+        "denied": 0,
+        "record_transmissions": 36,
+        "distinct_ids": [
+          "FICTIONAL-A01",
+          "FICTIONAL-A02",
+          "FICTIONAL-A03",
+          "FICTIONAL-A04",
+          "FICTIONAL-A05",
+          "FICTIONAL-A06",
+          "FICTIONAL-A07",
+          "FICTIONAL-A08",
+          "FICTIONAL-B01",
+          "FICTIONAL-B02",
+          "FICTIONAL-B03",
+          "FICTIONAL-B04"
+        ],
+        "after_first_response_records": 24,
+        "distinct_record_count": 12
+      },
+      "misuse": {
+        "requests": 5,
+        "completed": 2,
+        "denied": 3,
+        "record_transmissions": 3,
+        "distinct_ids": [
+          "FICTIONAL-A02",
+          "FICTIONAL-A03",
+          "FICTIONAL-A04"
+        ],
+        "after_first_response_records": 0,
+        "distinct_record_count": 3
+      },
+      "cross_owner": {
+        "requests": 2,
+        "completed": 0,
+        "denied": 2,
+        "record_transmissions": 0,
+        "distinct_ids": [],
+        "after_first_response_records": 0,
+        "distinct_record_count": 0
+      }
+    }
+  }
+}

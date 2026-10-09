@@ -1,0 +1,32 @@
+{
+  "license": "MIT",
+  "events": [
+    {"id":"capture_initial","op":"capture","slot":"stolen_initial"},
+    {"id":"a_before","op":"read","via":"app","label":"legitimate_A","ids":["FICTIONAL-A01"]},
+    {"id":"b_before","op":"read","via":"gateway","credential":"B","label":"legitimate_B","ids":"all"},
+    {"id":"misuse_before_1","op":"read","via":"gateway","credential":"stolen_initial","label":"misuse","ids":["FICTIONAL-A02","FICTIONAL-A03"]},
+    {"id":"cross_owner_before","op":"read","via":"gateway","credential":"stolen_initial","label":"cross_owner","ids":["FICTIONAL-B01"]},
+    {"id":"false_claim","op":"claim","variant":"false_digest"},
+    {"id":"wrong_target","op":"claim","variant":"wrong_target"},
+    {"id":"wrong_origin","op":"claim","variant":"wrong_origin"},
+    {"id":"unauthenticated_claim","op":"claim","variant":"unauthenticated"},
+    {"id":"misuse_before_2","op":"read","via":"gateway","credential":"stolen_initial","label":"misuse","ids":["FICTIONAL-A04"]},
+    {"id":"observe_response","op":"observe"},
+    {"id":"misuse_after_response","op":"read","via":"gateway","credential":"stolen_initial","label":"misuse","ids":["FICTIONAL-A05"]},
+    {"id":"a_interrupted","op":"read","via":"app","label":"legitimate_A","ids":["FICTIONAL-A06"]},
+    {"id":"b_during","op":"read","via":"gateway","credential":"B","label":"legitimate_B","ids":"all"},
+    {"id":"duplicate_response","op":"replay","variant":"same"},
+    {"id":"conflicting_response","op":"replay","variant":"conflict"},
+    {"id":"replacement","op":"recover","expected_generation":1},
+    {"id":"stale_generation","op":"replay","variant":"stale"},
+    {"id":"duplicate_after_replacement","op":"replay","variant":"same"},
+    {"id":"capture_replacement","op":"capture","slot":"stolen_replacement"},
+    {"id":"misuse_original_late","op":"read","via":"gateway","credential":"stolen_initial","label":"misuse","ids":["FICTIONAL-A07"]},
+    {"id":"misuse_replacement","op":"read","via":"gateway","credential":"stolen_replacement","label":"misuse","ids":["FICTIONAL-A08"]},
+    {"id":"a_recovered","op":"read","via":"app","label":"legitimate_A","ids":["FICTIONAL-A01","FICTIONAL-A02"]},
+    {"id":"b_recovered","op":"read","via":"gateway","credential":"B","label":"legitimate_B","ids":"all"},
+    {"id":"cross_owner_after","op":"read","via":"app","label":"cross_owner","ids":["FICTIONAL-B02"]},
+    {"id":"observe_after_recovery","op":"observe"},
+    {"id":"a_after_second_observation","op":"read","via":"app","label":"legitimate_A","ids":["FICTIONAL-A03"]}
+  ]
+}

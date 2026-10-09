@@ -1,4 +1,4 @@
-# What the local experiment actually demonstrated
+# What the local experiments actually demonstrated
 
 **Run date:** October 9, 2026. This measures deterministic controls in a synthetic reference system. It is not an AI benchmark, government pilot, sponsor integration or deployed BREACHSTOP product.
 
@@ -49,9 +49,28 @@ The observed benefit is the effect of **explicit access control and credential r
 
 Time advances through logical ticks, not elapsed seconds. The experiment establishes neither detection speed nor real-world time to containment. Requests finish sequentially, so concurrent or already-running exports remain untested. The data and control endpoints share a process and memory; the evaluator runs as the same operating-system user. This does not prove isolation from a compromised host.
 
-No code repair, deployment, evidence corroboration, cryptographic log protection, sponsor calls, automatic lesson promotion, publication checking or third-party export control was exercised. The malicious log string was only stored; because no model interpreted it, this is not a prompt-injection robustness result.
+In the original reference-defense experiment, no code repair, deployment, evidence corroboration, cryptographic log protection, sponsor calls, automatic lesson promotion, publication checking or third-party export control was exercised. The malicious log string was only stored; because no model interpreted it, this is not a prompt-injection robustness result.
 
 For Argentina, these results demonstrate a mechanism that could limit **additional access through a confirmed compromised credential** when an institution can enforce that boundary. They cannot retract earlier copies, establish the causes of disputed incidents, quantify national losses avoided or support a percentage reduction in future government leaks.
+
+## Additional credential-exposure experiment
+
+The [credential-exposure response experiment](../../experiments/credential-exposure-response/README.md) removes the supplied compromise flag. A read-only observer requests one known enrolled route; a separate controller independently fetches it and corroborates the exposed credential against the gateway's current generation. App, gateway, controller and observer are separate processes, while the evaluator records actual HTTP responses. All still share one OS user: this is not a sandbox or compromised-host defense.
+
+All four modes start with the same record permissions and later receive replacement access. In the main workload:
+
+| Response | Misuse records received | Received after first response | Legitimate A operations | B batches |
+| --- | ---: | ---: | ---: | ---: |
+| Scope only | 6 | 3 | 4/4 | 3/3 |
+| Remove exposure only | 5 | 2 | 4/4 | 3/3 |
+| Revoke only | 4 | 1 | 2/4 | 3/3 |
+| Revoke and remove exposure | 3 | 0 | 3/4 | 3/3 |
+
+Removing the route leaves the stolen credential usable. Revoking without removing the route lets a replacement leak; the next observation revokes it again and interrupts A a second time. The combined mode blocks later misuse and restores A, but three records escaped earlier and one legitimate A operation was denied. Each B batch returns the same twelve fictional records; 36 transmissions are twelve distinct records, not 36 people.
+
+The main run passed **88 declared checks**. A separately authored [checker](../../experiments/credential-exposure-response/independent_check.py) changes routes, owners, record counts, Unicode identifiers and request ordering. Its eight runs passed **304 assertions over 120 actual read responses**, including mixed-owner denial, false-claim rejection, stale/duplicate evidence and continued B access. These are selected regression cases, not a representative prevention rate. [Main observations](../../experiments/credential-exposure-response/results.json) · [Independent observations](../../experiments/credential-exposure-response/independent-results.json).
+
+Here, “repair” is a trusted switch disabling the fixture route, not an agent-written patch or verified release. The observer knows the route and response format; it is not a general leak detector. Requests are sequential and observation times are scheduled. No detection latency, AI contribution, sponsor integration, public deployment, transactional recovery or protection from hostile same-user code is established. Issuing a replacement before app provisioning can strand state on partial failure; the experiment reports failure rather than proving crash recovery.
 
 ## Next measurements for the product
 

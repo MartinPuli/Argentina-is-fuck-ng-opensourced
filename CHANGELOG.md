@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-09 — Observed exposure, independent response checks and six paper reviews
+
+- Added an observed-credential experiment with separate app, gateway, controller and observer processes. The controller corroborates an actual fictional exposure instead of accepting a trusted compromise flag.
+- Compared scope-only, repair-only, revoke-only and combined responses. Combined mode prevented post-response misuse while B continued; three records escaped earlier and A lost one legitimate operation. Route removal is deterministic, not an agent-written code repair.
+- Passed 88 main checks and 304 independently specified assertions over 120 additional HTTP read responses. Recorded same-user isolation limits, nontransactional recovery and the absence of AI, sponsors or public deployment.
+- Added six targeted full-text reviews, bringing the count to 44. Eight of the 18 priority discovery candidates now have targeted reviews; AD18 remains unread and its substitute is counted separately.
+- Added a direct hackathon assessment: finish one measurable containment-and-recovery demonstration before broadening the product. Pi remains optional repair context with unverified access.
+
 ## 2026-10-09 — Additional Argentine leads, sponsor feasibility and selected build skill
 
 - Pulled `main`; no newer teammate changes existed beyond the previously reviewed PAMI contribution.

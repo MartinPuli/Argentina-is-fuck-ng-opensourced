@@ -9,7 +9,7 @@ Plain-English research on prominent Argentine government and government-linked d
 **Language:** English  
 **License:** [CC BY 4.0](LICENSE.md) for the original research text.
 
-The repository also contains a research-backed defense proposal and a small runnable experiment. The proposed autonomous product is **not deployed**; the local experiment tests ordinary authorization and revocation with fictional data.
+The repository also contains a research-backed defense proposal and runnable component experiments. The proposed autonomous product is **not deployed**; local experiments test authorization, observed credential exposure, revocation and publication boundaries with fictional data.
 
 ## Start here
 
@@ -33,7 +33,9 @@ Read the **[complete report](REPORT.md)** for the connected explanation, or choo
 - [Sponsor implementation plan](docs/research/SPONSOR-DEFENSE-PLAN.md): concrete ClickHouse, Guild and Semgrep roles, integration constraints and a measurable demo.
 - [Pi assessment](docs/research/PI-ASSESSMENT.md): a documented OAuth MCP integration, useful security context, substantial competitive overlap and unverified tenant access.
 - [AppBuilder skill](.agents/skills/app-builder-design-system/SKILL.md): user-selected, repository-local copy from [ruchitrshah/AppBuilder-Skills](https://github.com/ruchitrshah/AppBuilder-Skills), pinned to `531fe62b6603df4d607d3df484b5dc3ecd9bee8e`; see [project instructions](AGENTS.md).
-- Six further paper reviews: [agent reliability](docs/research/OCTOBER-AGENT-RELIABILITY.md), [artifact security](docs/research/OCTOBER-ARTIFACT-SECURITY.md), [exfiltration detection](docs/research/EARLY-EXFILTRATION-DETECTION.md).
+- Earlier paper additions: [agent reliability](docs/research/OCTOBER-AGENT-RELIABILITY.md), [artifact security](docs/research/OCTOBER-ARTIFACT-SECURITY.md), [exfiltration detection](docs/research/EARLY-EXFILTRATION-DETECTION.md).
+
+- Latest paper additions: [investigation and execution trust](docs/research/INVESTIGATION-AND-EXECUTION-TRUST.md), [threat-report verification](docs/research/THREAT-REPORT-VERIFICATION.md), and [detection and response evaluation](docs/research/DETECTION-AND-RESPONSE-EVALUATION.md). These add six targeted reviews; one inaccessible queued paper remains explicitly unread.
 
 ## From research to a defense
 
@@ -41,7 +43,7 @@ Read the **[complete report](REPORT.md)** for the connected explanation, or choo
 |---|---|
 | [What to build](docs/research/WHAT-TO-BUILD.md) | Plain-English architecture, how past incidents become reusable tests, development order and remaining work. |
 | [Measured effects](docs/research/MEASURED-EFFECTS.md) | Actual local HTTP results, the records exposed before containment, and the cost to legitimate use. |
-| [Search coverage](docs/research/SEARCH-PROTOCOL.md) | 38 selected paper records; separate discovery ledgers contain 1,378 initial and 986 additional title entries, not globally deduplicated. |
+| [Search coverage](docs/research/SEARCH-PROTOCOL.md) | 44 selected paper reviews; separate discovery ledgers contain 1,378 initial and 986 additional title entries, not globally deduplicated. |
 | [Autonomous defense and repair](docs/research/AUTONOMOUS-DEFENSE-PAPERS.md) | Eight selected papers, with versions, evaluation definitions and limitations. |
 | [Agent safety](docs/research/AGENT-SAFETY-PAPERS.md) | Nine selected papers on untrusted evidence, permissions and trustworthy evaluation. |
 | [Learning from incidents](docs/research/LEAK-LEARNING-PAPERS.md) | Five studies on incident context, feedback, shared learning and the gap between scores and enforcement. |
@@ -50,12 +52,13 @@ Read the **[complete report](REPORT.md)** for the connected explanation, or choo
 | [Other countries](docs/research/COUNTRY-PRECEDENTS.md) | Government-confirmed programs, historical deployments and lessons for Argentina. |
 | [Competitive comparison](competitor-profiles/_summary.md) | Existing commercial capabilities, open-source response building blocks and honest positioning. |
 | [Sandbox architecture](docs/research/SANDBOX-ARCHITECTURE.md) | Firecracker, gVisor, Kata and E2B; separate repair, rehearsal and verification jobs. |
-| [Additional paper discovery](docs/research/ADDITIONAL-DISCOVERY.md) | Broader metadata coverage: five of 18 queued candidates now reviewed; 13 remain unread or abstract-screened. |
+| [Additional paper discovery](docs/research/ADDITIONAL-DISCOVERY.md) | Broader metadata coverage: eight of 18 queued candidates now reviewed; ten remain unread or abstract-screened. |
 | [Hackathon fit](docs/HACKATHON-FIT.md) and [event brief](docs/EVENT-BRIEF.md) | Planned challenge fit, required integrations and evidence still needed. |
 | [Runnable reference experiment](experiments/reference-defense/README.md) | Standard-library Python, four control modes, response transcripts and additional independently specified cases. |
 | [Publication regression experiment](experiments/publication-regression/README.md) | Real local HTTP checks of stale artifacts, approved releases and a deliberate misclassification failure. |
+| [Observed credential-exposure response](experiments/credential-exposure-response/README.md) | Separate observer/controller corroboration, four matched response modes, 88 main checks and 120 additional read responses checked independently. |
 
-The paper reviews read relevant full-text methods, results and limitations; they are neither an exhaustive literature review nor independent reproductions of those studies. The experiment contains no AI agent or sponsor calls, and does not test government infrastructure.
+The paper reviews read relevant full-text methods, results and limitations; they are neither an exhaustive literature review nor independent reproductions of those studies. The experiments contain no AI agent or sponsor calls, and do not test government infrastructure.
 
 ## How to interpret the research
 
@@ -67,7 +70,7 @@ The findings and their citations are in the linked documents. This repository pr
 
 ## Repository contents
 
-This repository contains original analysis, source references and an isolated synthetic experiment. It contains no leaked databases, victim records, live credentials, copied news articles or redistributed paper texts. The full report and topic chapters intentionally contain the same research so readers can use either format.
+This repository contains original analysis, source references and local synthetic experiments. It contains no leaked databases, victim records, live credentials, copied news articles or redistributed paper texts. The full report and topic chapters intentionally contain the same research so readers can use either format.
 
 ## Corrections and contributions
 

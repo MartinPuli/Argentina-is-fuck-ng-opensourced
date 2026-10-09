@@ -6,7 +6,7 @@
     "2026-10-09"
   ],
   "exhaustive": false,
-  "scope": "Original discovery pass used metadata/abstract triage. A later October 9 pass reviewed five candidates at targeted full-text depth; linked records contain the findings. No reproductions.",
+  "scope": "Original discovery used metadata/abstract triage. Later October 9 reviews cover 8 queued candidates at targeted full-text depth; linked evidence records contain findings. No reproductions.",
   "parsed_additional_title_entries": 986,
   "additional_keyword_matches": 175,
   "count_unit": "Within-source normalized title entries; NOT globally deduplicated papers or papers read",
@@ -185,7 +185,7 @@
       "canonical_primary_url": "https://arxiv.org/abs/2610.10608",
       "discovery_source": "arxiv_oct26",
       "reading_status": "fulltext_targeted",
-      "fulltext_read": false,
+      "fulltext_read": true,
       "first_preprint_date": "2026-10-07",
       "first_publication_date": null,
       "version": "arXiv:2610.10608v1",
@@ -194,13 +194,14 @@
       "venue_date": null,
       "date_classification": "first_preprint_in_window",
       "priority_reason_inference": "Audit evidence sufficiency before dismissing alerts.",
-      "next_step": "Read methods, evaluation unit, threat model and limitations before adopting any numerical claim.",
+      "next_step": "Full appendices, independent reproduction and wider citation review remain; see linked targeted review for findings.",
       "public_fulltext_link": "https://arxiv.org/html/2610.10608v1",
       "absent_from_original_27_title_check": true,
       "initial_discovery_status": "abstract_screened",
       "review_file": "october-agent-reliability.json",
       "review_record": "OAR-01",
-      "reviewed_on": "2026-10-09"
+      "reviewed_on": "2026-10-09",
+      "initial_fulltext_read": false
     },
     {
       "id": "AD02",
@@ -208,7 +209,7 @@
       "canonical_primary_url": "https://arxiv.org/abs/2610.11030",
       "discovery_source": "arxiv_oct26",
       "reading_status": "fulltext_targeted",
-      "fulltext_read": false,
+      "fulltext_read": true,
       "first_preprint_date": "2026-10-08",
       "first_publication_date": null,
       "version": "arXiv:2610.11030v1",
@@ -217,13 +218,14 @@
       "venue_date": null,
       "date_classification": "first_preprint_in_window",
       "priority_reason_inference": "Compare deterministic authorization gates against prose-only policy.",
-      "next_step": "Read methods, evaluation unit, threat model and limitations before adopting any numerical claim.",
+      "next_step": "Full appendices, independent reproduction and wider citation review remain; see linked targeted review for findings.",
       "public_fulltext_link": "https://arxiv.org/html/2610.11030v1",
       "absent_from_original_27_title_check": true,
       "initial_discovery_status": "abstract_screened",
       "review_file": "october-agent-reliability.json",
       "review_record": "OAR-02",
-      "reviewed_on": "2026-10-09"
+      "reviewed_on": "2026-10-09",
+      "initial_fulltext_read": false
     },
     {
       "id": "AD03",
@@ -231,7 +233,7 @@
       "canonical_primary_url": "https://arxiv.org/abs/2610.10612",
       "discovery_source": "arxiv_oct26",
       "reading_status": "fulltext_targeted",
-      "fulltext_read": false,
+      "fulltext_read": true,
       "first_preprint_date": "2026-10-07",
       "first_publication_date": null,
       "version": "arXiv:2610.10612v1",
@@ -240,13 +242,14 @@
       "venue_date": null,
       "date_classification": "first_preprint_in_window",
       "priority_reason_inference": "Check whether admitted artifacts match executed artifacts.",
-      "next_step": "Read methods, evaluation unit, threat model and limitations before adopting any numerical claim.",
+      "next_step": "Full appendices, independent reproduction and wider citation review remain; see linked targeted review for findings.",
       "public_fulltext_link": "https://arxiv.org/html/2610.10612v1",
       "absent_from_original_27_title_check": true,
       "initial_discovery_status": "abstract_screened",
       "review_file": "october-artifact-security.json",
       "review_record": "OA01",
-      "reviewed_on": "2026-10-09"
+      "reviewed_on": "2026-10-09",
+      "initial_fulltext_read": false
     },
     {
       "id": "AD04",
@@ -254,7 +257,7 @@
       "canonical_primary_url": "https://arxiv.org/abs/2610.11843",
       "discovery_source": "arxiv_oct26",
       "reading_status": "fulltext_targeted",
-      "fulltext_read": false,
+      "fulltext_read": true,
       "first_preprint_date": "2026-10-08",
       "first_publication_date": null,
       "version": "arXiv:2610.11843v1",
@@ -263,14 +266,15 @@
       "venue_date": null,
       "date_classification": "first_preprint_in_window",
       "priority_reason_inference": "Examine sequential false-alarm control and transfer assumptions.",
-      "next_step": "Read methods, evaluation unit, threat model and limitations before adopting any numerical claim.",
+      "next_step": "Full appendices, independent reproduction and wider citation review remain; see linked targeted review for findings.",
       "notes": "Workshop occurs December 13, 2026, after cutoff. Scope is model-weight covert channels, not general database-leak prevention.",
       "public_fulltext_link": "https://arxiv.org/html/2610.11843v1",
       "absent_from_original_27_title_check": true,
       "initial_discovery_status": "abstract_screened",
       "review_file": "early-exfiltration-detection.json",
       "review_record": "2610.11843v1",
-      "reviewed_on": "2026-10-09"
+      "reviewed_on": "2026-10-09",
+      "initial_fulltext_read": false
     },
     {
       "id": "AD05",
@@ -278,7 +282,7 @@
       "canonical_primary_url": "https://arxiv.org/abs/2610.10735",
       "discovery_source": "arxiv_oct26",
       "reading_status": "fulltext_targeted",
-      "fulltext_read": false,
+      "fulltext_read": true,
       "first_preprint_date": "2026-10-07",
       "first_publication_date": null,
       "version": "arXiv:2610.10735v1",
@@ -287,13 +291,14 @@
       "venue_date": null,
       "date_classification": "first_preprint_in_window",
       "priority_reason_inference": "Assess model-artifact admission before unsafe deserialization.",
-      "next_step": "Read methods, evaluation unit, threat model and limitations before adopting any numerical claim.",
+      "next_step": "Full appendices, independent reproduction and wider citation review remain; see linked targeted review for findings.",
       "public_fulltext_link": "https://arxiv.org/html/2610.10735v1",
       "absent_from_original_27_title_check": true,
       "initial_discovery_status": "abstract_screened",
       "review_file": "october-artifact-security.json",
       "review_record": "OA02",
-      "reviewed_on": "2026-10-09"
+      "reviewed_on": "2026-10-09",
+      "initial_fulltext_read": false
     },
     {
       "id": "AD06",
@@ -320,8 +325,8 @@
       "title": "Clouseau: A Hierarchical Multi-Agent Approach For Autonomous Attack Investigation",
       "canonical_primary_url": "https://www.doc.ic.ac.uk/~maffeis/papers/acsac25.pdf",
       "discovery_source": "acsac25",
-      "reading_status": "abstract_screened",
-      "fulltext_read": false,
+      "reading_status": "fulltext_targeted",
+      "fulltext_read": true,
       "first_preprint_date": null,
       "first_publication_date": null,
       "version": null,
@@ -330,17 +335,22 @@
       "venue_date": "2025-12-10",
       "date_classification": "venue_in_window_first_date_unresolved",
       "priority_reason_inference": "Evaluate investigations beginning from a suspicious host event.",
-      "next_step": "Read methods, evaluation unit, threat model and limitations before adopting any numerical claim.",
-      "notes": "Official index spells the title Clouesau: A Hierarchal Multi Agent Approach For Autonomous Attack Investigation; author PDF supplies normalized title. Only metadata/abstract checked, not full methods.",
-      "absent_from_original_27_title_check": true
+      "next_step": "Full appendices, independent reproduction and wider citation review remain; see linked targeted review for findings.",
+      "notes": "Official index title alias preserved; targeted methods and limitations now reviewed in linked evidence record. First public date unresolved.",
+      "absent_from_original_27_title_check": true,
+      "initial_discovery_status": "abstract_screened",
+      "review_file": "investigation-execution-trust.json",
+      "review_record": "IET-01",
+      "reviewed_on": "2026-10-09",
+      "initial_fulltext_read": false
     },
     {
       "id": "AD08",
       "title": "Revealing the True Indicators: Understanding and Improving IoC Extraction From Threat Reports",
       "canonical_primary_url": "https://www.acsac.org/2025/program/final/s253.html",
       "discovery_source": "acsac25",
-      "reading_status": "abstract_screened",
-      "fulltext_read": false,
+      "reading_status": "fulltext_targeted",
+      "fulltext_read": true,
       "first_preprint_date": null,
       "first_publication_date": null,
       "version": null,
@@ -349,9 +359,14 @@
       "venue_date": "2025-12-10",
       "date_classification": "venue_in_window_first_date_unresolved",
       "priority_reason_inference": "Check labels before converting reports into blocking indicators.",
-      "next_step": "Read methods, evaluation unit, threat model and limitations before adopting any numerical claim.",
+      "next_step": "Full appendices, independent reproduction and wider citation review remain; see linked targeted review for findings.",
       "public_fulltext_link": "https://angelosk.github.io/Papers/2025/IoC_extraction_paper_CR.pdf",
-      "absent_from_original_27_title_check": true
+      "absent_from_original_27_title_check": true,
+      "initial_discovery_status": "abstract_screened",
+      "review_file": "threat-report-verification.json",
+      "review_record": "AD08",
+      "reviewed_on": "2026-10-09",
+      "initial_fulltext_read": false
     },
     {
       "id": "AD09",
@@ -396,8 +411,8 @@
       "title": "VET Your Agent: Towards Host-Independent Autonomy via Verifiable Execution Traces",
       "canonical_primary_url": "https://arxiv.org/abs/2512.15892",
       "discovery_source": "asiaccs26c1",
-      "reading_status": "abstract_screened",
-      "fulltext_read": false,
+      "reading_status": "fulltext_targeted",
+      "fulltext_read": true,
       "first_preprint_date": "2025-12-17",
       "first_publication_date": null,
       "version": "arXiv:2512.15892v1",
@@ -406,9 +421,14 @@
       "venue_date": "2026-06-01",
       "date_classification": "first_preprint_in_window",
       "priority_reason_inference": "Separate authentic execution evidence from trusting the host.",
-      "next_step": "Read methods, evaluation unit, threat model and limitations before adopting any numerical claim.",
+      "next_step": "Full appendices, independent reproduction and wider citation review remain; see linked targeted review for findings.",
       "public_fulltext_link": "https://arxiv.org/html/2512.15892v1",
-      "absent_from_original_27_title_check": true
+      "absent_from_original_27_title_check": true,
+      "initial_discovery_status": "abstract_screened",
+      "review_file": "investigation-execution-trust.json",
+      "review_record": "IET-02",
+      "reviewed_on": "2026-10-09",
+      "initial_fulltext_read": false
     },
     {
       "id": "AD12",
@@ -542,11 +562,15 @@
       "priority_reason_inference": "Examine misinformation defenses for ingested threat intelligence.",
       "next_step": "Read methods, evaluation unit, threat model and limitations before adopting any numerical claim.",
       "notes": "Public CSV row 557 verifies title. Public paper URL and first date unresolved; do not count as a newly published paper in-window.",
-      "absent_from_original_27_title_check": true
+      "absent_from_original_27_title_check": true,
+      "access_status": "Public full text not located; conference download requires attendee code and author repository provides no paper.",
+      "access_review_file": "threat-report-verification.json",
+      "substitute_record": "TRV02",
+      "substitute_is_same_paper": false
     }
   ],
   "candidate_count": 18,
-  "fulltext_read_count": 5,
+  "fulltext_read_count": 8,
   "reproduced_count": 0,
   "remaining": [
     "Resolve public full text and first dates of index-only entries.",
@@ -555,5 +579,6 @@
     "Complete untriaged venues, workshops, journals and preprints through cutoff.",
     "Distinguish early preprints, new deposit of old work, revisions, acceptance, presentation and formal publication."
   ],
-  "safety": "Public publication metadata and papers only; no leaked data, active indicators, credential access, malware execution or protected conference downloads."
+  "safety": "Public publication metadata and papers only; no leaked data, active indicators, credential access, malware execution or protected conference downloads.",
+  "fulltext_read_definition": "Relevant full-text methods, results and limitations, not complete appendices or reproduction."
 }

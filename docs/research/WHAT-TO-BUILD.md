@@ -1,6 +1,6 @@
 # BREACHSTOP: what to build from the evidence
 
-**Research/design snapshot: October 9, 2026.** This is a proposed product, with a separate local reference experiment. A deployed autonomous defense, sponsor integrations, government pilot and measured national impact are not established.
+**Research/design snapshot: October 9, 2026.** This is a proposed product, with separate local component experiments. A deployed autonomous defense, sponsor integrations, government pilot and measured national impact are not established.
 
 **Build skill selected by the user:** [AppBuilder Design System](../../.agents/skills/app-builder-design-system/SKILL.md), from [ruchitrshah/AppBuilder-Skills](https://github.com/ruchitrshah/AppBuilder-Skills), pinned at `531fe62b6603df4d607d3df484b5dc3ecd9bee8e`. Follow [project guidance](../../AGENTS.md) when applying its planning and interface conventions to this web-based defense. Its mobile examples do not add a mobile deliverable.
 
@@ -21,6 +21,14 @@ The [competitive review](../../competitor-profiles/_summary.md) found establishe
 The later [Pi assessment](PI-ASSESSMENT.md) identifies particularly close overlap with security memory, cause/variant analysis and contextual repairs. Pi also documents an OAuth MCP integration that could provide repair context if tenant access is available. Preserve independent enforcement and outcome checks as our implementation responsibility; do not present the memory-and-repair concept itself as novel.
 
 The [country precedents](COUNTRY-PRECEDENTS.md) suggest adopting explicit institutional identities, independently enforced data access and a clear path from discovery to repair. They do not establish that any government eliminated leaks.
+
+### Hackathon assessment
+
+The idea is strongest as **a demonstrated response to one concrete exposure**, with a visible cost and recovery, rather than a promise to secure an entire government. The judge should see the compromised credential return fictional records, become invalid, and remain invalid after the repaired application resumes legitimate work. A separately authorized application must keep working throughout. Argentina supplies the motivating evidence; the experiment supplies the narrowly measured result.
+
+The main delivery risk is breadth: autonomous investigation, a repair sandbox, several integrations, a service network and a polished interface each consume time. Finish one continuous three-sponsor run before adding more incident classes or organizations. ClickHouse, Guild and Semgrep already have distinct proposed responsibilities. Pi is a relevant optional source of repair context if access works; a fourth integration should improve an actual decision instead of delaying the core demonstration.
+
+Our strongest judging argument would be inspectable evidence of containment **and** recovery. The ordinary revocation control is not the AI innovation. The agent must additionally produce a useful investigation or correct repair under bounded authority, and the checker must be able to reject a plausible but ineffective candidate. Until that integrated run exists, this remains a promising proposal supported by component experiments, not a completed competition entry or a demonstrated advantage over Pi.
 
 ### What the sandbox adds
 
@@ -65,7 +73,7 @@ flowchart LR
     V -->|New evidence for review| L
 ```
 
-This is the proposed product flow. The local experiment exercises the access-control and outcome-checking portion, with the incident confirmation supplied by the test scenario.
+This is the proposed product flow. The original local experiment exercises access control with incident confirmation supplied by the scenario. A [new component experiment](../../experiments/credential-exposure-response/README.md) observes and independently corroborates an actual fictional credential exposure before responding. It uses a known route and deterministic actions; autonomous investigation, source repair and sponsor integration remain unimplemented.
 
 ## What past Argentine incidents can teach it
 
@@ -93,6 +101,8 @@ These are design conclusions drawn from the reviewed evidence, not performance p
 - **Removing a secret and disabling it are separate tasks.** Check deployment assets after rebuilding, and independently retry the old credential. [Keys on Doormats, §6.1](https://arxiv.org/html/2603.12498v3).
 
 The full reviews preserve versions, metrics and limitations. See [search coverage](SEARCH-PROTOCOL.md), [defense and repair](AUTONOMOUS-DEFENSE-PAPERS.md), [agent safety](AGENT-SAFETY-PAPERS.md), [incident learning](LEAK-LEARNING-PAPERS.md) and [threat intelligence and evidence integrity](THREAT-INTELLIGENCE-PAPERS.md).
+
+The latest reviews reinforce three implementation choices: [investigation and execution trust](INVESTIGATION-AND-EXECUTION-TRUST.md) require explicit input and freshness assumptions; [threat-report verification](THREAT-REPORT-VERIFICATION.md) keeps extracted allegations separate from corroboration; [detection and response evaluation](DETECTION-AND-RESPONSE-EVALUATION.md) distinguishes simulated/action-cost metrics from observed enforcement and elapsed time. These are design inferences, not additional measured product capabilities.
 
 ## How an old incident becomes a future defense
 
