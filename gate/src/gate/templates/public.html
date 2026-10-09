@@ -58,7 +58,7 @@ body.public-view main{max-width:none;margin:0;padding:0;min-height:100dvh}
 <article class="pp-card">
 <div class="pp-row"><div><p class="pp-proc">{{ p.procedure }} · {{ p.office }}</p><h2 class="pp-item">{{ p.item }}</h2></div><div class="pp-amount">{{ p.amount|money }}</div></div>
 {% if s.files %}<ul class="pp-docs">{% for f in s.files %}<li><a class="pp-doc" href="/public/file/{{ f.id }}" target="_blank" rel="noopener"><span class="pp-pdf" aria-hidden="true">PDF</span><span class="pp-name">{{ f.public_name }}</span>{% if f.cleaned %}<span class="pp-tag">Cleaned copy</span>{% endif %}<span class="pp-dl">Download</span></a></li>{% endfor %}</ul>{% else %}<p class="pp-none">No public documents.</p>{% endif %}
-{% if private %}<p class="pp-private"><svg width="13" height="13" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M4 7V5a4 4 0 1 1 8 0v2h1v8H3V7h1zm2 0h4V5a2 2 0 1 0-4 0v2z"/></svg>{{ private }} {{ 'private document' if private == 1 else 'private documents' }}</p>{% endif %}
+{% if private %}<p class="pp-private"><svg width="13" height="13" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M4 7V5a4 4 0 1 1 8 0v2h1v8H3V7h1zm2 0h4V5a2 2 0 1 0-4 0v2z"/></svg>{% if autonomous %}{{ private }} {{ 'adjunto retenido automáticamente' if private == 1 else 'adjuntos retenidos automáticamente' }} para proteger datos de pacientes.{% else %}{{ private }} {{ 'private document' if private == 1 else 'private documents' }}{% endif %}</p>{% endif %}
 </article>{% else %}<div class="pp-empty"><h2>No purchases published yet.</h2></div>{% endfor %}</div>
 </div>
 </div>

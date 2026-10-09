@@ -14,6 +14,7 @@ import threading
 import time
 import unicodedata
 from concurrent.futures import ThreadPoolExecutor
+from contextlib import asynccontextmanager
 from pathlib import Path
 from urllib.parse import quote, urlsplit
 
@@ -44,7 +45,15 @@ MAX_UPLOAD_BYTES = 25 * 1024 * 1024
 MAX_PDF_PAGES = 50
 MAX_REVIEW_NOTE = 2000
 
-app = FastAPI(title="Publication Gate")
+
+
+@asynccontextmanager
+async def lifespan(_app):
+    sweep_orphaned_holds()  # no background job survives a restart
+    yield
+
+
+app = FastAPI(title="Publication Gate", lifespan=lifespan)
 STATIC = Path(__file__).parent / "static"
 app.mount("/assets", StaticFiles(directory=STATIC, check_dir=False), name="assets")
 templates = Jinja2Templates(directory=Path(__file__).parent / "templates")
@@ -80,6 +89,79 @@ STEP_VERIFY = "Guild verifier"
 STEP_CLEARANCE = "Clearance levels"
 LABEL = {"public": "Cleared for publication", "approved": "Approved", "hold": "Needs review", "withheld": "Blocked",
          "cleaned": "Published cleaned copy"}
+
+
+def autonomous() -> bool:
+    """GATE_AUTONOMOUS=1: every upload ends without a person; uncertainty restricts, never publishes."""
+    return os.getenv("GATE_AUTONOMOUS") == "1"
+
+
+_PENDING: dict[int, int] = {}
+_PENDING_LOCK = threading.Lock()
+
+
+def run_in_background(att_id: int, target, args: tuple) -> None:
+    """Start a background step and count it, so only the last one to finish settles the file."""
+    with _PENDING_LOCK:
+        _PENDING[att_id] = _PENDING.get(att_id, 0) + 1
+    try:
+        threading.Thread(target=target, args=args, daemon=True).start()
+    except Exception:
+        background_done(att_id)
+        raise
+
+
+def background_done(att_id: int) -> None:
+    with _PENDING_LOCK:
+        left = _PENDING.get(att_id, 1) - 1
+        if left > 0:
+            _PENDING[att_id] = left
+            return
+        _PENDING.pop(att_id, None)
+    settle(att_id)
+
+
+def settle(att_id: int) -> bool:
+    """With the flag on, a file still waiting for a person is restricted instead. Never publishes."""
+    if not autonomous():
+        return False
+    with _PENDING_LOCK:
+        if _PENDING.get(att_id):
+            return False
+    try:
+        with db() as con:
+            con.execute("BEGIN IMMEDIATE")
+            row = con.execute("select a.purchase_id,a.filename,a.decision,a.reasons,a.findings,a.reviewed_by,"
+                              "p.office from attachments a left join purchases p on p.id=a.purchase_id "
+                              "where a.id=?", (att_id,)).fetchone()
+            if row is None or row["decision"] != HOLD or row["reviewed_by"] is not None:
+                return False
+            reasons = json.loads(row["reasons"] or "[]")
+            findings = json.loads(row["findings"] or "[]")
+            original = " ".join(r for r in reasons if isinstance(r, str)).strip().rstrip(".")
+            rule = next((f.get("rule") for f in findings if isinstance(f, dict)
+                         and f.get("severity") == "review" and f.get("rule") in RULES), "unreadable")
+            reasons.append(f"Restricted automatically: {original or 'required checks did not clear publication'}."
+                           " The original stays in the internal record.")
+            findings.append({"kind": "autopilot_restricted", "label": "Restricted automatically", "evidence": "",
+                             "page": 0, "severity": "review", "rule": rule})
+            con.execute("update attachments set decision=?, reasons=?, findings=? where id=? and decision=?"
+                        " and reviewed_by is null", (WITHHELD, json.dumps(reasons), json.dumps(findings), att_id, HOLD))
+        events.log("autopilot", row["office"] or "", row["purchase_id"], att_id, row["filename"], WITHHELD,
+                   ["autopilot_restricted"], "autopilot", 0)
+        return True
+    except Exception:
+        return False  # the startup sweep is the safety net
+
+
+def sweep_orphaned_holds() -> int:
+    """Startup: no in-memory job survives a restart, so every unreviewed hold is settled."""
+    if not autonomous():
+        return 0
+    with db() as con:
+        ids = [r["id"] for r in con.execute(
+            "select id from attachments where decision=? and reviewed_by is null order by id", (HOLD,))]
+    return sum(settle(att_id) for att_id in ids)
 
 
 def origin_of(value: str, *, origin_header: bool = False) -> tuple | None:
@@ -267,10 +349,9 @@ def store_attachment(purchase: dict, filename: str, pdf: bytes, model, decision,
     if decision != PUBLIC and agent.configured() and sanitize.text_only(pdf) and sanitize.cleanable(findings, decision):
         # Guild decides what each clearance level may see; the app applies it for real.
         progress(job, STEP_CLEARANCE, "running")
-        threading.Thread(target=clearance_in_background,
-                         args=(att_id, purchase, filename, pdf, findings, phrases, decision,
-                               checked_revision, verification_state, job),
-                         daemon=True).start()
+        run_in_background(att_id, clearance_in_background,
+                          (att_id, purchase, filename, pdf, findings, phrases, decision,
+                           checked_revision, verification_state, job))
         return att_id
     if decision != PUBLIC:
         try:
@@ -286,16 +367,17 @@ def store_attachment(purchase: dict, filename: str, pdf: bytes, model, decision,
                    sorted({m["category"] for m in candidate.manifest}), "sanitizer", 0)
         if agent.configured():
             progress(job, STEP_VERIFY, "running")
-            threading.Thread(target=verify_in_background,
-                             args=(att_id, purchase, filename, candidate, decision, checked_revision,
-                                   verification_state, hashlib.sha256(candidate.pdf).hexdigest(), job),
-                             daemon=True).start()
+            run_in_background(att_id, verify_in_background,
+                              (att_id, purchase, filename, candidate, decision, checked_revision,
+                               verification_state, hashlib.sha256(candidate.pdf).hexdigest(), job))
             return att_id
     if decision != PUBLIC and agent.configured():
         progress(job, STEP_BRIEF, "running")
-        threading.Thread(target=brief_in_background, args=(att_id, purchase, filename, decision,
-                                                           reasons, findings, job), daemon=True).start()
-    elif job is not None:
+        run_in_background(att_id, brief_in_background,
+                          (att_id, purchase, filename, decision, reasons, findings, job))
+        return att_id
+    settle(att_id)
+    if job is not None:
         activity.finish(job, done=True)
     return att_id
 
@@ -390,6 +472,7 @@ def clearance_in_background(att_id, purchase, filename, pdf, findings, phrases, 
     except Exception:
         progress(job, STEP_CLEARANCE, "error", "Clearance failed; file stays private")
     finally:
+        background_done(att_id)
         if job is not None:
             activity.finish(job, decision=new, why=why, agent_url=url, done=True)
 
@@ -442,6 +525,7 @@ def verify_in_background(att_id, purchase, filename, candidate, expected_decisio
     except Exception:
         progress(job, STEP_VERIFY, "error", "Verifier unavailable; file stays private")
     finally:
+        background_done(att_id)
         if job is not None:
             activity.finish(job, done=True)
 
@@ -460,6 +544,7 @@ def brief_in_background(att_id, purchase, filename, decision, reasons, findings,
     except Exception:
         progress(job, STEP_BRIEF, "error", "Agent note unavailable; publication decision unchanged")
     finally:
+        background_done(att_id)
         if job is not None:
             activity.finish(job, done=True)
 
@@ -525,7 +610,7 @@ def queue_live(purchase: dict, item: str, files: list[tuple[str, bytes]], actor:
 def live_view(request: Request, user: str = Depends(staff)):
     history = events.history()  # once per page load, never from the /api/activity poll
     total = (history or {}).get("total") or None
-    return page(request, "live.html", offices=OFFICES, user=user, history_total=total)
+    return page(request, "live.html", offices=OFFICES, user=user, history_total=total, autonomous=autonomous())
 
 
 @app.post("/live/upload")
@@ -624,7 +709,11 @@ def api_activity(user: str = Depends(staff)):
             if job["stale"]:
                 job["why"] = "Recheck against the current rules before publication."
         counts["processing"] += not job["done"]
-    return JSONResponse({"jobs": jobs, "counts": counts, "waiting": waiting},
+    with db() as con:
+        finished = con.execute("select count(*) from attachments where decision in ('public','cleaned','withheld')"
+                               " and reviewed_by is null").fetchone()[0]
+    autonomy = {"enabled": autonomous(), "finished": finished, "total": len(rows)}
+    return JSONResponse({"jobs": jobs, "counts": counts, "waiting": waiting, "autonomy": autonomy},
                         headers={"Cache-Control": "no-store"})
 
 
@@ -758,7 +847,7 @@ def public_portal(request: Request):
             slot["pending"] += 1
         else:
             slot["kept"] += 1
-    return page(request, "public.html", purchases=purchases, by_purchase=by_purchase)
+    return page(request, "public.html", purchases=purchases, by_purchase=by_purchase, autonomous=autonomous())
 
 
 @app.api_route("/public/file/{att_id}", methods=["GET", "HEAD"])
@@ -918,6 +1007,8 @@ def activate_learning_rule(rule_id: int, digest: str = Form(...), user: str = De
     except ValueError as exc:
         raise HTTPException(400, str(exc)) from None
     events.log("rule_activated", "Learning library", 0, actor=user)
+    if autonomous():
+        recheck_all("autopilot")
     return RedirectResponse(f"/learning/rules/{rule_id}", status_code=303)
 
 
@@ -929,12 +1020,23 @@ def retire_learning_rule(rule_id: int, digest: str = Form(...), user: str = Depe
     except ValueError as exc:
         raise HTTPException(400, str(exc)) from None
     events.log("rule_retired", "Learning library", 0, actor=user)
+    if autonomous():
+        recheck_all("autopilot")
     return RedirectResponse(f"/learning/rules/{rule_id}", status_code=303)
 
 
 @app.post("/learning/rescan")
 def rescan_learning_rules(user: str = Depends(staff)):
+    result = recheck_all(user)
+    if result["error"]:
+        raise HTTPException(409, result["error"])
+    return RedirectResponse("/learning", status_code=303)
+
+
+def recheck_all(actor: str) -> dict:
+    """Recheck every stored file against the current rules. Only restricts, never releases."""
     from dataclasses import asdict
+    result = {"checked": 0, "restricted": 0, "settled": 0, "error": None}
     active, checked_revision = learning.snapshot()
     with db() as con:
         attachments = con.execute("select * from attachments order by id").fetchall()
@@ -980,11 +1082,17 @@ def rescan_learning_rules(user: str = Depends(staff)):
         try:
             learning.record_check(attachment["id"], checked_revision)
         except ValueError:
-            raise HTTPException(409, "Rules changed during the recheck. Unchecked files remain unavailable. Run the recheck again.") from None
+            result["error"] = ("Rules changed during the recheck. Unchecked files remain unavailable. "
+                               "Run the recheck again.")
+            break
+        result["checked"] += 1
+        result["restricted"] += decision != attachment["decision"]
         events.log("rule_recheck", "Learning library", attachment["purchase_id"],
                    attachment["id"], attachment["filename"], decision,
-                   sorted({f.kind for f in found}), user)
-    return RedirectResponse("/learning", status_code=303)
+                   sorted({f.kind for f in found}), actor)
+        if decision == HOLD:
+            result["settled"] += settle(attachment["id"])
+    return result
 
 
 def learning_download(body: str | bytes, filename: str, media_type: str) -> Response:

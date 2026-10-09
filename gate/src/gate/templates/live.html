@@ -7,7 +7,7 @@
 <div id="live-workspace" data-agent-configured="{{ 'true' if agent_on else 'false' }}">
 <div class="page-heading heading-with-action"><h1>Activity</h1><a class="btn" href="/office">Upload PDF</a></div><details class="test-data-tools"><summary>Test data</summary><div class="actions"><form method="post" action="/live/demo/seed" data-live-form><button type="submit">Load synthetic files</button><div class="form-message live-submit-status" role="status" aria-live="polite" hidden></div></form><form method="post" action="/live/reset" onsubmit="return confirm('Clear all uploaded files and purchases? Rules and audit history will stay.')"><button type="submit" class="btn-secondary">Clear workspace</button></form></div></details>
 <div class="live-state" id="live-gate-node"><span class="live-state-mark" id="live-state-mark" aria-hidden="true"></span><span id="live-busy">Loading…</span></div>
-<dl class="live-outcomes"><div><dt>Published</dt><dd id="live-count-published">—</dd></div><div><dt>Private</dt><dd id="live-count-blocked">—</dd></div><div><dt>Review</dt><dd id="live-count-waiting">—</dd></div></dl><p id="live-stale-count" class="small muted"></p>
+<dl class="live-outcomes"><div><dt>Published</dt><dd id="live-count-published">—</dd></div><div><dt>Private</dt><dd id="live-count-blocked">—</dd></div><div><dt>Review</dt><dd id="live-count-waiting">—</dd></div></dl><p id="live-stale-count" class="small muted"></p>{% if autonomous %}<p id="live-autonomy" class="small muted">Finished without a person: — of —</p>{% endif %}
 <div class="live-status-row"><p id="live-connection" role="status" aria-live="polite">Connecting to this workspace’s activity feed…</p><button type="button" class="btn-secondary live-retry" id="live-refresh">Refresh now</button></div>
 <div class="live-columns"><section aria-labelledby="live-jobs-heading"><div class="section-heading"><h2 id="live-jobs-heading">Files</h2></div><div id="live-jobs" class="live-list" aria-busy="true"><div class="empty-state compact"><h3>Loading file activity…</h3></div></div></section>
 <section aria-labelledby="live-waiting-heading"><div class="section-heading"><h2 id="live-waiting-heading">Review</h2></div><p class="live-reviewer">Reviewing as <strong>{{ user }}</strong>.</p><div id="live-waiting" class="live-list" aria-busy="true"><div class="empty-state compact"><h3>Loading review requests…</h3></div></div></section></div>
@@ -205,6 +205,8 @@
     document.getElementById('live-busy').textContent = running ? 'Checking ' + running + (running === 1 ? ' file' : ' files') + '…' : 'Up to date';
     document.getElementById('live-gate-node').classList.toggle('is-busy', running > 0);
     document.getElementById('live-state-mark').classList.toggle('working', running > 0);
+    const autonomy = document.getElementById('live-autonomy');
+    if (autonomy && data.autonomy) autonomy.textContent = 'Finished without a person: ' + count(data.autonomy.finished) + ' of ' + count(data.autonomy.total);
     const stale = count(counts.stale);
     document.getElementById('live-stale-count').textContent = stale ? stale + (stale === 1 ? ' file needs' : ' files need') + ' the current rules checked before public access.' : 'No stored files are awaiting a rules recheck.';
     renderJobs(data.jobs); renderWaiting(data.waiting);
