@@ -229,7 +229,7 @@ def test_all_populated_screens_render_current_decisions(web):
         "/": ["Documents"],
         "/office": ["Supporting attachments", "Load synthetic files"],
         purchase_url: ["Attachment decisions", "Reviewer approved", "Kept internal", "Needs review"],
-        "/review": ["Decision reason", "Needs review", "Recent reviewer decisions", STAFF[0]],
+        "/review": ["Decision reason", "Keep private", "Publish original", STAFF[0]],
         "/public": ["Compras publicadas", web.app.public_filename(clean["purchase_id"], clean["id"])],
         "/dashboard": ["Decisions by office", "Human review history", STAFF[0]],
     }
@@ -295,7 +295,7 @@ def test_activity_and_review_say_approval_publishes_the_cleaned_copy(web):
     assert waiting[plain]["has_clean"] is False and waiting[plain]["removed"] == []
     assert waiting[cleaned]["has_clean"] is True and waiting[cleaned]["removed"] == ["CUIL", "DNI"]
     review = web.client.get("/review").text
-    assert review.count("Approve publishes the cleaned copy") == 1
+    assert review.count("Publish cleaned copy") == 1 and review.count("Publish original") == 1
     assert f"/internal/clean/{cleaned}" in review
     approved = web.client.post(f"/review/{cleaned}", data={
         "action": "approve", "note": "Inspected the cleaned fictional copy."}, follow_redirects=False)
