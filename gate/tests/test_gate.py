@@ -298,3 +298,50 @@ def test_activity_and_review_say_approval_publishes_the_cleaned_copy(web):
         "action": "approve", "note": "Inspected the cleaned fictional copy."}, follow_redirects=False)
     assert approved.status_code == 303
     assert web.anonymous.get(f"/public/file/{cleaned}").content == CLEANED
+
+
+def fictional_pdf(text):
+    import pymupdf
+    with pymupdf.open() as document:
+        document.new_page().insert_text((72, 72), text, fontsize=11)
+        return document.tobytes()
+
+
+def cleaned_row(web, original, public_copy):
+    """A published cleaned copy, current against the active rules (Semgrep review fixes)."""
+    from gate import learning
+    purchase = web.app.create_purchase("UGL XXX Chivilcoy", "Ficticio 1/2026", "Silla de ruedas", 1000.0)
+    with web.store.db() as con:
+        att_id = con.execute(
+            "insert into attachments (purchase_id, filename, sha256, pdf, public_pdf, decision, reasons,"
+            " findings, model, created_at) values (?,?,?,?,?,?,?,?,?,?)",
+            (purchase["id"], "nota.pdf", "x", original, public_copy, "cleaned", "[]", "[]", "null", 0),
+        ).lastrowid
+    learning.record_check(att_id, learning.revision())
+    return att_id
+
+
+ORIGINAL = "Documento ficticio. DNI: 31.846.275. Registro sintetico para una prueba."
+
+
+def test_recheck_restricts_a_cleaned_copy_that_still_identifies_someone(web):
+    leaky_copy = fictional_pdf(ORIGINAL)  # the cleaned copy itself still carries the DNI
+    att_id = cleaned_row(web, fictional_pdf(ORIGINAL), leaky_copy)
+    assert web.anonymous.get(f"/public/file/{att_id}").content == leaky_copy
+    assert web.client.post("/learning/rescan", follow_redirects=False).status_code == 303
+    assert web.anonymous.get(f"/public/file/{att_id}").status_code == 404
+    with web.store.db() as con:
+        assert con.execute("select decision from attachments where id=?", (att_id,)).fetchone()[0] == "withheld"
+
+
+def test_recheck_keeps_a_clean_cleaned_copy_public(web):
+    clean_copy = fictional_pdf("Documento ficticio. Silla de ruedas estandar, 1 unidad.")
+    att_id = cleaned_row(web, fictional_pdf(ORIGINAL), clean_copy)
+    assert web.client.post("/learning/rescan", follow_redirects=False).status_code == 303
+    response = web.anonymous.get(f"/public/file/{att_id}")
+    assert response.status_code == 200 and response.content == clean_copy
+
+
+def test_cleaned_decision_never_falls_back_to_the_original(web):
+    att_id = cleaned_row(web, fictional_pdf(ORIGINAL), None)
+    assert web.anonymous.get(f"/public/file/{att_id}").status_code == 404

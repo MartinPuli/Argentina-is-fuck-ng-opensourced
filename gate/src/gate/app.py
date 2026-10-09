@@ -579,6 +579,9 @@ def public_file(att_id: int):
         row = con.execute("select filename, pdf, public_pdf, decision from attachments where id=?", (att_id,)).fetchone()
     if not row or row["decision"] not in VISIBLE or not learning.current(att_id):
         raise HTTPException(404, headers={"Cache-Control": "no-store"})
+    if row["decision"] == "cleaned" and not row["public_pdf"]:
+        # "cleaned" promises a sanitized copy; never fall back to the original.
+        raise HTTPException(404, headers={"Cache-Control": "no-store"})
     # When a cleaned copy exists, it is the only version that can ever be public.
     return pdf_response(row["public_pdf"] or row["pdf"], row["filename"])
 
@@ -713,16 +716,25 @@ def rescan_learning_rules(user: str = Depends(staff)):
     with db() as con:
         attachments = con.execute("select * from attachments order by id").fetchall()
     for attachment in attachments:
-        scanned = scan(attachment["pdf"])
-        found = list(scanned.findings) + learning.apply(scanned.pages, active)
+        # Recheck the bytes /public/file would actually serve: a published cleaned copy
+        # replaces the original, so new rules must be applied to that copy.
+        served = attachment["public_pdf"] if attachment["decision"] in VISIBLE and attachment["public_pdf"] else attachment["pdf"]
+        scanned = scan(served)
+        learned = learning.apply(scanned.pages, active)
+        found = list(scanned.findings) + learned
+        incomplete = []
         if (not scanned.pages or scanned.coverage_issues
                 or any(p.coverage_issues for p in scanned.pages)):
-            found.append(Finding("incomplete_recheck", "Recheck coverage is incomplete", "",
-                                 0, "review", "unreadable"))
+            incomplete.append(Finding("incomplete_recheck", "Recheck coverage is incomplete", "",
+                                      0, "review", "unreadable"))
+        found += incomplete
         decision = attachment["decision"]
+        # A cleaned copy already passed the independent verifier with its built-in
+        # review-level findings; only learned rules or lost coverage reopen it.
+        review_triggers = learned + incomplete if decision == "cleaned" else found
         if any(f.severity == "block" for f in found):
             decision = WITHHELD
-        elif any(f.severity == "review" for f in found) and decision in VISIBLE:
+        elif any(f.severity == "review" for f in review_triggers) and decision in VISIBLE:
             decision = "hold"
         previous_findings = json.loads(attachment["findings"] or "[]")
         merged = list(previous_findings)
@@ -737,7 +749,7 @@ def rescan_learning_rules(user: str = Depends(staff)):
             con.execute("BEGIN IMMEDIATE")
             current_row = con.execute("select decision from attachments where id=?", (attachment["id"],)).fetchone()
             # A concurrent review/recheck must never be overwritten with a weaker decision.
-            strictness = {"public": 0, "approved": 0, "hold": 1, "withheld": 2}
+            strictness = {"public": 0, "approved": 0, "cleaned": 0, "hold": 1, "withheld": 2}
             if strictness.get(current_row["decision"], 2) >= strictness.get(decision, 2):
                 decision = current_row["decision"]
             con.execute("update attachments set decision=?,findings=?,reasons=? where id=?",
