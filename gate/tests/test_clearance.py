@@ -81,3 +81,22 @@ def test_agent_spans_keep_only_exact_substrings(reply):
     from gate import agent
     spans = agent._spans(agent._json("noise " + reply).get("remove"), f"Beneficiaria: {NAME} - DNI")
     assert spans == [{"text": NAME, "category": "name"}]
+
+
+def test_purchase_page_shows_the_guild_reviewer_verdict(web):
+    from test_gate import CLEANED, MANIFEST, add_attachment
+    att_id, _ = add_attachment(web, "cleaned", CLEANED, MANIFEST)
+    plan = web.app.agent.safe_plan({
+        "levels": {"public": {"remove": [{"text": NAME, "category": "name"}], "rounds": 2, "review": "PASS",
+                              "feedback": ["FAIL: still identifies"]}},
+        "sessions": [{"agent": "orchestrator", "url": "https://app.guild.ai/sessions/orch"},
+                     {"agent": "reviewer r1", "url": "https://app.guild.ai/sessions/rev1"},
+                     {"agent": "reviewer r2", "url": "https://app.guild.ai/sessions/rev2"}],
+        "log": [], "latency_ms": 1.0})
+    with web.store.db() as con:  # stored exactly as clearance_in_background stores it
+        con.execute("update attachments set clearance=? where id=?", (json.dumps(plan), att_id))
+        pid = con.execute("select purchase_id from attachments where id=?", (att_id,)).fetchone()[0]
+    page = web.client.get(f"/purchase/{pid}").text
+    assert "Verified · Guild reviewer PASS (round 2)" in page
+    assert "https://app.guild.ai/sessions/rev2" in page
+    assert "Not verified" not in page
