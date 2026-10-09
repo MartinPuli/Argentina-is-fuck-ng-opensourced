@@ -73,3 +73,5 @@ Layout: slim text navigation → compact document header/actions → current cou
 ## Incoming team work preserved
 
 The main-branch merge includes sanitized public copies, removal evidence and a Guild verifier. The workspace counts and filters include the `cleaned` publication state. Original and cleaned previews stay distinct. Candidate verification now preserves current-rule and concurrent-review decisions; these checks do not prove universal redaction or model accuracy.
+
+The workspace has no global demo badge. Upload PDF is the primary action. Synthetic fixtures are available under a collapsed Test data section; synthetic analytics retain their provenance labels. The interface does not claim that tests or a successful build establish production readiness.

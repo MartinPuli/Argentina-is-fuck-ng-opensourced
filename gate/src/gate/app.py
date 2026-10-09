@@ -64,6 +64,7 @@ STEP_DECIDE = "Decide"
 STEP_BRIEF = "Guild agent note"
 STEP_CLEAN = "Clean copy"
 STEP_VERIFY = "Guild verifier"
+STEP_CLEARANCE = "Clearance levels"
 LABEL = {"public": "Cleared for publication", "approved": "Approved", "hold": "Needs review", "withheld": "Blocked",
          "cleaned": "Published cleaned copy"}
 
@@ -244,6 +245,15 @@ def store_attachment(purchase: dict, filename: str, pdf: bytes, model, decision,
     if job is not None:
         activity.finish(job, attachment_id=att_id, decision=decision)
     candidate = None
+    phrases = phrases if isinstance(phrases, list) else []
+    if decision != PUBLIC and agent.configured() and sanitize.text_only(pdf) and sanitize.cleanable(findings, decision):
+        # Guild decides what each clearance level may see; the app applies it for real.
+        progress(job, STEP_CLEARANCE, "running")
+        threading.Thread(target=clearance_in_background,
+                         args=(att_id, purchase, filename, pdf, findings, phrases, decision,
+                               checked_revision, verification_state, job),
+                         daemon=True).start()
+        return att_id
     if decision != PUBLIC:
         try:
             candidate = sanitize.build(pdf, findings, phrases if isinstance(phrases, list) else [], decision)
@@ -274,11 +284,93 @@ def store_attachment(purchase: dict, filename: str, pdf: bytes, model, decision,
 
 def verifier_state(con, att_id: int) -> dict | None:
     row = con.execute(
-        "select a.decision,a.findings,a.reasons,a.reviewed_by,a.reviewed_at,a.review_note,a.verifier,"
+        "select a.decision,a.findings,a.reasons,a.reviewed_by,a.reviewed_at,a.review_note,a.verifier,a.clearance,"
         "c.revision,c.checked_at from attachments a left join learning_checks c on c.attachment_id=a.id "
         "where a.id=?", (att_id,),
     ).fetchone()
     return dict(row) if row is not None else None
+
+
+def clearance_in_background(att_id, purchase, filename, pdf, findings, phrases, decision,
+                            expected_revision, expected_state, job=None) -> None:
+    """Orchestrator -> public agent <-> public reviewer on Guild, then sanitize's own check.
+
+    "cleaned" only when the reviewer said PASS and the detectors find nothing in the bytes
+    we would publish. Anything else keeps the file private, with the cleaned copy saved
+    for a human.
+    """
+    new, why, url = decision, "Clearance agents unavailable. A person must review the file.", ""
+    try:
+        with pymupdf.open(stream=pdf, filetype="pdf") as document:
+            text = "\n".join(page.get_text() for page in document)
+        last: dict = {}
+
+        def render(remove):
+            last["c"] = sanitize.build(pdf, findings, phrases + remove, decision)
+            return last["c"].text if last["c"] is not None else None
+
+        result = agent.clearance(text, findings, render=render,
+                                 on_step=lambda name, status, detail: progress(job, name, status, detail))
+        plan = agent.safe_plan(result)
+        url = next((s["url"] for s in result.get("sessions", []) if s["agent"] == "orchestrator"), "")
+        public = (result.get("levels") or {}).get("public") or {}
+        candidate = last.get("c")
+        candidate_clear = False
+        if candidate is not None and candidate.verified is True:
+            active, candidate_revision = learning.snapshot()
+            checked = scan(candidate.pdf)
+            found = list(checked.findings) + learning.apply(checked.pages, active)
+            complete = (bool(checked.pages) and not checked.coverage_issues
+                        and all(p.text.strip() and not p.coverage_issues and not p.has_images
+                                and not p.image and p.source == "text" for p in checked.pages))
+            candidate_clear = (candidate_revision == expected_revision and complete
+                               and not any(f.severity in {"block", "review"} for f in found))
+        procurement = None
+        proc_remove = ((result.get("levels") or {}).get("procurement") or {}).get("remove", [])
+        if "error" not in result:
+            try:
+                procurement = sanitize.build(pdf, findings, proc_remove, decision)
+            except Exception:
+                procurement = None
+        if "error" in result:
+            progress(job, STEP_CLEARANCE, "error", "Guild unavailable; file stays private")
+        elif public.get("review") == "PASS" and candidate_clear:
+            new = "cleaned"
+            why = f"Published without {', '.join(sorted({m['category'] for m in candidate.manifest}))}."
+        elif candidate_clear:
+            new, why = HOLD, "The review did not pass. A person must review the cleaned copy."
+        else:
+            why = "Current checks did not clear the candidate. The existing restriction remains."
+        if "error" not in result:
+            progress(job, STEP_CLEARANCE, "done" if new == "cleaned" else "error",
+                     f"{public.get('rounds', 0)} round(s) · {public.get('review', 'FAIL')}"
+                     + ("" if candidate is None or candidate.verified else " · detectors disagree"))
+        with db() as con:
+            con.execute("BEGIN IMMEDIATE")
+            state = verifier_state(con, att_id)
+            stored = con.execute("select pdf,public_pdf from attachments where id=?", (att_id,)).fetchone()
+            if (state != expected_state or state is None or state["decision"] != decision
+                    or state["reviewed_by"] is not None or state["revision"] != expected_revision
+                    or learning._snapshot(con)[1] != expected_revision
+                    or stored is None or stored["pdf"] != pdf or stored["public_pdf"] is not None):
+                progress(job, STEP_CLEARANCE, "error", "A newer decision or rule check takes precedence")
+                why = "A newer decision or rule check takes precedence."
+                if state is not None:
+                    new = state["decision"]
+                return
+            con.execute("update attachments set clearance=?, decision=?, public_pdf=coalesce(?, public_pdf),"
+                        " manifest=coalesce(?, manifest), procurement_pdf=? where id=?",
+                        (json.dumps(plan), new, candidate.pdf if candidate_clear else None,
+                         json.dumps(candidate.manifest) if candidate_clear else None,
+                         procurement.pdf if procurement else None, att_id))
+        events.log("clearance", purchase["office"], purchase["id"], att_id, filename, new,
+                   sorted({r["category"] for r in public.get("remove", [])}) + [public.get("review", "error").lower()],
+                   "guild-clearance", result.get("latency_ms", 0))
+    except Exception:
+        progress(job, STEP_CLEARANCE, "error", "Clearance failed; file stays private")
+    finally:
+        if job is not None:
+            activity.finish(job, decision=new, why=why, agent_url=url, done=True)
 
 
 def verify_in_background(att_id, purchase, filename, candidate, expected_decision, expected_revision,
@@ -646,6 +738,9 @@ def public_file(att_id: int):
         row = con.execute("select filename, pdf, public_pdf, decision from attachments where id=?", (att_id,)).fetchone()
     if not row or row["decision"] not in VISIBLE or not learning.current(att_id):
         raise HTTPException(404, headers={"Cache-Control": "no-store"})
+    if row["decision"] == "cleaned" and not row["public_pdf"]:
+        # "cleaned" promises a sanitized copy; never fall back to the original.
+        raise HTTPException(404, headers={"Cache-Control": "no-store"})
     # When a cleaned copy exists, it is the only version that can ever be public.
     return pdf_response(row["public_pdf"] or row["pdf"], row["filename"])
 
@@ -667,6 +762,16 @@ def internal_clean(att_id: int, user: str = Depends(staff)):
     if not row or not row["public_pdf"]:
         raise HTTPException(404, headers={"Cache-Control": "no-store"})
     return pdf_response(row["public_pdf"], row["filename"])
+
+
+@app.get("/internal/procurement/{att_id}")
+def internal_procurement(att_id: int, user: str = Depends(staff)):
+    """Staff view of the procurement copy: specs, quantities, prices; no patient identity."""
+    with db() as con:
+        row = con.execute("select filename, procurement_pdf from attachments where id=?", (att_id,)).fetchone()
+    if not row or not row["procurement_pdf"]:
+        raise HTTPException(404, headers={"Cache-Control": "no-store"})
+    return pdf_response(row["procurement_pdf"], row["filename"])
 
 
 @app.get("/dashboard")
@@ -780,16 +885,25 @@ def rescan_learning_rules(user: str = Depends(staff)):
     with db() as con:
         attachments = con.execute("select * from attachments order by id").fetchall()
     for attachment in attachments:
-        scanned = scan(attachment["pdf"])
-        found = list(scanned.findings) + learning.apply(scanned.pages, active)
+        # Recheck the bytes /public/file would actually serve: a published cleaned copy
+        # replaces the original, so new rules must be applied to that copy.
+        served = attachment["public_pdf"] if attachment["decision"] in VISIBLE and attachment["public_pdf"] else attachment["pdf"]
+        scanned = scan(served)
+        learned = learning.apply(scanned.pages, active)
+        found = list(scanned.findings) + learned
+        incomplete = []
         if (not scanned.pages or scanned.coverage_issues
                 or any(p.coverage_issues for p in scanned.pages)):
-            found.append(Finding("incomplete_recheck", "Recheck coverage is incomplete", "",
-                                 0, "review", "unreadable"))
+            incomplete.append(Finding("incomplete_recheck", "Recheck coverage is incomplete", "",
+                                      0, "review", "unreadable"))
+        found += incomplete
         decision = attachment["decision"]
+        # A cleaned copy already passed the independent verifier with its built-in
+        # review-level findings; only learned rules or lost coverage reopen it.
+        review_triggers = learned + incomplete if decision == "cleaned" else found
         if any(f.severity == "block" for f in found):
             decision = WITHHELD
-        elif any(f.severity == "review" for f in found) and decision in VISIBLE:
+        elif any(f.severity == "review" for f in review_triggers) and decision in VISIBLE:
             decision = "hold"
         previous_findings = json.loads(attachment["findings"] or "[]")
         merged = list(previous_findings)

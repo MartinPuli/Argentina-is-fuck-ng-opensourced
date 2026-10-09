@@ -22,7 +22,6 @@ function WorkspaceApp() {
   const [filter, setFilter] = useState<Filter>('all');
   const [query, setQuery] = useState('');
   const [sort, setSort] = useState('newest');
-  const [demoBusy, setDemoBusy] = useState(false);
   const load = useCallback(async (signal?: AbortSignal) => {
     setLoading(true);
     try {
@@ -49,16 +48,8 @@ function WorkspaceApp() {
     );
     return [...rows].sort((a, b) => sort === 'name' ? a.filename.localeCompare(b.filename) : sort === 'oldest' ? a.created_at - b.created_at : b.created_at - a.created_at);
   }, [data, filter, query, sort]);
-  async function loadDemo() {
-    setDemoBusy(true); setError('');
-    try {
-      const response = await fetch('/live/demo/seed', { method: 'POST', credentials: 'same-origin', signal: AbortSignal.timeout(20000) });
-      if (!response.ok) throw new Error('Demo could not be queued.');
-      window.location.assign('/live');
-    } catch (err) { setError(err instanceof Error ? err.message : 'Connection unavailable.'); setDemoBusy(false); }
-  }
   return <section className="hero-workspace" aria-label="Document workspace">
-    <header className="workspace-heading"><h1>Documents</h1><div className="workspace-actions"><Button variant="secondary" size="sm" onPress={loadDemo} isDisabled={demoBusy}>{demoBusy ? 'Loading…' : 'Load demo'}</Button><Button size="sm" onPress={() => window.location.assign('/office')}>Upload PDF</Button></div></header>
+    <header className="workspace-heading"><h1>Documents</h1><div className="workspace-actions"><Button size="sm" onPress={() => window.location.assign('/office')}>Upload PDF</Button></div></header>
     <div className="workspace-totals" aria-label="Document totals">{[
       ['Total', data?.counts.total], ['Review', data?.counts.review], ['Private', data?.counts.blocked], ['Published', data?.counts.published]
     ].map(([label, value]) => <div key={label}><span>{label}</span><strong>{value ?? '—'}</strong></div>)}</div>

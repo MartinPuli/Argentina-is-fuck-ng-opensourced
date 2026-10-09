@@ -174,11 +174,62 @@ def test_incomplete_candidate_extraction_is_not_automatically_published(verifier
 
 
 def test_recheck_restricts_cleaned_decision_like_other_published_copies(verifier):
-    case = prepare(verifier, original=SAFE + " " + MARKER)
+    case = prepare(verifier, candidate_text=SAFE + " " + MARKER)
     verifier.app.verify_in_background(*case.args)
     assert record(verifier, case.id)["decision"] == "cleaned"
     activate(verifier)
     response = verifier.client.post("/learning/rescan", follow_redirects=False)
     assert response.status_code == 303 and record(verifier, case.id)["decision"] == "withheld"
+    assert verifier.learning.current(case.id)
+    assert verifier.client.get(f"/public/file/{case.id}").status_code == 404
+
+
+def clearance_case(verifier, *, candidate_text=SAFE, original=SAFE):
+    case = prepare(verifier, candidate_text=candidate_text, original=original, decision="hold")
+    with verifier.store.db() as con:
+        con.execute("update attachments set public_pdf=null where id=?", (case.id,))
+    verifier.monkeypatch.setattr(verifier.app.sanitize, "build", lambda *a, **kw: case.candidate)
+    args = (case.id, case.args[1], "fictional.pdf", case.original, [], [], "hold", case.args[5], case.args[6])
+    return case, args
+
+
+def clearance_pass(render):
+    render([])
+    return {"levels": {"public": {"remove": [], "rounds": 1, "review": "PASS"},
+                       "procurement": {"remove": []}}, "sessions": [], "log": []}
+
+
+def test_clearance_pass_checks_learned_rules_on_the_actual_candidate(verifier):
+    activate(verifier)
+    case, args = clearance_case(verifier, candidate_text=SAFE + " " + MARKER)
+    verifier.monkeypatch.setattr(verifier.app.agent, "clearance",
+                                lambda text, findings, render=None, on_step=None: clearance_pass(render))
+    verifier.app.clearance_in_background(*args)
+    row = record(verifier, case.id)
+    assert row["decision"] == "hold" and row["public_pdf"] is None
+    assert verifier.client.get(f"/public/file/{case.id}").status_code == 404
+
+
+def test_late_clearance_pass_cannot_overwrite_new_recheck_block(verifier):
+    case, args = clearance_case(verifier, original=SAFE + " " + MARKER)
+    entered, release = threading.Event(), threading.Event()
+    def delayed(text, findings, render=None, on_step=None):
+        result = clearance_pass(render)
+        entered.set()
+        assert release.wait(3)
+        return result
+    verifier.monkeypatch.setattr(verifier.app.agent, "clearance", delayed)
+    with ThreadPoolExecutor(max_workers=1) as pool:
+        worker = pool.submit(verifier.app.clearance_in_background, *args)
+        try:
+            assert entered.wait(2)
+            activate(verifier)
+            assert verifier.client.post("/learning/rescan", follow_redirects=False).status_code == 303
+            assert record(verifier, case.id)["decision"] == "withheld"
+        finally:
+            release.set()
+            worker.result(timeout=3)
+    row = record(verifier, case.id)
+    assert row["decision"] == "withheld" and row["public_pdf"] is None and row["clearance"] is None
     assert verifier.learning.current(case.id)
     assert verifier.client.get(f"/public/file/{case.id}").status_code == 404

@@ -1,0 +1,4 @@
+# PUBLIC clearance agent: text in, JSON out. No tools.
+integrations: []
+sub_agents: []
+builtins: []

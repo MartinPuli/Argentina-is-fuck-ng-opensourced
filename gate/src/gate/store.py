@@ -32,14 +32,22 @@ create table if not exists events (
 );
 """
 
+MIGRATIONS = (
+    "alter table attachments add column public_pdf blob",
+    "alter table attachments add column manifest text",
+    "alter table attachments add column verifier text",
+    "alter table attachments add column clearance text",
+    "alter table attachments add column procurement_pdf blob",
+)
+
 
 def db() -> sqlite3.Connection:
     con = sqlite3.connect(DB_PATH)
     con.row_factory = sqlite3.Row
     con.executescript(SCHEMA)
-    for column in ("public_pdf blob", "manifest text", "verifier text"):  # cleaned public copy
+    for statement in MIGRATIONS:  # cleaned public copy, Guild clearance levels
         try:
-            con.execute(f"alter table attachments add column {column}")
+            con.execute(statement)
         except sqlite3.OperationalError:
             pass
     return con

@@ -55,6 +55,15 @@ def cleanable(findings: list[dict], decision: str) -> bool:
     return not clinical and not (kinds & NOT_CLEANABLE)
 
 
+def text_only(pdf: bytes) -> bool:
+    """Image-based files are never cleaned; the clearance agents only see text."""
+    try:
+        with pymupdf.open(stream=pdf, filetype="pdf") as doc:
+            return not any(page.get_images() for page in doc)
+    except Exception:
+        return False
+
+
 def build(pdf: bytes, findings: list[dict], phrases: list[dict] | None, decision: str) -> Candidate | None:
     """phrases: [{"text": verbatim, "category": short label}] from the context model."""
     with pymupdf.open(stream=pdf, filetype="pdf") as doc:

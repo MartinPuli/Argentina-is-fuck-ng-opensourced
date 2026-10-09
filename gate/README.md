@@ -1,8 +1,8 @@
-# ArgenSec Gate — Publication Gate
+# Publication Gate
 
 The team’s **primary deliverable** is Publication Gate: a publication checkpoint for procurement attachments. It checks each file, retains uncertain documents for review, and enforces the current decision and learned-rule revision on public downloads. Incident learning extends this application with tested PDF checks and reusable review artifacts. The broader BREACHSTOP server-defense proposal remains a separate future module.
 
-This local prototype uses fictional documents inspired by [Chequeado's reporting on PAMI attachments](https://chequeado.com/investigaciones/pami-expone-datos-medicos-y-documentos-sensibles-de-sus-afiliados-en-su-sitio-web/). The [incident research](../docs/INCIDENTS.md) and [team problem analysis](../PAMI%20Data%20Exposure%20Problem%20Analysis.md) provide context. No real government system is connected. Detection is fallible; this is not a guarantee that every private document will be identified.
+The included test fixtures contain fictional documents inspired by [Chequeado's reporting on PAMI attachments](https://chequeado.com/investigaciones/pami-expone-datos-medicos-y-documentos-sensibles-de-sus-afiliados-en-su-sitio-web/). The [incident research](../docs/INCIDENTS.md) and [team problem analysis](../PAMI%20Data%20Exposure%20Problem%20Analysis.md) provide context. No real government system is connected. Detection is fallible; this is not a guarantee that every private document will be identified.
 
 ## Run locally
 
@@ -18,17 +18,17 @@ Copy the example only for a new setup; preserve an existing `.env`. Edit `.env` 
 
 - Set `GATE_STAFF_PASSWORD` to a private password. An empty or missing password disables staff routes with HTTP 503.
 - Keep `GATE_STAFF_USERNAME=reviewer`, or choose a different account name. Both fields are checked.
-- Leave optional sponsor settings empty for the offline demo. To start with a fresh case, set `GATE_DB` to a new, unused SQLite filename; existing databases are not reset automatically.
+- Leave optional sponsor settings empty for local checks. To start with a fresh case, set `GATE_DB` to a new, unused SQLite filename; existing databases are not reset automatically.
 
-Start the offline demo, explicitly disabling optional sponsor calls even if the surrounding environment contains credentials:
+Start the application locally, explicitly disabling optional sponsor calls even if the surrounding environment contains credentials:
 
 ```bash
 AKASHML_API_KEY= GUILD_WORKSPACE= GUILD_AGENT= CLICKHOUSE_HOST= uv run --frozen uvicorn gate.app:app --host 127.0.0.1 --port 8765
 ```
 
-Open [the local overview](http://127.0.0.1:8765), select **Open demo workspace**, and sign in with the configured account. Use the same hostname throughout the session; mutating requests require a matching browser origin. Follow [DEMO.md](DEMO.md) for the complete review and public-download sequence.
+Open [Documents](http://127.0.0.1:8765) and sign in with the configured account. Select **Upload PDF** to submit documents; synthetic fixtures are available under **Test data**. Use the same hostname throughout the session; mutating requests require a matching browser origin. Follow [DEMO.md](DEMO.md) for the complete review and public-download sequence.
 
-The committed fictional PDFs are ready to use. Spanish OCR additionally needs Tesseract and `spa.traineddata`; `TESSDATA_PREFIX` can identify an existing language-data directory. If required OCR is unavailable or fails, the affected file remains nonpublic pending review. The offline demo also works without OCR.
+The committed fictional PDFs are ready to use. Spanish OCR additionally needs Tesseract and `spa.traineddata`; `TESSDATA_PREFIX` can identify an existing language-data directory. If required OCR is unavailable or fails, the affected file remains nonpublic pending review. Local tests can also run without OCR.
 
 ```bash
 uv run --frozen python -m pytest -q tests
@@ -36,11 +36,24 @@ uv run --frozen python -m pytest -q tests
 
 Tests exercise local request, analysis and publication boundaries. They do not establish a live sponsor integration or a public deployment.
 
+## Frontend
+
+The Documents screen uses React and HeroUI; the remaining screens use server-rendered templates with shared styles. Compiled frontend assets are committed, so the Python server can serve them directly. To change the workspace:
+
+```bash
+cd gate/frontend
+npm ci
+npm run build
+```
+
+Commit source and rebuilt `gate/src/gate/static` files together. Dependency notices are in `frontend/THIRD-PARTY-NOTICES.txt`.
+
 ## Decisions and enforcement
 
 | Stored decision | Meaning |
 |---|---|
 | `public` | Required automated analyses completed without a blocking or review finding. Classification can still be wrong. |
+| `cleaned` | A checked sanitized copy was cleared for publication; the original stays internal. Public access still requires a current rule check. |
 | `hold` | Analysis is missing, failed, incomplete, or uncertain. An authenticated reviewer must inspect the original. |
 | `withheld` | A deterministic block or reviewer rejection keeps the file internal. The approval endpoint cannot release this state. |
 | `approved` | A reviewer approved a held file and recorded a reason. This is a human decision, not an automated safety certificate. |

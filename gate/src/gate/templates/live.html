@@ -5,14 +5,14 @@
 .live-outcomes{grid-template-columns:repeat(3,1fr);padding:20px 0;margin:12px 0 20px;border-block:1px solid var(--line)}.live-outcomes dd{font-weight:300}.live-columns .section-heading{margin-bottom:16px}.live-columns .section-heading p{display:none}.live-columns .live-review h3,.live-job h3{font-weight:400}.live-outcomes div{justify-content:flex-start;gap:20px}.live-job{border-radius:4px}.live-tools{border-radius:4px}.live-status-row{margin-top:16px}
 </style>
 <div id="live-workspace" data-agent-configured="{{ 'true' if agent_on else 'false' }}">
-<div class="page-heading heading-with-action"><h1>Activity</h1><div class="actions"><form method="post" action="/live/demo/seed" data-live-form><button type="submit">Load demo</button><div class="form-message live-submit-status" role="status" aria-live="polite" hidden></div></form><form method="post" action="/live/reset" onsubmit="return confirm('Clear all uploaded files and purchases? Rules and audit history will stay.')"><button type="submit" class="btn-secondary">Reset demo</button></form></div></div>
+<div class="page-heading heading-with-action"><h1>Activity</h1><a class="btn" href="/office">Upload PDF</a></div><details class="test-data-tools"><summary>Test data</summary><div class="actions"><form method="post" action="/live/demo/seed" data-live-form><button type="submit">Load synthetic files</button><div class="form-message live-submit-status" role="status" aria-live="polite" hidden></div></form><form method="post" action="/live/reset" onsubmit="return confirm('Clear all uploaded files and purchases? Rules and audit history will stay.')"><button type="submit" class="btn-secondary">Clear workspace</button></form></div></details>
 <div class="live-state" id="live-gate-node"><span class="live-state-mark" id="live-state-mark" aria-hidden="true"></span><span id="live-busy">Loading…</span></div>
 <dl class="live-outcomes"><div><dt>Published</dt><dd id="live-count-published">—</dd></div><div><dt>Private</dt><dd id="live-count-blocked">—</dd></div><div><dt>Review</dt><dd id="live-count-waiting">—</dd></div></dl><p id="live-stale-count" class="small muted"></p>
 <div class="live-status-row"><p id="live-connection" role="status" aria-live="polite">Connecting to this workspace’s activity feed…</p><button type="button" class="btn-secondary live-retry" id="live-refresh">Refresh now</button></div>
 <div class="live-columns"><section aria-labelledby="live-jobs-heading"><div class="section-heading"><h2 id="live-jobs-heading">Files</h2></div><div id="live-jobs" class="live-list" aria-busy="true"><div class="empty-state compact"><h3>Loading file activity…</h3></div></div></section>
 <section aria-labelledby="live-waiting-heading"><div class="section-heading"><h2 id="live-waiting-heading">Review</h2></div><p class="live-reviewer">Reviewing as <strong>{{ user }}</strong>.</p><div id="live-waiting" class="live-list" aria-busy="true"><div class="empty-state compact"><h3>Loading review requests…</h3></div></div></section></div>
 <details class="panel live-tools"><summary>Upload PDF</summary><form method="post" action="/live/upload" enctype="multipart/form-data" data-live-form>
-<p class="field-hint">Purchase details are public. Do not include patient information.</p><div class="form-grid"><div class="field span-two"><label for="live-office">Local office</label><select id="live-office" name="office" required>{% for office in offices %}<option>{{ office }}</option>{% endfor %}</select></div><div class="field"><label for="live-procedure">Procedure reference</label><input id="live-procedure" name="procedure" value="DEMO-LIVE-2026" required maxlength="160"></div><div class="field"><label for="live-amount">Amount in ARS</label><input id="live-amount" name="amount" type="number" min="0" step="0.01" value="1000000" required></div><div class="field span-two"><label for="live-item">Item being purchased</label><input id="live-item" name="item" placeholder="Fictional equipment specification" required maxlength="240"></div></div>
+<p class="field-hint">Purchase details are public. Do not include patient information.</p><div class="form-grid"><div class="field span-two"><label for="live-office">Local office</label><select id="live-office" name="office" required>{% for office in offices %}<option>{{ office }}</option>{% endfor %}</select></div><div class="field"><label for="live-procedure">Procedure reference</label><input id="live-procedure" name="procedure" placeholder="Procedure reference" required maxlength="160"></div><div class="field"><label for="live-amount">Amount in ARS</label><input id="live-amount" name="amount" type="number" min="0" step="0.01"  required></div><div class="field span-two"><label for="live-item">Item being purchased</label><input id="live-item" name="item" placeholder="Equipment specification" required maxlength="240"></div></div>
 <div class="upload-area"><label for="live-files">Supporting attachments</label><input id="live-files" name="files" type="file" accept="application/pdf,.pdf" multiple required aria-describedby="live-file-limits live-file-selection"><div id="live-file-selection" class="file-selection" aria-live="polite">No files selected</div><small id="live-file-limits">Up to 8 PDFs · 10 MB per file · 25 MB total · 50 pages per file</small></div><div class="form-footer"><button type="submit">Check files</button></div><div class="form-message live-submit-status" role="status" aria-live="polite" hidden></div></form></details>
 <div class="live-static-links"><a href="/review">Review queue</a><a href="/learning">Rules</a><a href="/public" target="_blank" rel="noopener">Public records</a></div>
 <noscript><div class="notice">Live updates require JavaScript. Use the upload forms and follow progress in the <a href="/review">review queue</a> and <a href="/dashboard">audit trail</a>.</div></noscript>
@@ -112,11 +112,17 @@
       const steps = element('ul', 'live-steps');
       for (const step of Array.isArray(job.steps) ? job.steps : []) {
         const state = stepStates.has(step.status) ? step.status : 'pending';
-        const item = element('li', 'live-step ' + state, text(step.name) + ' · ' + state);
+        const agentic = /^(Guild orchestrator|Public |Clearance)/.test(text(step.name));
+        const item = element('li', 'live-step ' + state, text(step.name) + ' · ' + (agentic && step.detail ? text(step.detail) : state));
         item.title = text(step.detail); steps.append(item);
       }
       card.append(heading);
+      // The agentic clearance procedure stays visible after it finishes: rounds and verdicts.
       if (!job.done) card.append(steps);
+      else if ((job.steps || []).some(s => /^Public reviewer/.test(text(s.name)))) {
+        steps.replaceChildren(...[...steps.children].filter(li => /^(Guild orchestrator|Public |Clearance)/.test(li.textContent)));
+        card.append(steps);
+      }
       if (job.why) card.append(element('p', '', job.why));
       if (job.stale) card.append(element('p', 'live-error', 'An earlier decision is no longer current. Recheck this file before public access.'));
       const links = element('div', 'live-job-links');
@@ -127,7 +133,7 @@
       if (job.stale) links.append(link('Recheck rules →', '/learning'));
       card.append(links); return card;
     });
-    jobsElement.replaceChildren(...(nodes.length ? nodes : [empty('No files in the activity feed yet.', 'Load demo files or upload a PDF.')]));
+    jobsElement.replaceChildren(...(nodes.length ? nodes : [empty('No files in the activity feed yet.', 'Upload a PDF to start.')]));
   }
   function reviewCard(id) {
     const card = element('article', 'panel live-review');

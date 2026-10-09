@@ -185,6 +185,11 @@ def test_verified_cleaned_copy_is_counted_and_still_requires_current_rules(live)
     live.monkeypatch.setattr(live.app.agent, "configured", lambda: True)
     live.monkeypatch.setattr(live.app.agent, "verify", lambda *args, **kwargs:
                             {"verdict": "PASS", "text": "Fictional test verdict", "url": "", "latency_ms": 0})
+    def clearance(text, findings, render=None, on_step=None):
+        render([])
+        return {"levels": {"public": {"remove": [], "rounds": 1, "review": "PASS"},
+                           "procurement": {"remove": []}}, "sessions": [], "log": []}
+    live.monkeypatch.setattr(live.app.agent, "clearance", clearance)
     assert upload(live, original).status_code == 303
     result = finished(live)
     ident = result["jobs"][0]["attachment_id"]
