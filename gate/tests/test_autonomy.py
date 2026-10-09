@@ -68,7 +68,7 @@ def test_seeded_fixtures_all_finish_without_a_person(auto):
 
     portal = auto.anonymous.get("/public")
     assert portal.status_code == 200
-    assert "retenidos automáticamente para proteger datos de pacientes" in portal.text
+    assert "withheld automatically to protect patient data" in portal.text
     assert "awaiting review" not in portal.text.lower() and "en revisión" not in portal.text.lower()
     for name in all_fixture_names():
         assert name not in portal.text
