@@ -14,8 +14,8 @@ Explicit office/procedure/item/amount labels in the first three text pages per f
 
 ## Checks
 
-- Backend: **328 passed** (5 existing PyMuPDF deprecation warnings).
-- tester-army/e2e Chromium: **16 passed**, run `01a122dc-03fe-7b21-9f01-57792dc96e42`.
+- Backend after integrating the team's Senso decision-citation change: **331 passed** (5 existing PyMuPDF deprecation warnings).
+- tester-army/e2e Chromium: **16 passed**, run `01a122dc-f071-71a9-8f65-7a3abd561205`.
 - New browser checks cover selection without purchase fields, a real DOM file-drop event, automatic navigation, loaded Live activity, withheld original, private extracted hints and invalid-drop/no-write behavior.
 - Existing browser tests cover all ten fictional PDF fixtures and both human approval paths, including exact benign PDF bytes.
 - First browser run found a removed-form listener that stopped Live initialization. It was removed, the activity assertion strengthened and the entire suite rerun successfully. Failure traces retained locally in `.e2e/failed-intake-live-before-fix/`.
