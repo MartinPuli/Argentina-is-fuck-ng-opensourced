@@ -7,12 +7,18 @@ town and condition.
 """
 
 import io
+import os
 import re
 from dataclasses import dataclass, field
 
 import pymupdf
 import pytesseract
 from PIL import Image
+
+# The system Tesseract may lack Spanish data; use the per-user copy when it exists.
+_USER_TESSDATA = os.path.expanduser("~/.local/share/tessdata")
+if os.path.isfile(os.path.join(_USER_TESSDATA, "spa.traineddata")):
+    os.environ.setdefault("TESSDATA_PREFIX", _USER_TESSDATA)
 
 MIN_TEXT_CHARS = 25  # sparse text also requires rendered-page analysis
 MAX_RENDER_PIXELS = 20_000_000

@@ -317,7 +317,10 @@ def clearance_in_background(att_id, purchase, filename, pdf, findings, phrases, 
     we would publish. Anything else keeps the file private, with the cleaned copy saved
     for a human.
     """
-    new, why, url = decision, "Clearance agents unavailable. A person must review the file.", ""
+    # The reason must match the decision that stays in place when clearance does not finish.
+    new, url = decision, ""
+    why = ("Clearance agents unavailable. A blocking finding keeps this attachment private."
+           if decision == WITHHELD else "Clearance agents unavailable. A person must review the file.")
     try:
         with pymupdf.open(stream=pdf, filetype="pdf") as document:
             text = "\n".join(page.get_text() for page in document)
@@ -543,6 +546,8 @@ async def live_upload(office: str = Form(...), procedure: str = Form(...), item:
 
 @app.post("/live/demo/seed")
 async def live_demo_seed(user: str = Depends(staff)):
+    if activity.running():
+        return PlainTextResponse("A demo run is still in progress. Wait for it to finish.", status_code=409)
     prepared = []
     for spec in json.loads((FIXTURES / "purchases.json").read_text()):
         files = [UploadFile(io.BytesIO((FIXTURES / name).read_bytes()), filename=name) for name in spec["files"]]
@@ -752,7 +757,7 @@ def public_portal(request: Request):
     return page(request, "public.html", purchases=purchases, by_purchase=by_purchase)
 
 
-@app.get("/public/file/{att_id}")
+@app.api_route("/public/file/{att_id}", methods=["GET", "HEAD"])
 def public_file(att_id: int):
     """The enforcement point. Checked on every request, not at upload time only."""
     with db() as con:
