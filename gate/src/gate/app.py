@@ -123,6 +123,11 @@ def safe_filename(filename: str) -> str:
     return name[:200] or "attachment.pdf"
 
 
+def public_filename(purchase_id: int, att_id: int) -> str:
+    """Neutral public name; the original upload name may carry personal data."""
+    return f"compra-{int(purchase_id)}-adjunto-{int(att_id)}.pdf"
+
+
 def pdf_response(pdf: bytes, filename: str) -> Response:
     name = safe_filename(filename)
     fallback = re.sub(r"[^a-zA-Z0-9_. -]", "_", name)
@@ -634,7 +639,8 @@ def public_portal(request: Request):
     for a in atts:
         slot = by_purchase.setdefault(a["purchase_id"], {"files": [], "kept": 0, "pending": 0})
         if a["decision"] in VISIBLE and learning.current(a["id"]):
-            slot["files"].append(a)
+            slot["files"].append({"id": a["id"], "cleaned": a["cleaned"],
+                                  "public_name": public_filename(a["purchase_id"], a["id"])})
         elif a["decision"] == "hold" or a["decision"] in VISIBLE:
             slot["pending"] += 1
         else:
@@ -646,14 +652,15 @@ def public_portal(request: Request):
 def public_file(att_id: int):
     """The enforcement point. Checked on every request, not at upload time only."""
     with db() as con:
-        row = con.execute("select filename, pdf, public_pdf, decision from attachments where id=?", (att_id,)).fetchone()
+        row = con.execute("select purchase_id, pdf, public_pdf, decision from attachments where id=?",
+                          (att_id,)).fetchone()
     if not row or row["decision"] not in VISIBLE or not learning.current(att_id):
         raise HTTPException(404, headers={"Cache-Control": "no-store"})
     if row["decision"] == "cleaned" and not row["public_pdf"]:
         # "cleaned" promises a sanitized copy; never fall back to the original.
         raise HTTPException(404, headers={"Cache-Control": "no-store"})
     # When a cleaned copy exists, it is the only version that can ever be public.
-    return pdf_response(row["public_pdf"] or row["pdf"], row["filename"])
+    return pdf_response(row["public_pdf"] or row["pdf"], public_filename(row["purchase_id"], att_id))
 
 
 @app.get("/internal/file/{att_id}")
