@@ -1,0 +1,42 @@
+{#-
+  ArgenSec brand macros.
+
+  Brand colors (set these as CSS variables in ui.css):
+    --brand-primary  #0B2545  Navy ink      shield body, primary brand color
+    --brand-celeste  #74ACDF  Celeste       sky band in the mark, accent on dark backgrounds
+    --brand-white    #FFFFFF  White         gate band and keyhole in the mark
+    --brand-accent   #1F6FB2  Deep celeste  "Sec" in the wordmark on light backgrounds, links
+    --brand-ink      #0B1B2B  Ink           body text on light backgrounds
+
+  Outcome colors stay separate from the brand (published green, cleaned teal,
+  needs review amber, blocked red), so the brand never reads as a verdict.
+
+  Usage:
+    {% import "brand.html" as brand %}
+    {{ brand.favicon_link() }}                      in <head>
+    {{ brand.wordmark(size=20, variant="dark") }}   on a dark sidebar or header
+    {{ brand.wordmark(size=20, variant="light") }}  on a white header
+    {{ brand.logo(size=32) }}                       mark alone
+    {{ brand.tagline() }}
+  variant names the background the mark sits on: "light" or "dark".
+-#}
+
+{% macro logo(size=32, variant="light") -%}
+{%- set frame = "#FFFFFF" if variant == "dark" else "#0B2545" -%}
+<svg xmlns="http://www.w3.org/2000/svg" class="brand-logo" width="{{ size }}" height="{{ size }}" viewBox="0 0 64 64" role="img" aria-label="ArgenSec" style="flex-shrink:0;display:block"><path d="M14 7h36a5 5 0 0 1 5 5v17c0 14.5-9 24.8-23 30.5C18 53.8 9 43.5 9 29V12a5 5 0 0 1 5-5Z" fill="#0B2545" stroke="{{ frame }}" stroke-width="4" stroke-linejoin="round"/><path d="M14.5 10h35a2.5 2.5 0 0 1 2.5 2.5V23H12V12.5a2.5 2.5 0 0 1 2.5-2.5Z" fill="#74ACDF"/><path d="M12 23h40v5H12Z" fill="#FFFFFF"/><circle cx="32" cy="39" r="5.6" fill="#FFFFFF"/><path d="M29.2 41.5h5.6l1.4 9.5h-8.4Z" fill="#FFFFFF"/></svg>
+{%- endmacro %}
+
+{% macro wordmark(size=20, variant="dark") -%}
+{%- set argen = "#FFFFFF" if variant == "dark" else "#0B1B2B" -%}
+{%- set sec = "#74ACDF" if variant == "dark" else "#1F6FB2" -%}
+<span class="brand-wordmark" style="display:inline-flex;align-items:center;gap:{{ (size * 0.45)|round|int }}px;line-height:1;white-space:nowrap">{{ logo((size * 1.6)|round|int, variant) }}<span style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;font-size:{{ size }}px;letter-spacing:-0.02em"><span style="font-weight:600;color:{{ argen }}">Argen</span><span style="font-weight:800;color:{{ sec }}">Sec</span></span></span>
+{%- endmacro %}
+
+{% macro tagline() -%}
+Private data never goes public.
+{%- endmacro %}
+
+{% macro favicon_link() -%}
+{%- set svg -%}{{ logo(64, "light") }}{%- endset -%}
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,{{ svg|trim|urlencode }}">
+{%- endmacro %}
