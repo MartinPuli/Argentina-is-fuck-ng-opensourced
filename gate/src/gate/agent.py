@@ -16,6 +16,8 @@ import subprocess
 import threading
 import time
 
+from . import activity
+
 POLL_SECONDS = 3
 MAX_WAIT_SECONDS = 150
 CLI_TIMEOUT_SECONDS = 45
@@ -58,6 +60,18 @@ def _reply(session_id: str) -> str:
     return ""
 
 
+def _created(agent_name: str, session: dict) -> None:
+    activity.emit_current("Guild · " + activity.short(agent_name), "session created", "running",
+                          url=session.get("session_url", ""))
+
+
+def _replied(agent_name: str, started: float, detail: str, url: str = "") -> None:
+    """Report a reply by verdict or count only, never its text."""
+    activity.emit_current("Guild · " + activity.short(agent_name), "replied",
+                          "error" if detail == "no answer" else "done",
+                          detail, (time.perf_counter() - started) * 1000, url)
+
+
 def _wait(session_id: str, started: float, limit: float) -> str:
     """Poll until the agent answers or the overall deadline passes. A failed poll is retried."""
     while time.perf_counter() - started < limit:
@@ -78,7 +92,10 @@ def brief(purchase: dict, filename: str, decision: str, reasons: list[str], find
                          "--agent", os.environ["GUILD_AGENT"],
                          "--prompt", case_text(purchase, filename, decision, reasons, findings))
         sid = session["id"]
+        _created(os.environ["GUILD_AGENT"], session)
         text = _wait(sid, started, MAX_WAIT_SECONDS)
+        _replied(os.environ["GUILD_AGENT"], started, f"note · {len(text.split())} words" if text else "no answer",
+                 session.get("session_url", ""))
         return {"session": sid, "url": session.get("session_url", ""), "text": text.strip(),
                 "latency_ms": (time.perf_counter() - started) * 1000}
     except Exception as exc:  # the review queue must work without the agent
@@ -114,8 +131,11 @@ def verify(text: str, manifest: list[dict]) -> dict:
         session = _guild("session", "create", "--workspace", os.environ["GUILD_WORKSPACE"],
                          "--agent", os.getenv("GUILD_VERIFIER_AGENT", "nicopujia~pami-redaction-verifier"),
                          "--prompt", prompt)
+        verifier = os.getenv("GUILD_VERIFIER_AGENT", "nicopujia~pami-redaction-verifier")
+        _created(verifier, session)
         reply = _wait(session["id"], started, VERIFY_WAIT_SECONDS).strip()
         verdict = "PASS" if reply.upper().startswith("PASS") else "FAIL" if reply else "ERROR"
+        _replied(verifier, started, verdict if reply else "no answer", session.get("session_url", ""))
         return {"verdict": verdict, "text": reply, "url": session.get("session_url", ""),
                 "latency_ms": (time.perf_counter() - started) * 1000}
     except Exception as exc:
@@ -137,10 +157,28 @@ def _ask(agent_name: str, prompt: str) -> tuple[str, str]:
     started = time.perf_counter()
     session = _guild("session", "create", "--workspace", os.environ["GUILD_WORKSPACE"],
                      "--agent", agent_name, "--prompt", prompt)
+    _created(agent_name, session)
     reply = _wait(session["id"], started, CALL_WAIT_SECONDS)
+    reply_summary(agent_name, started, reply, session.get("session_url", ""))
     if not reply:
         raise TimeoutError(f"{agent_name} did not answer")
     return reply.strip(), session.get("session_url", "")
+
+
+def reply_summary(agent_name: str, started: float, reply: str, url: str) -> None:
+    """Verdict for a reviewer, item counts for a JSON plan; nothing else from the reply."""
+    if not reply:
+        detail = "no answer"
+    elif reply.strip().upper().startswith(("PASS", "FAIL")):
+        detail = "PASS" if reply.strip().upper().startswith("PASS") else "FAIL"
+    else:
+        try:
+            data = _json(reply)
+        except ValueError:
+            data = {}
+        lists = {k: len(v) for k, v in data.items() if isinstance(v, list)}
+        detail = " · ".join(f"{n} {k.replace('_', ' ')}" for k, n in lists.items()) or "replied"
+    _replied(agent_name, started, detail, url)
 
 
 def _json(reply: str) -> dict:

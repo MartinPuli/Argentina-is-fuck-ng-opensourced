@@ -335,3 +335,66 @@ def test_reset_rejects_cross_origin_posts(live):
         assert live.client.post("/live/reset", headers=headers, follow_redirects=False).status_code == 403
     assert demo_rows() == {"purchases": 1, "attachments": 1}
     assert len(activity.snapshot()) == 1
+
+
+PII = ("Juana", "31.846.275", "31846275")
+
+
+def test_seeded_run_has_step_timings_and_a_feed_without_raw_personal_data(live):
+    with activity._lock:
+        activity._feed.clear()
+    assert live.client.post("/live/demo/seed", follow_redirects=False).status_code == 303
+    deadline = time.monotonic() + 60
+    while time.monotonic() < deadline:
+        response = live.client.get("/api/activity")
+        result = response.json()
+        if result["jobs"] and all(job["done"] for job in result["jobs"]):
+            break
+        time.sleep(0.05)
+    else:
+        pytest.fail("seeded run did not complete")
+    for value in PII:
+        assert value not in response.text
+    assert {"jobs", "counts", "waiting", "autonomy", "feed"} <= result.keys()
+    for job in result["jobs"]:
+        timed = [s for s in job["steps"] if s["status"] in {"done", "error"}]
+        assert timed and all(s["duration_ms"] is not None and s["duration_ms"] >= 0 for s in timed)
+        assert all(s["ended_at"] >= s["started_at"] for s in timed)
+        agents = {s["name"]: s["agent"] for s in job["steps"]}
+        assert agents["Read"] == "OCR" and agents["Find IDs"] == "Detectors"
+        assert agents["AkashML AI"].startswith("AkashML · ")
+    feed = result["feed"]
+    assert feed and len(feed) <= 100
+    assert [e["ts"] for e in feed] == sorted((e["ts"] for e in feed), reverse=True)
+    assert {"ts", "file", "agent", "action", "status", "detail", "duration_ms"} <= feed[0].keys()
+    first = result["jobs"][-1]
+    actions = [e["action"] for e in reversed(feed) if e["job"] == first["id"]]
+    assert actions.index("Read") < actions.index("Find IDs") < actions.index("decision") < actions.index("finished")
+
+
+def test_provider_and_agent_events_carry_verdicts_and_counts_only():
+    from gate import agent
+
+    with activity._lock:
+        activity._feed.clear()
+    job = activity.start({"id": 1, "office": "Fictional office"}, "Item", "fictional.pdf", ["Read"])
+    activity.bind(job)
+    try:
+        llm.report("openai/gpt-oss-120b", time.perf_counter(),
+                   {"reidentification_risk": "high", "reasons": ["Juana"], "identifying_phrases": [
+                       {"text": "Juana Ficticia Pérez 31.846.275", "category": "name"}]})
+        agent._created("nicopujia~pami-public-agent", {"id": "s1", "session_url": "https://guild.example/s1"})
+        agent.reply_summary("nicopujia~pami-public-agent", time.perf_counter(),
+                            '{"remove": [{"text": "Juana Ficticia Pérez", "category": "name"},'
+                            ' {"text": "31.846.275", "category": "id"}]}', "https://guild.example/s1")
+        agent.reply_summary("nicopujia~pami-redaction-verifier", time.perf_counter(),
+                            "FAIL: still names Juana Ficticia Pérez", "")
+    finally:
+        activity.bind(None)
+    feed = activity.feed()
+    for value in PII:
+        assert value not in json.dumps(feed, ensure_ascii=False)
+    model, created, plan, verdict = reversed(feed)
+    assert model["agent"] == "AkashML · gpt-oss-120b" and model["detail"] == "risk high"
+    assert created["url"] == "https://guild.example/s1" and created["agent"] == "Guild · pami-public-agent"
+    assert plan["detail"] == "2 remove" and verdict["detail"] == "FAIL"

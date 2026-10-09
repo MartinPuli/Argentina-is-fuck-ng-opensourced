@@ -149,6 +149,7 @@ def settle(att_id: int) -> bool:
                         " and reviewed_by is null", (WITHHELD, json.dumps(reasons), json.dumps(findings), att_id, HOLD))
         events.log("autopilot", row["office"] or "", row["purchase_id"], att_id, row["filename"], WITHHELD,
                    ["autopilot_restricted"], "autopilot", 0)
+        activity.emit(None, "Autopilot", "settle", WITHHELD, "restricted automatically", file=row["filename"])
         return True
     except Exception:
         return False  # the startup sweep is the safety net
@@ -399,6 +400,7 @@ def clearance_in_background(att_id, purchase, filename, pdf, findings, phrases, 
     we would publish. Anything else keeps the file private, with the cleaned copy saved
     for a human.
     """
+    activity.bind(job)
     # The reason must match the decision that stays in place when clearance does not finish.
     new, url = decision, ""
     why = ("Clearance agents unavailable. A blocking finding keeps this attachment private."
@@ -480,6 +482,7 @@ def clearance_in_background(att_id, purchase, filename, pdf, findings, phrases, 
 def verify_in_background(att_id, purchase, filename, candidate, expected_decision, expected_revision,
                          expected_state, expected_digest, job=None) -> None:
     """Publish only the checked candidate, without replacing a newer staff/policy decision."""
+    activity.bind(job)
     try:
         candidate_pdf = bytes(candidate.pdf)
         active, candidate_revision = learning.snapshot()
@@ -531,6 +534,7 @@ def verify_in_background(att_id, purchase, filename, candidate, expected_decisio
 
 
 def brief_in_background(att_id, purchase, filename, decision, reasons, findings, job=None) -> None:
+    activity.bind(job)
     try:
         brief = agent.brief(purchase, filename, decision, reasons, findings)
         with db() as con:
@@ -571,6 +575,7 @@ def reserve_live(count: int) -> None:
 
 
 def process_live(purchase: dict, filename: str, pdf: bytes, job: dict) -> None:
+    activity.bind(job)
     try:
         try:
             evaluated = evaluate(pdf, job)
@@ -589,6 +594,7 @@ def process_live(purchase: dict, filename: str, pdf: bytes, job: dict) -> None:
         progress(job, STEP_DECIDE, "error", "Could not complete the check; inspect the purchase")
         activity.finish(job, done=True, decision="error", why="The check did not complete.")
     finally:
+        activity.bind(None)
         LIVE_CAPACITY.release()
 
 
@@ -713,7 +719,8 @@ def api_activity(user: str = Depends(staff)):
         finished = con.execute("select count(*) from attachments where decision in ('public','cleaned','withheld')"
                                " and reviewed_by is null").fetchone()[0]
     autonomy = {"enabled": autonomous(), "finished": finished, "total": len(rows)}
-    return JSONResponse({"jobs": jobs, "counts": counts, "waiting": waiting, "autonomy": autonomy},
+    return JSONResponse({"jobs": jobs, "counts": counts, "waiting": waiting, "autonomy": autonomy,
+                         "feed": activity.feed(100)},
                         headers={"Cache-Control": "no-store"})
 
 

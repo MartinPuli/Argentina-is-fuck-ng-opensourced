@@ -8,10 +8,22 @@ for human review rather than treating an unavailable check as approval.
 
 import json
 import os
+import time
 
 from openai import OpenAI
 
+from . import activity
 from .policy import valid_image_analysis, valid_text_analysis
+
+
+def report(model: str, started: float, result: dict) -> dict:
+    """Live feed: risk level, model and latency only."""
+    failed = "error" in result
+    risk = result.get("reidentification_risk") or ("personal data" if result.get("personal_data") else "clear")
+    activity.emit_current("AkashML · " + activity.short(model), "returned", "error" if failed else "done",
+                          str(result["error"]).replace("_", " ") if failed else "risk " + str(risk),
+                          (time.perf_counter() - started) * 1000)
+    return result
 
 MAX_TEXT_CHARS = 12000
 
@@ -52,6 +64,8 @@ def review(text: str) -> dict | None:
         return None
     if not isinstance(text, str) or not text.strip() or len(text) > MAX_TEXT_CHARS:
         return {"error": "text_analysis_incomplete"}
+    started = time.perf_counter()
+    model_name = os.getenv("AKASHML_MODEL", "openai/gpt-oss-120b")
     try:
         client = OpenAI(
             api_key=os.environ["AKASHML_API_KEY"],
@@ -59,7 +73,7 @@ def review(text: str) -> dict | None:
             timeout=45,
         )
         resp = client.chat.completions.create(
-            model=os.getenv("AKASHML_MODEL", "openai/gpt-oss-120b"),
+            model=model_name,
             messages=[{"role": "user", "content": PROMPT + text}],
             temperature=0,
             max_tokens=1500,
@@ -68,11 +82,12 @@ def review(text: str) -> dict | None:
         raw = resp.choices[0].message.content or ""
         result = json.loads(raw)
         if not valid_text_analysis(result):
-            return {"error": "text_analysis_invalid"}
+            return report(model_name, started, {"error": "text_analysis_invalid"})
         result["model"] = resp.model
+        report(resp.model or model_name, started, result)
         return result
     except Exception:  # provider errors may include sensitive request contents
-        return {"error": "text_analysis_unavailable"}
+        return report(model_name, started, {"error": "text_analysis_unavailable"})
 
 
 IMAGE_PROMPT = """This image is one page of an attachment to a public government purchase \
@@ -89,11 +104,13 @@ def review_image(png: bytes) -> dict | None:
         return None
     import base64
 
+    started = time.perf_counter()
+    model_name = os.getenv("AKASHML_VISION_MODEL", "Qwen/Qwen3.8-27B")
     try:
         client = OpenAI(api_key=os.environ["AKASHML_API_KEY"],
                         base_url=os.getenv("AKASHML_BASE_URL", "https://api.akashml.com/v1"), timeout=45)
         resp = client.chat.completions.create(
-            model=os.getenv("AKASHML_VISION_MODEL", "Qwen/Qwen3.8-27B"),
+            model=model_name,
             messages=[{"role": "user", "content": [
                 {"type": "text", "text": IMAGE_PROMPT},
                 {"type": "image_url", "image_url": {"url": "data:image/png;base64," + base64.b64encode(png).decode()}},
@@ -103,8 +120,9 @@ def review_image(png: bytes) -> dict | None:
         raw = resp.choices[0].message.content or ""
         result = json.loads(raw)
         if not valid_image_analysis(result):
-            return {"error": "image_analysis_invalid"}
+            return report(model_name + " vision", started, {"error": "image_analysis_invalid"})
         result["model"] = resp.model
+        report((resp.model or model_name) + " vision", started, result)
         return result
     except Exception:
-        return {"error": "image_analysis_unavailable"}
+        return report(model_name + " vision", started, {"error": "image_analysis_unavailable"})
