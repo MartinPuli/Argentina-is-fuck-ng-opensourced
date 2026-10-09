@@ -1,34 +1,30 @@
 <!doctype html>
 <html lang="en">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 40 40%27%3E%3Crect width=%2740%27 height=%2740%27 rx=%279%27 fill=%27%23126a58%27/%3E%3Ctext x=%278%27 y=%2727%27 font-family=%27sans-serif%27 font-size=%2723%27 fill=%27white%27%3Epg%3C/text%3E%3C/svg%3E"><meta name="color-scheme" content="light"><title>{% block title %}Overview{% endblock %} · Publication Gate</title>
-<style>{% include "ui.css" %}</style></head>
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="data:,"><meta name="color-scheme" content="light">
+<title>{% block title %}Documents{% endblock %}</title>
+<style>{% include "ui.css" %}</style>
+</head>
 {% set is_public = request.url.path.startswith('/public') %}
 <body class="{{ 'public-view' if is_public else 'staff-view' }}">
 <a class="skip-link" href="#content">Skip to content</a>
 {% if not is_public %}
 <aside class="sidebar" aria-label="Workspace navigation">
-<a class="brand" href="/"><span class="brand-mark" aria-hidden="true">ag</span><span>ArgenSec<span class="brand-sub">Publication Gate</span></span></a>
-<div class="workspace-label">Defense workspace</div>
 <nav>
-{% for href, label, symbol in [('/', 'Overview', '◫'), ('/live', 'Live activity', '◉'), ('/office', 'New purchase', '+'), ('/review', 'Review queue', '≡'), ('/learning', 'Learning library', '◇'), ('/exposures', 'Argentina exposures', '↗'), ('/dashboard', 'Audit trail', '⌁')] %}
-<a href="{{ href }}" class="nav-link {{ 'active' if (request.url.path == href or (href == '/learning' and request.url.path.startswith('/learning/'))) else '' }}" {% if (request.url.path == href or (href == '/learning' and request.url.path.startswith('/learning/'))) %}aria-current="page"{% endif %}><span class="nav-symbol" aria-hidden="true">{{ symbol }}</span>{{ label }}</a>
+{% for href, label in [('/', 'Documents'), ('/live', 'Activity'), ('/office', 'Upload'), ('/review', 'Review'), ('/learning', 'Rules'), ('/exposures', 'Exposures'), ('/dashboard', 'Audit'), ('/public', 'Public')] %}
+{% set selected = request.url.path == href or (href != '/' and request.url.path.startswith(href + '/')) or (href == '/' and request.url.path.startswith('/purchase/')) %}
+<a href="{{ href }}" class="nav-link {{ 'active' if selected else '' }}" {% if selected %}aria-current="page"{% endif %}>{{ label }}</a>
 {% endfor %}
 </nav>
-<a class="portal-link" href="/public"><span>Public portal</span><span aria-hidden="true">↗</span></a>
-<div class="sidebar-bottom"><div class="integration-heading">Workspace setup</div>
-<div class="integration"><span>AkashML</span><span class="connection {{ 'configured' if llm_on else '' }}">{{ 'Configured' if llm_on else 'Not configured' }}</span></div>
-<div class="integration"><span>Guild</span><span class="connection {{ 'configured' if agent_on else '' }}">{{ 'Configured' if agent_on else 'Not configured' }}</span></div>
-<div class="integration"><span>Audit storage</span><span>{{ 'ClickHouse' if events_backend == 'ClickHouse' else 'Local' }}</span></div>
-<p>Configuration is shown here. Individual case results confirm execution.</p></div>
 </aside>
 {% else %}
-<header class="public-header"><a class="brand" href="/public"><span class="brand-mark" aria-hidden="true">pg</span><span>Public procurement</span></a><a class="text-link" href="/">Staff workspace ↗</a></header>
+<header class="public-header"><a class="brand" href="/public">Public procurement</a><a class="text-link" href="/">Documents</a></header>
 {% endif %}
 <div class="app-shell">
-{% if not is_public %}<header class="topbar"><span>Publication Gate <span class="crumb" aria-hidden="true">/</span> <span class="topbar-label">{{ self.title() }}</span></span><span class="demo-label">Fictional demo</span></header>{% endif %}
+{% if not is_public %}<header class="topbar"><span class="topbar-label">{{ self.title() }}</span><span class="demo-label">Demo</span></header>{% endif %}
 <main id="content" tabindex="-1">{% block body %}{% endblock %}</main>
-<footer class="page-footer"><span>Fictional records. No government system is connected.</span><a href="https://github.com/MartinPuli/Argentina-is-fuck-ng-opensourced" target="_blank" rel="noopener noreferrer">Open-source project ↗</a></footer>
 </div>
 <script>{% include "ui.js" %}</script>
-</body></html>
+</body>
+</html>

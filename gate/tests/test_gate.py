@@ -193,8 +193,8 @@ def test_cross_site_approval_is_rejected(web):
 
 
 @pytest.mark.parametrize("route,label", [
-    ("/", "Public spending."),
-    ("/office", "Check before you publish."),
+    ("/", "Documents"),
+    ("/office", "Upload"),
     ("/review", "No files waiting for review."),
     ("/public", "No purchases published yet."),
     ("/dashboard", "No findings recorded yet."),
@@ -203,7 +203,8 @@ def test_screen_empty_states_render(web, route, label):
     response = web.client.get(route)
     assert response.status_code == 200
     assert label in response.text
-    assert "Fictional records. No government system is connected." in response.text
+    assert 'lang="en"' in response.text
+    assert 'id="content"' in response.text
 
 
 def test_purchase_without_attachments_has_a_useful_empty_state(web):
@@ -221,8 +222,8 @@ def test_all_populated_screens_render_current_decisions(web):
         "action": "approve", "note": "Verified fictional equipment requirements only.",
     }, follow_redirects=False).status_code == 303
     expected_labels = {
-        "/": ["Public spending."],
-        "/office": ["Supporting attachments", "Run fictional case"],
+        "/": ["Documents"],
+        "/office": ["Supporting attachments", "Load demo"],
         purchase_url: ["Attachment decisions", "Reviewer approved", "Kept internal", "Needs review"],
         "/review": ["Decision reason", "Needs review", "Recent reviewer decisions", STAFF[0]],
         "/public": ["Published purchases", clean["filename"]],

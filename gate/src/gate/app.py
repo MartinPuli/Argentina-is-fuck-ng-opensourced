@@ -22,6 +22,7 @@ from dotenv import load_dotenv
 from fastapi import Depends, FastAPI, File, Form, HTTPException, Request, UploadFile
 from fastapi.responses import JSONResponse, PlainTextResponse, RedirectResponse, Response
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
+from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 load_dotenv(Path(__file__).resolve().parents[3] / ".env")
@@ -44,6 +45,7 @@ MAX_PDF_PAGES = 50
 MAX_REVIEW_NOTE = 2000
 
 app = FastAPI(title="Publication Gate")
+app.mount("/assets", StaticFiles(directory=Path(__file__).parent / "static", check_dir=False), name="assets")
 templates = Jinja2Templates(directory=Path(__file__).parent / "templates")
 templates.env.filters["money"] = lambda v: f"$ {v:,.0f}".replace(",", ".")
 templates.env.filters["fromjson"] = lambda v: json.loads(v) if v else None
@@ -397,6 +399,28 @@ def api_activity(user: str = Depends(staff)):
                         headers={"Cache-Control": "no-store"})
 
 
+@app.get("/api/workspace")
+def api_workspace(user: str = Depends(staff)):
+    """Bounded operational metadata; publication counts require a current check."""
+    with db() as con:
+        con.execute("BEGIN")
+        states = con.execute("select id,decision from attachments").fetchall()
+        recent = con.execute(
+            "select a.id,a.purchase_id,a.filename,p.office,p.procedure,a.decision,a.created_at "
+            "from attachments a left join purchases p on p.id=a.purchase_id "
+            "order by a.created_at desc,a.id desc limit 100"
+        ).fetchall()
+    current = {row["id"]: learning.current(row["id"]) for row in states}
+    counts = {"published": 0, "review": 0, "blocked": 0, "stale": 0, "total": len(states)}
+    for row in states:
+        counts["published"] += row["decision"] in VISIBLE and current[row["id"]]
+        counts["review"] += row["decision"] == HOLD
+        counts["blocked"] += row["decision"] == WITHHELD
+        counts["stale"] += not current[row["id"]]
+    files = [{**dict(row), "current": current[row["id"]]} for row in recent]
+    return JSONResponse({"counts": counts, "files": files}, headers={"Cache-Control": "no-store"})
+
+
 @app.get("/exposures")
 def exposures(request: Request, user: str = Depends(staff)):
     from .exposure_data import COMPARISON_NOTE, EXPOSURES, RESEARCH_WINDOW, REVIEWED_AT
@@ -407,8 +431,8 @@ def exposures(request: Request, user: str = Depends(staff)):
 
 
 @app.get("/")
-def home(request: Request):
-    return page(request, "home.html")
+def home(request: Request, user: str = Depends(staff)):
+    return page(request, "home.html", user=user)
 
 
 @app.get("/office")

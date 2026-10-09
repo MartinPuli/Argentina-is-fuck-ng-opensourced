@@ -15,3 +15,6 @@ competitor-profiles/raw/
 # Local browser verification artifacts
 .playwright-cli/
 /output/playwright/
+
+# Frontend dependencies; compiled workspace assets are committed.
+gate/frontend/node_modules/

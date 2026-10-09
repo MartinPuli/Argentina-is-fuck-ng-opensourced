@@ -109,7 +109,7 @@ def propose(web):
 def test_case_rule_changes_real_pdf_publication_without_loosening_existing_blocks(web):
     library = web.client.get("/learning")
     assert library.status_code == 200
-    assert "Your first lesson starts with a source." in library.text
+    assert "No rules yet." in library.text
     assert "AkashML is not configured." in library.text
     bodies = {"before-positive.pdf": pdf(POSITIVE), "before-benign.pdf": pdf(BENIGN),
               "before-withheld.pdf": pdf(BUILTIN_BLOCK), "before-pending.pdf": pdf(POSITIVE)}
