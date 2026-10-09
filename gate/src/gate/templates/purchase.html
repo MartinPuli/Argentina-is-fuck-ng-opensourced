@@ -41,7 +41,12 @@
 </style>
 <div class="pv">
 <a class="back-link" href="/">← Documents</a>
-<div class="pv-head"><div><h1>{{ purchase.item }}</h1><p>{{ purchase.procedure }} · {{ purchase.amount|money }} ARS</p></div><a class="pv-btn" href="/public" target="_blank" rel="noopener">Public site ↗</a></div>
+<div class="pv-head"><div><h1>{{ purchase.item }}</h1><p>{{ purchase.procedure }} · {% if purchase.amount is not none %}{{ purchase.amount|money }} ARS{% else %}Amount not specified{% endif %}</p></div><a class="pv-btn" href="/public" target="_blank" rel="noopener">Public site ↗</a></div>
+{% if purchase.intake_details %}
+<details class="panel intake-details"><summary>Detected document details · Staff only</summary>
+{% for hint in purchase.intake_details|fromjson %}<p class="small muted">{{ hint.filename }} · Page {{ hint.page }}</p><dl>{% for field, value in hint.fields.items() %}<dt>{{ field|capitalize }}</dt><dd>{{ value }}</dd>{% endfor %}</dl>{% else %}<p>No labeled purchase fields found. The file was still analyzed.</p>{% endfor %}
+</details>
+{% endif %}
 {% set counts = namespace(public=0, hold=0, withheld=0) %}{% for a in atts %}{% if a.decision in ('public','approved','cleaned') and a.id not in stale_ids %}{% set counts.public=counts.public+1 %}{% elif a.decision == 'hold' or a.id in stale_ids %}{% set counts.hold=counts.hold+1 %}{% else %}{% set counts.withheld=counts.withheld+1 %}{% endif %}{% endfor %}
 {% if atts %}<ul class="pv-tally" aria-label="Summary"><li class="pub"><b>{{ counts.public }}</b> public</li><li class="rev"><b>{{ counts.hold }}</b> waiting for a person{% if counts.hold %}<a href="{{ '/learning' if stale_ids else '/review' }}">{{ 'Recheck' if stale_ids else 'Review' }} →</a>{% endif %}</li><li class="blk"><b>{{ counts.withheld }}</b> kept internal</li></ul>{% endif %}
 <h2 class="pv-sr">Attachment decisions</h2>

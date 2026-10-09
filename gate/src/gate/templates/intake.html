@@ -1,0 +1,15 @@
+<form class="pdf-intake" action="/documents/upload" method="post" enctype="multipart/form-data" data-pdf-intake aria-label="Upload PDFs">
+<div class="pdf-dropzone" data-pdf-dropzone>
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M12 18v-7m-3 3 3-3 3 3"/></svg>
+<h2>Drop PDFs here</h2>
+<label class="btn btn-secondary" for="intake-files">Choose PDFs</label>
+<input class="pdf-file-input" id="intake-files" name="files" type="file" accept="application/pdf,.pdf" multiple required aria-label="PDF files" aria-describedby="intake-limits">
+<p class="small muted" id="intake-limits">Analysis starts automatically · Up to 8 PDFs · 10 MB each · 25 MB total</p>
+<div data-intake-files class="small" aria-live="polite"></div>
+<div data-intake-message class="form-message" role="status" aria-live="polite" hidden></div>
+<button type="button" class="btn-secondary" data-intake-retry hidden>Retry upload</button>
+<noscript><button type="submit">Analyze PDFs</button></noscript>
+</div>
+</form>
+<p class="small"><a class="text-link" href="/documents/sample.pdf" download="fictional-patient-attachment.pdf">Download test PDF</a></p>
+<div class="pdf-drop-overlay" aria-hidden="true">Drop to analyze</div>

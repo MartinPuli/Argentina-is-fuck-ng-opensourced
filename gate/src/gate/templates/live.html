@@ -16,9 +16,7 @@
 <section class="agent-log" aria-labelledby="agent-log-heading"><div class="agent-log-head"><h2 id="agent-log-heading">Agent log</h2><span id="agent-log-count">newest first</span></div><div class="agent-log-body" id="agent-log" role="log" aria-live="off"><div class="log-empty">Waiting for agent activity…</div></div></section>
 <div class="live-columns"><section aria-labelledby="live-jobs-heading"><div class="section-heading"><h2 id="live-jobs-heading">Files</h2></div><div id="live-jobs" class="live-list" aria-busy="true"><div class="empty-state compact"><h3>Loading file activity…</h3></div></div></section>
 <section aria-labelledby="live-waiting-heading"><div class="section-heading"><h2 id="live-waiting-heading">Review</h2></div><div id="live-waiting" class="live-list" aria-busy="true"><div class="empty-state compact"><h3>Loading review requests…</h3></div></div></section></div>
-<details class="panel live-tools"><summary>Upload PDF</summary><form method="post" action="/live/upload" enctype="multipart/form-data" data-live-form>
-<p class="field-hint">Purchase details are public. Do not include patient information.</p><div class="form-grid"><div class="field span-two"><label for="live-office">Local office</label><select id="live-office" name="office" required>{% for office in offices %}<option>{{ office }}</option>{% endfor %}</select></div><div class="field"><label for="live-procedure">Procedure reference</label><input id="live-procedure" name="procedure" placeholder="Procedure reference" required maxlength="160"></div><div class="field"><label for="live-amount">Amount in ARS</label><input id="live-amount" name="amount" type="number" min="0" step="0.01"  required></div><div class="field span-two"><label for="live-item">Item being purchased</label><input id="live-item" name="item" placeholder="Equipment specification" required maxlength="240"></div></div>
-<div class="upload-area"><label for="live-files">Supporting attachments</label><input id="live-files" name="files" type="file" accept="application/pdf,.pdf" multiple required aria-describedby="live-file-limits live-file-selection"><div id="live-file-selection" class="file-selection" aria-live="polite">No files selected</div><small id="live-file-limits">Up to 8 PDFs · 10 MB per file · 25 MB total · 50 pages per file</small></div><div class="form-footer"><button type="submit">Check files</button></div><div class="form-message live-submit-status" role="status" aria-live="polite" hidden></div></form></details>
+{% include "intake.html" %}
 {% if history_total %}<p class="small muted" style="margin-top:24px">{{ "{:,}".format(history_total.value) }} simulated history events · {{ history_total.ms }} ms · <a href="/dashboard">History</a></p>{% endif %}
 <div class="live-static-links"><a href="/review">Review queue</a><a href="/public" target="_blank" rel="noopener">Public records</a></div>
 <noscript><div class="notice">Live updates require JavaScript. Use the upload forms and follow progress in the <a href="/review">review queue</a> and <a href="/dashboard">audit trail</a>.</div></noscript>
@@ -301,10 +299,6 @@
   function schedule() { clearTimeout(timer); if (!stopped) timer = setTimeout(async () => { await poll(); schedule(); }, 1500); }
   document.querySelectorAll('[data-live-form]').forEach(form => attachForm(form));
   document.getElementById('live-refresh').addEventListener('click', () => { authBlocked = false; poll(); });
-  document.getElementById('live-files').addEventListener('change', event => {
-    const files = Array.from(event.target.files || []);
-    document.getElementById('live-file-selection').textContent = files.length ? files.map(file => file.name).join(' · ') : 'No files selected';
-  });
   document.addEventListener('visibilitychange', () => { if (!document.hidden) poll(); });
   window.addEventListener('pagehide', () => { stopped = true; clearTimeout(timer); });
   poll(); schedule();

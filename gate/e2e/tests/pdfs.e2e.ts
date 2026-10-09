@@ -10,6 +10,7 @@ for (const filename of files) {
   test(`PDF stays private before review: ${filename}`, async ({ app, screen, browser }) => {
     const procedure = `QA-E2E-${Date.now()}-${filename}`;
     await app.open('/office');
+    await screen.getByText('Add purchase details (optional)').tap();
     await expect(screen.getByRole('heading', 'Upload')).toBeVisible();
     await screen.getByLabel('Procedure reference').fill(procedure);
     await screen.getByLabel('Amount in ARS').fill('1');
@@ -41,6 +42,7 @@ test(`an inspected benign PDF publishes with exact bytes via ${reviewPage}`, asy
   const filename = 'especificacion_tecnica_silla.pdf';
   const procedure = `QA-E2E-REVIEW-${Date.now()}`;
   await app.open('/office');
+    await screen.getByText('Add purchase details (optional)').tap();
   await screen.getByLabel('Procedure reference').fill(procedure);
   await screen.getByLabel('Amount in ARS').fill('1');
   await screen.getByLabel('Item being purchased').fill(procedure);

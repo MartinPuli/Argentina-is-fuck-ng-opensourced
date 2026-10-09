@@ -33,6 +33,7 @@ create table if not exists events (
 """
 
 MIGRATIONS = (
+    "alter table purchases add column intake_details text",
     "alter table attachments add column public_pdf blob",
     "alter table attachments add column manifest text",
     "alter table attachments add column verifier text",

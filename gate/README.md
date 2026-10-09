@@ -8,6 +8,10 @@ Live demo: [argensec.pujia.ar](https://argensec.pujia.ar). Video script: [DEMO.m
 
 All documents are fictional. No real government system is connected. Detection can miss things. This is not a guarantee that every private document is caught. The [incident research](../docs/INCIDENTS.md) and [team problem analysis](../PAMI%20Data%20Exposure%20Problem%20Analysis.md) give context.
 
+## File-first uploads
+
+Drop PDFs on Documents, Upload or Live, or choose a file: analysis starts without filling purchase fields. Explicit purchase labels are detected as staff-only hints; unrecognized fields stay unknown. **Download test PDF** provides a fictional attachment that exercises identifier and medical-data checks. Manual entry is optional. See [verification and limits](verification/PDF-INTAKE-2026-10-09.md). Pull the code and restart the application to load the new route and templates; the SQLite migration runs automatically.
+
 ## What happens to a file
 
 1. Rule-based detectors run first, with no model. They catch DNI and CUIL numbers, PAMI affiliate numbers, birth dates, home addresses, ICD-10 codes, disability certificates and ID card copies. Company tax IDs stay public on purpose.

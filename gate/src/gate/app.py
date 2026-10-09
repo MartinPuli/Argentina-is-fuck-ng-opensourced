@@ -29,7 +29,7 @@ from fastapi.templating import Jinja2Templates
 load_dotenv(Path(__file__).resolve().parents[3] / ".env")
 load_dotenv(Path(__file__).resolve().parents[2] / ".env")
 
-from . import activity, agent, sanitize, llm, learning, pi_context, senso_context, incident_discovery  # noqa: E402
+from . import activity, agent, sanitize, llm, learning, pi_context, senso_context, incident_discovery, intake  # noqa: E402
 from .detect import Finding, scan  # noqa: E402
 from .policy import HOLD, PUBLIC, WITHHELD, decide, valid_image_analysis, valid_text_analysis  # noqa: E402
 from .rules import RULES, model_guidelines  # noqa: E402
@@ -69,7 +69,7 @@ def asset_url(name: str) -> str:
 
 
 templates.env.globals["asset_url"] = asset_url
-templates.env.filters["money"] = lambda v: f"$ {v:,.0f}".replace(",", ".")
+templates.env.filters["money"] = lambda v: "Not specified" if v is None else f"$ {v:,.0f}".replace(",", ".")
 templates.env.filters["fromjson"] = lambda v: json.loads(v) if v else None
 templates.env.filters["web_url"] = lambda v: v if isinstance(v, str) and urlsplit(v).scheme in ("http", "https") else ""
 templates.env.globals["RULES"] = RULES
@@ -565,11 +565,11 @@ def brief_in_background(att_id, purchase, filename, decision, reasons, findings,
             activity.finish(job, done=True)
 
 
-def create_purchase(office: str, procedure: str, item: str, amount: float, actor: str = "office") -> dict:
+def create_purchase(office: str, procedure: str, item: str, amount: float | None, actor: str = "office", intake_details: list | None = None) -> dict:
     with db() as con:
         cur = con.execute(
-            "insert into purchases (office, procedure, item, amount, created_at) values (?,?,?,?,?)",
-            (office, procedure, item, amount, time.time()))
+            "insert into purchases (office, procedure, item, amount, created_at, intake_details) values (?,?,?,?,?,?)",
+            (office, procedure, item, amount, time.time(), json.dumps(intake_details) if intake_details is not None else None))
         purchase = {"id": cur.lastrowid, "office": office}
     events.log("submitted", office, purchase["id"], actor=actor)
     return purchase
@@ -629,6 +629,30 @@ def live_view(request: Request, user: str = Depends(staff)):
     history = events.history()  # once per page load, never from the /api/activity poll
     total = (history or {}).get("total") or None
     return page(request, "live.html", offices=OFFICES, user=user, history_total=total, autonomous=autonomous())
+
+
+@app.get("/documents/sample.pdf")
+def sample_pdf(user: str = Depends(staff)):
+    return pdf_response((FIXTURES / "fictional_patient.pdf").read_bytes(), "fictional-patient-attachment.pdf")
+
+
+@app.post("/documents/upload")
+async def document_upload(request: Request, files: list[UploadFile] = File(...), user: str = Depends(staff)):
+    uploads = await validated_uploads(files)
+    hints = intake.details(uploads)
+    reserve_live(len(uploads))
+    try:
+        purchase = create_purchase("Unassigned", "UPLOAD-" + secrets.token_hex(6).upper(),
+                                   "Uploaded documents", None, actor=user, intake_details=hints)
+    except Exception:
+        for _ in uploads:
+            LIVE_CAPACITY.release()
+        raise
+    queue_live(purchase, "Uploaded documents", uploads, user)
+    if "application/json" in request.headers.get("accept", ""):
+        return JSONResponse({"purchase_id": purchase["id"], "location": "/live"}, status_code=202,
+                            headers={"Cache-Control": "no-store"})
+    return RedirectResponse("/live", status_code=303)
 
 
 @app.post("/live/upload")

@@ -15,7 +15,7 @@ npm test
 
 Chromium downloads on first use if missing. The runner starts and stops a loopback server on a free port. Its SQLite database is temporary, staff authentication stays enabled, the credential is generated per run, deployment `.env` files are not loaded, and sponsor calls are disabled. No shared workspace is reset. No AI subscription is required: these exact browser interactions use the framework's deterministic API.
 
-Eleven tests exercise all nine committed fictional PDFs through the upload form, confirm a private publication decision, check public HTTP 404 and unauthenticated original HTTP 401, and exercise human approval through both Review and Live. The two publication tests compare the downloaded public PDF with the original benign fixture byte for byte. Only the inspected equipment specification is approved.
+Sixteen tests include all ten committed fictional PDFs through the upload form, confirm a private publication decision, check public HTTP 404 and unauthenticated original HTTP 401, and exercise human approval through both Review and Live. The two publication tests compare the downloaded public PDF with the original benign fixture byte for byte. Only the inspected equipment specification is approved. File-first checks additionally cover automatic selection, page-wide drag-and-drop, loaded Live activity, private metadata hints and invalid-file errors.
 
 Results, screenshots, JUnit and step traces appear under `.e2e/` and are ignored by Git. [The verification report](../verification/PDF-VERIFICATION-2026-10-09.md) records the executed results and limitations. These local tests establish publication boundaries; they do not establish live sponsor integration or a breach-prevention rate.
 
