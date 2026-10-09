@@ -1,13 +1,106 @@
-{% extends "base.html" %}{% block title %}Rule L{{ rule.id }}{% endblock %}{% block body %}
+{% extends "base.html" %}{% block title %}{{ rule.spec.title }}{% endblock %}{% block body %}
+{% set labels = {'draft': 'Proposed', 'tested': 'Tested', 'failed': 'Failed', 'active': 'Active', 'retired': 'Retired'} %}
+{% set st = rule.status %}
+{% set res = rule.results %}
+<style>
+.lr{--lr-ok:var(--c-published,#17663f);--lr-ok-soft:#e5f5eb;--lr-bad:var(--c-blocked,#a8322d);--lr-bad-soft:#fdecea;--lr-warn:var(--c-review,#8a5300);--lr-warn-soft:#fff4e0;--lr-blue:#1b5aa6;--lr-blue-soft:#e7f0fd}
+.lr .chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;padding:3px 9px;border-radius:999px;border:1px solid transparent;white-space:nowrap;line-height:1.4}
+.lr .chip::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.lr .chip.rule-draft{background:#f1ebfb;color:#5b3596;border-color:#e2d6f5}
+.lr .chip.rule-tested{background:var(--lr-blue-soft);color:var(--lr-blue);border-color:#cfe0f8}
+.lr .chip.rule-active,.lr .chip.pass{background:var(--lr-ok-soft);color:var(--lr-ok);border-color:#c7e8d4}
+.lr .chip.rule-failed,.lr .chip.fail,.lr .chip.block{background:var(--lr-bad-soft);color:var(--lr-bad);border-color:#f3cfcb}
+.lr .chip.rule-retired{background:#eef1f3;color:#55616b;border-color:#dfe4e8}
+.lr .chip.review{background:var(--lr-warn-soft);color:var(--lr-warn);border-color:#f0d9a8}
+.lr-head{margin:8px 0 18px}
+.lr-head h1{margin:8px 0 8px;line-height:1.25}
+.lr-meta{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;font-size:13px;color:var(--muted)}
+.lr-steps{display:flex;align-items:center;gap:8px;list-style:none;margin:0 0 18px;padding:0;font-size:12px;color:var(--muted)}
+.lr-steps li{display:flex;align-items:center;gap:6px}
+.lr-steps li+li::before{content:"";width:28px;height:2px;background:var(--line);margin-right:2px}
+.lr-steps .dot{width:10px;height:10px;border-radius:50%;border:2px solid var(--line);background:var(--surface,#fff)}
+.lr-steps .done{color:var(--ink)}.lr-steps .done .dot{background:var(--lr-ok);border-color:var(--lr-ok)}
+.lr-steps .bad{color:var(--lr-bad)}.lr-steps .bad .dot{background:var(--lr-bad);border-color:var(--lr-bad)}
+.lr-next{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 16px;border:1px solid var(--line);border-left:4px solid var(--lr-blue);border-radius:var(--radius,6px);background:var(--lr-blue-soft);margin-bottom:20px}
+.lr-next.is-active{border-left-color:var(--lr-ok);background:var(--lr-ok-soft)}
+.lr-next.is-failed{border-left-color:var(--lr-bad);background:var(--lr-bad-soft)}
+.lr-next.is-retired{border-left-color:#8a96a0;background:#f3f5f7}
+.lr-next h2{font-size:15px;margin:0}
+.lr-next .acts{display:flex;flex-wrap:wrap;gap:8px}
+.lr-next form{margin:0}
+.lr-next button{font-size:13px;white-space:nowrap}
+.lr-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.lr-card{border:1px solid var(--line);border-radius:var(--radius,6px);background:var(--surface,#fff);padding:16px}
+.lr-card h2{font-size:14px;margin:0 0 12px;color:var(--muted);font-weight:400}
+.lr-group{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.lr-phrase{font-family:ui-monospace,monospace;font-size:12px;background:#f3f7fb;border:1px solid var(--line);border-radius:4px;padding:3px 7px;overflow-wrap:anywhere}
+.lr-or{font-size:11px;color:var(--muted)}
+.lr-and{font-size:11px;font-weight:600;color:var(--accent);letter-spacing:.05em;margin:8px 0}
+.lr-score{display:flex;align-items:baseline;gap:10px;margin-bottom:4px}
+.lr-score strong{font-size:22px;font-weight:400}
+.lr-score.ok strong{color:var(--lr-ok)}.lr-score.bad strong{color:var(--lr-bad)}
+.lr-before{font-size:12px;color:var(--muted);margin:0 0 12px}
+.lr-cases{list-style:none;margin:0;padding:0}
+.lr-cases li{display:flex;align-items:center;gap:10px;padding:7px 0;border-top:1px solid var(--line);font-size:13px}
+.lr-cases li:first-child{border-top:0}
+.lr-cases small{margin-left:auto;color:var(--muted);font-size:11px;white-space:nowrap}
+.lr-empty{color:var(--muted);font-size:14px;margin:0}
+.lr-export{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;margin-top:20px;font-size:13px}
+.lr-export span{color:var(--muted)}
+.lr-export .btn{font-size:12px;padding:6px 12px}
+.lr-more{margin-top:14px;border-top:1px solid var(--line);padding-top:12px}
+.lr-more>summary{cursor:pointer;color:var(--accent);font-size:13px}
+.lr-more[open]>summary{margin-bottom:10px}
+.lr-more p,.lr-more li{font-size:13px;color:var(--muted)}
+.lr-more ol{padding-left:18px}
+.lr-ex{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.lr-ex article{border:1px solid var(--line);border-radius:6px;padding:12px}
+.lr-ex p{white-space:pre-wrap;font-size:12px;margin:8px 0}
+.lr-digest{font-family:ui-monospace,monospace;font-size:11px;overflow-wrap:anywhere}
+@media(max-width:760px){
+ .lr-grid,.lr-ex{grid-template-columns:1fr}
+ .lr-next{flex-direction:column;align-items:flex-start}
+ .lr-steps li+li::before{width:14px}
+}
+.lr .chip{border-radius:4px}.lr .chip.rule-draft{color:var(--muted);background:#f1f6fa;border-color:var(--line)}
+</style>
+<div class="lr">
 <a class="back-link" href="/learning">← Rules</a>
-<div class="page-heading heading-with-action"><h1>Rule L{{ rule.id }}</h1><span class="badge rule-{{ rule.status }}">{{ rule.status|capitalize }}</span></div>
-<ol class="learning-steps" aria-label="Rule lifecycle"><li class="complete"><span>1</span>Source recorded</li><li class="complete"><span>2</span>Candidate saved</li><li class="{{ 'complete' if rule.results and rule.results.passed else '' }}"><span>3</span>Tests passed</li><li class="{{ 'complete' if rule.status == 'active' else '' }}"><span>4</span>Active for new uploads</li></ol>
-<div class="rule-layout"><section class="panel rule-definition"><div class="panel-heading"><h2>{{ rule.spec.title }}</h2><span class="badge {{ 'b-withheld' if rule.spec.action == 'withheld' else 'b-hold' }}">{{ 'Keep internal' if rule.spec.action == 'withheld' else 'Send to review' }}</span></div>{% for group in rule.spec.groups %}<div class="phrase-group"><span class="group-label">Group {{ loop.index }}</span><div>{% for phrase in group %}<span class="phrase">{{ phrase }}</span>{% if not loop.last %}<span class="or-label">or</span>{% endif %}{% endfor %}</div></div>{% if not loop.last %}<div class="and-label">and</div>{% endif %}{% endfor %}<div class="file-fingerprint rule-digest">Immutable version · {{ rule.digest }}</div></section>
-<aside class="panel evidence-source"><h2>{{ rule.source.title }}</h2><span class="source-label wrap-label">{{ rule.source.evidence_status }}</span><p>{{ rule.source.summary }}</p><a class="text-link" href="{{ rule.source.url }}" target="_blank" rel="noopener noreferrer">Read original source ↗</a><div class="notice subtle">Historical prevention is not established.</div></aside></div>
-<section class="recent-section"><div class="section-heading inline-heading"><div><h2>Tests</h2></div><form method="post" action="/learning/rules/{{ rule.id }}/test" data-async data-loading="Running the saved regression examples…"><button type="submit" class="btn-secondary" {% if rule.status in ('active','retired') %}disabled{% endif %}>{{ 'Run again' if rule.results else 'Run rule tests' }} →</button><div class="form-message" role="status" aria-live="polite" hidden></div></form></div>
-{% if rule.results %}<div class="test-outcome {{ 'passed' if rule.results.passed else 'failed' }}"><strong>{{ rule.results.passed_count }} of {{ rule.results.total }} checks passed</strong><span>{{ 'The examples passed. Review the evidence before activation.' if rule.results.passed else 'Do not activate. At least one positive or benign example failed.' }}</span></div><div class="panel table-panel"><div class="table-wrap"><table><thead><tr><th scope="col">Example</th><th scope="col">Expected</th><th scope="col">Before this rule</th><th scope="col">With this rule</th><th scope="col">Result</th></tr></thead><tbody>{% for case in rule.results.cases %}<tr><td>{{ case.name }}</td><td>{{ 'Match' if case.should_match else 'No match' }}</td><td>{{ 'Match' if case.baseline_match else 'No match' }}</td><td>{{ 'Match' if case.candidate_match else 'No match' }}</td><td><span class="badge {{ 'b-public' if case.candidate_passed else 'b-withheld' }}">{{ 'Pass' if case.candidate_passed else 'Fail' }}</span></td></tr>{% endfor %}</tbody></table></div></div><p class="field-hint comparison-note">Fictional examples; not a real-world accuracy score.</p>{% else %}<div class="empty-state compact"><h3>Nothing has been tested yet.</h3></div>{% endif %}
-<details class="findings-detail"><summary>Fictional test documents</summary><div class="example-list">{% for example in rule.spec.tests %}<article><div><strong>{{ example.name }}</strong><span class="small muted">{{ 'Expected match' if example.should_match else 'Benign control' }}</span></div><p>{{ example.text }}</p><a class="text-link" href="/learning/rules/{{ rule.id }}/example/{{ loop.index0 }}.pdf" target="_blank" rel="noopener">Open fictional PDF ↗</a></article>{% endfor %}</div></details></section>
-<section class="activation-panel"><div><h2>{{ 'This rule is active.' if rule.status == 'active' else 'Retired rule' if rule.status == 'retired' else 'Activation' }}</h2><p>{% if rule.status == 'active' %}New uploads use this rule. {{ pending_count }} existing files still need the current checks.{% elif rule.status == 'retired' %}This rule is retired. Prior restrictions remain until a reviewer resolves them.{% else %}Activation changes the gate's policy. Existing files need rechecking before previously approved downloads can continue.{% endif %}</p></div><div class="activation-actions">{% if rule.status == 'active' %}<form method="post" action="/learning/rescan" data-async data-loading="Rechecking existing PDFs…"><button type="submit">Recheck existing PDFs →</button><div class="form-message" role="status" aria-live="polite" hidden></div></form><form method="post" action="/learning/rules/{{ rule.id }}/retire" data-async data-loading="Retiring this rule…"><input type="hidden" name="digest" value="{{ rule.digest }}"><button type="submit" class="btn-secondary" data-confirm="Retire this rule? This will not publish previously restricted files.">Retire rule</button><div class="form-message" role="status" aria-live="polite" hidden></div></form>{% elif rule.status != 'retired' %}<form method="post" action="/learning/rules/{{ rule.id }}/activate" data-async data-loading="Activating the exact tested rule…"><input type="hidden" name="digest" value="{{ rule.digest }}"><button type="submit" {% if not rule.results or not rule.results.passed %}disabled{% endif %} data-confirm="Activate this tested version? Existing public files will require a recheck.">Activate tested rule →</button><div class="form-message" role="status" aria-live="polite" hidden></div></form>{% endif %}</div></section>
-<section class="improvement-layout"><div><div class="section-heading"><h2>Proposed improvements</h2></div><ol class="improvement-list">{% for item in rule.spec.improvements %}<li>{{ item }}</li>{% endfor %}</ol></div><aside class="export-panel"><h2>Export</h2><a class="btn" href="/learning/rules/{{ rule.id }}/bundle.zip">Download bundle</a><div class="export-links"><a href="/learning/rules/{{ rule.id }}/skill.md">SKILL.md ↓</a><a href="/learning/rules/{{ rule.id }}/proposal.md">Proposal ↓</a></div><small>Exporting does not install the skill or grant permission to change another system.</small></aside></section>
-<details class="findings-detail"><summary>Methodology</summary><p>{{ rule.spec.rationale }}</p><p>Generator: {{ rule.generator }}.</p><p>All groups must match; any phrase within a group is enough. Case and accents are normalized. Phrases may occur on different pages.</p><p>Tests use fictional examples. “Before” means this candidate was absent; the comparison does not measure the entire gate or a model's accuracy. Proposed improvements are not implemented by saving or exporting this rule.</p></details>
+<div class="lr-head">
+<span class="chip rule-{{ st }}">{{ labels.get(st, st|capitalize) }}</span>
+<h1>{{ rule.spec.title }}</h1>
+<div class="lr-meta"><span>Learned from <a href="{{ rule.source.url }}" target="_blank" rel="noopener noreferrer">{{ rule.source.title.split(':')[0] }} ↗</a></span><span>On match: <span class="chip {{ 'block' if rule.spec.action == 'withheld' else 'review' }}">{{ 'Block' if rule.spec.action == 'withheld' else 'Send to review' }}</span></span><span>L{{ rule.id }}</span></div>
+</div>
+<ol class="lr-steps" aria-label="Progress">
+<li class="done"><span class="dot"></span>Proposed</li>
+<li class="{{ 'done' if res and res.passed else 'bad' if st == 'failed' else '' }}"><span class="dot"></span>Tested</li>
+<li class="{{ 'done' if st == 'active' else '' }}"><span class="dot"></span>{{ 'Retired' if st == 'retired' else 'Active' }}</li>
+</ol>
+<section class="lr-next {{ 'is-active' if st == 'active' else 'is-failed' if st == 'failed' else 'is-retired' if st == 'retired' else '' }}">
+{% if st == 'active' %}<h2>This rule is active.</h2>
+<div class="acts">{% if pending_count %}<form method="post" action="/learning/rescan" data-async data-loading="Rechecking…"><button type="submit">Recheck {{ pending_count }} file{{ '' if pending_count == 1 else 's' }}</button><div class="form-message" role="status" aria-live="polite" hidden></div></form>{% endif %}<form method="post" action="/learning/rules/{{ rule.id }}/retire" data-async data-loading="Retiring…"><input type="hidden" name="digest" value="{{ rule.digest }}"><button type="submit" class="btn-secondary" data-confirm="Retire this rule? Files it already held stay held.">Retire</button><div class="form-message" role="status" aria-live="polite" hidden></div></form></div>
+{% elif st == 'retired' %}<h2>This rule is retired.</h2>
+{% elif st == 'tested' %}<h2>Tests passed. Ready to activate.</h2>
+<div class="acts"><form method="post" action="/learning/rules/{{ rule.id }}/activate" data-async data-loading="Activating…"><input type="hidden" name="digest" value="{{ rule.digest }}"><button type="submit" data-confirm="Activate this rule? Existing files will need a recheck.">Activate</button><div class="form-message" role="status" aria-live="polite" hidden></div></form><form method="post" action="/learning/rules/{{ rule.id }}/test" data-async data-loading="Testing…"><button type="submit" class="btn-secondary">Run again</button><div class="form-message" role="status" aria-live="polite" hidden></div></form></div>
+{% else %}<h2>{{ 'Tests failed. Do not activate.' if st == 'failed' else 'Next: run the tests.' }}</h2>
+<div class="acts"><form method="post" action="/learning/rules/{{ rule.id }}/test" data-async data-loading="Testing…"><button type="submit" {% if st == 'failed' %}class="btn-secondary"{% endif %}>{{ 'Run again' if res else 'Run tests' }}</button><div class="form-message" role="status" aria-live="polite" hidden></div></form></div>
+{% endif %}
+</section>
+<div class="lr-grid">
+<section class="lr-card"><h2>Flags a file that contains</h2>
+{% for group in rule.spec.groups %}<div class="lr-group">{% for phrase in group %}<span class="lr-phrase">{{ phrase }}</span>{% if not loop.last %}<span class="lr-or">or</span>{% endif %}{% endfor %}</div>{% if not loop.last %}<div class="lr-and">AND</div>{% endif %}{% endfor %}
+</section>
+<section class="lr-card"><h2>Tests on fictional files</h2>
+{% if res %}{% set leaks = res.cases|selectattr('should_match')|list %}
+<div class="lr-score {{ 'ok' if res.passed else 'bad' }}"><strong>{{ res.passed_count }} of {{ res.total }} checks passed</strong></div>
+<p class="lr-before">Before this rule: {{ leaks|selectattr('baseline_match')|list|length }} of {{ leaks|length }} leaks caught. With it: {{ leaks|selectattr('candidate_match')|list|length }} of {{ leaks|length }}.</p>
+<ul class="lr-cases">{% for case in res.cases %}<li><span class="chip {{ 'pass' if case.candidate_passed else 'fail' }}">{{ 'Pass' if case.candidate_passed else 'Fail' }}</span>{{ case.name }}<small>{{ 'should flag' if case.should_match else 'should ignore' }}</small></li>{% endfor %}</ul>
+{% else %}<p class="lr-empty">Nothing has been tested yet.</p>{% endif %}
+</section>
+</div>
+<div class="lr-export"><span>Export as a skill:</span><a class="btn btn-secondary" href="/learning/rules/{{ rule.id }}/bundle.zip">Download bundle</a><a href="/learning/rules/{{ rule.id }}/skill.md">SKILL.md</a><a href="/learning/rules/{{ rule.id }}/proposal.md">Proposal</a></div>
+<details class="lr-more"><summary>Source</summary><p><strong>{{ rule.source.title }}</strong></p><p>{{ rule.source.evidence_status }}</p><p>{{ rule.source.summary }}</p><p><a href="{{ rule.source.url }}" target="_blank" rel="noopener noreferrer">Read the original ↗</a></p></details>
+<details class="lr-more"><summary>Test files</summary><div class="lr-ex">{% for example in rule.spec.tests %}<article><strong>{{ example.name }}</strong> <span class="chip {{ 'review' if example.should_match else 'pass' }}">{{ 'Should flag' if example.should_match else 'Should ignore' }}</span><p>{{ example.text }}</p><a href="/learning/rules/{{ rule.id }}/example/{{ loop.index0 }}.pdf" target="_blank" rel="noopener">Open PDF ↗</a></article>{% endfor %}</div></details>
+<details class="lr-more"><summary>Why and what next</summary><p>{{ rule.spec.rationale }}</p>{% if rule.spec.improvements %}<ol>{% for item in rule.spec.improvements %}<li>{{ item }}</li>{% endfor %}</ol>{% endif %}<p>Made by: {{ rule.generator }}</p><p class="lr-digest">Version {{ rule.digest }}</p></details>
+</div>
 {% endblock %}

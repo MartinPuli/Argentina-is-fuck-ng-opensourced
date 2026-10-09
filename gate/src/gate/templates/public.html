@@ -1,5 +1,64 @@
-{% extends "base.html" %}{% block title %}Public records{% endblock %}{% block body %}
-<div class="page-heading heading-with-action"><h1>Public records</h1></div>
-<div class="section-heading inline-heading"><h2>Published purchases <span class="muted">{{ purchases|length }}</span></h2><label class="search-field"><span class="sr-only">Filter public purchases</span><input type="search" placeholder="Search office, item or procedure" data-filter="public-purchase"></label></div>
-<div class="public-purchases">{% for p in purchases %}{% set s=by_purchase.get(p.id, {'files':[], 'kept':0, 'pending':0}) %}<article class="public-purchase panel" data-filter-item="public-purchase"><div class="public-purchase-heading"><div><h2>{{ p.item }}</h2><p class="muted">{{ p.office }} · {{ p.procedure }}</p></div><div class="purchase-amount"><strong>{{ p.amount|money }}</strong><span>ARS</span></div></div><div class="public-documents"><h3>Public attachments</h3>{% for f in s.files %}<a class="public-file" href="/public/file/{{ f.id }}" target="_blank" rel="noopener"><span class="doc-icon" aria-hidden="true">PDF</span><span>{{ f.public_name }}</span>{% if f.cleaned %}<span class="clean-tag">Cleaned copy</span>{% endif %}<span class="file-open" aria-hidden="true">↗</span></a>{% else %}<p class="muted">No attachments have been released for this purchase.</p>{% endfor %}</div>{% if s.kept or s.pending %}<div class="privacy-note">{{ s.kept }} kept internal{% if s.pending %} · {{ s.pending }} awaiting review{% endif %}.</div>{% endif %}</article>{% else %}<div class="empty-state"><h2>No purchases published yet.</h2><a class="text-link" href="/">Overview</a></div>{% endfor %}</div><div class="empty-state filter-empty" hidden><h2>No purchases match your search.</h2></div>
+{% extends "base.html" %}{% block title %}Public procurement{% endblock %}{% block body %}
+<style>
+body.public-view{background:#fff}
+body.public-view .public-header{display:none}
+body.public-view main{max-width:none;margin:0;padding:0;min-height:100dvh}
+.pp{--pp-navy:#0b3a5c;--pp-sky:#37bbed;--pp-link:#0067b1;--pp-ink:#1f2d3a;--pp-muted:#5f6f7e;--pp-line:#dfe5ea;font-size:15px;color:var(--pp-ink)}
+.pp-wrap{max-width:960px;margin:0 auto;padding:0 24px}
+.pp-top{background:var(--pp-sky);color:var(--pp-navy)}
+.pp-top .pp-wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:64px}
+.pp-brand{display:flex;align-items:center;gap:12px;color:var(--pp-navy);font-weight:600;font-size:17px;letter-spacing:-.2px}
+.pp-brand:hover{text-decoration:none}
+.pp-mark{width:30px;height:30px;border-radius:50%;background:linear-gradient(#74acdf 0 33%,#fff 33% 67%,#74acdf 67%);box-shadow:0 0 0 2px #fff}
+.pp-brand small{display:block;font-size:12px;font-weight:400;color:var(--pp-navy);letter-spacing:0}
+.pp-demo{font-size:12px;color:var(--pp-navy);background:#fff;font-weight:600;border-radius:999px;padding:3px 10px;white-space:nowrap}
+.pp-band{height:3px;background:#1d9fd8}
+.pp-head{padding:28px 0 22px}
+.pp-head h1{font-size:28px;letter-spacing:-.6px;margin:0;font-weight:500;color:var(--pp-navy)}
+.pp-head p{margin:4px 0 0;color:var(--pp-muted)}
+.pp-hero{background:#e9f7fd;margin-bottom:20px}
+.pp-list{display:grid;gap:14px;padding-bottom:48px}
+.pp-card{background:#fff;border:1px solid #cfe9f7;border-left:5px solid var(--pp-sky);box-shadow:0 1px 3px rgba(11,58,92,.06);border-radius:6px;padding:18px 22px}
+.pp-row{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+.pp-proc{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:#00699f;margin:0 0 2px}
+.pp-item{font-size:20px;font-weight:500;letter-spacing:-.3px;margin:0;color:var(--pp-ink)}
+.pp-amount{font-size:20px;font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums;color:var(--pp-navy)}
+.pp-docs{list-style:none;margin:14px 0 0;padding:0;display:grid;gap:6px}
+.pp-doc{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:8px 10px;border:1px solid var(--pp-line);border-radius:4px;background:#f2fafe;color:var(--pp-link)}
+.pp-doc:hover{background:#e3f4fc;border-color:var(--pp-sky);text-decoration:none}
+.pp-doc:hover .pp-name{text-decoration:underline}
+.pp-pdf{font-size:10px;font-weight:600;color:#b23b3b;border:1px solid #e7c3c3;border-radius:3px;padding:1px 4px}
+.pp-name{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;overflow-wrap:anywhere}
+.pp-tag{font-size:12px;font-weight:600;color:#fff;background:#1a7f45;border-radius:999px;padding:2px 10px}
+.pp-dl{margin-left:auto;font-size:13px;font-weight:600}
+.pp-none{margin:14px 0 0;color:var(--pp-muted);font-size:14px}
+.pp-private{display:flex;align-items:center;gap:7px;margin:12px 0 0;color:#8a4b00;font-size:13px}
+.pp-private svg{flex:none}
+.pp-empty{background:#fff;border:1px dashed var(--pp-line);border-radius:6px;padding:40px 24px;text-align:center;color:var(--pp-muted)}
+.pp-empty h2{color:var(--pp-ink);margin:0}
+@media (max-width:600px){
+.pp-wrap{padding:0 16px}
+.pp-top .pp-wrap{min-height:56px}
+.pp-brand{font-size:15px}.pp-brand small{display:none}
+.pp-head{padding:22px 0 12px}.pp-head h1{font-size:23px}
+.pp-card{padding:14px 14px}
+.pp-row{flex-direction:column;gap:4px}
+.pp-item,.pp-amount{font-size:18px}
+.pp-dl{display:none}
+}
+.pp-top{background:var(--sidebar)}.pp-brand,.pp-head h1,.pp-amount{font-weight:300}.pp-brand{font-size:14px}.pp-band{display:none}.pp-hero{background:#fff}.pp-card{border:1px solid var(--line);box-shadow:none}.pp-proc{font-weight:400;letter-spacing:0;text-transform:none}.pp-tag{border-radius:4px;background:var(--accent-soft);color:var(--public);font-weight:400}.pp-top .pp-wrap>.text-link{font-size:12px}.pp-head h1{font-size:30px}
+</style>
+<div class="pp">
+<header class="pp-top"><div class="pp-wrap"><a class="pp-brand" href="/public"><span>Public procurement<small></small></span></a><a class="text-link" href="/">Documents</a></div></header>
+<div class="pp-band" aria-hidden="true"></div>
+<div class="pp-hero"><div class="pp-wrap"><div class="pp-head"><h1>Published purchases</h1></div></div></div>
+<div class="pp-wrap">
+<div class="pp-list">{% for p in purchases %}{% set s=by_purchase.get(p.id, {'files':[], 'kept':0, 'pending':0}) %}{% set private = s.kept + s.pending %}
+<article class="pp-card">
+<div class="pp-row"><div><p class="pp-proc">{{ p.procedure }} · {{ p.office }}</p><h2 class="pp-item">{{ p.item }}</h2></div><div class="pp-amount">{{ p.amount|money }}</div></div>
+{% if s.files %}<ul class="pp-docs">{% for f in s.files %}<li><a class="pp-doc" href="/public/file/{{ f.id }}" target="_blank" rel="noopener"><span class="pp-pdf" aria-hidden="true">PDF</span><span class="pp-name">{{ f.public_name }}</span>{% if f.cleaned %}<span class="pp-tag">Cleaned copy</span>{% endif %}<span class="pp-dl">Download</span></a></li>{% endfor %}</ul>{% else %}<p class="pp-none">No public documents.</p>{% endif %}
+{% if private %}<p class="pp-private"><svg width="13" height="13" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M4 7V5a4 4 0 1 1 8 0v2h1v8H3V7h1zm2 0h4V5a2 2 0 1 0-4 0v2z"/></svg>{{ private }} {{ 'private document' if private == 1 else 'private documents' }}</p>{% endif %}
+</article>{% else %}<div class="pp-empty"><h2>No purchases published yet.</h2></div>{% endfor %}</div>
+</div>
+</div>
 {% endblock %}
