@@ -47,3 +47,31 @@
     }
   }));
 })();
+(() => {
+  // Mobile menu: the sidebar becomes a top bar under 900px.
+  const sidebar = document.querySelector('.sidebar');
+  const toggle = document.querySelector('.nav-toggle');
+  if (sidebar && toggle) {
+    const setOpen = open => {
+      sidebar.classList.toggle('nav-open', open);
+      toggle.setAttribute('aria-expanded', String(open));
+      toggle.querySelector('.nav-toggle-text').textContent = open ? 'Close' : 'Menu';
+    };
+    toggle.addEventListener('click', () => setOpen(toggle.getAttribute('aria-expanded') !== 'true'));
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && sidebar.classList.contains('nav-open')) { setOpen(false); toggle.focus(); }
+    });
+  }
+  // Review count next to the Review link. One request per page load, no polling.
+  const count = document.querySelector('[data-review-count]');
+  if (count) fetch('/api/activity', { credentials: 'same-origin', headers: { Accept: 'application/json' } })
+    .then(response => response.ok ? response.json() : null)
+    .then(body => {
+      const waiting = body?.counts?.waiting || 0;
+      if (!waiting) return;
+      count.textContent = waiting > 99 ? '99+' : String(waiting);
+      count.setAttribute('aria-label', waiting + ' waiting');
+      count.hidden = false;
+    })
+    .catch(() => { /* The count is a hint; the Review page shows the real list. */ });
+})();
