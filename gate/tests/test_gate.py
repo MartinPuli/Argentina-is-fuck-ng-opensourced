@@ -196,11 +196,11 @@ def test_cross_site_approval_is_rejected(web):
     assert no_origin.status_code == 403
 
 
-def test_public_page_says_the_data_is_fictional(web):
+def test_public_page_carries_no_demo_notice(web):
     portal = web.anonymous.get("/public")
     assert portal.status_code == 200
-    assert "Demo · fictional data" in portal.text
-    assert "All people and records are fictional" not in portal.text
+    assert "fictional" not in portal.text.lower()
+    assert "Demo" not in portal.text
 
 
 @pytest.mark.parametrize("route,label", [
