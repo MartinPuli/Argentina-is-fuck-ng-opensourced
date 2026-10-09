@@ -1,0 +1,21 @@
+# Cloud configuration and output-boundary research
+
+Reviewed October 9, 2026. Two targeted full-text reviews. [Evidence records](cloud-boundaries-research.json) preserve dates, reading locations and scope. These are the authors' findings and our labeled design inferences; no author code was run or result independently reproduced.
+
+<a id="cbr-01"></a>
+## CBR-01 - Mapping the Cloud
+
+Sumair Ijaz Hashmi, Shafay Kashif, Lea Grober, Katharina Krombholz and Mobin Javed. *Mapping the Cloud: A Mixed-Methods Study of Cloud Security and Privacy Configuration Challenges.* NDSS 2026, February 23-27. Reviewed the unnumbered venue PDF; first public availability unresolved. [Official record](https://www.ndss-symposium.org/ndss-paper/mapping-the-cloud-a-mixed-methods-study-of-cloud-security-and-privacy-configuration-challenges/), [full text](https://www.ndss-symposium.org/wp-content/uploads/2026-f1302-paper.pdf).
+
+Authors topic-model 251,904 Stack Overflow posts dated August 2008-March 2024, qualitatively code 625, and validate with another 200. Their topic-to-challenge mapping intentionally overcounts; its cells are upper-bound estimates, not incident frequencies. Authentication and access-control difficulties cross the seven identified use cases. Poorly fitted documentation, confusing tools and knowledge gaps recur in the qualitative sample. Keyword/provider selection can miss relevant posts; the data stops in 2024. Accepted answers reflect questioners' preferences, not independently verified secure deployments. This is evidence about help-seeking and configuration difficulty, not a causal study of Argentine breaches. Our inference: collect the actual service's permissions, network paths, dependencies and configuration before proposing repairs, and test legitimate workflows. Do not infer a government's breach cause from a forum theme or silently fill missing deployment facts.
+
+Reading locators: III-A (collection), III-B-C (topic modeling and qualitative sample), III-D (upper-bound mapping and validation), III-E (limitations), IV-A-B (findings), V (discussion). Counts describe posts and samples, not affected organizations. Appendices and replication artifacts were not exhaustively audited.
+
+<a id="cbr-02"></a>
+## CBR-02 - IOValve
+
+Sangho Lee, Jules Drean, Yue Tan and Marcus Peinado. *IOValve: Leakage-Free I/O Sandbox for Large-Scale Untrusted Data Processing.* CCS 2025, October 13-17. Reviewed the unnumbered Microsoft Research author PDF. First public availability remains unresolved; the `/2025/08/` URL directory is not accepted as publication-date proof. [Author institution](https://www.microsoft.com/en-us/research/publication/iovalve-leakage-free-i-o-sandbox-for-large-scale-untrusted-data-processing/), [full text](https://www.microsoft.com/en-us/research/wp-content/uploads/2025/08/iovalve-ccs25.pdf), [DOI](https://doi.org/10.1145/3719027.3765121).
+
+IOValve places network enforcement on a separate programmable device, encrypting and shaping outbound traffic while the host software is untrusted. It requires that device to be the sole network path, trusts hardware and the monitor, and excludes computation integrity and availability. Two directly connected nodes with BlueField-3 devices and P40 GPUs form the evaluation. Llama 3 fine-tuning takes 2.1%-4.1% longer than stock NCCL over five-to-ten repetitions; a separate 100-repeat transfer microbenchmark has 16.8%-39.1% lower throughput. Compute-heavy application overhead therefore cannot describe all workloads. Congestion tests cover selected shared-resource mechanisms, not every possible attack. Bare-metal hardware is required; dynamic, latency-sensitive applications remain a limitation. Our inference: a defense must identify its trusted output boundary and rule out bypasses. A process alongside a compromised application does not inherit IOValve's hardware isolation or confidentiality claim.
+
+Reading locators: 3.1-3.2 (trust/threat model), 4.1-4.2 (hardware and provisioning), 6.1 (hardware), 6.2 (congestion evaluation), 6.3/Figure 4 (microbenchmark), 6.4/Figure 6 (applications), 7 (deployment limits). Numerical results are from prose with explicit workload/repetition definitions; no independent artifact execution occurred.

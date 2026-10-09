@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "case_id": "fictional-stream-and-queue-v1",
+  "affected_identity": "A",
+  "independent_identity": "B",
+  "stream_id": "admitted-export",
+  "prefix_chunks": 1,
+  "records": [
+    {"id": "FICTIONAL-A-01", "owner": "A", "value": "synthetic record alpha"},
+    {"id": "FICTIONAL-A-02", "owner": "A", "value": "synthetic record beta"},
+    {"id": "FICTIONAL-A-03", "owner": "A", "value": "synthetic record gamma"},
+    {"id": "FICTIONAL-A-04", "owner": "A", "value": "synthetic record delta"},
+    {"id": "FICTIONAL-A-05", "owner": "A", "value": "synthetic record epsilon"},
+    {"id": "FICTIONAL-B-01", "owner": "B", "value": "independent legitimate batch one"},
+    {"id": "FICTIONAL-B-02", "owner": "B", "value": "independent legitimate batch two"},
+    {"id": "FICTIONAL-B-03", "owner": "B", "value": "independent legitimate batch three"}
+  ],
+  "stream_ids": ["FICTIONAL-A-01", "FICTIONAL-A-02", "FICTIONAL-A-03"],
+  "queued_ids": ["FICTIONAL-A-04", "FICTIONAL-A-05"],
+  "legitimate_a_ids": ["FICTIONAL-A-01"],
+  "legitimate_b_ids": ["FICTIONAL-B-01", "FICTIONAL-B-02", "FICTIONAL-B-03"],
+  "ordering": ["legitimate_reads", "queue_accept", "stream_prefix_received", "server_pause_confirmed", "controller_ack_received", "release_stream", "release_job", "remaining_stream_received", "queued_result_received", "legitimate_reads_after_ack"],
+  "evaluation_labels_not_sent_to_services": {"stream_and_queue": "records available to a previously admitted A operation", "legitimate_a": "affected legitimate credential user", "legitimate_b": "separately authorized user"}
+}

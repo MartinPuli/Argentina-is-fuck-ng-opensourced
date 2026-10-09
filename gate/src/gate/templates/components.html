@@ -1,0 +1,13 @@
+{% macro badge(decision) -%}
+<span class="badge b-{{ decision }}">{{ {'public':'Published', 'approved':'Reviewer approved', 'hold':'Needs review', 'withheld':'Kept internal'}.get(decision, decision) }}</span>
+{%- endmacro %}
+{% macro evidence(findings) -%}
+{% if findings %}<div class="table-wrap"><table class="evidence-table"><caption class="sr-only">Findings with masked evidence and policy references</caption><thead><tr><th scope="col">Finding</th><th scope="col">Masked evidence</th><th scope="col">Page</th><th scope="col">Policy reference</th></tr></thead><tbody>
+{% for f in findings %}<tr><td><span class="severity sev-{{ f.severity }}">{{ f.label }}</span></td><td class="mono">{{ f.evidence or 'No document content recorded' }}</td><td>{{ f.page or 'File' }}</td><td>{{ RULES.get(f.rule, {}).get('source', f.rule) }}</td></tr>{% endfor %}
+</tbody></table></div>{% endif %}
+{%- endmacro %}
+{% macro brief(ag, configured) -%}
+{% if ag and ag.text %}<section class="agent-brief"><div class="section-kicker">Guild review brief</div><p>{{ ag.text }}</p></section>
+{% elif ag and ag.error %}<div class="notice">The reviewer brief is unavailable. Review the original document and the recorded findings.</div>
+{% elif configured %}<div class="notice subtle">A reviewer brief may still be processing. Refresh this page to check its result.</div>{% endif %}
+{%- endmacro %}

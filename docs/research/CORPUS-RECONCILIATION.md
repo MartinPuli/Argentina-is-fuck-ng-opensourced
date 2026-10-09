@@ -2,7 +2,7 @@
 
 **Cutoff: 2026-10-09.** This is a metadata reconciliation, not additional paper reading or an exhaustive literature census.
 
-The ten hash-verified historical snapshots contain **2,364 index entries**. The stated rules produce **2,362 candidate groups**, including title-only matches whose bibliographic identity is not independently established. There are **49 reviewed evidence records** in the files present at generation; **29 index groups match a reviewed record**, leaving **2,333 index groups without a matched review**. A further **20 reviewed groups** do not match these indexes under the stated rules. These are not all unread: the last category contains earlier/outside-index work and unresolved aliases.
+The ten hash-verified historical snapshots contain **2,364 index entries**. The stated rules produce **2,362 candidate groups**, including title-only matches whose bibliographic identity is not independently established. There are **55 reviewed evidence records** in the files present at generation; **35 index groups match a reviewed record**, leaving **2,327 index groups without a matched review**. A further **20 reviewed groups** do not match these indexes under the stated rules. These are not all unread: the last category contains earlier/outside-index work and unresolved aliases.
 
 Counts are a generated checkpoint. The JSON records its exact generation time and hashes of all review files. Concurrent later reviews require rerunning the script; they are not silently included.
 
@@ -11,15 +11,15 @@ Counts are a generated checkpoint. The JSON records its exact generation time an
 | Public index | Entries | Groups with matched review | Groups without matched review |
 |---|---:|---:|---:|
 | [USENIX Security 2026](https://www.usenix.org/conference/usenixsecurity26/technical-sessions) | 377 | 8 | 369 |
-| [NDSS 2026](https://www.ndss-symposium.org/ndss2026/accepted-papers/) | 265 | 5 | 260 |
+| [NDSS 2026](https://www.ndss-symposium.org/ndss2026/accepted-papers/) | 265 | 6 | 259 |
 | [IEEE S&P 2026](https://sp2026.ieee-security.org/accepted-papers.html) | 254 | 2 | 252 |
 | [ACM CCS 2026 accepted list](https://www.sigsac.org/ccs/CCS2026/program/accepted-papers.html) | 482 | 3 | 479 |
-| [ACM CCS 2025](https://www.sigsac.org/ccs/CCS2025/assets/accepted-papers.json) | 316 | 1 | 315 |
+| [ACM CCS 2025](https://www.sigsac.org/ccs/CCS2025/assets/accepted-papers.json) | 316 | 3 | 313 |
 | [RAID 2026](https://raid2026.org/data/accepted_papers.csv) | 59 | 1 | 58 |
-| [ACSAC 2025](https://www.acsac.org/2025/program/papers/) | 84 | 1 | 83 |
+| [ACSAC 2025](https://www.acsac.org/2025/program/papers/) | 84 | 2 | 82 |
 | [AsiaCCS 2026 cycle 1](https://asiaccs2026.cse.iitkgp.ac.in/cycle-1-papers/) | 74 | 1 | 73 |
-| [AsiaCCS 2026 cycle 2](https://asiaccs2026.cse.iitkgp.ac.in/cycle-2-papers/) | 48 | 1 | 47 |
-| [arXiv cs.CR October 2026 snapshot](https://arxiv.org/list/cs.CR/2026-10?skip=0&show=2000) | 405 | 6 | 399 |
+| [AsiaCCS 2026 cycle 2](https://asiaccs2026.cse.iitkgp.ac.in/cycle-2-papers/) | 48 | 2 | 46 |
+| [arXiv cs.CR October 2026 snapshot](https://arxiv.org/list/cs.CR/2026-10?skip=0&show=2000) | 405 | 7 | 398 |
 
 Per-source group counts overlap across indexes; do not sum them as globally unique papers. No publication-date eligibility is inferred from a venue label. RAID 2026 acceptance metadata precedes its October 11–14 conference, and the October arXiv snapshot is an incomplete month. First preprints, revisions, venue appearances and earlier foundations need separate date decisions.
 

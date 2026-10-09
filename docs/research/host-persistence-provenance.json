@@ -1,0 +1,199 @@
+{
+  "schema_version": 1,
+  "review_date": "2026-10-09",
+  "narrative_file": "HOST-PERSISTENCE-AND-PROVENANCE.md",
+  "fulltext_review_count": 2,
+  "records": [
+    {
+      "id": "HPP-01",
+      "queue_id": "AD10",
+      "title": "SoK: Systematization, Detection, and Hunting of Windows Malware Persistence Techniques",
+      "authors": [
+        "Jorik van Nielen",
+        "Andrea Oliveri",
+        "Jerre Starink",
+        "Andreas Peter",
+        "Marieke Huisman",
+        "Simone Aonzo",
+        "Davide Balzarotti",
+        "Andrea Continella"
+      ],
+      "first_publication_date": null,
+      "first_publication_date_status": "earliest public date unresolved",
+      "publication_month": "2026-06",
+      "version": "EURECOM-hosted conference PDF; no revision identifier",
+      "version_date": null,
+      "venue": "ACM AsiaCCS 2026",
+      "venue_date": "2026-06-01",
+      "venue_end_date": "2026-06-05",
+      "status": "peer-reviewed conference paper",
+      "doi": "10.1145/3779208.3805971",
+      "url": "https://www.eurecom.fr/en/publication/8692",
+      "fulltext_url": "https://www.eurecom.fr/publication/8692/download/sec-publi-8692.pdf",
+      "publication_metadata_url": "https://research.utwente.nl/en/publications/sok-systematization-detection-and-hunting-of-windows-malware-pers/",
+      "reading_depth": "relevant full-text methods, validation, results and discussion excerpts",
+      "counts_as_review": true,
+      "within_primary_window": true,
+      "window_basis": "venue publication; earliest public date unresolved",
+      "locators": {
+        "date_and_version": [
+          "PDF p.1 reference block",
+          "EURECOM Date field",
+          "Twente Publication status field"
+        ],
+        "scope": [
+          "§2, pp.2–3"
+        ],
+        "method": [
+          "§3.1, pp.6–7",
+          "§3.2, pp.7–8"
+        ],
+        "runtime_and_filtering": [
+          "§4.1–4.2, p.8"
+        ],
+        "poc_and_manual_validation_denominators": [
+          "§4.3, pp.8–9"
+        ],
+        "separate_prevalence_denominators": [
+          "§4.2, p.8",
+          "§4.5, p.9"
+        ],
+        "abstract_scope_discrepancy": [
+          "Abstract, p.1",
+          "§4.5, p.9",
+          "§5, p.12"
+        ],
+        "comparison_ground_truth_and_translation": [
+          "§4.5, p.10",
+          "Table 4, p.10"
+        ],
+        "recovery_implications_and_coverage_limits": [
+          "§5, p.12"
+        ]
+      },
+      "access_notes": {
+        "fulltext_accessible": true,
+        "hal_metadata_access": "anti-bot page",
+        "acm_doi_page_access": "tool internal error",
+        "pdf_screenshot_access": "tool internal error; extracted text readable"
+      },
+      "narrative_anchor": "hpp-01",
+      "source_derived_prose_budget_limit": 180,
+      "proposed_test_labels": [
+        "self_deleting_activity",
+        "multiple_persistence_paths",
+        "delayed_trigger",
+        "endpoint_recovery_separate_verdict"
+      ],
+      "reproduced_by_us": false,
+      "code_executed": false,
+      "malware_downloaded": false,
+      "production_defense_evidence": false,
+      "source_derived_narrative_words": 154
+    },
+    {
+      "id": "HPP-02",
+      "queue_id": "AD13",
+      "title": "Slot: Provenance-Driven APT Detection through Graph Reinforcement Learning",
+      "authors": [
+        "Wei Qiao",
+        "Yebo Feng",
+        "Teng Li",
+        "Zhuo Ma",
+        "Yulong Shen",
+        "Jianfeng Ma",
+        "Yang Liu"
+      ],
+      "first_publication_date": "2024-10-23",
+      "first_publication_date_status": "arXiv v1",
+      "first_version_timestamp": "2024-10-23T14:28:32Z",
+      "version": "arXiv:2410.17910v4",
+      "version_date": "2025-07-17",
+      "version_timestamp": "2025-07-17T09:09:55Z",
+      "version_history": [
+        {
+          "version": "v1",
+          "date": "2024-10-23"
+        },
+        {
+          "version": "v2",
+          "date": "2025-01-11"
+        },
+        {
+          "version": "v3",
+          "date": "2025-07-02"
+        },
+        {
+          "version": "v4",
+          "date": "2025-07-17"
+        }
+      ],
+      "venue": "ACM CCS 2025",
+      "venue_date": "2025-10-13",
+      "venue_end_date": "2025-10-17",
+      "status": "reviewed preprint; subsequent conference publication verified",
+      "doi": "10.1145/3719027.3744788",
+      "url": "https://arxiv.org/abs/2410.17910v4",
+      "fulltext_url": "https://arxiv.org/html/2410.17910v4",
+      "pdf_url": "https://arxiv.org/pdf/2410.17910v4",
+      "conference_pdf_url": "https://yebof.github.io/assets/pdf/qiao2025ccs.pdf",
+      "reading_depth": "relevant full-text methods, results and limitations excerpts; conference metadata and Tables 4–6 cross-check",
+      "counts_as_review": true,
+      "within_primary_window": false,
+      "window_basis": "earlier foundation; first and reviewed preprint precede window; later venue milestone inside window",
+      "locators": {
+        "first_date_and_versions": [
+          "arXiv Submission history"
+        ],
+        "venue": [
+          "conference PDF p.1 reference block"
+        ],
+        "trusted_audit_logs": [
+          "§3.2; v4 PDF p.4"
+        ],
+        "method": [
+          "§4.2–4.6; v4 PDF pp.4–8"
+        ],
+        "data_and_labels": [
+          "§5.1.1/Table 3; v4 PDF p.8",
+          "§4.5",
+          "§5.2"
+        ],
+        "trace_counts": [
+          "§5.2/Table 4; v4 PDF p.9",
+          "conference PDF p.9/Table 4"
+        ],
+        "version_differences": [
+          "v4 Tables 5–6, PDF p.9",
+          "conference Tables 5–6, PDF p.9"
+        ],
+        "mimicry_evaluation": [
+          "§5.7/Figures 9–10"
+        ],
+        "attack_chain_validation": [
+          "§5.8/Figures 11–13"
+        ],
+        "limitations": [
+          "§5.9; v4 PDF p.13"
+        ]
+      },
+      "access_notes": {
+        "fulltext_accessible": true,
+        "version_equivalence_assumed": false
+      },
+      "narrative_anchor": "hpp-02",
+      "source_derived_prose_budget_limit": 180,
+      "proposed_test_labels": [
+        "missing_audit_events",
+        "tampered_audit_events",
+        "benign_mimicry",
+        "raw_event_chain_verification",
+        "recovery_separate_from_detection"
+      ],
+      "reproduced_by_us": false,
+      "code_executed": false,
+      "production_defense_evidence": false,
+      "source_derived_narrative_words": 131
+    }
+  ]
+}

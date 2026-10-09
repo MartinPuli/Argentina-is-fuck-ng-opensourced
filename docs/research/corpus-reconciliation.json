@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at_utc": "2026-10-09T20:39:43.269273+00:00",
+  "generated_at_utc": "2026-10-09T20:53:44.042405+00:00",
   "cutoff": "2026-10-09",
   "exhaustive": false,
   "global_doi_resolution_completed": false,
@@ -8,17 +8,17 @@
     "index_raw_entries": 2364,
     "historical_ledger_entries": 2364,
     "index_candidate_groups": 2362,
-    "review_records": 49,
-    "reviewed_groups": 49,
-    "index_groups_with_review": 29,
-    "index_groups_without_review": 2333,
+    "review_records": 55,
+    "reviewed_groups": 55,
+    "index_groups_with_review": 35,
+    "index_groups_without_review": 2327,
     "reviewed_groups_not_matched_to_indexes": 20,
     "all_groups_including_queue_and_review_only": 2382,
     "uncertain_aliases": 1,
     "merge_basis_counts": {
-      "arxiv": 14,
-      "doi": 3,
-      "title": 32
+      "arxiv": 16,
+      "doi": 5,
+      "title": 34
     },
     "index_entries_with_explicit_arxiv_or_doi": 721,
     "index_unique_arxiv_ids": 405,
@@ -186,9 +186,19 @@
       "included_records": 9
     },
     {
+      "file": "cloud-boundaries-research.json",
+      "sha256": "61d20ee2f5797df4f4243676cd3ff9a97611f4a697441109918cd152b35560be",
+      "included_records": 2
+    },
+    {
       "file": "defense-papers.json",
       "sha256": "d69e15f524413b20ac15ba6bcdab7e304dc82938d21b3897c8da2bea3b66ba0d",
       "included_records": 8
+    },
+    {
+      "file": "detection-reproducibility-research.json",
+      "sha256": "a7614dfd34ee103704662a6ba98cb8efd4cf144ed6ec76ee0458407b3a9b4bc2",
+      "included_records": 2
     },
     {
       "file": "detection-response-evaluation.json",
@@ -198,6 +208,11 @@
     {
       "file": "early-exfiltration-detection.json",
       "sha256": "442a2e69d1f1069885841f34e794accf923a0982504240a02271364e3c7180df",
+      "included_records": 2
+    },
+    {
+      "file": "host-persistence-provenance.json",
+      "sha256": "e809c4697bad737d29fae4bb8204ebd324d3ee7b5bd6e14b2980c0e2e3bc6c1a",
       "included_records": 2
     },
     {
@@ -243,6 +258,12 @@
   ],
   "excluded_review_records": [
     {
+      "file": "detection-reproducibility-research.json",
+      "record": "DRR-02",
+      "title": "Sometimes Less is More: A Minimalist Approach to Neighborhood-level Provenance-based Intrusion Detection",
+      "reason": "counts_as_review:false"
+    },
+    {
       "file": "permission-credential-surfaces.json",
       "record": "PCS-01",
       "title": "Dangers Behind Access Control: Understanding and Exploiting Implicit Permissions in Kubernetes",
@@ -273,8 +294,8 @@
       "id": "ndss26",
       "raw_entries": 265,
       "candidate_groups": 265,
-      "groups_with_review": 5,
-      "groups_without_review": 260
+      "groups_with_review": 6,
+      "groups_without_review": 259
     },
     {
       "id": "ieeesp26",
@@ -294,8 +315,8 @@
       "id": "ccs25data",
       "raw_entries": 316,
       "candidate_groups": 316,
-      "groups_with_review": 1,
-      "groups_without_review": 315
+      "groups_with_review": 3,
+      "groups_without_review": 313
     },
     {
       "id": "raid26csv",
@@ -308,8 +329,8 @@
       "id": "acsac25",
       "raw_entries": 84,
       "candidate_groups": 84,
-      "groups_with_review": 1,
-      "groups_without_review": 83
+      "groups_with_review": 2,
+      "groups_without_review": 82
     },
     {
       "id": "asiaccs26c1",
@@ -322,18 +343,26 @@
       "id": "asiaccs26c2",
       "raw_entries": 48,
       "candidate_groups": 48,
-      "groups_with_review": 1,
-      "groups_without_review": 47
+      "groups_with_review": 2,
+      "groups_without_review": 46
     },
     {
       "id": "arxiv_oct26",
       "raw_entries": 405,
       "candidate_groups": 405,
-      "groups_with_review": 6,
-      "groups_without_review": 399
+      "groups_with_review": 7,
+      "groups_without_review": 398
     }
   ],
   "merge_evidence": [
+    {
+      "entries": [
+        "detection-reproducibility-research.json:2",
+        "arxiv_oct26:214"
+      ],
+      "basis": "arxiv",
+      "key": "2610.08871"
+    },
     {
       "entries": [
         "early-exfiltration-detection.json:0",
@@ -440,11 +469,35 @@
     },
     {
       "entries": [
+        "queue:AD13",
+        "host-persistence-provenance.json:1"
+      ],
+      "basis": "arxiv",
+      "key": "2410.17910"
+    },
+    {
+      "entries": [
         "queue:AD16",
         "permission-credential-surfaces.json:2"
       ],
       "basis": "arxiv",
       "key": "2512.06660"
+    },
+    {
+      "entries": [
+        "cloud-boundaries-research.json:1",
+        "ccs25data:202"
+      ],
+      "basis": "doi",
+      "key": "10.1145/3719027.3765121"
+    },
+    {
+      "entries": [
+        "host-persistence-provenance.json:1",
+        "ccs25data:1"
+      ],
+      "basis": "doi",
+      "key": "10.1145/3719027.3744788"
     },
     {
       "entries": [
@@ -552,11 +605,27 @@
     },
     {
       "entries": [
+        "cloud-boundaries-research.json:0",
+        "ndss26:140"
+      ],
+      "basis": "title",
+      "key": "mapping the cloud a mixed methods study of cloud security and privacy configuration challenges"
+    },
+    {
+      "entries": [
         "defense-papers.json:2",
         "usenix26:145"
       ],
       "basis": "title",
       "key": "sok darpa s ai cyber challenge aixcc competition design architectures and lessons learned"
+    },
+    {
+      "entries": [
+        "detection-reproducibility-research.json:0",
+        "acsac25:23"
+      ],
+      "basis": "title",
+      "key": "r r from claims to crashes a systematic re evaluation of graph based network intrusion detection systems"
     },
     {
       "entries": [
@@ -581,6 +650,14 @@
       ],
       "basis": "title",
       "key": "sok reshaping research on network intrusion detection systems"
+    },
+    {
+      "entries": [
+        "host-persistence-provenance.json:0",
+        "asiaccs26c2:12"
+      ],
+      "basis": "title",
+      "key": "sok systematization detection and hunting of windows malware persistence techniques"
     },
     {
       "entries": [
@@ -701,14 +778,6 @@
       ],
       "basis": "title",
       "key": "crx ray large scale detection of api key leakage in browser extensions"
-    },
-    {
-      "entries": [
-        "queue:AD13",
-        "ccs25data:1"
-      ],
-      "basis": "title",
-      "key": "slot provenance driven apt detection through graph reinforcement learning"
     },
     {
       "entries": [
@@ -9067,17 +9136,22 @@
       ]
     },
     {
-      "group_id": "C-c7a39883b94e",
+      "group_id": "C-a1a95a8648ed",
       "title": "Mapping the Cloud: A Mixed-Methods Study of Cloud Security and Privacy Configuration Challenges",
       "index_sources": [
         "ndss26"
       ],
-      "review_refs": [],
+      "review_refs": [
+        "cloud-boundaries-research.json:0"
+      ],
       "entry_refs": [
-        "ndss26:140"
+        "ndss26:140",
+        "cloud-boundaries-research.json:0"
       ],
       "arxiv_ids": [],
-      "dois": [],
+      "dois": [
+        "10.14722/ndss.2026.241302"
+      ],
       "title_variants": [
         "Mapping the Cloud: A Mixed-Methods Study of Cloud Security and Privacy Configuration Challenges"
       ]
@@ -22908,14 +22982,17 @@
       ]
     },
     {
-      "group_id": "C-7e427296c614",
+      "group_id": "C-92ecc2172efe",
       "title": "Slot: Provenance-Driven APT Detection through Graph Reinforcement Learning",
       "index_sources": [
         "ccs25data"
       ],
-      "review_refs": [],
+      "review_refs": [
+        "host-persistence-provenance.json:1"
+      ],
       "entry_refs": [
         "ccs25data:1",
+        "host-persistence-provenance.json:1",
         "queue:AD13"
       ],
       "arxiv_ids": [
@@ -26535,14 +26612,17 @@
       ]
     },
     {
-      "group_id": "C-4ddfe2942df3",
+      "group_id": "C-e21ceaab5ed9",
       "title": "IOValve: Leakage-Free I/O Sandbox for Large-Scale Untrusted Data Processing",
       "index_sources": [
         "ccs25data"
       ],
-      "review_refs": [],
+      "review_refs": [
+        "cloud-boundaries-research.json:1"
+      ],
       "entry_refs": [
-        "ccs25data:202"
+        "ccs25data:202",
+        "cloud-boundaries-research.json:1"
       ],
       "arxiv_ids": [],
       "dois": [
@@ -29907,18 +29987,23 @@
       ]
     },
     {
-      "group_id": "C-de3ccf03361e",
+      "group_id": "C-be95c264f94c",
       "title": "R+R: From Claims to Crashes: A Systematic Re-evaluation of Graph-Based Network Intrusion Detection Systems",
       "index_sources": [
         "acsac25"
       ],
-      "review_refs": [],
+      "review_refs": [
+        "detection-reproducibility-research.json:0"
+      ],
       "entry_refs": [
         "acsac25:23",
+        "detection-reproducibility-research.json:0",
         "queue:AD06"
       ],
       "arxiv_ids": [],
-      "dois": [],
+      "dois": [
+        "10.1109/acsac67867.2025.00050"
+      ],
       "title_variants": [
         "R+R: From Claims to Crashes: A Systematic Re-evaluation of Graph-Based Network Intrusion Detection Systems"
       ]
@@ -32275,18 +32360,23 @@
       ]
     },
     {
-      "group_id": "C-3380d8bea5c1",
+      "group_id": "C-9b4cc40d66ee",
       "title": "SoK: Systematization, Detection, and Hunting of Windows Malware Persistence Techniques",
       "index_sources": [
         "asiaccs26c2"
       ],
-      "review_refs": [],
+      "review_refs": [
+        "host-persistence-provenance.json:0"
+      ],
       "entry_refs": [
         "asiaccs26c2:12",
+        "host-persistence-provenance.json:0",
         "queue:AD10"
       ],
       "arxiv_ids": [],
-      "dois": [],
+      "dois": [
+        "10.1145/3779208.3805971"
+      ],
       "title_variants": [
         "SoK: Systematization, Detection, and Hunting of Windows Malware Persistence Techniques"
       ]
@@ -36697,19 +36787,24 @@
       ]
     },
     {
-      "group_id": "C-24517d50ed97",
+      "group_id": "C-3f25600d0ae1",
       "title": "CredLeakBench: Evaluating Credential Leakage and Recovery in LLM Agents",
       "index_sources": [
         "arxiv_oct26"
       ],
-      "review_refs": [],
+      "review_refs": [
+        "detection-reproducibility-research.json:2"
+      ],
       "entry_refs": [
-        "arxiv_oct26:214"
+        "arxiv_oct26:214",
+        "detection-reproducibility-research.json:2"
       ],
       "arxiv_ids": [
         "2610.08871"
       ],
-      "dois": [],
+      "dois": [
+        "10.48550/arxiv.2610.08871"
+      ],
       "title_variants": [
         "CredLeakBench: Evaluating Credential Leakage and Recovery in LLM Agents"
       ]
@@ -72932,6 +73027,40 @@
       "reading_depth": "fulltext_targeted"
     },
     {
+      "entry_id": "cloud-boundaries-research.json:0",
+      "kind": "review",
+      "source": "cloud-boundaries-research.json",
+      "record_id": "CBR-01",
+      "title": "Mapping the Cloud: A Mixed-Methods Study of Cloud Security and Privacy Configuration Challenges",
+      "url": "https://www.ndss-symposium.org/ndss-paper/mapping-the-cloud-a-mixed-methods-study-of-cloud-security-and-privacy-configuration-challenges/",
+      "locator": "/records/0",
+      "ids": {
+        "arxiv": [],
+        "doi": [
+          "10.14722/ndss.2026.241302"
+        ],
+        "arxiv_versions": []
+      },
+      "reading_depth": "Relevant full-text methods, results, assumptions and limitations; not exhaustive appendices"
+    },
+    {
+      "entry_id": "cloud-boundaries-research.json:1",
+      "kind": "review",
+      "source": "cloud-boundaries-research.json",
+      "record_id": "CBR-02",
+      "title": "IOValve: Leakage-Free I/O Sandbox for Large-Scale Untrusted Data Processing",
+      "url": "https://doi.org/10.1145/3719027.3765121",
+      "locator": "/records/1",
+      "ids": {
+        "arxiv": [],
+        "doi": [
+          "10.1145/3719027.3765121"
+        ],
+        "arxiv_versions": []
+      },
+      "reading_depth": "Relevant full-text methods, results, assumptions and limitations; not exhaustive appendices"
+    },
+    {
       "entry_id": "defense-papers.json:0",
       "kind": "review",
       "source": "defense-papers.json",
@@ -73084,6 +73213,44 @@
       "reading_depth": "Full-text section reading: 3.1–3.3, section 4 quantitative results, 5–6; Figure 4 protocol; PDF header."
     },
     {
+      "entry_id": "detection-reproducibility-research.json:0",
+      "kind": "review",
+      "source": "detection-reproducibility-research.json",
+      "record_id": "DRR-01",
+      "title": "R+R: From Claims to Crashes: A Systematic Re-evaluation of Graph-Based Network Intrusion Detection Systems",
+      "url": "https://doi.org/10.1109/ACSAC67867.2025.00050",
+      "locator": "/records/0",
+      "ids": {
+        "arxiv": [],
+        "doi": [
+          "10.1109/acsac67867.2025.00050"
+        ],
+        "arxiv_versions": []
+      },
+      "reading_depth": "fulltext_targeted"
+    },
+    {
+      "entry_id": "detection-reproducibility-research.json:2",
+      "kind": "review",
+      "source": "detection-reproducibility-research.json",
+      "record_id": "DRR-03",
+      "title": "CredLeakBench: Evaluating Credential Leakage and Recovery in LLM Agents",
+      "url": "https://arxiv.org/abs/2610.08871v1",
+      "locator": "/records/2",
+      "ids": {
+        "arxiv": [
+          "2610.08871"
+        ],
+        "doi": [
+          "10.48550/arxiv.2610.08871"
+        ],
+        "arxiv_versions": [
+          "2610.08871v1"
+        ]
+      },
+      "reading_depth": "fulltext_targeted"
+    },
+    {
       "entry_id": "detection-response-evaluation.json:0",
       "kind": "review",
       "source": "detection-response-evaluation.json",
@@ -73183,6 +73350,44 @@
         ]
       },
       "reading_depth": "Full HTML, Appendix0.A; figure captions only."
+    },
+    {
+      "entry_id": "host-persistence-provenance.json:0",
+      "kind": "review",
+      "source": "host-persistence-provenance.json",
+      "record_id": "HPP-01",
+      "title": "SoK: Systematization, Detection, and Hunting of Windows Malware Persistence Techniques",
+      "url": "https://www.eurecom.fr/en/publication/8692",
+      "locator": "/records/0",
+      "ids": {
+        "arxiv": [],
+        "doi": [
+          "10.1145/3779208.3805971"
+        ],
+        "arxiv_versions": []
+      },
+      "reading_depth": "relevant full-text methods, validation, results and discussion excerpts"
+    },
+    {
+      "entry_id": "host-persistence-provenance.json:1",
+      "kind": "review",
+      "source": "host-persistence-provenance.json",
+      "record_id": "HPP-02",
+      "title": "Slot: Provenance-Driven APT Detection through Graph Reinforcement Learning",
+      "url": "https://arxiv.org/abs/2410.17910v4",
+      "locator": "/records/1",
+      "ids": {
+        "arxiv": [
+          "2410.17910"
+        ],
+        "doi": [
+          "10.1145/3719027.3744788"
+        ],
+        "arxiv_versions": [
+          "2410.17910v4"
+        ]
+      },
+      "reading_depth": "relevant full-text methods, results and limitations excerpts; conference metadata and Tables 4–6 cross-check"
     },
     {
       "entry_id": "investigation-execution-trust.json:0",
@@ -73881,8 +74086,8 @@
   ],
   "input_manifest_hashes": {
     "search-coverage.json": "6520df317fe24460972ae9146bb14a659b259818d2ccaf34440ea890d442222d",
-    "additional-discovery.json": "4dcc0607160078edf48e5d4e42f4a611c025c35048833f6585c2d5474f44a9b5",
-    "SEARCH-PROTOCOL.md": "6363c39c73cc57f3f20581dbfa0351d2713f1da84e819223306e86bc51fd31bc"
+    "additional-discovery.json": "572eb0f2a2f0f84250aa3d0f8d268fa632bf404d4533dfb401cf9525bed99ded",
+    "SEARCH-PROTOCOL.md": "223345b8fdd9a708af2b301a1edaccaa278fce315df84a7bee2e4775fc6b2e09"
   },
   "parser_sha256": "08157d06e50e65eb71d8562fc188567066b9e2ab385526d96ef2c07d6406ef1c"
 }

@@ -7,7 +7,6 @@ town and condition.
 """
 
 import io
-import os
 import re
 from dataclasses import dataclass, field
 
@@ -15,17 +14,18 @@ import pymupdf
 import pytesseract
 from PIL import Image
 
-os.environ.setdefault("TESSDATA_PREFIX", os.path.expanduser("~/.local/share/tessdata"))
-
-MIN_TEXT_CHARS = 25  # below this a page is treated as a scan and OCR'd
+MIN_TEXT_CHARS = 25  # sparse text also requires rendered-page analysis
+MAX_RENDER_PIXELS = 20_000_000
 
 
 @dataclass
 class Page:
     number: int
     text: str
-    source: str  # "text" or "ocr"
-    image: bytes = b""  # small PNG of scanned pages, for the vision check
+    source: str  # "text", "ocr", or "text+ocr"
+    image: bytes = b""  # rendered page for the vision check
+    has_images: bool = False
+    coverage_issues: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -43,20 +43,48 @@ class Scan:
     pages: list[Page]
     findings: list[Finding] = field(default_factory=list)
     ocr_used: bool = False
+    coverage_issues: list[str] = field(default_factory=list)
 
 
 def extract(pdf: bytes) -> list[Page]:
     pages = []
     with pymupdf.open(stream=pdf, filetype="pdf") as doc:
         for i, page in enumerate(doc, start=1):
-            text = page.get_text().strip()
-            if len(text) >= MIN_TEXT_CHARS:
-                pages.append(Page(i, text, "text"))
+            issues: list[str] = []
+            try:
+                text = page.get_text().strip()
+            except Exception:
+                text = ""
+                issues.append("text_extraction_failed")
+            try:
+                # Includes inline images actually displayed on the page.
+                has_images = bool(page.get_image_info())
+            except Exception:
+                has_images = True
+                issues.append("image_inventory_failed")
+            if len(text) >= MIN_TEXT_CHARS and not has_images:
+                pages.append(Page(i, text, "text", coverage_issues=issues))
                 continue
-            png = page.get_pixmap(dpi=150).tobytes("png")
-            ocr = pytesseract.image_to_string(Image.open(io.BytesIO(png)), lang="spa")
-            small = page.get_pixmap(dpi=60).tobytes("png")
-            pages.append(Page(i, (text + "\n" + ocr).strip(), "ocr", small))
+            source = "text+ocr" if len(text) >= MIN_TEXT_CHARS else "ocr"
+            png = b""
+            try:
+                if page.rect.width * page.rect.height * (150 / 72) ** 2 > MAX_RENDER_PIXELS:
+                    issues.append("page_render_limit")
+                else:
+                    png = page.get_pixmap(dpi=150).tobytes("png")
+            except Exception:
+                issues.append("page_render_failed")
+            if png:
+                try:
+                    with Image.open(io.BytesIO(png)) as image:
+                        ocr = pytesseract.image_to_string(image, lang="spa", timeout=20)
+                    if not isinstance(ocr, str):
+                        raise ValueError("invalid OCR result")
+                    text = (text + "\n" + ocr).strip()
+                except Exception:
+                    # No exception messages: they may contain document contents.
+                    issues.append("ocr_failed")
+            pages.append(Page(i, text, source, png, has_images, issues))
     return pages
 
 
@@ -129,5 +157,10 @@ def deterministic(pages: list[Page]) -> list[Finding]:
 
 
 def scan(pdf: bytes) -> Scan:
-    pages = extract(pdf)
-    return Scan(pages=pages, findings=deterministic(pages), ocr_used=any(p.source == "ocr" for p in pages))
+    try:
+        pages = extract(pdf)
+    except Exception:
+        return Scan(pages=[], coverage_issues=["pdf_extraction_failed"])
+    return Scan(pages=pages, findings=deterministic(pages),
+                ocr_used=any(p.source in ("ocr", "text+ocr") for p in pages),
+                coverage_issues=[] if pages else ["empty_document"])

@@ -107,3 +107,21 @@
 - Fetched origin. Main remained b42bfa2; the new publication-gate branch was inspected separately. Saved a review of fail-open staff access, mixed-content PDF coverage and unavailable context analysis, without altering teammate code or claiming branch tests were executed.
 - No sponsor credentials were used. No LLM integration, public defense deployment, cross-institution policy rollout, production-host protection or hackathon submission was completed. Goal remains active.
 - Publication checks: 51 JSON files parse; 248 authored local Markdown links resolve; all experiment and corpus input/source hashes match; the catalog partitions every entry exactly once; no matches in the limited credential-pattern scan. Corrected the link validator to understand angle-bracket paths containing spaces; the initial failure was a validator parsing issue, not a missing source file.
+
+
+## 2026-10-09 — User-requested Spanish pitch
+
+- Re-read the product proposal and hackathon guide to explain the intended system in ordinary Spanish. No formal curriculum command was invoked.
+- Centered the pitch on containing confirmed credential misuse, rehearsing a repair and independently checking recovery while a separately authorized service continues.
+- Kept the planned sponsor integrations and full autonomous workflow distinct from existing local component experiments; no claim of universal leak prevention or completed deployment.
+
+
+## 2026-10-09 — Preserve the team product and push the learning extension
+
+- User clarified the scope: extend the team's publication gate with incident-derived PDF rules, reusable skills and improvement proposals. Kept BREACHSTOP as a separate future module rather than replacing the team's product.
+- Applied the repository-selected AppBuilder skill and recorded the current phase in `gate/LEARNING-PLAN.md`. Added bounded rule proposals, immutable test/activation versions, rechecks and evidence exports; all use existing staff authorization.
+- Added the requested exposure comparison with explicit counting units, source dates and evidence labels. The bounded research found no independently verified company total supporting a factual national leaderboard. No breach datasets or victim records were collected.
+- Pushed `d65f441` on `codex/incident-learning` after 192 local tests passed. Fetched concurrent teammate changes, including the live activity workspace and architecture document, for integration without overwriting them.
+- Local verification does not establish deployment or actual Akash/Guild/ClickHouse execution. The larger research goal remains incomplete.
+
+- Integrated teammate main through `07451f3`: retained its architecture document and shortened Guild prompt; adapted its latest simple live flow at `/live` with the hardened processing/learning path. Preserved the detailed staff pages and existing tests rather than removing their controls. Final local suite before merge: 214 passed; fictional browser demo completed with provider gaps shown as private/review states.

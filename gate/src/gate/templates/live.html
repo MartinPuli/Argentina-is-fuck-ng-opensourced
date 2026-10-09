@@ -1,0 +1,225 @@
+{% extends "base.html" %}{% block title %}Live activity{% endblock %}{% block body %}
+<style>
+.live-flow{display:grid;grid-template-columns:1fr 1.25fr 1.15fr;gap:18px;margin:28px 0 36px}.live-node{padding:24px}.live-node h2{font-size:18px;margin-bottom:10px}.live-node p{font-size:12px;color:var(--muted);margin-bottom:0}.live-node .step-number{margin-bottom:14px}.live-node.is-busy{border-color:var(--accent)}.live-outcomes{display:grid;gap:10px;margin:0}.live-outcomes div{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:12px}.live-outcomes dt,.live-outcomes dd{margin:0}.live-outcomes dd{font-size:20px;font-weight:600;font-variant-numeric:tabular-nums}.live-columns{display:grid;grid-template-columns:1.15fr 1fr;gap:26px;align-items:start}.live-list{display:grid;gap:14px}.live-job{padding:20px}.live-job .attachment-heading{align-items:flex-start}.live-job h3,.live-review h3{font-size:14px;overflow-wrap:anywhere;margin:0 0 5px}.live-job p,.live-review p{font-size:12px;margin:10px 0;color:var(--muted);overflow-wrap:anywhere}.live-job-links{display:flex;gap:14px;flex-wrap:wrap;font-size:11px;margin-top:12px}.live-steps{display:flex;gap:7px;flex-wrap:wrap;list-style:none;padding:0;margin:14px 0 0}.live-step{font-size:10px;padding:5px 8px;border:1px solid var(--line);border-radius:5px;background:var(--page);color:var(--muted)}.live-step.running{color:var(--accent);background:var(--accent-soft);border-color:#c1d8cb}.live-step.done{color:var(--public);background:var(--accent-soft)}.live-step.error{color:var(--withheld);background:var(--withheld-soft)}.live-review{padding:22px;border-top:3px solid #cfab6b}.live-review .review-actions{margin-top:12px}.live-review .notice{font-size:11px;margin:12px 0}.live-review .field{margin-top:16px}.live-review textarea{min-height:84px}.live-state{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--muted);margin-top:12px;min-height:20px}.live-state-mark{width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0}.live-state-mark.working{background:var(--accent)}.live-tools{margin-top:36px;padding:24px}.live-tools>summary{font-size:15px;font-weight:600;cursor:pointer}.live-tools form{margin-top:24px}.live-submit-status{margin-top:12px;font-size:12px}.live-status-row{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:22px}.live-status-row p{margin:0;font-size:11px;color:var(--muted)}.live-retry{font-size:11px;padding:6px 12px}.live-recheck-link{display:inline-block;font-size:12px;margin:4px 0 10px}.live-error{color:var(--withheld)}.live-review [hidden],.live-job [hidden]{display:none}.live-note{white-space:pre-wrap}.live-reviewer{font-size:11px;color:var(--muted);margin:14px 0 0}.live-static-links{display:flex;gap:18px;flex-wrap:wrap;margin-top:24px;font-size:12px}
+@media(max-width:1080px){.live-flow{grid-template-columns:1fr 1fr}.live-flow>.live-node:last-child{grid-column:1/-1}.live-outcomes{grid-template-columns:repeat(3,1fr)}.live-columns{grid-template-columns:1fr}}@media(max-width:620px){.live-flow{grid-template-columns:1fr;gap:12px}.live-flow>.live-node:last-child{grid-column:auto}.live-outcomes{grid-template-columns:1fr}.live-node,.live-job,.live-review,.live-tools{padding:18px}.live-status-row{align-items:flex-start}.live-review .review-actions{flex-wrap:wrap}}
+</style>
+<div id="live-workspace" data-agent-configured="{{ 'true' if agent_on else 'false' }}">
+<div class="page-heading heading-with-action"><div><div class="section-kicker">From office upload to public decision</div><h1>Keep private files off the public site.</h1><p>Send fictional office files. Follow their checks. Review what needs your decision.</p></div><form method="post" action="/live/demo/seed" data-live-form><button type="submit">Send 8 fictional office files →</button><div class="form-message live-submit-status" role="status" aria-live="polite" hidden></div></form></div>
+<div class="live-flow" aria-label="Office uploads, gate checks, publication outcomes">
+<section class="panel live-node"><span class="step-number">01</span><h2>Office uploads</h2><p>Purchase details and supporting PDFs.</p></section>
+<section class="panel live-node" id="live-gate-node"><span class="step-number">02</span><h2>Gate checks</h2><p>Rules, document analysis and optional reviewer briefs.</p><div class="live-state"><span class="live-state-mark" id="live-state-mark" aria-hidden="true"></span><span id="live-busy">Loading activity…</span></div></section>
+<section class="panel live-node"><span class="step-number">03</span><h2>Publication outcomes</h2><dl class="live-outcomes"><div><dt><span class="badge b-public">Publicly available</span></dt><dd id="live-count-published">—</dd></div><div><dt><span class="badge b-withheld">Kept internal</span></dt><dd id="live-count-blocked">—</dd></div><div><dt><span class="badge b-hold">Needs review</span></dt><dd id="live-count-waiting">—</dd></div></dl><p id="live-stale-count">Current publication checks are verified separately from earlier decisions.</p></section>
+</div>
+<div class="live-status-row"><p id="live-connection" role="status" aria-live="polite">Connecting to this workspace’s activity feed…</p><button type="button" class="btn-secondary live-retry" id="live-refresh">Refresh now</button></div>
+<div class="live-columns"><section aria-labelledby="live-jobs-heading"><div class="section-heading"><h2 id="live-jobs-heading">Files</h2><p>Progress and a reason for each decision.</p></div><div id="live-jobs" class="live-list" aria-busy="true"><div class="empty-state compact"><h3>Loading file activity…</h3></div></div></section>
+<section aria-labelledby="live-waiting-heading"><div class="section-heading"><h2 id="live-waiting-heading">Your call</h2><p>Inspect the original PDF, then record the reason for your decision.</p></div><p class="live-reviewer">Reviewing as <strong>{{ user }}</strong>.</p><div id="live-waiting" class="live-list" aria-busy="true"><div class="empty-state compact"><h3>Loading review requests…</h3></div></div></section></div>
+<details class="panel live-tools"><summary>Upload your own fictional PDFs</summary><form method="post" action="/live/upload" enctype="multipart/form-data" data-live-form>
+<p class="field-hint">Use owned fictional documents only. Purchase fields below become public metadata; do not put patient details in them.</p><div class="form-grid"><div class="field span-two"><label for="live-office">Local office</label><select id="live-office" name="office" required>{% for office in offices %}<option>{{ office }}</option>{% endfor %}</select></div><div class="field"><label for="live-procedure">Procedure reference</label><input id="live-procedure" name="procedure" value="DEMO-LIVE-2026" required maxlength="160"></div><div class="field"><label for="live-amount">Amount in ARS</label><input id="live-amount" name="amount" type="number" min="0" step="0.01" value="1000000" required></div><div class="field span-two"><label for="live-item">Item being purchased</label><input id="live-item" name="item" placeholder="Fictional equipment specification" required maxlength="240"></div></div>
+<div class="upload-area"><label for="live-files">Supporting attachments</label><input id="live-files" name="files" type="file" accept="application/pdf,.pdf" multiple required aria-describedby="live-file-limits live-file-selection"><div id="live-file-selection" class="file-selection" aria-live="polite">No files selected</div><small id="live-file-limits">Up to 8 PDFs · 10 MB per file · 25 MB total · 50 pages per file</small></div><div class="form-footer"><span>Progress appears above after the files enter the queue.</span><button type="submit">Check these files →</button></div><div class="form-message live-submit-status" role="status" aria-live="polite" hidden></div></form></details>
+<div class="live-static-links"><a href="/review">Open the full review queue →</a><a href="/learning">Review learned rules →</a><a href="/public" target="_blank" rel="noopener">Inspect the public portal ↗</a></div><p class="field-hint">Missing model or OCR analysis means review, not silent publication. A configured integration is not evidence that a particular check completed. Previously downloaded copies cannot be recalled.</p>
+<noscript><div class="notice">Live updates require JavaScript. Use the upload forms and follow progress in the <a href="/review">review queue</a> and <a href="/dashboard">audit trail</a>.</div></noscript>
+</div>
+<script>
+(() => {
+  'use strict';
+  const workspace = document.getElementById('live-workspace');
+  const jobsElement = document.getElementById('live-jobs');
+  const waitingElement = document.getElementById('live-waiting');
+  const connectionElement = document.getElementById('live-connection');
+  const reviews = new Map();
+  let jobsSignature = null;
+  let pollInFlight = false;
+  let stopped = false;
+  let timer = null;
+  let authBlocked = false;
+  const labels = {public: 'Published', approved: 'Reviewer approved', hold: 'Needs review', withheld: 'Kept internal', stale: 'Recheck needed', error: 'Check failed'};
+  const badgeClasses = {public: 'b-public', approved: 'b-approved', hold: 'b-hold', withheld: 'b-withheld', stale: 'b-hold', error: 'b-withheld'};
+  const stepStates = new Set(['running', 'done', 'error', 'pending', 'skipped']);
+  const text = value => value == null ? '' : String(value);
+  const numericId = value => /^\d+$/.test(text(value)) && Number(value) > 0 ? text(value) : null;
+  const count = value => Number.isSafeInteger(value) && value >= 0 ? value : 0;
+  function element(tag, className, value) {
+    const node = document.createElement(tag);
+    if (className) node.className = className;
+    if (value !== undefined) node.textContent = text(value);
+    return node;
+  }
+  function safeExternal(value) {
+    if (typeof value !== 'string' || !value) return null;
+    try {
+      const url = new URL(value);
+      return ['https:', 'http:'].includes(url.protocol) && !url.username && !url.password ? url.href : null;
+    } catch (_) { return null; }
+  }
+  function link(label, href, external = false) {
+    const node = element('a', 'text-link', label);
+    node.href = href;
+    if (external) { node.target = '_blank'; node.rel = 'noopener noreferrer'; }
+    return node;
+  }
+  function empty(title, message) {
+    const box = element('div', 'empty-state compact');
+    box.append(element('h3', '', title), element('p', '', message));
+    return box;
+  }
+  async function errorMessage(response) {
+    if (response.status === 401) return 'Your staff session needs authentication. Reload this page to sign in.';
+    let message = 'The request was not confirmed. Check the connection and try again.';
+    try { const body = await response.json(); if (typeof body.detail === 'string') message = body.detail; } catch (_) { /* Keep bounded, readable fallback. */ }
+    return message;
+  }
+  function attachForm(form, approval = false) {
+    form.addEventListener('submit', async event => {
+      event.preventDefault();
+      if (form.dataset.busy === 'true' || !form.reportValidity()) return;
+      const button = event.submitter;
+      if (approval && button?.value === 'approve' && !window.confirm('Publish this exact file? Confirm that you inspected every page and recorded why it is appropriate for public access.')) return;
+      const body = new FormData(form);
+      if (button?.name) body.append(button.name, button.value);
+      const controls = Array.from(form.querySelectorAll('button'));
+      const priorDisabled = controls.map(control => control.disabled);
+      const message = form.querySelector('.form-message');
+      form.dataset.busy = 'true'; form.setAttribute('aria-busy', 'true');
+      controls.forEach(control => { control.disabled = true; });
+      message.hidden = false; message.className = 'form-message loading'; message.setAttribute('role', 'status');
+      message.textContent = approval ? 'Recording your decision…' : 'Validating and queueing the files…';
+      try {
+        const response = await fetch(form.action, {method: 'POST', body, credentials: 'same-origin', cache: 'no-store'});
+        if (!response.ok) throw new Error(await errorMessage(response));
+        message.className = 'form-message';
+        message.textContent = approval ? 'Decision recorded. Refreshing the queue…' : 'Files accepted. Their checks will appear in the activity feed.';
+        authBlocked = false;
+        await poll();
+      } catch (error) {
+        message.className = 'form-message error';
+        message.textContent = error.message || 'Connection failed. The action was not confirmed.';
+        message.setAttribute('role', 'alert');
+      } finally {
+        form.dataset.busy = 'false'; form.removeAttribute('aria-busy');
+        controls.forEach((control, index) => { control.disabled = priorDisabled[index] || control.dataset.policyDisabled === 'true'; });
+      }
+    });
+  }
+  function renderJobs(jobs) {
+    const signature = JSON.stringify(jobs);
+    if (signature === jobsSignature) return;
+    jobsSignature = signature;
+    const nodes = jobs.map(job => {
+      const card = element('article', 'panel live-job');
+      const heading = element('div', 'attachment-heading');
+      const name = element('div', 'attachment-name');
+      name.append(element('h3', '', job.file || 'PDF attachment'), element('span', 'small muted', job.office));
+      const decision = Object.hasOwn(labels, job.decision) ? job.decision : null;
+      heading.append(name, element('span', 'badge ' + (badgeClasses[decision] || 'b-hold'), decision ? labels[decision] : job.done ? 'Check finished' : 'Checking'));
+      const steps = element('ul', 'live-steps');
+      for (const step of Array.isArray(job.steps) ? job.steps : []) {
+        const state = stepStates.has(step.status) ? step.status : 'pending';
+        const item = element('li', 'live-step ' + state, text(step.name) + ' · ' + state);
+        item.title = text(step.detail); steps.append(item);
+      }
+      card.append(heading);
+      if (!job.done) card.append(steps);
+      if (job.why) card.append(element('p', '', job.why));
+      if (job.stale) card.append(element('p', 'live-error', 'An earlier decision is no longer current. Recheck this file before public access.'));
+      const links = element('div', 'live-job-links');
+      const purchaseId = numericId(job.purchase_id);
+      if (purchaseId) links.append(link('Purchase details →', '/purchase/' + purchaseId));
+      const agentUrl = safeExternal(job.agent_url);
+      if (agentUrl) links.append(link('Guild run ↗', agentUrl, true));
+      if (job.stale) links.append(link('Recheck rules →', '/learning'));
+      card.append(links); return card;
+    });
+    jobsElement.replaceChildren(...(nodes.length ? nodes : [empty('No files in the activity feed yet.', 'Send the eight fictional office files or upload your own synthetic PDFs.')]));
+  }
+  function reviewCard(id) {
+    const card = element('article', 'panel live-review');
+    const heading = element('h3');
+    const metadata = element('p');
+    const reason = element('p');
+    const original = link('Inspect original PDF ↗', '/internal/file/' + id, true);
+    const note = element('p', 'live-note');
+    const agentLink = link('Guild run ↗', '#', true); agentLink.hidden = true;
+    const warning = element('div', 'notice');
+    const recheck = link('Recheck current rules →', '/learning'); recheck.classList.add('live-recheck-link');
+    const form = element('form'); form.method = 'post'; form.action = '/review/' + id;
+    const field = element('div', 'field');
+    const label = element('label', '', 'Decision reason'); label.htmlFor = 'live-note-' + id;
+    const input = element('textarea'); input.id = label.htmlFor; input.name = 'note'; input.rows = 2; input.required = true; input.maxLength = 2000;
+    input.placeholder = 'Describe what you inspected and why this decision is appropriate.';
+    field.append(label, input);
+    const actions = element('div', 'review-actions');
+    const reject = element('button', 'btn-secondary', 'Keep internal'); reject.type = 'submit'; reject.name = 'action'; reject.value = 'reject';
+    const approve = element('button', '', 'Approve publication ↗'); approve.type = 'submit'; approve.name = 'action'; approve.value = 'approve';
+    actions.append(reject, approve);
+    const message = element('div', 'form-message'); message.hidden = true; message.setAttribute('role', 'status'); message.setAttribute('aria-live', 'polite');
+    form.append(field, actions, message); attachForm(form, true);
+    card.append(heading, metadata, reason, original, note, agentLink, warning, recheck, form);
+    return {card, heading, metadata, reason, note, agentLink, warning, recheck, form, approve};
+  }
+  function renderWaiting(waiting) {
+    const seen = new Set();
+    for (const item of waiting) {
+      const id = numericId(item.id); if (!id) continue;
+      seen.add(id);
+      let view = reviews.get(id);
+      if (!view) { view = reviewCard(id); reviews.set(id, view); waitingElement.append(view.card); }
+      view.heading.textContent = text(item.file);
+      view.metadata.textContent = text(item.office) + ' · ' + text(item.item);
+      view.reason.textContent = Array.isArray(item.why) ? item.why.map(text).join(' ') : text(item.why);
+      view.note.textContent = item.note ? 'Reviewer brief: ' + text(item.note) : workspace.dataset.agentConfigured === 'true' ? 'No completed reviewer brief is available yet. Inspect the original and findings.' : 'Guild is not configured. Inspect the original document and findings.';
+      const url = safeExternal(item.agent_url); view.agentLink.hidden = !url;
+      if (url) view.agentLink.href = url;
+      const current = item.current === true;
+      view.warning.hidden = current; view.recheck.hidden = current;
+      view.warning.textContent = 'The rules changed. Recheck this file before approving publication.';
+      view.approve.dataset.policyDisabled = item.can_approve === true ? 'false' : 'true';
+      if (view.form.dataset.busy !== 'true') view.approve.disabled = item.can_approve !== true;
+    }
+    for (const [id, view] of reviews) if (!seen.has(id)) { view.card.remove(); reviews.delete(id); }
+    const existingEmpty = waitingElement.querySelector('.empty-state');
+    if (seen.size && existingEmpty) existingEmpty.remove();
+    if (!seen.size) waitingElement.replaceChildren(empty('Nothing is waiting for your decision.', 'A clear queue does not certify that every document is safe.'));
+  }
+  function render(data) {
+    if (!data || !Array.isArray(data.jobs) || !Array.isArray(data.waiting) || !data.counts) throw new Error('The activity feed returned an unexpected response.');
+    const counts = data.counts;
+    for (const name of ['published', 'blocked', 'waiting']) document.getElementById('live-count-' + name).textContent = count(counts[name]);
+    const running = count(counts.processing);
+    document.getElementById('live-busy').textContent = running ? 'Checking ' + running + (running === 1 ? ' file' : ' files') + '…' : 'No file checks are currently running.';
+    document.getElementById('live-gate-node').classList.toggle('is-busy', running > 0);
+    document.getElementById('live-state-mark').classList.toggle('working', running > 0);
+    const stale = count(counts.stale);
+    document.getElementById('live-stale-count').textContent = stale ? stale + (stale === 1 ? ' file needs' : ' files need') + ' the current rules checked before public access.' : 'No stored files are awaiting a rules recheck.';
+    renderJobs(data.jobs); renderWaiting(data.waiting);
+    jobsElement.setAttribute('aria-busy', 'false'); waitingElement.setAttribute('aria-busy', 'false');
+    connectionElement.textContent = 'Activity updated at ' + new Date().toLocaleTimeString() + '. Counts show current stored publication status.';
+    connectionElement.classList.remove('live-error');
+  }
+  async function poll() {
+    if (pollInFlight || stopped || document.hidden || authBlocked) return;
+    pollInFlight = true;
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 10000);
+    try {
+      const response = await fetch('/api/activity', {credentials: 'same-origin', cache: 'no-store', headers: {'Accept': 'application/json'}, signal: controller.signal});
+      if (!response.ok) { if (response.status === 401) authBlocked = true; throw new Error(await errorMessage(response)); }
+      render(await response.json());
+    } catch (error) {
+      connectionElement.textContent = error.message || 'Activity is unavailable. The last displayed results may be stale; retrying.';
+      connectionElement.classList.add('live-error');
+      jobsElement.setAttribute('aria-busy', 'false'); waitingElement.setAttribute('aria-busy', 'false');
+    } finally { clearTimeout(timeout); pollInFlight = false; }
+  }
+  function schedule() { clearTimeout(timer); if (!stopped) timer = setTimeout(async () => { await poll(); schedule(); }, 1500); }
+  document.querySelectorAll('[data-live-form]').forEach(form => attachForm(form));
+  document.getElementById('live-refresh').addEventListener('click', () => { authBlocked = false; poll(); });
+  document.getElementById('live-files').addEventListener('change', event => {
+    const files = Array.from(event.target.files || []);
+    document.getElementById('live-file-selection').textContent = files.length ? files.map(file => file.name).join(' · ') : 'No files selected';
+  });
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) poll(); });
+  window.addEventListener('pagehide', () => { stopped = true; clearTimeout(timer); });
+  poll(); schedule();
+})();
+</script>
+{% endblock %}

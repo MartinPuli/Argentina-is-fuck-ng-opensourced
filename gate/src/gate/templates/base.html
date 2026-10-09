@@ -1,28 +1,34 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>{% block title %}ArgenSec Gate{% endblock %}</title>
-<style>
-:root{--ink:#111827;--muted:#6b7280;--line:#e5e7eb;--bg:#f5f6f8;--card:#fff;--pub:#047857;--pub-bg:#ecfdf5;--wait:#b45309;--wait-bg:#fffbeb;--blk:#b91c1c;--blk-bg:#fef2f2;--accent:#1d4ed8;--top:#111827;--r:12px}
-*{box-sizing:border-box}body{margin:0;font:15px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink);background:var(--bg)}
-header{background:var(--top);color:#fff;padding:12px 20px;display:flex;gap:20px;align-items:center;flex-wrap:wrap}
-header.public{background:#0b4f8a}header a{color:#d1d5db;text-decoration:none}header a:hover{color:#fff}
-header .brand{font-weight:700;color:#fff;margin-right:auto}
-main{max-width:1180px;margin:0 auto;padding:22px 16px 40px}
-h1{font-size:22px;margin:0 0 4px}h2{font-size:13px;margin:0 0 10px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
-.muted{color:var(--muted)}.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px}
-.badge{display:inline-block;font-size:12px;font-weight:700;padding:3px 10px;border-radius:99px}
-.b-public,.b-approved{background:var(--pub-bg);color:var(--pub)}.b-hold{background:var(--wait-bg);color:var(--wait)}.b-withheld{background:var(--blk-bg);color:var(--blk)}
-button,.btn{font:inherit;font-weight:600;border:0;border-radius:9px;padding:9px 16px;background:var(--accent);color:#fff;cursor:pointer;text-decoration:none;display:inline-block}
-.btn-ghost{background:#e5e7eb;color:var(--ink)}.btn-green{background:var(--pub)}.btn-red{background:var(--blk)}
-input,select{font:inherit;padding:8px 10px;border:1px solid var(--line);border-radius:8px;width:100%}
-table{width:100%;border-collapse:collapse}td,th{padding:8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{font-size:12px;color:var(--muted);text-transform:uppercase}
-.mono{font-family:ui-monospace,Menlo,monospace;font-size:13px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}.stat{font-size:28px;font-weight:700}
-footer{max-width:1180px;margin:0 auto;padding:0 16px 24px;font-size:12px;color:var(--muted)}
-</style></head><body>
-{% block header %}
-<header><a class="brand" href="/">ArgenSec Gate</a><a href="/">Live</a><a href="/public">Public site ↗</a><a href="/dashboard">Log</a></header>
-{% endblock %}
-<main>{% block body %}{% endblock %}</main>
-<footer>{% block footer %}Demo data. People and records are fictional.{% endblock %}</footer>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 40 40%27%3E%3Crect width=%2740%27 height=%2740%27 rx=%279%27 fill=%27%23126a58%27/%3E%3Ctext x=%278%27 y=%2727%27 font-family=%27sans-serif%27 font-size=%2723%27 fill=%27white%27%3Epg%3C/text%3E%3C/svg%3E"><meta name="color-scheme" content="light"><title>{% block title %}Overview{% endblock %} · Publication Gate</title>
+<style>{% include "ui.css" %}</style></head>
+{% set is_public = request.url.path.startswith('/public') %}
+<body class="{{ 'public-view' if is_public else 'staff-view' }}">
+<a class="skip-link" href="#content">Skip to content</a>
+{% if not is_public %}
+<aside class="sidebar" aria-label="Workspace navigation">
+<a class="brand" href="/"><span class="brand-mark" aria-hidden="true">ag</span><span>ArgenSec<span class="brand-sub">Publication Gate</span></span></a>
+<div class="workspace-label">Defense workspace</div>
+<nav>
+{% for href, label, symbol in [('/', 'Overview', '◫'), ('/live', 'Live activity', '◉'), ('/office', 'New purchase', '+'), ('/review', 'Review queue', '≡'), ('/learning', 'Learning library', '◇'), ('/exposures', 'Argentina exposures', '↗'), ('/dashboard', 'Audit trail', '⌁')] %}
+<a href="{{ href }}" class="nav-link {{ 'active' if (request.url.path == href or (href == '/learning' and request.url.path.startswith('/learning/'))) else '' }}" {% if (request.url.path == href or (href == '/learning' and request.url.path.startswith('/learning/'))) %}aria-current="page"{% endif %}><span class="nav-symbol" aria-hidden="true">{{ symbol }}</span>{{ label }}</a>
+{% endfor %}
+</nav>
+<a class="portal-link" href="/public"><span>Public portal</span><span aria-hidden="true">↗</span></a>
+<div class="sidebar-bottom"><div class="integration-heading">Workspace setup</div>
+<div class="integration"><span>AkashML</span><span class="connection {{ 'configured' if llm_on else '' }}">{{ 'Configured' if llm_on else 'Not configured' }}</span></div>
+<div class="integration"><span>Guild</span><span class="connection {{ 'configured' if agent_on else '' }}">{{ 'Configured' if agent_on else 'Not configured' }}</span></div>
+<div class="integration"><span>Audit storage</span><span>{{ 'ClickHouse' if events_backend == 'ClickHouse' else 'Local' }}</span></div>
+<p>Configuration is shown here. Individual case results confirm execution.</p></div>
+</aside>
+{% else %}
+<header class="public-header"><a class="brand" href="/public"><span class="brand-mark" aria-hidden="true">pg</span><span>Public procurement</span></a><a class="text-link" href="/">Staff workspace ↗</a></header>
+{% endif %}
+<div class="app-shell">
+{% if not is_public %}<header class="topbar"><span>Publication Gate <span class="crumb" aria-hidden="true">/</span> <span class="topbar-label">{{ self.title() }}</span></span><span class="demo-label">Fictional demo</span></header>{% endif %}
+<main id="content" tabindex="-1">{% block body %}{% endblock %}</main>
+<footer class="page-footer"><span>Fictional records. No government system is connected.</span><a href="https://github.com/MartinPuli/Argentina-is-fuck-ng-opensourced" target="_blank" rel="noopener noreferrer">Open-source project ↗</a></footer>
+</div>
+<script>{% include "ui.js" %}</script>
 </body></html>
