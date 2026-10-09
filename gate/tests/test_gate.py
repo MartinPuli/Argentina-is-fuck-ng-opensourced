@@ -200,7 +200,7 @@ def test_public_page_says_the_data_is_fictional(web):
     portal = web.anonymous.get("/public")
     assert portal.status_code == 200
     assert "Demo · fictional data" in portal.text
-    assert "Demo. All people and records are fictional." in portal.text
+    assert "All people and records are fictional" not in portal.text
 
 
 @pytest.mark.parametrize("route,label", [
