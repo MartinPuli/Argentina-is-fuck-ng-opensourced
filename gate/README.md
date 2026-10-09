@@ -1,6 +1,6 @@
 # ArgenSec Gate (Publication Gate)
 
-ArgenSec Gate checks every PDF before PAMI, Argentina's health insurer for retirees, publishes it on its public purchase site. In May 2026, [Chequeado found](https://chequeado.com/investigaciones/pami-expone-datos-medicos-y-documentos-sensibles-de-sus-afiliados-en-su-sitio-web/) medical histories, disability certificates and ID card copies on that site. Nothing checked the files first. This is that check.
+ArgenSec Gate checks every PDF before PAMI, Argentina's national health insurer for retirees and pensioners (about 5 million members), publishes it on its public purchase site. In May 2026, [Chequeado found](https://chequeado.com/investigaciones/pami-expone-datos-medicos-y-documentos-sensibles-de-sus-afiliados-en-su-sitio-web/) medical histories, disability certificates and ID card copies on that site. Nothing checked the files first. This is that check.
 
 Live demo: [argensec.pujia.ar](https://argensec.pujia.ar). Video script: [DEMO.md](DEMO.md). Security review: [SEMGREP-REPORT.md](SEMGREP-REPORT.md) and [issue #2](https://github.com/MartinPuli/Argentina-is-fuck-ng-opensourced/issues/2).
 
@@ -39,7 +39,7 @@ The app drives the loop. The orchestrator prompt allows native sub-agent calls, 
 
 ## Sponsor tools
 
-- **ClickHouse:** data storage and analysis at PAMI scale. It holds the audit log of every decision, cleaned copy, agent verdict and human review. It also holds 1,000,000 clearly labeled simulated history events ([simulate_history.py](scripts/simulate_history.py)). The History page (`/dashboard`, linked from Live) runs live queries on them: unsafe uploads by UGL, by data type, by month, and files affected by a rule update. Each shows its measured query time.
+- **ClickHouse:** data storage and analysis at PAMI scale. It holds the audit log of every decision, cleaned copy, agent verdict and human review. It also holds 1,000,000 clearly labeled simulated history events ([simulate_history.py](scripts/simulate_history.py)). The History page (`/dashboard`, linked from Live) runs live queries on them: unsafe uploads by UGL (PAMI's local offices), by data type, by month, and files affected by a rule update. Each shows its measured query time.
 - **AkashML:** inference. An open text model (`openai/gpt-oss-120b`) reads each file for re-identification risk and lists exact phrases to remove. A vision model (`Qwen/Qwen3.8-27B`) reads scanned pages. Code: [llm.py](src/gate/llm.py).
 - **Guild.ai:** runs the agent procedure above.
 - **Pi Security:** not connected. Pi's hosted connector needs a Pi tenant and an OAuth sign-in, and the event gives no Pi access. [pi_context.py](src/gate/pi_context.py) holds the read-only `PiContextProvider` contract from [the Pi plan](../docs/research/PI-IMPLEMENTATION-PLAN.md), plus bounds on any returned text. The only provider reports `not_connected`. `/api/pi/status` shows why and what access is needed. No decision uses Pi, and nothing is labeled a Pi result without a Pi reference ID.

@@ -2,7 +2,7 @@
 
 ## Hackathon build: ArgenSec Gate
 
-ArgenSec Gate checks every PDF before PAMI publishes it on its public purchase site. Clean files are published. When patient details can be removed, a cleaned copy is published instead. Everything else stays private automatically, and people audit the outcome afterward. In a measured run on the live site, 9 of 9 files finished without a person in 68.5 seconds: 2 published, 3 cleaned, 4 withheld. All documents are fictional.
+ArgenSec Gate checks every PDF before PAMI, Argentina's national health insurer for retirees and pensioners (about 5 million members), publishes it on its public purchase site. Clean files are published. When patient details can be removed, a cleaned copy is published instead. Everything else stays private automatically, and people audit the outcome afterward. In a measured run on the live site, 9 of 9 files finished without a person in 68.5 seconds: 2 published, 3 cleaned, 4 withheld. All documents are fictional.
 
 **Try it:** open [Live](https://argensec.pujia.ar/live) and choose **Test data > Load synthetic files**. Watch the **Agent log** and each file's step timeline. Then open **Review** ("Restricted automatically"), the [Public](https://argensec.pujia.ar/public) page and the [History](https://argensec.pujia.ar/dashboard) page.
 

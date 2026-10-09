@@ -1,6 +1,6 @@
 # ArgenSec Gate
 
-A set of agents that checks every PDF before PAMI, Argentina's health insurer for retirees, publishes it, so patient files stop reaching the public web.
+A set of agents that checks every PDF before PAMI, Argentina's national health insurer for retirees and pensioners (about 5 million members), publishes it, so patient files stop reaching the public web.
 
 ## What it does
 
@@ -21,7 +21,7 @@ In May 2026, [Chequeado](https://chequeado.com/investigaciones/pami-expone-datos
 
 ## Sponsor tools
 
-- **ClickHouse:** data storage and analysis at PAMI scale. It holds the audit log of every decision, plus 1,000,000 clearly labeled simulated history events. The History page (`/dashboard`) runs live queries on them: unsafe uploads by UGL, by data type, by month, and files affected by a rule update. Each shows its measured query time.
+- **ClickHouse:** data storage and analysis at PAMI scale. It holds the audit log of every decision, plus 1,000,000 clearly labeled simulated history events. The History page (`/dashboard`) runs live queries on them: unsafe uploads by UGL (PAMI's local offices), by data type, by month, and files affected by a rule update. Each shows its measured query time.
 - **AkashML:** inference. An open text model (`openai/gpt-oss-120b`) reads each file for re-identification risk and lists exact phrases to remove. A vision model (`Qwen/Qwen3.8-27B`) reads scanned pages.
 - **Semgrep:** reviewed the AI-written code. [Issue #2](https://github.com/MartinPuli/Argentina-is-fuck-ng-opensourced/issues/2) reports findings and fixes. Semgrep's first scan ([raw output](https://github.com/MartinPuli/Argentina-is-fuck-ng-opensourced/blob/main/gate/semgrep/initial-scan.json)) found that the review forms had no CSRF protection, so any website could make a signed-in reviewer approve a held medical file. We fixed it with a same-origin check and a test. The later scan's findings were false positives. Our own review found two more bugs, in rechecks and public files, now fixed.
 - **Guild.ai:** runs the agent procedure. An orchestrator agent classifies information into three clearance levels (clinical, procurement, public). A public agent lists what to remove so the document conforms to the public level. The app redacts it. A public review agent checks the cleaned copy and sends feedback back to the public agent until it passes (max 3 rounds). Otherwise the file is restricted automatically. A reviewer-note agent writes a note for each held file. The app drives the loop, because native sub-agent calls did not trigger. Every step runs as its own Guild session. The app polls only the agents' answers and runs at most four Guild calls at once, so a batch of files does not time out.
