@@ -59,3 +59,36 @@ def review(text: str) -> dict | None:
         return result
     except Exception as exc:  # the gate must keep working when the model does not
         return {"error": f"{type(exc).__name__}: {exc}"[:300]}
+
+
+IMAGE_PROMPT = """This image is one page of an attachment to a public government purchase \
+record. Say what it shows. Reply with JSON only:
+{"kind": short description, "personal_data": bool, "health_data": bool,
+ "medical_image": bool, "safe_for_public": bool}
+personal_data: an ID card, a face, a signature, or a named form. health_data or \
+medical_image: an x-ray, scan, endoscopy, wound or injury photo, or clinical record."""
+
+
+def review_image(png: bytes) -> dict | None:
+    """Vision check for pages with no usable text, such as photos and x-rays."""
+    if not configured():
+        return None
+    import base64
+
+    client = OpenAI(api_key=os.environ["AKASHML_API_KEY"],
+                    base_url=os.getenv("AKASHML_BASE_URL", "https://api.akashml.com/v1"), timeout=45)
+    try:
+        resp = client.chat.completions.create(
+            model=os.getenv("AKASHML_VISION_MODEL", "Qwen/Qwen3.8-27B"),
+            messages=[{"role": "user", "content": [
+                {"type": "text", "text": IMAGE_PROMPT},
+                {"type": "image_url", "image_url": {"url": "data:image/png;base64," + base64.b64encode(png).decode()}},
+            ]}],
+            temperature=0, max_tokens=600, response_format={"type": "json_object"},
+        )
+        raw = resp.choices[0].message.content or ""
+        result = json.loads(raw[raw.find("{"): raw.rfind("}") + 1])
+        result["model"] = resp.model
+        return result
+    except Exception as exc:
+        return {"error": f"{type(exc).__name__}: {exc}"[:300]}

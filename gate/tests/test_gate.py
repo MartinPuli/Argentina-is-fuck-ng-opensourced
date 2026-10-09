@@ -25,6 +25,7 @@ EXPECTED = {
     "dni_escaneado.pdf": "withheld",
     "certificado_discapacidad.pdf": "withheld",
     "especificacion_protesis.pdf": "hold",
+    "radiografia_muñon.pdf": "hold",  # image only: unreadable without the vision model
     # No identifier and no clinical keyword: only the model can see the risk.
     "especificacion_cama.pdf": "public",
 }

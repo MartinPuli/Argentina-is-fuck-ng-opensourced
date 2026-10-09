@@ -62,7 +62,8 @@ def evaluate(pdf: bytes) -> tuple:
     started = time.perf_counter()
     result = scan(pdf)
     model = llm.review("\n\n".join(p.text for p in result.pages))
-    decision, reasons, findings = decide(result, model)
+    images = [llm.review_image(p.image) if p.image else None for p in result.pages]
+    decision, reasons, findings = decide(result, model, images)
     return model, decision, reasons, findings, (time.perf_counter() - started) * 1000
 
 

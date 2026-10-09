@@ -14,16 +14,24 @@ from .detect import Finding, Scan
 PUBLIC, HOLD, WITHHELD = "public", "hold", "withheld"
 
 
-def decide(scan: Scan, model: dict | None) -> tuple[str, list[str], list[dict]]:
+def decide(scan: Scan, model: dict | None, images: list[dict] | None = None) -> tuple[str, list[str], list[dict]]:
     findings: list[Finding] = list(scan.findings)
     reasons: list[str] = []
+    for page_no, img in enumerate(images or [], start=1):
+        if img and "error" not in img and (img.get("personal_data") or img.get("health_data")
+                                           or img.get("medical_image") or not img.get("safe_for_public", True)):
+            findings.append(Finding("model_image", "Image shows personal or medical content",
+                                    str(img.get("kind", ""))[:120], page_no, "review", "health"))
 
     if any(f.severity == "block" for f in findings):
         reasons.append("Contains personal or health identifiers. Kept in the internal file.")
         return WITHHELD, reasons, [asdict(f) for f in findings]
 
     decision = PUBLIC
-    if any(f.severity == "review" for f in findings):
+    if any(f.kind == "model_image" for f in findings):
+        decision = HOLD
+        reasons.append("The vision model sees personal or medical content in an image.")
+    if any(f.severity == "review" and f.kind != "model_image" for f in findings):
         decision = HOLD
         reasons.append("Clinical language without a direct identifier. A person must check re-identification risk.")
 

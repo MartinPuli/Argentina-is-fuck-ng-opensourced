@@ -64,6 +64,27 @@ def scanned_pdf(path: Path, lines: list[tuple[str, int]], tilt: float = 0.6) -> 
     doc.save(path)
 
 
+def xray_pdf(path: Path) -> None:
+    """A drawn x-ray of a leg below a knee: a medical image with no readable text."""
+    img = Image.new("L", (1240, 1754), 8)
+    d = ImageDraw.Draw(img)
+    d.rounded_rectangle((470, 140, 770, 1500), radius=140, fill=55)  # soft tissue
+    d.rounded_rectangle((585, 160, 655, 760), radius=30, fill=225)  # femur
+    d.ellipse((540, 720, 700, 860), fill=235)  # knee
+    d.rounded_rectangle((560, 850, 640, 1150), radius=25, fill=215)  # tibia stump
+    d.line((560, 1150, 640, 1150), fill=120, width=6)  # amputation line
+    d.ellipse((900, 150, 1020, 270), outline=200, width=6)  # side marker
+    d.text((935, 180), "D", fill=200, font=_font(70))
+    img = img.convert("RGB")
+    ImageDraw.Draw(img).text((110, 1620), WATERMARK, fill=(170, 20, 20), font=_font(30))
+    buf = io.BytesIO()
+    img.save(buf, format="JPEG", quality=80)
+    doc = fitz.open()
+    page = doc.new_page()
+    page.insert_image(page.rect, stream=buf.getvalue())
+    doc.save(path)
+
+
 def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     patient_cuil = cuit("27", "31846275")
@@ -144,6 +165,8 @@ def main() -> None:
         "Entrega e instalación en domicilio dentro de las 72 horas.",
     ])
 
+    xray_pdf(OUT / "radiografia_muñon.pdf")
+
     purchases = [
         {
             "office": "UGL XXIII Jujuy",
@@ -163,7 +186,7 @@ def main() -> None:
             "procedure": "Compulsa abreviada 1057/2026",
             "item": "Prótesis transfemoral",
             "amount": 9200000,
-            "files": ["especificacion_protesis.pdf"],
+            "files": ["especificacion_protesis.pdf", "radiografia_muñon.pdf"],
         },
         {
             "office": "UGL XIX Misiones",

@@ -25,6 +25,7 @@ class Page:
     number: int
     text: str
     source: str  # "text" or "ocr"
+    image: bytes = b""  # small PNG of scanned pages, for the vision check
 
 
 @dataclass
@@ -54,7 +55,8 @@ def extract(pdf: bytes) -> list[Page]:
                 continue
             png = page.get_pixmap(dpi=150).tobytes("png")
             ocr = pytesseract.image_to_string(Image.open(io.BytesIO(png)), lang="spa")
-            pages.append(Page(i, (text + "\n" + ocr).strip(), "ocr"))
+            small = page.get_pixmap(dpi=60).tobytes("png")
+            pages.append(Page(i, (text + "\n" + ocr).strip(), "ocr", small))
     return pages
 
 

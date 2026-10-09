@@ -65,5 +65,5 @@ Every person, number and diagnosis in [fixtures](fixtures/make_fixtures.py) is i
 ## Limits
 
 - Pattern checks miss identifiers in formats they don't know, and OCR can misread poor scans. Low-confidence scans are held, not published.
-- Medical images without text (photos of injuries, endoscopy frames) need a vision model. The code doesn't do this yet.
+- Scanned pages also go to a vision model (Qwen3.8-27B on AkashML). It recognized the scanned DNI. It did not recognize our hand-drawn x-ray, and the gate held that file anyway because unreadable scans never publish. Real medical photos are untested.
 - The gate protects what passes through it. It cannot remove copies that were already downloaded, and it cannot stop an office that uploads to the public site by another path.
