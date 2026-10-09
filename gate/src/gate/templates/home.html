@@ -1,6 +1,6 @@
 {% extends "base.html" %}{% block title %}Documents{% endblock %}{% block body %}
-<link rel="stylesheet" href="/assets/workspace.css">
+<link rel="stylesheet" href="{{ asset_url('workspace.css') }}">
 <div id="document-workspace"><div class="page-heading"><h1>Documents</h1></div><p role="status">Loading…</p></div>
 <noscript><p>JavaScript is required for the document list.</p><a href="/review">Review files</a> · <a href="/office">Upload PDF</a></noscript>
-<script type="module" src="/assets/workspace.js"></script>
+<script type="module" src="{{ asset_url('workspace.js') }}"></script>
 {% endblock %}

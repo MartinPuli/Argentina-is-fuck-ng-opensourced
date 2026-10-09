@@ -45,8 +45,21 @@ MAX_PDF_PAGES = 50
 MAX_REVIEW_NOTE = 2000
 
 app = FastAPI(title="Publication Gate")
-app.mount("/assets", StaticFiles(directory=Path(__file__).parent / "static", check_dir=False), name="assets")
+STATIC = Path(__file__).parent / "static"
+app.mount("/assets", StaticFiles(directory=STATIC, check_dir=False), name="assets")
 templates = Jinja2Templates(directory=Path(__file__).parent / "templates")
+
+
+def asset_url(name: str) -> str:
+    """Content-versioned URL so a CDN never keeps serving a stale bundle or a cached 404 after a deploy."""
+    try:
+        version = hashlib.sha256((STATIC / name).read_bytes()).hexdigest()[:12]
+    except OSError:
+        version = "missing"
+    return f"/assets/{name}?v={version}"
+
+
+templates.env.globals["asset_url"] = asset_url
 templates.env.filters["money"] = lambda v: f"$ {v:,.0f}".replace(",", ".")
 templates.env.filters["fromjson"] = lambda v: json.loads(v) if v else None
 templates.env.filters["web_url"] = lambda v: v if isinstance(v, str) and urlsplit(v).scheme in ("http", "https") else ""

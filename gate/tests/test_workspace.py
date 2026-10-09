@@ -2,6 +2,7 @@
 
 import importlib
 import json
+import re
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -70,6 +71,15 @@ def test_home_keeps_the_template_and_authenticated_identity(workspace):
     assert response.status_code == 200
     assert response.template.name == "home.html"
     assert response.context["user"] == AUTH[0]
+
+
+def test_home_loads_content_versioned_assets_that_exist(workspace):
+    # A CDN cached a 404 for the unversioned /assets/workspace.js for hours, leaving "Loading…" forever.
+    html = workspace.client.get("/", auth=AUTH).text
+    urls = re.findall(r'(?:src|href)="(/assets/workspace\.(?:js|css)\?v=[0-9a-f]{12})"', html)
+    assert len(urls) == 2
+    for url in urls:
+        assert workspace.client.get(url).status_code == 200
 
 
 def test_empty_workspace_reports_real_zeroes_and_is_not_cacheable(workspace):
