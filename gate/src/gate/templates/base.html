@@ -13,24 +13,23 @@
 <body class="{{ 'public-view' if is_public else 'staff-view' }}">
 <a class="skip-link" href="#content">Skip to content</a>
 {% if not is_public %}
-<aside class="sidebar" aria-label="Workspace navigation">
-<div class="shell-bar">
-<a class="shell-brand" href="/" aria-label="ArgenSec Publication Gate, home">{{ brand.wordmark(size=19, variant="dark") }}<small class="shell-tagline">{{ brand.tagline() }}</small></a>
-<button type="button" class="nav-toggle" aria-expanded="false" aria-controls="shell-nav"><span class="nav-toggle-icon" aria-hidden="true"></span><span class="nav-toggle-text">Menu</span></button>
-</div>
-<nav id="shell-nav" class="shell-nav">
-{% macro nav_item(href, label, icon, extra='') -%}
+<header class="pillbar-wrap">
+<nav class="pillbar" aria-label="Workspace navigation">
+<a class="pill-brand" href="/" aria-label="ArgenSec Publication Gate, home"><span class="pill-brand-full">{{ brand.wordmark(size=15, variant="light") }}</span><span class="pill-brand-mark">{{ brand.logo(size=24, variant="light") }}</span></a>
+<span class="pill-sep" aria-hidden="true"></span>
+<div class="pill-links">
+{% macro nav_item(href, label, extra='') -%}
 {% set selected = path == href or (href != '/' and path.startswith(href + '/')) or (href == '/' and path.startswith('/purchase/')) %}
-<a href="{{ href }}" class="nav-link {{ 'active' if selected else '' }}" {% if selected %}aria-current="page"{% endif %}><span class="nav-icon ni-{{ icon }}" aria-hidden="true"></span><span>{{ label }}</span>{{ extra|safe }}</a>
+<a href="{{ href }}" class="pill-link {{ 'active' if selected else '' }}" {% if selected %}aria-current="page"{% endif %}>{{ label }}{{ extra|safe }}</a>
 {%- endmacro %}
-<div class="nav-group">
-{{ nav_item('/', 'Documents', 'docs') }}
-{{ nav_item('/live', 'Live', 'live') }}
-{{ nav_item('/review', 'Review', 'review', '<span class="nav-count" data-review-count hidden></span>') }}
+{{ nav_item('/', 'Documents') }}
+{{ nav_item('/live', 'Live') }}
+{{ nav_item('/review', 'Review', '<span class="nav-count" data-review-count hidden></span>') }}
+<span class="pill-sep" aria-hidden="true"></span>
+<a class="pill-link pill-external" href="/public" target="_blank" rel="noopener">Public<span class="pill-ext-word"> site</span><span class="pill-ext-arrow" aria-hidden="true">↗</span></a>
 </div>
-<a class="nav-link nav-external" href="/public" target="_blank" rel="noopener"><span>Public site</span><span aria-hidden="true">↗</span></a>
 </nav>
-</aside>
+</header>
 {% else %}
 <header class="public-header"><a class="brand shell-brand" href="/public"><span class="shell-mark" aria-hidden="true"></span><span><strong>Public procurement</strong><small>Published files only</small></span></a><a class="text-link" href="/">Staff workspace</a></header>
 {% endif %}
