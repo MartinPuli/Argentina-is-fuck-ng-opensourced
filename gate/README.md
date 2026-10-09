@@ -13,7 +13,7 @@ All documents are fictional. No real government system is connected. Detection c
 3. An AkashML text model reads the text. It flags re-identification risk, such as age plus town plus hospital, and lists the exact phrases that point to a person.
 4. Rules learned from documented incidents run too (see below).
 5. The gate decides. Clean files are published. Wholly clinical or identity files are kept private. Files with removable patient details go to the Guild clearance loop. Anything uncertain waits for a person. With `GATE_AUTONOMOUS=1`, it is restricted automatically instead (see [Autonomous mode](#autonomous-mode)).
-6. The public download route checks the decision and the rule version on every request. Public files get neutral names like `compra-12-adjunto-34.pdf`, because an upload name can contain a patient's name.
+6. The public download route checks the decision and the rule version on every request. Public files get neutral names like `compra-12-adjunto-34.pdf`, because an upload name can contain a patient's name. The public page is titled "PAMI · Public procurement", shows a demo badge and a fictional-data footer, and opens in a new tab from the staff side.
 
 Models can only add caution. A rule-based block is final. A missing or failed check keeps the file private.
 
@@ -39,7 +39,7 @@ The app drives the loop. The orchestrator prompt allows native sub-agent calls, 
 
 ## Sponsor tools
 
-- **ClickHouse:** data storage and analysis at PAMI scale. It holds the audit log of every decision, cleaned copy, agent verdict and human review. It also holds 1,000,000 clearly labeled simulated history events ([simulate_history.py](scripts/simulate_history.py)). The `/dashboard` page runs live queries on them: unsafe uploads by UGL, by data type, by month, and files affected by a rule update. Each shows its measured query time.
+- **ClickHouse:** data storage and analysis at PAMI scale. It holds the audit log of every decision, cleaned copy, agent verdict and human review. It also holds 1,000,000 clearly labeled simulated history events ([simulate_history.py](scripts/simulate_history.py)). The History page (`/dashboard`, linked from Live) runs live queries on them: unsafe uploads by UGL, by data type, by month, and files affected by a rule update. Each shows its measured query time.
 - **AkashML:** inference. An open text model (`openai/gpt-oss-120b`) reads each file for re-identification risk and lists exact phrases to remove. A vision model (`Qwen/Qwen3.8-27B`) reads scanned pages. Code: [llm.py](src/gate/llm.py).
 - **Guild.ai:** runs the agent procedure above.
 - **Pi Security:** not connected. Pi's hosted connector needs a Pi tenant and an OAuth sign-in, and the event gives no Pi access. [pi_context.py](src/gate/pi_context.py) holds the read-only `PiContextProvider` contract from [the Pi plan](../docs/research/PI-IMPLEMENTATION-PLAN.md), plus bounds on any returned text. The only provider reports `not_connected`. `/api/pi/status` shows why and what access is needed. No decision uses Pi, and nothing is labeled a Pi result without a Pi reference ID.
@@ -49,7 +49,13 @@ The app drives the loop. The orchestrator prompt allows native sub-agent calls, 
 
 [argensec.pujia.ar](https://argensec.pujia.ar) runs with `GATE_OPEN_DEMO=1`, so judges can open staff pages without a login. All data there is fictional. This setting is for the demo only. Never set it in a real deployment.
 
-On **Activity** (`/live`), open **Test data** and press **Load synthetic files** to run the demo. Press **Clear workspace** to clear purchases and files between takes. Rules and the audit history stay.
+The staff navbar has Documents, Live, Review and Public ↗. The home page has a hero with the flow diagram and an **Upload a PDF** button (`/office`). Rules (`/learning`), Exposures (`/exposures`) and History (`/dashboard`) are not in the navbar. Open them by URL or from page links.
+
+On **Live** (`/live`), open **Test data** and press **Load synthetic files** to run the demo. Press **Clear workspace** to clear purchases and files between takes. Rules and the audit history stay.
+
+The live site runs with `GATE_AUTONOMOUS=1`. In a measured run on October 9, 2026, 9 of 9 files finished without a person in 68.5 seconds: 2 published, 3 cleaned, 4 withheld.
+
+Deploys from `main` run the tests first. The proxy holds requests while the server restarts, so a deploy does not show errors.
 
 ## Run locally
 
@@ -73,7 +79,7 @@ Start the application locally, explicitly disabling optional sponsor calls even 
 AKASHML_API_KEY= GUILD_WORKSPACE= GUILD_AGENT= CLICKHOUSE_HOST= uv run --frozen uvicorn gate.app:app --host 127.0.0.1 --port 8765
 ```
 
-Open [Documents](http://127.0.0.1:8765) and sign in with the configured account. Select **Upload PDF** to submit documents; synthetic fixtures are available under **Test data**. Use the same hostname throughout the session; mutating requests require a matching browser origin. Follow [DEMO.md](DEMO.md) for the complete review and public-download sequence.
+Open [Documents](http://127.0.0.1:8765) and sign in with the configured account. Select **Upload a PDF** to submit documents; synthetic fixtures are available under **Test data**. Use the same hostname throughout the session; mutating requests require a matching browser origin. Follow [DEMO.md](DEMO.md) for the complete review and public-download sequence.
 
 The committed fictional PDFs are ready to use. Spanish OCR additionally needs Tesseract and `spa.traineddata`; `TESSDATA_PREFIX` can identify an existing language-data directory. If required OCR is unavailable or fails, the affected file remains nonpublic pending review. Local tests can also run without OCR.
 
@@ -127,7 +133,7 @@ Uploads accept up to eight PDFs, 10 MiB per file, 25 MiB combined and 50 pages p
 
 ## Learn from incidents without turning reports into authority
 
-Open **Rules** at `/learning`. Two sourced cases have authored local recipes: PAMI supporting attachments and a fictional payroll-publication adaptation of Río Negro reporting. The latter does not establish that the actual incident involved public PDFs. Recipes work with sponsor calls disabled; they are authored engineering checks, not rules autonomously discovered from a breach.
+Open **Rules** at `/learning`. It is not in the navbar. Two sourced cases have authored local recipes: PAMI supporting attachments and a fictional payroll-publication adaptation of Río Negro reporting. The latter does not establish that the actual incident involved public PDFs. Recipes work with sponsor calls disabled; they are authored engineering checks, not rules autonomously discovered from a breach.
 
 The workflow is **source → candidate → example tests → authenticated activation → recheck existing PDFs → export**. Each candidate stores source status, literal phrase groups, an action restricted to `hold` or `withheld`, fictional positive/benign examples, improvement proposals and an immutable digest. All phrase groups must match, with any alternative within a group sufficient. Passing the authored examples is not independent accuracy evidence.
 
@@ -152,7 +158,7 @@ The bundle contains `SKILL.md`, an improvement proposal and saved evidence. Expo
 ## Sponsor setup and limits
 
 - **AkashML:** set `AKASHML_API_KEY`. Defaults are `openai/gpt-oss-120b` and `Qwen/Qwen3.8-27B`. It also drafts inactive rule candidates from new incident reports. An open model does not by itself guarantee private processing or retention.
-- **Guild.ai:** needs the `guild` CLI signed in on the host, plus `GUILD_WORKSPACE` and `GUILD_AGENT` (the reviewer-note agent). Agent definitions are in the `guild-*/` folders. If Guild does not answer, the file stays private.
+- **Guild.ai:** needs the `guild` CLI signed in on the host, plus `GUILD_WORKSPACE` and `GUILD_AGENT` (the reviewer-note agent). Agent definitions are in the `guild-*/` folders. The app polls only the agent's answer events and runs at most four Guild calls at once, so a batch of files queues instead of timing out. If Guild does not answer, the file stays private.
 - **ClickHouse:** set `CLICKHOUSE_HOST` and credentials. Without it, events go to SQLite and the simulated history panel is hidden. Fill the simulated table with `uv run python scripts/simulate_history.py --rows 1000000`. Every row is flagged `simulated = 1`.
 - **Semgrep:** raw output is in [semgrep/](semgrep/). The first scan is [initial-scan.json](semgrep/initial-scan.json). The scans after the fix are [before.json](semgrep/before.json) and [after.json](semgrep/after.json).
 
@@ -174,7 +180,7 @@ Application code, templates, static assets and fictional fixtures are available 
 
 ## Live activity and exposure comparison
 
-`/live` retains the team's live processing view alongside the detailed `/office`, `/review` and learning screens. Live uploads run in background threads; the staff-only `/api/activity` reports actual processing steps. This small-demo queue is in memory, is not durable across restarts, and is not shared across multiple workers.
+`/live` retains the team's live processing view alongside the detailed `/office`, `/review` and learning screens. Live uploads run in background threads; the staff-only `/api/activity` reports actual processing steps. The **Agent log** panel lists timestamped events per agent, with links to Guild sessions and no personal data. Each file card shows a step timeline with durations. This small-demo queue is in memory, is not durable across restarts, and is not shared across multiple workers.
 
 `/exposures` compares a bounded set of sourced Argentine exposures, with companies and public bodies separated. No verified company totals support a definitive national ranking in this review. Reported files, claimed records and unknown quantities remain distinct; [methodology and sources](../docs/research/EXPOSURE-RANKING-NOTES.md) explain the limitations.
 

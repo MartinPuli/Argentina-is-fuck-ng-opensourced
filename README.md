@@ -2,16 +2,18 @@
 
 ## Hackathon build: ArgenSec Gate
 
-ArgenSec Gate checks every PDF before PAMI publishes it on its public purchase site. Clean files are published. When patient details can be removed, a cleaned copy is published instead. Everything else stays private automatically, and people audit the outcome afterward. All documents are fictional.
+ArgenSec Gate checks every PDF before PAMI publishes it on its public purchase site. Clean files are published. When patient details can be removed, a cleaned copy is published instead. Everything else stays private automatically, and people audit the outcome afterward. In a measured run on the live site, 9 of 9 files finished without a person in 68.5 seconds: 2 published, 3 cleaned, 4 withheld. All documents are fictional.
 
-**Try it:** open [Activity](https://argensec.pujia.ar/live) and choose **Test data > Load synthetic files**. Watch each check run, then open the **Review** cards, the [Public](https://argensec.pujia.ar/public) page and the [Audit](https://argensec.pujia.ar/dashboard) page.
+**Try it:** open [Live](https://argensec.pujia.ar/live) and choose **Test data > Load synthetic files**. Watch the **Agent log** and each file's step timeline. Then open **Review** ("Restricted automatically"), the [Public](https://argensec.pujia.ar/public) page and the [History](https://argensec.pujia.ar/dashboard) page.
 
 - **ClickHouse:** stores every decision, plus 1,000,000 clearly labeled simulated events with live queries and measured query time.
 - **AkashML:** an open text model finds re-identification risk and the exact phrases to remove. A vision model reads scanned pages.
-- **Guild.ai:** runs the agent procedure. Three clearance levels, then a public agent and a public reviewer that loop until the cleaned copy passes.
-- **Semgrep:** reviewed the AI-written code. Findings and fixes are in [issue #2](https://github.com/MartinPuli/Argentina-is-fuck-ng-opensourced/issues/2).
+- **Guild.ai:** runs the agent procedure. An orchestrator sorts information into three clearance levels, then a public agent and a public reviewer loop until the cleaned copy passes. A reviewer-note agent explains each restriction.
+- **Semgrep:** reviewed the AI-written code. Its first scan found a CSRF hole, now fixed. Findings and fixes are in [issue #2](https://github.com/MartinPuli/Argentina-is-fuck-ng-opensourced/issues/2).
 
-Details: [gate/README.md](gate/README.md) · Video script: [gate/DEMO.md](gate/DEMO.md) · Submission: [gate/SUBMISSION.md](gate/SUBMISSION.md). Also built: rules learned from documented incidents (**Rules**, `/learning`) and an [Argentina exposure comparison](docs/research/EXPOSURE-RANKING-NOTES.md).
+Pi Security is not integrated. We had no Pi account access. The app has a Pi-ready adapter that is not connected.
+
+Details: [gate/README.md](gate/README.md) · Video script: [gate/DEMO.md](gate/DEMO.md) · Submission: [gate/SUBMISSION.md](gate/SUBMISSION.md). Also built: rules learned from documented incidents (`/learning`, not in the navbar) and an [Argentina exposure comparison](docs/research/EXPOSURE-RANKING-NOTES.md).
 
 ## Argentina government data leaks
 
