@@ -16,7 +16,14 @@ def test_guidelines_are_public_cited_and_distinguish_local_policy(web):
     assert page.status_code == 200
     assert "Official source" in page.text and "Application safeguard; not legislation" in page.text
     pack = web.anonymous.get("/api/guidelines").json()
-    assert len(pack["sources"]) == 4 and pack["digest"] == model_guidelines()["digest"]
+    assert len(pack["sources"]) == 9 and pack["digest"] == model_guidelines()["digest"]
+    for key in ("aaip_public_policy", "aaip_security", "aaip_responsible_ai", "cert_ar_2024", "cert_ar_2025"):
+        source = pack["sources"][key]
+        assert source["url"].startswith("https://www.argentina.gob.ar/")
+        assert source["title"] in page.text and source["locator"] in page.text
+    # Research and architecture guidance must not become new publication checks.
+    assert set(pack["policies"]) == {"personal_id", "health", "reidentification", "company_ok", "unreadable", "learned"}
+    assert all(not source.startswith("cert_ar_") for rule in pack["policies"].values() for source in rule["source_ids"])
     assert "not blanket permission" in pack["policies"]["company_ok"]["text"]
     assert "SENSO_API_KEY" not in json.dumps(pack)
 

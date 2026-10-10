@@ -1,0 +1,50 @@
+{
+  "reviewed_on": "2026-10-09",
+  "notice": "Unmodified official public PDFs. Only reviewed summaries and citations enter Senso; downloading a PDF does not train a model or activate a rule. Public author names or contact information may be present. These are not leaked datasets.",
+  "documents": [
+    {
+      "filename": "aaip-access-toolkit.pdf",
+      "url": "https://www.argentina.gob.ar/sites/default/files/aaip_caja_de_herramientas_archivos.pdf",
+      "sha256": "d4719c18ad5e562772a4e73804262afd7865316fa1e4326390767a74828a4d3f",
+      "bytes": 4472908,
+      "pages": 49,
+      "title": "AAIP access-to-archives toolkit, 2024",
+      "source_id": "aaip",
+      "purpose": "Guidance and a long-form upload exercise; not a guaranteed PASS fixture.",
+      "within_upload_size_and_page_limits": true
+    },
+    {
+      "filename": "cert-ar-2024.pdf",
+      "url": "https://www.argentina.gob.ar/sites/default/files/2025/07/informe_cert-ar_2024.pdf",
+      "sha256": "3437f5071c0668a380225d790ce0ee7ad46c547d6fba78a065ae426f9e98f570",
+      "bytes": 498119,
+      "pages": 14,
+      "title": "CERT-Ar annual cybersecurity incident report, 2024",
+      "source_id": "cert_ar_2024",
+      "purpose": "Official reported-incident statistics; not a leak census or a publication rule.",
+      "within_upload_size_and_page_limits": true
+    },
+    {
+      "filename": "cert-ar-2025.pdf",
+      "url": "https://www.argentina.gob.ar/sites/default/files/2026/09/informe_cert_2025.pdf",
+      "sha256": "763b573a1c270b744c9494eabfa806f22752fb35f68a98ec7f2842488320f1c6",
+      "bytes": 715160,
+      "pages": 17,
+      "title": "CERT-Ar annual computer security incident report, 2025",
+      "source_id": "cert_ar_2025",
+      "purpose": "Official reported-incident statistics; not a leak census or a publication rule.",
+      "within_upload_size_and_page_limits": true
+    },
+    {
+      "filename": "aaip-responsible-ai-2025.pdf",
+      "url": "https://www.argentina.gob.ar/sites/default/files/guia_ai-final-2025.pdf",
+      "sha256": "9640981d6563cfc6db1ad13b904a0e1a1cc33c31187032a72ef2cf49d19b49f4",
+      "bytes": 4704389,
+      "pages": 62,
+      "title": "AAIP responsible AI and personal-data guide, 2025",
+      "source_id": "aaip_responsible_ai",
+      "purpose": "Knowledge reference only: the original exceeds the current 50-page intake limit.",
+      "within_upload_size_and_page_limits": false
+    }
+  ]
+}

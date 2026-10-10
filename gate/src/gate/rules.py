@@ -25,6 +25,65 @@ SOURCES = {
              "url": "https://www.argentina.gob.ar/sites/default/files/aaip_caja_de_herramientas_archivos.pdf",
              "locator": "PDF page 31 and Annex II, anonymization recommendations",
              "scope": "Regulator guidance on dissociation and preventing reidentification; not a statute."},
+    "aaip_public_policy": {
+        "title": "AAIP Resolution 40/2018 — Public-body privacy policy",
+        "url": "https://www.argentina.gob.ar/normativa/nacional/resoluci%C3%B3n-40-2018-312130/texto",
+        "locator": "Articles 1–3; model policy, items 4–10 and 13–14",
+        "scope": (
+            "Recommended model for public bodies: document collection purposes, retention, "
+            "confidentiality, security, transfers and processor responsibilities. Statistical "
+            "disclosure requires that identifying a person is not reasonably possible. "
+            "Institution-specific legal powers still matter; consent is not the only lawful basis. "
+            "Context for policy review, not an additional automatic blocking rule."
+        ),
+    },
+    "aaip_security": {
+        "title": "AAIP Resolution 47/2018 — Personal-data security measures",
+        "url": "https://www.argentina.gob.ar/normativa/nacional/resoluci%C3%B3n-47-2018-312662/texto",
+        "locator": "Articles 2–3; Annex I, sections A–H; Annex II",
+        "scope": (
+            "Recommended security measures for digital and paper records. Annex I covers "
+            "collection, authenticated role-based access, authorized production changes, recovery, "
+            "vulnerability management, secure destruction, incident response and development "
+            "environments. Use to review storage and workflow safeguards; these recommendations "
+            "are not a claim that this gate prevents server compromise or certifies compliance."
+        ),
+    },
+    "aaip_responsible_ai": {
+        "title": "AAIP — Responsible AI and personal data, 2025",
+        "url": "https://www.argentina.gob.ar/sites/default/files/guia_ai-final-2025.pdf",
+        "locator": "PDF pages 20–21 and 33–36, data principles and design recommendations",
+        "scope": (
+            "Regulator guidance for public and private entities: assess privacy risks early; "
+            "minimize personal data; establish legitimate purposes, lawful sources and retention "
+            "periods; apply privacy by design and default. Preserve source validity, traceability "
+            "and auditability. Guidance for evaluating proposed improvements, not a new statute "
+            "or permission to publish an uploaded document."
+        ),
+    },
+    "cert_ar_2024": {
+        "title": "CERT-Ar — Annual cybersecurity incident report, 2024",
+        "url": "https://www.argentina.gob.ar/sites/default/files/2025/07/informe_cert-ar_2024.pdf",
+        "locator": "Annual report: recorded incidents, affected sectors and classifications",
+        "scope": (
+            "Official incident statistics: 438 incidents recorded in 2024, including 267 in the "
+            "State sector. These are reported computer security incidents, not a census of data "
+            "leaks, leaked records or affected people. Research context only; statistics cannot "
+            "identify the cause of a particular disclosure or authorize a publication rule."
+        ),
+    },
+    "cert_ar_2025": {
+        "title": "CERT-Ar — Annual computer security incident report, 2025",
+        "url": "https://www.argentina.gob.ar/sites/default/files/2026/09/informe_cert_2025.pdf",
+        "locator": "Annual report: recorded incidents, State sector and incident categories",
+        "scope": (
+            "Official incident statistics: 520 incidents recorded in 2025, including 254 in the "
+            "State sector. Account compromise and unauthorized information access are distinct "
+            "categories. These counts are not confirmed data-leak or victim totals, and observed "
+            "changes do not establish causation. Research context only; not legal authority or "
+            "an automatic publication rule."
+        ),
+    },
 }
 
 RULES = {
