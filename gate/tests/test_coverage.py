@@ -188,6 +188,29 @@ def test_long_text_is_held_instead_of_silently_truncated(monkeypatch):
     assert decide(clean_scan(), model)[0] == HOLD
 
 
+def test_long_document_includes_final_page_in_model_request_and_decision(monkeypatch):
+    monkeypatch.setenv("AKASHML_API_KEY", "synthetic-test-key")
+    tail = "Final page: fictional private patient details require review."
+    text = (BENIGN_TEXT + "\n") * 1800 + tail
+    assert 12000 < len(text) < llm.MAX_TEXT_CHARS
+    calls = []
+    result = dict(SAFE_TEXT, safe_for_public=False, personal_data=True,
+                  reidentification_risk="high", reasons=["Fictional final-page personal data"])
+
+    def respond(**kwargs):
+        calls.append(kwargs)
+        return SimpleNamespace(choices=[SimpleNamespace(message=SimpleNamespace(content=json.dumps(result)))],
+                               model="synthetic-long-context-model")
+
+    client = SimpleNamespace(chat=SimpleNamespace(completions=SimpleNamespace(create=respond)))
+    monkeypatch.setattr(llm, "OpenAI", lambda **kwargs: client)
+    reviewed = llm.review(text)
+    assert len(calls) == 1
+    assert calls[0]["messages"][1]["content"] == llm.PROMPT + text
+    assert calls[0]["messages"][1]["content"].endswith(tail)
+    assert decide(Scan([Page(1, text, "text")]), reviewed)[0] == HOLD
+
+
 def test_client_setup_errors_are_sanitized_and_held(monkeypatch):
     monkeypatch.setenv("AKASHML_API_KEY", "synthetic-test-key")
 

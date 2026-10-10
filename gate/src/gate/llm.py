@@ -26,7 +26,10 @@ def report(model: str, started: float, result: dict) -> dict:
                           (time.perf_counter() - started) * 1000)
     return result
 
-MAX_TEXT_CHARS = 12000
+# Review the complete text of ordinary documents up to the 50-page intake limit.
+# Mixed PDFs include both their text layer and OCR; never silently truncate either.
+# This remains bounded. A provider with insufficient context fails closed below.
+MAX_TEXT_CHARS = 200000
 
 PROMPT = """You review attachments before they are published on a public government \
 procurement website in Argentina. Documents are in Spanish.
@@ -69,6 +72,8 @@ def review(text: str) -> dict | None:
         return {"error": "text_analysis_incomplete"}
     started = time.perf_counter()
     model_name = os.getenv("AKASHML_MODEL", "openai/gpt-oss-120b")
+    activity.emit_current("AkashML · " + activity.short(model_name), "submitted", "running",
+                          f"Full document · {len(text)} characters")
     try:
         client = OpenAI(
             api_key=os.environ["AKASHML_API_KEY"],
