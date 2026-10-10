@@ -391,6 +391,7 @@
       if (job.stale) card.append(element('p', 'live-error', 'An earlier decision is no longer current. Recheck this file before public access.'));
       const links = element('div', 'live-job-links');
       const purchaseId = numericId(job.purchase_id);
+      if (numericId(job.attachment_id)) links.append(link('Inspect document →', '/inspect/' + numericId(job.attachment_id)));
       if (purchaseId) links.append(link('Purchase details →', '/purchase/' + purchaseId));
       const agentUrl = safeExternal(job.agent_url);
       if (agentUrl) links.append(link('Guild run ↗', agentUrl, true));

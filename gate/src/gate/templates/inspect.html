@@ -1,0 +1,29 @@
+{% extends "base.html" %}{% block title %}Inspect document{% endblock %}{% block body %}
+<style>{% include "inspect.css" %}</style>
+<div class="inspector" id="inspector">
+<a class="back-link" href="/purchase/{{ initial.purchase_id }}#file-{{ initial.id }}">← Document details</a>
+<header class="ix-heading"><div><h1>{{ initial.filename }}</h1><p id="ix-state" role="status">Loading document</p></div><div class="ix-actions"><button class="ix-button" id="ix-refresh" type="button">Refresh</button><a class="ix-button primary" id="ix-public" hidden target="_blank" rel="noopener">Open public copy ↗</a></div></header>
+<div class="ix-error" id="ix-error" role="alert" hidden></div>
+<div class="ix-toolbar"><div class="ix-paging" aria-label="PDF pages"><button class="ix-button" id="ix-previous" type="button" aria-label="Previous page">←</button><span id="ix-page" aria-live="polite">Page 1</span><button class="ix-button" id="ix-next" type="button" aria-label="Next page">→</button></div><label class="ix-toggle"><input type="checkbox" id="ix-highlight" checked> Show text changes</label></div>
+<div class="ix-layout">
+<section class="ix-comparison" aria-label="PDF comparison">
+<figure class="ix-pane"><figcaption><span>Original <small>Staff only</small></span><a href="/internal/file/{{ initial.id }}" target="_blank" rel="noopener">Open PDF ↗</a></figcaption><div class="ix-paper" id="ix-before-paper"><div class="ix-placeholder" id="ix-before-message" role="status">Loading original page…</div><img id="ix-before" alt="Original PDF page" hidden><div class="ix-overlay" id="ix-overlay" aria-hidden="true"></div></div></figure>
+<figure class="ix-pane"><figcaption><span id="ix-after-label">Cleaned copy</span><a id="ix-clean-link" href="/internal/clean/{{ initial.id }}" target="_blank" rel="noopener" hidden>Open PDF ↗</a></figcaption><div class="ix-paper" id="ix-after-paper"><div class="ix-placeholder" id="ix-after-message" role="status">Waiting for a cleaned copy</div><img id="ix-after" alt="Cleaned PDF page" hidden></div></figure>
+<p class="ix-caption" id="ix-comparison-note">Text changes are highlighted on the original.</p>
+<section class="ix-changes" aria-labelledby="ix-changes-title"><div class="ix-section-heading"><h2 id="ix-changes-title">Removed items</h2><span id="ix-removal-count"></span></div><ul id="ix-manifest"></ul></section>
+</section>
+<aside class="ix-rail" aria-label="Processing and sources">
+<div class="ix-tabs" role="tablist" aria-label="Inspection evidence">
+<button type="button" role="tab" id="ix-tab-process" aria-controls="ix-panel-process" aria-selected="true" data-ix-tab="process">Process</button>
+<button type="button" role="tab" id="ix-tab-guidelines" aria-controls="ix-panel-guidelines" aria-selected="false" tabindex="-1" data-ix-tab="guidelines">Guidelines</button>
+<button type="button" role="tab" id="ix-tab-web" aria-controls="ix-panel-web" aria-selected="false" tabindex="-1" data-ix-tab="web">Web</button>
+</div>
+<section class="ix-section" id="ix-panel-process" role="tabpanel" aria-labelledby="ix-tab-process"><div class="ix-section-heading"><h2>Processing</h2><span class="ix-dot" id="ix-live-dot" aria-hidden="true"></span></div><ol class="ix-steps" id="ix-steps"></ol><p class="ix-empty" id="ix-no-trace" hidden>No live trace retained. The saved result is shown.</p><p class="ix-verdict" id="ix-verdict"></p></section>
+<section class="ix-section" id="ix-panel-guidelines" role="tabpanel" aria-labelledby="ix-tab-guidelines" hidden><div class="ix-section-heading"><h2>Guidelines</h2><a href="/guidelines">View all ↗</a></div><div id="ix-policies"></div><div id="ix-senso" class="ix-senso"></div><div id="ix-sources"></div></section>
+<section class="ix-section" id="ix-panel-web" role="tabpanel" aria-labelledby="ix-tab-web" hidden><div class="ix-section-heading"><h2>Web research</h2><button type="button" class="ix-button" id="ix-search">Search reporting</button></div><p class="ix-query" id="ix-query"></p><p class="ix-empty">Reporting leads · unverified. Review a source before proposing a rule.</p><p id="ix-search-state" role="status" class="ix-search-state"></p><div id="ix-leads"></div><a class="ix-library" href="/learning">Open learning library →</a></section>
+</aside>
+</div>
+</div>
+<script id="inspection-data" type="application/json">{{ initial|tojson }}</script>
+<script>{% include "inspect.js" %}</script>
+{% endblock %}

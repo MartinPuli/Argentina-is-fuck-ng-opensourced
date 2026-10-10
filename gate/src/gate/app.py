@@ -29,7 +29,7 @@ from fastapi.templating import Jinja2Templates
 load_dotenv(Path(__file__).resolve().parents[3] / ".env")
 load_dotenv(Path(__file__).resolve().parents[2] / ".env")
 
-from . import activity, agent, sanitize, llm, learning, pi_context, senso_context, incident_discovery, intake  # noqa: E402
+from . import activity, agent, sanitize, llm, learning, pi_context, senso_context, incident_discovery, intake, inspection  # noqa: E402
 from .detect import Finding, scan  # noqa: E402
 from .policy import HOLD, PUBLIC, WITHHELD, decide, valid_image_analysis, valid_text_analysis  # noqa: E402
 from .rules import RULES, model_guidelines  # noqa: E402
@@ -863,6 +863,55 @@ def purchase_view(request: Request, pid: int, user: str = Depends(staff)):
                 stale_ids={a["id"] for a in atts if not learning.current(a["id"])})
 
 
+def inspection_snapshot(att_id: int, number: int = 1) -> dict:
+    with db() as con:
+        row = con.execute("select * from attachments where id=?", (att_id,)).fetchone()
+    if not row:
+        raise HTTPException(404)
+    state = purchase_status(row["purchase_id"])
+    job = next((j for j in activity.snapshot() if j["attachment_id"] == att_id), None)
+    data = inspection.evidence(row, learning.current(att_id), att_id in state["processing_ids"],
+                               job, senso_context.citations([att_id]).get(att_id))
+    try:
+        data["page"] = inspection.page_info(row["pdf"], row["public_pdf"], number)
+    except IndexError:
+        raise HTTPException(404, "Page not found") from None
+    except Exception:
+        raise HTTPException(422, "This PDF could not be previewed. Use the original download.") from None
+    return data
+
+
+@app.get("/inspect/{att_id}")
+def inspect_document(request: Request, att_id: int, user: str = Depends(staff)):
+    response = page(request, "inspect.html", initial=inspection_snapshot(att_id))
+    response.headers["Cache-Control"] = "private, no-store"
+    return response
+
+
+@app.get("/api/inspect/{att_id}")
+def api_inspect(att_id: int, page: int = 1, user: str = Depends(staff)):
+    return JSONResponse(inspection_snapshot(att_id, page), headers={"Cache-Control": "private, no-store"})
+
+
+@app.get("/internal/preview/{att_id}/{number}")
+def inspect_preview(att_id: int, number: int, copy: str = "original", user: str = Depends(staff)):
+    if copy not in {"original", "cleaned"}:
+        raise HTTPException(400, "Unknown document copy")
+    column = "pdf" if copy == "original" else "public_pdf"
+    with db() as con:
+        row = con.execute(f"select {column} from attachments where id=?", (att_id,)).fetchone()
+    if not row or not row[0]:
+        raise HTTPException(404)
+    try:
+        body = inspection.render_page(row[0], number)
+    except IndexError:
+        raise HTTPException(404, "Page not found") from None
+    except Exception:
+        raise HTTPException(422, "This PDF could not be previewed.") from None
+    return Response(body, media_type="image/png", headers={"Cache-Control": "private, no-store",
+                                                          "X-Content-Type-Options": "nosniff"})
+
+
 @app.get("/review")
 def review_queue(request: Request, user: str = Depends(staff)):
     with db() as con:
@@ -1095,13 +1144,22 @@ def learning_home(request: Request, lead: str = "", user: str = Depends(staff)):
 
 
 @app.post("/learning/discover")
-def discover_incidents(user: str = Depends(staff)):
+def discover_incidents(request: Request, user: str = Depends(staff)):
     try:
-        incident_discovery.discover()
+        leads = incident_discovery.discover()
     except ValueError as exc:
         raise HTTPException(502, str(exc)) from None
     events.log("incident_reporting_discovered", "Learning library", 0, actor=user)
+    if "application/json" in request.headers.get("accept", ""):
+        return JSONResponse({"query": incident_discovery.QUERY, "leads": leads},
+                            headers={"Cache-Control": "private, no-store"})
     return RedirectResponse("/learning#news-leads", status_code=303)
+
+
+@app.get("/api/research")
+def api_research(user: str = Depends(staff)):
+    return JSONResponse({"query": incident_discovery.QUERY, "leads": incident_discovery.list_leads()},
+                        headers={"Cache-Control": "private, no-store"})
 
 
 @app.post("/learning/from-case/{case_id}")
