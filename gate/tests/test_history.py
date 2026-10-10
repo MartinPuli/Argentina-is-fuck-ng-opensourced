@@ -1,4 +1,4 @@
-"""The audit page's simulated-history section, with and without ClickHouse."""
+"""Operational History uses recorded audit events, never generated benchmark rows."""
 
 import importlib
 
@@ -7,15 +7,6 @@ from fastapi.testclient import TestClient
 
 PASSWORD = "test-only-history-password"
 AUTH = ("reviewer", PASSWORD)
-
-FAKE_HISTORY = {
-    "total": {"value": 1_000_000, "ms": 12.3},
-    "by_office": {"rows": [("UGL XIX Misiones", 13364, 52.4), ("UGL I La Plata", 13642, 27.1)], "ms": 31.0},
-    "kinds": {"rows": [("dni", 90850), ("model_context", 53839)], "ms": 41.5},
-    "monthly": {"rows": [("Sep 2026", 41867, 30.1), ("Oct 2026", 12943, 29.8)], "ms": 36.2},
-    "policy": {"files": 29564, "offices": 35, "kind": "model_context", "ms": 49.6},
-}
-
 
 @pytest.fixture
 def web(monkeypatch, tmp_path):
@@ -32,27 +23,35 @@ def web(monkeypatch, tmp_path):
         yield client, events, monkeypatch
 
 
-def test_dashboard_hides_history_without_clickhouse(web):
+def test_dashboard_uses_local_audit_without_clickhouse(web):
     client, events, _ = web
     assert events.history() is None
     response = client.get("/dashboard", auth=AUTH)
     assert response.status_code == 200
     assert "Decisions by office" in response.text
+    assert "No findings recorded yet." in response.text
+    assert "audit events · local SQLite" in response.text
     assert "Simulated telemetry" not in response.text
+    assert "History needs ClickHouse" not in response.text
 
 
-def test_dashboard_shows_simulated_history_with_query_times(web):
+def test_operational_history_and_workspace_count_actual_events(web):
     client, events, monkeypatch = web
-    monkeypatch.setattr(events, "history", lambda: FAKE_HISTORY)
+    monkeypatch.setattr(events, "history", lambda: pytest.fail("Operational pages must not query benchmark rows"))
+    for index, decision in enumerate(("public", "hold", "withheld"), 1):
+        events.log("decision", "Test office", 1, index, "fictional.pdf", decision,
+                   ["dni"] if decision != "public" else [], latency_ms=index * 1000)
+    events.log("approved", "Test office", 1, 2, "fictional.pdf", "approved", actor="test-reviewer")
     response = client.get("/dashboard", auth=AUTH)
     assert response.status_code == 200
     text = response.text
     assert "<title>History</title>" in text
-    assert text.count('<section class="ch" ') == 1
-    assert "1,000,000" in text
-    assert "Simulated telemetry, not real PAMI data" in text
-    for label in ("UGL XIX Misiones", "52.4%", "Model context", "Sep 2026", "29,564"):
-        assert label in text, label
-    for ms in ("12.3 ms", "31.0 ms", "41.5 ms", "36.2 ms", "49.6 ms"):
-        assert ms in text, ms
-    assert 'style="width:52.4%"' in text
+    assert "<strong>4</strong><span>audit events" in text
+    assert "<strong>3</strong><span>document decisions" in text
+    assert "<strong>2.0<small>s</small></strong>" in text
+    assert "Test office" in text and "test-reviewer" in text
+    assert "Dni<b>2</b>" in text
+    assert "Simulated" not in text and "1,000,000" not in text
+    home = client.get("/", auth=AUTH)
+    assert home.status_code == 200 and "4 audit events" in home.text
+    assert "1,000,000" not in home.text

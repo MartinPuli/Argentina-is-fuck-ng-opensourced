@@ -47,7 +47,7 @@ The app drives the loop. The orchestrator prompt allows native sub-agent calls, 
 
 ## Sponsor tools
 
-- **ClickHouse:** data storage and analysis at PAMI scale. It holds the audit log of every decision, cleaned copy, agent verdict and human review. It also holds 1,000,000 clearly labeled simulated history events ([simulate_history.py](scripts/simulate_history.py)). The History page (`/dashboard`, linked from Live) runs live queries on them: unsafe uploads by UGL (PAMI's local offices), by data type, by month, and files affected by a rule update. Each shows its measured query time.
+- **ClickHouse:** stores the audit log of decisions, cleaned copies, agent verdicts and human reviews. History (`/dashboard`) and the workspace event count use actual recorded audit events, with decisions by office, finding types, review history and measured scan duration. The separate benchmark generator ([simulate_history.py](scripts/simulate_history.py)) writes generated rows to `gate_events_sim`; operational pages do not query that table.
 - **AkashML:** inference. An open text model (`openai/gpt-oss-120b`) reads each file for re-identification risk and lists exact phrases to remove. A vision model (`Qwen/Qwen3.8-27B`) reads scanned pages. Code: [llm.py](src/gate/llm.py).
 - **Guild.ai:** runs the agent procedure above.
 - **Pi Security:** not connected. Pi's hosted connector needs a Pi tenant and an OAuth sign-in, and the event gives no Pi access. [pi_context.py](src/gate/pi_context.py) holds the read-only `PiContextProvider` contract from [the Pi plan](../docs/research/PI-IMPLEMENTATION-PLAN.md), plus bounds on any returned text. The only provider reports `not_connected`. `/api/pi/status` shows why and what access is needed. No decision uses Pi, and nothing is labeled a Pi result without a Pi reference ID.
@@ -167,7 +167,7 @@ The bundle contains `SKILL.md`, an improvement proposal and saved evidence. Expo
 
 - **AkashML:** set `AKASHML_API_KEY`. Defaults are `openai/gpt-oss-120b` and `Qwen/Qwen3.8-27B`. It also drafts inactive rule candidates from new incident reports. An open model does not by itself guarantee private processing or retention.
 - **Guild.ai:** needs the `guild` CLI signed in on the host, plus `GUILD_WORKSPACE` and `GUILD_AGENT` (the reviewer-note agent). Agent definitions are in the `guild-*/` folders. The app polls only the agent's answer events and runs at most four Guild calls at once, so a batch of files queues instead of timing out. If Guild does not answer, the file stays private.
-- **ClickHouse:** set `CLICKHOUSE_HOST` and credentials. Without it, events go to SQLite and the simulated history panel is hidden. Fill the simulated table with `uv run python scripts/simulate_history.py --rows 1000000`. Every row is flagged `simulated = 1`.
+- **ClickHouse:** set `CLICKHOUSE_HOST` and credentials. Without it, events go to SQLite and History uses that audit log. Fill the simulated table with `uv run python scripts/simulate_history.py --rows 1000000`. Every row is flagged `simulated = 1`.
 - **Semgrep:** raw output is in [semgrep/](semgrep/). The first scan is [initial-scan.json](semgrep/initial-scan.json). The scans after the fix are [before.json](semgrep/before.json) and [after.json](semgrep/after.json).
 
 The origin middleware compares scheme, host and port. It rejects missing, null or mismatched origins on every state-changing request. It falls back to a same-origin Referer only when Origin is absent. Request tests check this.

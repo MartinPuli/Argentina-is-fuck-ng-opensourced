@@ -200,7 +200,7 @@
 <div class="ws-stat"><dt><span class="ws-dot amb"></span>Review</dt><dd id="live-count-waiting">—</dd></div>
 {% if autonomous %}<div class="ws-stat auto"><dt>Finished without a person</dt><dd id="live-autonomy">— of —</dd></div>{% endif %}
 </dl>
-<div class="ws-meta"><span id="live-connection" role="status" aria-live="polite">Connecting…</span>{% if history_total %}<span>{{ "{:,}".format(history_total.value) }} history events · {{ history_total.ms }} ms · <a href="/dashboard">History →</a></span>{% endif %}</div>
+<div class="ws-meta"><span id="live-connection" role="status" aria-live="polite">Connecting…</span>{% if history_total %}<span>{{ "{:,}".format(history_total.value) }} audit events · <a href="/dashboard">History →</a></span>{% endif %}</div>
 <section class="ws-sec" id="activity" aria-labelledby="ws-activity"><h2 id="ws-activity">Agent activity <small id="live-stale-count"></small></h2>
 <div id="ws-empty" class="ws-empty" hidden>No files yet. Load test files to watch the agents work.</div>
 <div class="ws-grid" id="ws-activity-grid">

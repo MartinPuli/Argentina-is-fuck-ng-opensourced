@@ -798,8 +798,7 @@ def exposures(request: Request, user: str = Depends(staff)):
 
 @app.get("/")
 def home(request: Request, user: str = Depends(staff)):
-    history = events.history()  # once per page load, never from the /api/activity poll
-    total = (history or {}).get("total") or None
+    total = {"value": events.stats()["total"]}
     return page(request, "home.html", user=user, workspace=workspace_snapshot(),
                 history_total=total, autonomous=autonomous())
 
@@ -1075,7 +1074,7 @@ def internal_procurement(att_id: int, user: str = Depends(staff)):
 
 @app.get("/dashboard")
 def dashboard(request: Request, user: str = Depends(staff)):
-    return page(request, "dashboard.html", s=events.stats(), h=events.history())
+    return page(request, "dashboard.html", s=events.stats())
 
 
 @app.get("/api/rules")

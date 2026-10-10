@@ -4,8 +4,6 @@
 .ch-top{display:flex;align-items:center;justify-content:space-between;gap:10px 16px;flex-wrap:wrap;margin-bottom:16px}
 .ch-top h1{margin:0}
 .ch-back{font-size:13px;margin-right:auto}
-.ch-sim{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:600;color:#9f1d1d;background:#fff1f1;border:1px solid #f3c4c4;border-radius:3px;padding:5px 12px}
-.ch-sim::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--ch-red)}
 .ch-hero{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:12px;margin-bottom:16px}
 .ch-hero>div{--c:var(--c-primary,#1F6FB2);--bg:#eef3ff;padding:18px 22px;border:1px solid var(--line);border-top:5px solid var(--c);border-radius:4px;background:var(--bg)}
 .ch-hero strong{display:block;font-size:48px;font-weight:700;line-height:1.05;letter-spacing:-1.5px;color:var(--c);font-variant-numeric:tabular-nums}
@@ -64,39 +62,20 @@
 .ch-axis span:nth-child(even){visibility:hidden}
 .ch-big{min-height:120px}.ch-big strong{font-size:46px}
 }
-.ch-hero>div,.ch-card{border:1px solid var(--line);background:#fff}.ch-hero strong,.ch-big strong{font-weight:300;color:var(--ink);font-size:36px}.ch-hero strong small,.ch-card h2,.ch-bars b,.lv summary,.lv-stats b,.lv h3{font-weight:400}.ch-ms{background:var(--accent-soft);color:var(--muted);font-weight:400;border-radius:3px}.ch-ms:before{content:none}.ch-sim{font-weight:400;border-radius:3px}.ch-card{--c:#9ac9e4}.ch-bar.risk>span{background:#d5a6ac}.ch-cols i{background:#a8d7ee}
+.ch-hero>div,.ch-card{border:1px solid var(--line);background:#fff}.ch-hero strong,.ch-big strong{font-weight:300;color:var(--ink);font-size:36px}.ch-hero strong small,.ch-card h2,.ch-bars b,.lv summary,.lv-stats b,.lv h3{font-weight:400}.ch-ms{background:var(--accent-soft);color:var(--muted);font-weight:400;border-radius:3px}.ch-ms:before{content:none}.ch-card{--c:#9ac9e4}.ch-bar.risk>span{background:#d5a6ac}.ch-cols i{background:#a8d7ee}
 </style>
-<section class="ch" aria-label="ClickHouse history">
-<div class="ch-top"><h1>History</h1><a class="ch-back text-link" href="/live">← Activity</a>{% if h %}<span class="ch-sim">Simulated telemetry, not real PAMI data</span>{% endif %}</div>
-{% if h %}
-{% set qms=[h.total.ms, h.by_office.ms, h.kinds.ms, h.monthly.ms, h.policy.ms] %}
-{% set kmax=h.kinds.rows|map(attribute=1)|max if h.kinds.rows else 1 %}
-{% set mmax=h.monthly.rows|map(attribute=1)|max if h.monthly.rows else 1 %}
-{% set u=namespace(unsafe=0,all=0) %}{% for m in h.monthly.rows %}{% set u.unsafe=u.unsafe+m[1] %}{% if m[2] %}{% set u.all=u.all+m[1]*100/m[2] %}{% endif %}{% endfor %}
-<div class="ch-hero">
-<div><strong>{{ '{:,}'.format(h.total.value) }}</strong><span>events in ClickHouse · counted in {{ h.total.ms }} ms</span></div>
-<div class="ch-fast"><strong>{{ qms|max|round|int }}<small>ms</small></strong><span>slowest of {{ qms|length }} live queries</span></div>
-<div class="ch-risk"><strong>{{ (u.unsafe / u.all * 100)|round|int if u.all else 0 }}<small>%</small></strong><span>uploads stopped</span></div>
-</div>
-<div class="ch-grid">
-<section class="ch-card ch-office"><header><h2>Stopped uploads by office</h2><span class="ch-ms">{{ h.by_office.ms }} ms</span></header>
-<div class="ch-bars">{% for o in h.by_office.rows %}<span title="{{ o[0] }} · {{ '{:,}'.format(o[1]) }} stopped">{{ o[0] }}</span><span class="ch-bar{{ ' risk' if o[2] >= 40 }}"><span style="width:{{ o[2] }}%"></span></span><b{% if o[2] >= 40 %} class="risk"{% endif %}>{{ o[2] }}%</b>{% endfor %}</div></section>
-<section class="ch-card ch-kinds"><header><h2>Findings by type</h2><span class="ch-ms">{{ h.kinds.ms }} ms</span></header>
-<div class="ch-bars">{% for k in h.kinds.rows %}<span>{{ k[0]|replace('_',' ')|capitalize|replace('Dni','DNI')|replace('Icd10','ICD-10 code')|replace('Person cuil','CUIL') }}</span><span class="ch-bar"><span style="width:{{ (k[1] / kmax * 100)|round(1) }}%"></span></span><b>{{ '{:,}'.format(k[1]) }}</b>{% endfor %}</div></section>
-<section class="ch-card ch-month"><header><h2>Stopped uploads per month</h2><span class="ch-ms">{{ h.monthly.ms }} ms</span></header>
-<div class="ch-cols">{% for m in h.monthly.rows %}<div class="{{ 'peak' if m[1] == mmax }}{{ ' part' if loop.first or loop.last }}" title="{{ m[0] }}{{ ' (partial month)' if loop.first or loop.last }}:{{ '{:,}'.format(m[1]) }} stopped ({{ m[2] }}%)"><em>{{ '{:.1f}k'.format(m[1] / 1000) if m[1] >= 1000 else m[1] }}</em><i style="height:{{ (m[1] / mmax * 100)|round(1) }}%"></i></div>{% endfor %}</div>
-<div class="ch-axis">{% for m in h.monthly.rows %}<span>{{ m[0][:3] }}{% if loop.first or m[0][:3] == 'Jan' %}<br>’{{ m[0][-2:] }}{% endif %}</span>{% endfor %}</div></section>
-<section class="ch-card ch-policy"><header><h2>New rule v3, old files</h2><span class="ch-ms">{{ h.policy.ms }} ms</span></header>
-<div class="ch-big"><strong>{{ '{:,}'.format(h.policy.files) }}</strong><span>past files v3 would now block</span><small><i>{{ h.policy.kind|replace('_',' ')|capitalize }}</i><i>{{ h.policy.offices }} offices</i></small></div></section>
-</div>
-{% else %}
-<div class="notice subtle">History needs ClickHouse. Showing the live log only.</div>
-{% endif %}
-</section>
 {% set ns=namespace(p=0,h=0,w=0) %}{% for o in s.by_office %}{% set ns.p=ns.p+o[1] %}{% set ns.h=ns.h+o[2] %}{% set ns.w=ns.w+o[3] %}{% endfor %}
-<details class="lv"{% if not h %} open{% endif %}><summary>Live audit log <small>{{ s.total }} real events · {{ s.backend }}</small></summary>
+<section class="ch" aria-label="Audit history">
+<div class="ch-top"><h1>History</h1><a class="ch-back text-link" href="/live">← Activity</a></div>
+<div class="ch-hero">
+<div><strong>{{ '{:,}'.format(s.total) }}</strong><span>audit events · {{ s.backend }}</span></div>
+<div><strong>{{ '{:,}'.format(s.latency[2]) }}</strong><span>document decisions</span></div>
+<div class="ch-fast"><strong>{{ (s.latency[0] / 1000)|round(1) }}<small>s</small></strong><span>median scan duration</span></div>
+</div>
+</section>
+<details class="lv" open><summary>Audit log <small>{{ s.backend }}</small></summary>
 <div class="lv-body">
-<div class="lv-stats"><span><b class="text-public">{{ ns.p }}</b>published</span><span><b class="text-hold">{{ ns.h }}</b>sent for review</span><span><b class="text-withheld">{{ ns.w }}</b>kept internal</span><span><b>{{ (s.latency[0] / 1000)|round(1) }}</b>s median scan</span></div>
+<div class="lv-stats"><span><b class="text-public">{{ ns.p }}</b>public decisions</span><span><b class="text-hold">{{ ns.h }}</b>held decisions</span><span><b class="text-withheld">{{ ns.w }}</b>withheld decisions</span><span><b>{{ (s.latency[0] / 1000)|round(1) }}</b>s median scan</span></div>
 <div class="lv-grid">
 <div class="panel table-panel"><h3>Decisions by office</h3><div class="table-wrap"><table><thead><tr><th scope="col">Office</th><th scope="col">Public</th><th scope="col">Review</th><th scope="col">Internal</th></tr></thead><tbody>{% for o in s.by_office %}<tr><td>{{ o[0] }}</td><td>{{ o[1] }}</td><td>{{ o[2] }}</td><td>{{ o[3] }}</td></tr>{% else %}<tr><td colspan="4" class="table-empty">No office activity.</td></tr>{% endfor %}</tbody></table></div></div>
 <div class="panel table-panel"><h3>Findings</h3><div class="lv-chips">{% for k in s.kinds %}<span>{{ k[0]|replace('_',' ')|capitalize }}<b>{{ k[1] }}</b></span>{% else %}<p>No findings recorded yet.</p>{% endfor %}</div></div>
