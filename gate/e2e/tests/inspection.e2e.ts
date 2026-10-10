@@ -72,3 +72,36 @@ test('Inspector stays usable on a phone with a missing cleaned page', async ({ap
   await expect(browser.locator('#ix-after-message')).toContainText('Preview unavailable');
   await expect(screen.getByRole('button', 'Refresh', {exact:true})).toBeVisible();
 });
+
+test('Senso exposes its query, cited passages and receipt with real loading and error states', async ({app, screen, browser}) => {
+  const id = await inspect(app, screen, browser);
+  await app.open('/inspect/' + id + '#senso');
+  await expect(browser.locator('#ix-senso-connection')).toContainText('Not connected');
+  await expect(screen.getByRole('button', 'Run lookup', {exact:true})).toBeDisabled();
+  const document = await browser.evaluate(async () => (await fetch(location.pathname.replace('/inspect/', '/api/inspect/'))).json());
+  document.senso = {configured:true, ready:true};
+  await browser.route('**/api/inspect/' + id + '?*', async route => route.fulfill({json:document}));
+  await screen.getByRole('button', 'Refresh', {exact:true}).tap();
+  await expect(browser.locator('#ix-senso-connection')).toContainText('synced');
+  const citation = {status:'cited', query:'Publication restrictions for: Personal identifiers', passages:1,
+    latency_ms:143, content_id:'fictional-content', version_id:'fictional-version', guideline_digest:'fictional-digest',
+    retrieved_at:1791543600, context_passages:[{text:'Mask private identifiers before publishing. <img src=x>'}]};
+  await browser.route('**/api/inspect/' + id + '/senso', async route => {
+    await new Promise(resolve => setTimeout(resolve, 300));
+    await route.fulfill({json:{citation, senso:document.senso}});
+  });
+  await screen.getByRole('button', 'Run lookup', {exact:true}).tap();
+  await expect(browser.locator('#ix-senso-state')).toContainText('Verifying');
+  await expect(browser.locator('#ix-senso-state')).toContainText('1 passage retrieved · 143 ms');
+  await expect(browser.locator('#ix-senso-query')).toContainText('Personal identifiers');
+  await expect(browser.locator('#ix-senso')).toContainText('Mask private identifiers');
+  await expect(browser.locator('#ix-senso img')).toHaveCount(0);
+  await screen.getByText('Retrieval receipt', {exact:true}).tap();
+  await expect(browser.locator('#ix-senso')).toContainText('fictional-version');
+  await app.screenshot('inspector-senso');
+  await browser.route('**/api/inspect/' + id + '/senso', async route => route.fulfill({status:502,json:{detail:'Senso unavailable. Retry lookup.'}}));
+  await screen.getByRole('button', 'Run again', {exact:true}).tap();
+  await expect(browser.locator('#ix-senso-state')).toContainText('Senso unavailable');
+  await expect(browser.locator('#ix-senso')).toContainText('Mask private identifiers');
+  expect((await fetch(new URL('/public/file/' + id, app.baseUrl))).status).toBe(404);
+});

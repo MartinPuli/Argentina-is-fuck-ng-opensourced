@@ -49,3 +49,8 @@ No added animation. Actual state changes drive indicators. Original/cleaned page
 
 ## 7. Open questions
 Optional clarification requested about including web research. Existing context supports showing source discovery alongside the PDF; do not add remote-browser automation or imply arbitrary pages were visited.
+
+## Phase 2 extension: visible Senso retrieval
+Operators need to distinguish a local policy from an actual provider response. No schema change: extend the existing citation JSON with the exact bounded query, retrieval time and up to five readable guideline passages. Add a staff-only, same-origin POST `/api/inspect/{id}/senso` to repeat the server-derived lookup without accepting document text, URLs or policy instructions from the browser. It cannot change publication decisions or activate rules.
+
+The inspector gains a Senso tab: query, connection receipt, explicit Run lookup action, loading/error/empty states, cited passages and expandable content/version/digest evidence. Existing blue/white tokens, native keyboard tabs and narrow-screen wrapping remain. Local preview may enable only the existing server-side Senso key; other providers stay disabled. Verify real retrieval separately from offline HTTP/browser tests. Supply existing fictional PDFs for removable identifiers, benign equipment and a clinical document; do not guarantee automatic publication when reviewer providers are disabled. No new dependency, animation, mobile feature or public storage is needed.

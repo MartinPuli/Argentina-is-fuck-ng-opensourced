@@ -18,7 +18,7 @@
   };
   const labels = {public:'Published', approved:'Reviewer approved', cleaned:'Published, cleaned', hold:'Needs review', withheld:'Kept internal'};
   let number = 1, total = initial.page.total, timer, controller, stopped = false;
-  let latest = initial, lastRender = '';
+  let latest = initial, lastRender = '', sensoRunning = false;
   const image = (side, available, digest, empty, copy = side === 'before' ? 'original' : 'cleaned') => {
     const img = byId(side), message = byId(side + '-message');
     if (!available) {
@@ -80,18 +80,71 @@
     byId('policies').replaceChildren(...(data.policies.length ? data.policies.map(policy => {
       const item = node('p', policy.title, 'ix-policy'); item.append(node('small', policy.source)); return item;
     }) : [node('p', 'No finding-linked guidelines recorded.', 'ix-empty')]));
-    const senso = byId('senso');
-    if (data.citation?.status === 'cited') {
-      senso.replaceChildren(node('strong', 'Senso · cited context'), node('p', data.citation.excerpt),
-        node('p', 'Version ' + data.citation.version_id + ' · ' + (data.citation.latency_ms || 0) + ' ms'),
-        node('p', 'Retrieved context supports the explanation; it cannot change the decision.'));
-    } else {
-      senso.replaceChildren(node('strong', 'Senso'), node('p', data.citation ? 'No citation available. Decision unchanged.' : 'No citation recorded yet.'));
-    }
+    renderSenso(data);
     byId('sources').replaceChildren(...data.sources.map(source => {
       const item = external(source.title + ' ↗', source.url, 'ix-source');
       item.append(node('small', source.locator)); return item;
     }));
+  }
+  function renderSenso(data) {
+    const receipt = data.citation, state = data.senso || {};
+    byId('senso-run').disabled = sensoRunning || !state.configured || !data.policies.length;
+    byId('senso-run').textContent = sensoRunning ? 'Looking up…' : receipt?.status === 'cited' ? 'Run again' : 'Run lookup';
+    byId('senso-connection').textContent = !state.configured ? 'Not connected on this server.'
+      : state.ready ? 'Reviewed guideline pack · synced' : 'Server key configured · pack is verified during lookup';
+    byId('senso-query-label').textContent = receipt?.query && receipt.status === 'cited' ? 'Query sent to Senso' : 'Next lookup query';
+    byId('senso-query').textContent = receipt?.query || state.query || 'No finding-linked query for this document.';
+    if (!sensoRunning) {
+      byId('senso-state').className = 'ix-search-state';
+      byId('senso-state').textContent = receipt?.status === 'cited'
+        ? receipt.passages + (receipt.passages === 1 ? ' passage' : ' passages') + ' retrieved · ' + receipt.latency_ms + ' ms'
+        : receipt?.reason || (data.policies.length ? 'No lookup recorded.' : 'No finding-linked guideline for this document.');
+    }
+    const content = byId('senso');
+    if (receipt?.status !== 'cited') {
+      content.replaceChildren(node('strong', 'No provider citation'), node('p', 'Local guidelines remain available in the Guidelines tab.'));
+      return;
+    }
+    const passages = receipt.context_passages?.length ? receipt.context_passages : [{text:receipt.excerpt}];
+    content.replaceChildren(...passages.map((passage, index) => {
+      const block = node('article', undefined, 'ix-passage');
+      block.append(node('strong', 'Passage ' + (index + 1)), node('p', passage.text));
+      if (passage.version_id) block.append(node('p', 'Version ' + passage.version_id, 'ix-passage-version'));
+      return block;
+    }));
+    const details = node('details', undefined, 'ix-receipt');
+    details.append(node('summary', 'Retrieval receipt'));
+    for (const [label, value] of [['Content',receipt.content_id],['Version',receipt.version_id],
+      ['Guideline digest',receipt.guideline_digest],['Retrieved',receipt.retrieved_at ? new Date(receipt.retrieved_at * 1000).toLocaleString('en') : 'Not retained']]) {
+      details.append(node('p', label + ': ' + value));
+    }
+    content.append(details);
+  }
+  async function lookupSenso() {
+    if (byId('senso-run').disabled) return;
+    sensoRunning = true; renderSenso(latest);
+    byId('senso').setAttribute('aria-busy', 'true');
+    byId('senso-state').className = 'ix-search-state';
+    byId('senso-state').textContent = 'Verifying the guideline pack and retrieving cited passages…';
+    try {
+      const response = await fetch('/api/inspect/' + initial.id + '/senso', {
+        method:'POST', credentials:'same-origin', cache:'no-store', headers:{Accept:'application/json'},
+        signal:AbortSignal.timeout(90000),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.citation?.reason || data.detail || 'Senso lookup unavailable. Retry Run lookup.');
+      if (data.citation?.status !== 'cited' || !data.senso) throw new Error('Senso returned no citation. Retry Run lookup.');
+      sensoRunning = false;
+      latest = {...latest, citation:data.citation, senso:data.senso};
+      lastRender = ''; render(latest);
+    } catch (error) {
+      byId('senso-state').textContent = error.name === 'TimeoutError' ? 'Lookup timed out. Retry Run lookup.' : error.message;
+      byId('senso-state').className = 'ix-search-state error';
+    } finally {
+      sensoRunning = false; byId('senso').setAttribute('aria-busy', 'false');
+      byId('senso-run').disabled = !latest.senso?.configured || !latest.policies.length;
+      byId('senso-run').textContent = latest.citation?.status === 'cited' ? 'Run again' : 'Run lookup';
+    }
   }
   async function load() {
     controller?.abort(); controller = new AbortController();
@@ -174,7 +227,13 @@
       }
     });
   });
+  function selectLinkedTab() {
+    const linkedTab = tabs.find(tab => '#' + tab.dataset.ixTab === location.hash);
+    if (linkedTab) selectTab(linkedTab);
+  }
+  selectLinkedTab(); window.addEventListener('hashchange', selectLinkedTab);
   byId('search').addEventListener('click', () => void research(true));
+  byId('senso-run').addEventListener('click', () => void lookupSenso());
   window.addEventListener('pagehide', () => { stopped = true; clearTimeout(timer); controller?.abort(); });
   render(initial); void research(); timer = setTimeout(poll, 2000);
 })();

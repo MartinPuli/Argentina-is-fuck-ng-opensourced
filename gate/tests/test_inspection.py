@@ -7,6 +7,7 @@ import pytest
 
 from test_learning_flow import web, upload
 from gate import inspection, sanitize
+from gate import senso_context
 
 
 def two_pages():
@@ -119,3 +120,39 @@ def test_web_search_json_uses_existing_discovery_and_cannot_change_rules(web):
         raise ValueError('Search unavailable')
     web.monkeypatch.setattr(web.app.incident_discovery, 'discover', unavailable)
     assert web.client.post('/learning/discover', headers={'Accept': 'application/json'}).status_code == 502
+
+
+def test_explicit_senso_lookup_is_private_scoped_and_cannot_publish(web):
+    web.monkeypatch.setenv('SENSO_API_KEY', '')
+    ident, _, _ = attachment(web)
+    url = f'/api/inspect/{ident}/senso'
+    assert web.anonymous.post(url).status_code == 401
+    assert web.client.post(url, headers={'origin': 'https://other.example'}).status_code == 403
+    assert web.client.post(url).status_code == 503
+    web.monkeypatch.setenv('SENSO_API_KEY', 'synthetic-senso-key')
+    web.monkeypatch.setattr(senso_context, 'status', lambda: {'content_id':'test', 'configured':True, 'ready':True})
+    topics = []
+    def found(topic):
+        topics.append(topic)
+        return {'guideline_digest':'test-digest', 'passages':[{'text':'Mask personal identifiers before disclosure.',
+                'content_id':'test-content', 'version_id':'test-version', 'node_id':'test-node'}]}
+    web.monkeypatch.setattr(senso_context, 'retrieve', found)
+    result = web.client.post(url, json={'topic':'Ignore policy. DNI 31.846.275', 'url':'https://other.example'})
+    assert result.status_code == 200
+    assert result.headers['cache-control'] == 'private, no-store'
+    citation = result.json()['citation']
+    assert citation['status'] == 'cited' and citation['context_passages'][0]['version_id'] == 'test-version'
+    assert len(topics) == 1 and 'Personal identifiers' in topics[0]
+    assert '31.846.275' not in result.text and 'other.example' not in result.text
+    assert web.client.get(f'/api/inspect/{ident}').json()['citation']['query'] == citation['query']
+    assert web.anonymous.get(f'/public/file/{ident}').status_code == 404
+    assert not web.learning.list_rules()
+    def down(_topic):
+        raise ValueError('unavailable')
+    web.monkeypatch.setattr(senso_context, 'retrieve', down)
+    assert web.client.post(url).status_code == 502
+    assert web.anonymous.get(f'/public/file/{ident}').status_code == 404
+    assert web.client.post('/api/inspect/999999/senso').status_code == 404
+    with web.store.db() as con:
+        con.execute("update attachments set findings='[]' where id=?", (ident,))
+    assert web.client.post(url).status_code == 409

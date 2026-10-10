@@ -57,6 +57,12 @@ body:has(.inspector) main{max-width:1480px}
 .ix-senso{font-size:11px;line-height:1.6;color:var(--ix-muted);padding:12px;background:var(--c-primary-soft);border-radius:4px;margin-bottom:16px;overflow-wrap:anywhere}
 .ix-senso strong{display:block;font-weight:500;color:var(--ix-blue);margin-bottom:4px}
 .ix-senso p{margin:4px 0 0;font-size:11px}
+.ix-field-label{font-size:11px;font-weight:500;margin:16px 0 8px}
+.ix-passage+.ix-passage{border-top:1px solid var(--c-line);margin-top:12px;padding-top:12px}
+.ix-senso .ix-passage-version{font-size:10px;margin-top:8px}
+.ix-receipt{border-top:1px solid var(--c-line);padding-top:12px;margin-top:12px;font-size:10px}
+.ix-receipt summary{cursor:pointer;color:var(--ix-blue)}
+.ix-receipt p{font-family:ui-monospace,monospace;font-size:10px;overflow-wrap:anywhere}
 .ix-query{font-family:ui-monospace,monospace;font-size:10px;line-height:1.6;background:var(--ix-soft);padding:10px;border-radius:4px;overflow-wrap:anywhere;margin:0 0 10px;color:var(--ix-muted)}
 .ix-empty,.ix-search-state{font-size:11px;line-height:1.6;color:var(--ix-muted);margin:8px 0 12px}
 .ix-search-state.error{color:var(--c-blocked)}

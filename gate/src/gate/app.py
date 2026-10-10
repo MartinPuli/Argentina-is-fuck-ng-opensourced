@@ -872,6 +872,8 @@ def inspection_snapshot(att_id: int, number: int = 1) -> dict:
     job = next((j for j in activity.snapshot() if j["attachment_id"] == att_id), None)
     data = inspection.evidence(row, learning.current(att_id), att_id in state["processing_ids"],
                                job, senso_context.citations([att_id]).get(att_id))
+    data["senso"] = senso_context.status()
+    data["senso"]["query"] = senso_context.lookup_query(inspection.decoded(row["findings"], []))
     try:
         data["page"] = inspection.page_info(row["pdf"], row["public_pdf"], number)
     except IndexError:
@@ -891,6 +893,24 @@ def inspect_document(request: Request, att_id: int, user: str = Depends(staff)):
 @app.get("/api/inspect/{att_id}")
 def api_inspect(att_id: int, page: int = 1, user: str = Depends(staff)):
     return JSONResponse(inspection_snapshot(att_id, page), headers={"Cache-Control": "private, no-store"})
+
+
+@app.post("/api/inspect/{att_id}/senso")
+def inspect_senso(att_id: int, user: str = Depends(staff)):
+    with db() as con:
+        row = con.execute("select findings from attachments where id=?", (att_id,)).fetchone()
+    if not row:
+        raise HTTPException(404)
+    if not senso_context.configured():
+        raise HTTPException(503, "Senso is not configured on this server.")
+    findings = inspection.decoded(row["findings"], [])
+    if not any(isinstance(f, dict) and f.get("rule") in RULES for f in findings):
+        raise HTTPException(409, "This document has no finding-linked guideline to retrieve.")
+    result = senso_lookup(att_id, findings)
+    events.log("senso_lookup", "Document inspector", 0, att_id, actor=user)
+    return JSONResponse({"citation": result, "senso": senso_context.status()},
+                        status_code=200 if result.get("status") == "cited" else 502,
+                        headers={"Cache-Control": "private, no-store"})
 
 
 @app.get("/internal/preview/{att_id}/{number}")

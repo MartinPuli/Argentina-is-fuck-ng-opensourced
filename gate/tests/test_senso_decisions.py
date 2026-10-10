@@ -60,6 +60,10 @@ def test_citation_stored_when_senso_returns(stored, monkeypatch):
     cited = senso_context.citations([stored])[stored]
     assert cited["status"] == "cited" and cited["rule_ids"] == ["personal_id"]
     assert cited["content_id"] == CONTENT and cited["version_id"] == VERSION
+    assert cited["query"] == senso_context.QUERY_PREFIX + topics[0]
+    assert cited["context_passages"][0]["text"] == "Keep private-person DNI out of public attachments."
+    assert cited["context_passages"][0]["version_id"] == VERSION
+    assert cited["retrieved_at"] > 0
     assert "Personal identifiers" in topics[0]
     assert "synthetic-senso-key" not in str(cited)
 

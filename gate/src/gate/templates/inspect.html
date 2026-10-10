@@ -16,10 +16,20 @@
 <div class="ix-tabs" role="tablist" aria-label="Inspection evidence">
 <button type="button" role="tab" id="ix-tab-process" aria-controls="ix-panel-process" aria-selected="true" data-ix-tab="process">Process</button>
 <button type="button" role="tab" id="ix-tab-guidelines" aria-controls="ix-panel-guidelines" aria-selected="false" tabindex="-1" data-ix-tab="guidelines">Guidelines</button>
+<button type="button" role="tab" id="ix-tab-senso" aria-controls="ix-panel-senso" aria-selected="false" tabindex="-1" data-ix-tab="senso">Senso</button>
 <button type="button" role="tab" id="ix-tab-web" aria-controls="ix-panel-web" aria-selected="false" tabindex="-1" data-ix-tab="web">Web</button>
 </div>
 <section class="ix-section" id="ix-panel-process" role="tabpanel" aria-labelledby="ix-tab-process"><div class="ix-section-heading"><h2>Processing</h2><span class="ix-dot" id="ix-live-dot" aria-hidden="true"></span></div><ol class="ix-steps" id="ix-steps"></ol><p class="ix-empty" id="ix-no-trace" hidden>No live trace retained. The saved result is shown.</p><p class="ix-verdict" id="ix-verdict"></p></section>
-<section class="ix-section" id="ix-panel-guidelines" role="tabpanel" aria-labelledby="ix-tab-guidelines" hidden><div class="ix-section-heading"><h2>Guidelines</h2><a href="/guidelines">View all ↗</a></div><div id="ix-policies"></div><div id="ix-senso" class="ix-senso"></div><div id="ix-sources"></div></section>
+<section class="ix-section" id="ix-panel-guidelines" role="tabpanel" aria-labelledby="ix-tab-guidelines" hidden><div class="ix-section-heading"><h2>Guidelines</h2><a href="/guidelines">View all ↗</a></div><div id="ix-policies"></div><div id="ix-sources"></div></section>
+<section class="ix-section" id="ix-panel-senso" role="tabpanel" aria-labelledby="ix-tab-senso" hidden>
+<div class="ix-section-heading"><h2>Policy lookup</h2><button class="ix-button" id="ix-senso-run" type="button">Run lookup</button></div>
+<p class="ix-empty" id="ix-senso-connection"></p>
+<p class="ix-field-label" id="ix-senso-query-label">Query</p><p class="ix-query" id="ix-senso-query"></p>
+<p id="ix-senso-state" class="ix-search-state" role="status" aria-live="polite"></p>
+<div id="ix-senso" class="ix-senso" aria-busy="false"></div>
+<p class="ix-empty">Only rule titles are sent. PDFs and personal records stay out of this lookup. Retrieved context cannot release a file.</p>
+<a class="ix-library" href="/learning">Guideline library →</a>
+</section>
 <section class="ix-section" id="ix-panel-web" role="tabpanel" aria-labelledby="ix-tab-web" hidden><div class="ix-section-heading"><h2>Web research</h2><button type="button" class="ix-button" id="ix-search">Search reporting</button></div><p class="ix-query" id="ix-query"></p><p class="ix-empty">Reporting leads · unverified. Review a source before proposing a rule.</p><p id="ix-search-state" role="status" class="ix-search-state"></p><div id="ix-leads"></div><a class="ix-library" href="/learning">Open learning library →</a></section>
 </aside>
 </div>

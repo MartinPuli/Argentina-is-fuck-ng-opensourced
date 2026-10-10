@@ -20,6 +20,7 @@ from .rules import guideline_pack
 
 API = "https://apiv2.senso.ai/api/v1"
 MAX_RESPONSE = 256_000
+QUERY_PREFIX = "Publication restrictions, lawful disclosure and reidentification safeguards for: "
 SCHEMA = """
 create table if not exists senso_documents (
     credential_hash text not null, digest text not null, content_id text not null,
@@ -180,8 +181,9 @@ def retrieve(topic: str) -> dict:
     if not receipt["ready"]:
         raise ValueError("The Senso guideline pack is not ready. Refresh after processing completes.")
     topic = _clean(topic, 160)
+    query = QUERY_PREFIX + topic
     data = _request("POST", "/org/search/context", {
-        "query": "Publication restrictions, lawful disclosure and reidentification safeguards for: " + topic,
+        "query": query,
         "max_results": 5, "content_ids": [receipt["content_id"]], "require_scoped_ids": True,
     })
     results = data.get("results")
@@ -205,7 +207,7 @@ def retrieve(topic: str) -> dict:
                          "node_id": node_id, "title": _clean(result.get("title"), 200)})
     if not passages:
         raise ValueError("Senso found no guideline context. No Senso-backed rule was created.")
-    return {"provider": "Senso", "guideline_digest": receipt["digest"], "retrieved_at": time.time(),
+    return {"provider": "Senso", "query": query, "guideline_digest": receipt["digest"], "retrieved_at": time.time(),
             "official_sources": guideline_pack()["sources"],
             "passages": passages, "authority": "Untrusted retrieved context; local reviewed policy and official sources prevail."}
 
@@ -229,6 +231,13 @@ create table if not exists attachment_senso (
 """
 
 
+def lookup_query(findings: list[dict]) -> str | None:
+    from .rules import RULES
+    ids = sorted({f.get("rule") for f in findings if isinstance(f, dict) and f.get("rule") in RULES})
+    topic = _clean("; ".join(RULES[r].get("title", r) for r in ids), 160)
+    return QUERY_PREFIX + topic if topic else None
+
+
 def cite(attachment_id: int, findings: list[dict]) -> dict:
     """Look up the governing guideline passage for an already stored decision.
 
@@ -238,7 +247,8 @@ def cite(attachment_id: int, findings: list[dict]) -> dict:
     from .rules import RULES
     started = time.perf_counter()
     rule_ids = sorted({f.get("rule") for f in findings if isinstance(f, dict) and f.get("rule") in RULES})
-    result: dict = {"rule_ids": rule_ids}
+    query = lookup_query(findings)
+    result: dict = {"rule_ids": rule_ids, "query": query}
     try:
         if not rule_ids:
             raise LookupError("No cited rule to look up.")
@@ -246,11 +256,15 @@ def cite(attachment_id: int, findings: list[dict]) -> dict:
             raise LookupError("Senso is not configured.")
         if not status()["content_id"]:
             sync()  # reconciles the existing exact pack in this organization (409 path)
-        context = retrieve("; ".join(RULES[r].get("title", r) for r in rule_ids))
+        context = retrieve(query[len(QUERY_PREFIX):])
         first = context["passages"][0]
         result.update(status="cited", content_id=first["content_id"], version_id=first["version_id"],
                       node_id=first["node_id"], passages=len(context["passages"]),
-                      excerpt=readable_excerpt(first["text"]), guideline_digest=context["guideline_digest"])
+                      excerpt=readable_excerpt(first["text"]), guideline_digest=context["guideline_digest"],
+                      retrieved_at=context.get("retrieved_at", time.time()),
+                      context_passages=[{"text": readable_excerpt(p["text"], 1200),
+                                         "content_id": p["content_id"], "version_id": p["version_id"],
+                                         "node_id": p["node_id"]} for p in context["passages"][:5]])
     except LookupError as exc:
         result.update(status="unavailable", reason=str(exc))
     except Exception:
