@@ -673,7 +673,7 @@ async def live_upload(office: str = Form(...), procedure: str = Form(...), item:
 @app.post("/live/demo/seed")
 async def live_demo_seed(user: str = Depends(staff)):
     if activity.running():
-        return PlainTextResponse("A demo run is still in progress. Wait for it to finish.", status_code=409)
+        return PlainTextResponse("Documents are still processing. Wait for them to finish.", status_code=409)
     prepared = []
     for spec in json.loads((FIXTURES / "purchases.json").read_text()):
         files = [UploadFile(io.BytesIO((FIXTURES / name).read_bytes()), filename=name) for name in spec["files"]]

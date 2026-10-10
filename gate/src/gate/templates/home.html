@@ -188,8 +188,7 @@
 <div class="ws-head">
 <div><h1>Workspace</h1><p>Every PAMI attachment is checked by AI agents before it can go public.</p></div>
 <div class="ws-actions">
-<form method="post" action="/live/demo/seed" data-live-form><button type="submit" class="ws-btn">Load test files</button><div class="form-message ws-msg" role="status" aria-live="polite" hidden></div></form>
-<form class="rs" method="post" action="/live/reset" onsubmit="return confirm('Clear all files and purchases? Rules and audit history stay.')"><button type="submit" class="ws-btn ghost">Reset</button></form>
+<form class="rs" method="post" action="/live/reset" onsubmit="return confirm('Clear all files and purchases? Rules and audit history stay.')"><button type="submit" class="ws-btn ghost">Clear workspace</button></form>
 </div>
 </div>
 <div data-workspace-intake hidden>{% include "intake.html" %}</div>
@@ -202,7 +201,7 @@
 </dl>
 <div class="ws-meta"><span id="live-connection" role="status" aria-live="polite">Connecting…</span>{% if history_total %}<span>{{ "{:,}".format(history_total.value) }} audit events · <a href="/dashboard">History →</a></span>{% endif %}</div>
 <section class="ws-sec" id="activity" aria-labelledby="ws-activity"><h2 id="ws-activity">Agent activity <small id="live-stale-count"></small></h2>
-<div id="ws-empty" class="ws-empty" hidden>No files yet. Load test files to watch the agents work.</div>
+<div id="ws-empty" class="ws-empty" hidden>No files yet. Upload a PDF to start.</div>
 <div class="ws-grid" id="ws-activity-grid">
 <section class="agent-log" aria-labelledby="agent-log-heading"><div class="agent-log-head"><h3 id="agent-log-heading">Agent log</h3><span id="agent-log-count">newest first</span></div><div class="agent-log-body" id="agent-log" role="log" aria-live="off"><div class="log-empty">Waiting for agent activity…</div></div></section>
 <div id="live-jobs" class="live-list" aria-busy="true"></div>
@@ -475,7 +474,7 @@
     document.getElementById('live-stale-count').textContent = stale ? stale + (stale === 1 ? ' file needs' : ' files need') + ' a rules recheck' : '';
     const idle = !data.jobs.length && !(Array.isArray(data.feed) && data.feed.length);
     document.getElementById('ws-empty').hidden = !idle;
-    document.getElementById('ws-empty').textContent = count(counts.published) + count(counts.blocked) + count(counts.waiting) ? 'Agents are idle. Load test files to watch them work.' : 'No files yet. Load test files to watch the agents work.';
+    document.getElementById('ws-empty').textContent = count(counts.published) + count(counts.blocked) + count(counts.waiting) ? 'No documents processing.' : 'No files yet. Upload a PDF to start.';
     document.getElementById('ws-activity-grid').hidden = idle;
     document.getElementById('document-workspace').classList.toggle('ws-none', idle);
     const nextWorkspaceState = JSON.stringify([data.counts, data.jobs.map(job => [job.attachment_id, job.decision, job.done])]);

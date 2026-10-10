@@ -6,7 +6,7 @@
 
 ArgenSec Gate checks every PDF before PAMI, Argentina's national health insurer for retirees and pensioners (about 5 million members), publishes it on its public purchase site. In May 2026, [Chequeado found](https://chequeado.com/investigaciones/pami-expone-datos-medicos-y-documentos-sensibles-de-sus-afiliados-en-su-sitio-web/) medical histories, disability certificates and ID card copies on that site. Nothing checked the files first. This is that check.
 
-Live demo: [argensec.pujia.ar](https://argensec.pujia.ar). Video script: [DEMO.md](DEMO.md). Security review: [SEMGREP-REPORT.md](SEMGREP-REPORT.md) and [issue #2](https://github.com/MartinPuli/Argentina-is-fuck-ng-opensourced/issues/2).
+Application: [argensec.pujia.ar](https://argensec.pujia.ar). Video script: [DEMO.md](DEMO.md). Security review: [SEMGREP-REPORT.md](SEMGREP-REPORT.md) and [issue #2](https://github.com/MartinPuli/Argentina-is-fuck-ng-opensourced/issues/2).
 
 All documents are fictional. No real government system is connected. Detection can miss things. This is not a guarantee that every private document is caught. The [incident research](../docs/INCIDENTS.md) and [team problem analysis](../PAMI%20Data%20Exposure%20Problem%20Analysis.md) give context.
 
@@ -59,7 +59,7 @@ The app drives the loop. The orchestrator prompt allows native sub-agent calls, 
 
 The staff navbar has Documents, Live, Review and Public ↗. The home page has a hero with the flow diagram and an **Upload a PDF** button (`/office`). Rules (`/learning`), Exposures (`/exposures`) and History (`/dashboard`) are not in the navbar. Open them by URL or from page links.
 
-On **Live** (`/live`), open **Test data** and press **Load synthetic files** to run the demo. Press **Clear workspace** to clear purchases and files between takes. Rules and the audit history stay.
+Upload PDFs from Workspace or `/office`. Sample-loading controls are not part of the operator interface. **Clear workspace** clears purchases and files; rules and audit history stay.
 
 The live site runs with `GATE_AUTONOMOUS=1`. In a measured run on October 9, 2026, 9 of 9 files finished without a person in 68.5 seconds: 2 published, 3 cleaned, 4 withheld.
 
